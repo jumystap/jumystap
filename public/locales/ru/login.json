@@ -1,0 +1,11 @@
+{
+    "title": "Вход",
+    "phone_label": "Введите номер телефона",
+    "password_label": "Введите пароль",
+    "login_button": "Войти",
+    "register_prompt": "Нет аккаунта?",
+    "register_prompt_span": "Зарегистрируйтесь",
+    "forgot_password": "Забыли пароль?",
+    "forgot_password_span": "Восстановите аккаунт"
+}
+  

@@ -1,0 +1,11 @@
+{
+    "title": "Кіру",
+    "phone_label": "Телефон нөмірін енгізіңіз",
+    "password_label": "Құпия сөзді енгізіңіз",
+    "login_button": "Кіру",
+    "register_prompt": "Аккаунт жоқ па?",
+    "register_prompt_span": "Тіркелу",
+    "forgot_password": "Құпия сөзді ұмыттыңыз ба?",
+    "forgot_password_span": "Құпия сөзді қалпына келтіру"
+  }
+  

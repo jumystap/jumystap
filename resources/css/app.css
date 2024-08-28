@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.fixed-star {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0; /* Prevent shrinking */
+    color: #F36706;
+}
+
+.fixed-s {
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+body {
+  --jt-o: #F36706;
+  --jt-b: #000000;
+  --jt-w: #ffffff;
+  --jt-r: #F30606;
+  --jt-g: #B5B5B5;
+  --jt-0: rgba(0,0,0,0);
+  --jt-01: rgba(0,0,0,0.01);
+  --jt-05: rgba(0,0,0,0.05);
+  --jt-10: rgba(0,0,0,0.1);
+  --jt-25: rgba(0,0,0,0.25);
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  background: white;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+body::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  background: var(--jt-10);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--jt-10);
+}
+
+body::-webkit-scrollbar-track-piece {
+  background: var(--jt-10);
+}
+
+body::-webkit-scrollbar-thumb {
+  height: 5px;
+  background: var(--jt-o);
+}
+
+body::-webkit-scrollbar-corner {
+  background: var(--jt-o);
+}
+
+body::-webkit-resizer {
+  background: var(--jt-o);
+}
+.font-thin {
+  font-family: "Inter", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.font-light {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.font-regular {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.font-medium {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.font-semibold {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.font-bold {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.font-bolder {
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.font-black {
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.font-thin-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.font-light-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.font-regular-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.font-medium-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.font-bold-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.font-black-italic {
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}

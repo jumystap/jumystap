@@ -1,0 +1,16 @@
+{
+    "title": "Бүгінгі күні JOLTAP жобасы аясында<br/><span style='color: #f36706'>5 мыңнан астам адам</span> түлектер қатарынан шықты",
+    "subtitle": "<span style='color: #f36706'>Жарнамаларыңызды орналастырыңыз</span> және<br/>сертификатталған түлектерден жауап алыңыз",
+    "create_announcement": "Жарнама жасау",
+    "search_job": "Жұмыс іздейді",
+    "search_project": "Тапсырыс іздейді",
+    "any_job": "Кез келген түрі",
+    "any_job_default": "Жұмыс түрі",
+    "any_work": "Кез келген бағыт",
+    "any_work_default": "Бағыт",
+    "any_graduate": "Барлығы",
+    "any_graduate_default": "Түлектер",
+    "graduate": "JOLTAP түлегі",
+    "non_graduate": "JOLTAP түлегі емес"
+}
+

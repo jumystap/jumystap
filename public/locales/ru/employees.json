@@ -1,0 +1,16 @@
+{
+    "title": "На сегодняшний день в рамках проекта JOLTAP<br/>выпустились <span style='color: #f36706'>более 5 тыс. человек</span>",
+    "subtitle": "<span style='color: #f36706'>Размещайте свои объявления</span> и получайте отклики<br/> от сертифицированных выпускников",
+    "create_announcement": "Создать объявление",
+    "search_job": "Ищет работу",
+    "search_project": "Ищет заказы",
+    "any_job": "Любой вид",
+    "any_job_default": "Вид работы",
+    "any_work": "Любое направление",
+    "any_work_default": "Направление",
+    "any_graduate": "Все",
+    "any_graduate_default": "Соискатели",
+    "graduate": "С сертификатом JOLTAP",
+    "non_graduate": "Без сертификата JOLTAP"
+}
+

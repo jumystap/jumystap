@@ -1,0 +1,8 @@
+{
+    "choose": "Выберите подходящую вакансию или заказ",
+    "annonce_type": "Тип",
+    "annonce_type_default": "Любое",
+    "project": "Заказ",
+    "all_cities": "Все города",
+    "search_placeholder": "Поиск..."
+}

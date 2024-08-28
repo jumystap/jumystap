@@ -1,0 +1,12 @@
+{
+    "create_title": "Создать Объявление",
+    "title_edit": "Редактировать",
+    "type": "Тип",
+    "announcement": "Заказ",
+    "vacancy": "Вакансия",
+    "title": "Заголовок",
+    "description": "Требования и условия",
+    "paymentType": "Тип оплаты",
+    "cost": "Оплата",
+    "create": "Создать"
+}
