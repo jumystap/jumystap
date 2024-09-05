@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import PhoneInput from 'react-phone-input-2';
 import { Upload, Button, notification, Modal, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { FaRegCheckCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function Registration({ errors, professions }) {
     const { t, i18n } = useTranslation();
@@ -37,7 +39,7 @@ export default function Registration({ errors, professions }) {
         description: '',
         is_graduate: 0,
         source: source,
-        age: 30,
+        age: null,
     });
     const login = 'janamumkindik@gmail.com';
     const password = '%Jana2023Mumkindik05';
@@ -45,11 +47,7 @@ export default function Registration({ errors, professions }) {
 
     const handleRoleSubmit = (role) => {
         setData('role', role);
-        if(role != 'employee'){
-            setStep(2);
-        }else{
-            setStep(1);
-        }
+        setStep(1);
     };
 
     const handleGraduateSelection = (graduateStatus) => {
@@ -353,363 +351,126 @@ export default function Registration({ errors, professions }) {
 
     return (
         <GuestLayout>
-            <div className="flex w-full h-[650px]">
-                <div className="mx-auto my-auto w-[400px]">
-                    {step === 0 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
-                            <div className="mb-4 mt-8">
-                                <div className="">
-                                    <div className='text-sm font-light text-gray-500'>Зарегестрироваться как соискатель</div>
-                                    <button
-                                        onClick={() => handleRoleSubmit('employee')}
-                                        className="w-full mt-3 border-gray-300 block text-gray-500 border-2 hover:bg-orange-500 transition-all duration-100 hover:text-white hover:border-orange-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                    >
-                                        {t('job_seeker_option', { ns: 'register' })}
-                                    </button>
-                                    <div className='mt-10 text-sm font-light text-gray-500'>Зарегестрироваться как работодатель</div>
-                                    <button
-                                        onClick={() => handleRoleSubmit('employer')}
-                                        className="w-full block border-gray-300 mt-3 text-gray-500 border-2 hover:bg-orange-500 transition-all duration-100 hover:text-white hover:border-orange-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                    >
-                                        {t('employee_seeker_option', { ns: 'register' })}
-                                    </button>
-                                    <button
-                                        onClick={() => handleRoleSubmit('company')}
-                                        className="border-gray-300 w-full mt-4 block text-gray-500 border-2 hover:bg-orange-500 transition-all duration-200 hover:text-white hover:border-orange-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                    >
-                                        {t('freelancer_option', { ns: 'register' })}
-                                    </button>
-                                    <a href='/terms' className='mt-10 block'>Продолжая вы принимаете <span className='text-orange-500'>Пользовательское соглашение</span></a>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {step === 1 && data.role === 'employee' && (
-                        <>
-                            <div className="font-bold text-4xl text-center">Вы выпускник?</div>
-                            <div className="mb-4 mt-8">
-                                <div className="flex flex-col space-y-4">
-                                    <button
-                                        onClick={() => handleGraduateSelection(true)}
-                                        className="border-gray-300 text-gray-500 border-2 hover:bg-orange-500 transition-all duration-100 hover:text-white hover:border-orange-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                    >
-                                        Да
-                                    </button>
-                                    <button
-                                        onClick={() => handleGraduateSelection(false)}
-                                        className="border-gray-300 text-gray-500 border-2 hover:bg-orange-500 transition-all duration-100 hover:text-white hover:border-orange-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                    >
-                                        Нет
-                                    </button>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {step === 2 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('register_title', { ns: 'register' })}</div>
-                            <form onSubmit={handlePhoneSubmit}>
+            <div className='w-full h-screen grid grid-cols-7'>
+                <div className='flex col-span-5'>
+                    <div className='mx-auto my-auto'>
+                        {step == 0 && (
+                            <>
+                                <div className="font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
                                 <div className="mb-4 mt-8">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="phone">
-                                        {t('phone_label', { ns: 'register' })}
-                                    </label>
-                                    <PhoneInput
-                                        country={'kz'}
-                                        onlyCountries={['kz']}
-                                        value={data.phone}
-                                        onChange={phone => setData('phone', phone)}
-                                        inputStyle={{
-                                            width: '100%',
-                                            padding: '20px',
-                                            paddingLeft: '50px',
-                                            borderRadius: '5px',
-                                            border: '1px solid #ccc',
-                                        }}
-                                    />
+                                    <div className="">
+                                        <div className='text-sm font-light text-gray-500'>Зарегестрироваться как соискатель</div>
+                                        <button
+                                            onClick={() => handleRoleSubmit('employee')}
+                                            className="w-full mt-3 border-gray-300 block text-gray-400 border-2 hover:bg-blue-500 transition-all duration-100 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                        >
+                                            {t('job_seeker_option', { ns: 'register' })}
+                                        </button>
+                                        <div className='mt-10 text-sm font-light text-gray-500'>Зарегестрироваться как работодатель</div>
+                                        <button
+                                            onClick={() => handleRoleSubmit('employer')}
+                                            className="w-full block border-gray-300 mt-3 text-gray-400 border-2 hover:bg-blue-500 transition-all duration-100 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                        >
+                                            {t('employee_seeker_option', { ns: 'register' })}
+                                        </button>
+                                        <button
+                                            onClick={() => handleRoleSubmit('company')}
+                                            className="border-gray-300 w-full mt-4 block text-gray-400 border-2 hover:bg-blue-500 transition-all duration-200 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                                        >
+                                            {t('freelancer_option', { ns: 'register' })}
+                                        </button>
+                                        <a href='/terms' className='mt-10 block'>Продолжая вы принимаете <span className='text-blue-500'>Пользовательское соглашение</span></a>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={processing}
-                                    >
-                                        {t('send_code_button', { ns: 'register' })}
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 3 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('verify_code_title', { ns: 'register' })}</div>
-                            <form onSubmit={handleVerificationSubmit}>
-                                <div className="mb-4 mt-8">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="verificationCode">
-                                        {t('verification_code_label', { ns: 'register' })}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="verificationCode"
-                                        value={data.verificationCode}
-                                        onChange={e => setData('verificationCode', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={processing}
-                                    >
-                                        {t('verify_button', { ns: 'register' })}
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 4 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('basic_info_title', { ns: 'register' })}</div>
-                            <form onSubmit={handleBasicInfoSubmit}>
-                                <div className="mb-2 mt-8">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="name">
-                                        {data.role == 'employee' ? (t('name_label', { ns: 'register' })) : (t('company_name_label', { ns: 'register' }))}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        value={data.name}
-                                        onChange={e => setData('name', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
-                                </div>
-                                <div className="mb-2">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="email">
-                                        {t('email_label', { ns: 'register' })}
-                                    </label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        value={data.email}
-                                        onChange={e => setData('email', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
-                                </div>
-                                {data.role === 'employee' ? (
-                                    <>
-                                        <div className="mb-2">
-                                            <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="date_of_birth">
-                                                {t('date_of_birth_label', { ns: 'register' })}
-                                            </label>
-                                            <input
-                                                id="age"
-                                                type='number'
-                                                name='age'
-                                                onChange={e => setData('age', e.target.value)}
-                                                value={data.age}
-                                                className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                            />
-                                        </div>
-                                    </>
-                                ) : (
-                                    <>
-                                        <label className="block text-gray-500 text-sm font-bold mb-2"
-                                            htmlFor="description">
-                                            {t('description_label', { ns: 'register' })}
-                                        </label>
-                                        <textarea
-                                            name='description'
-                                            id='description'
-                                            value={data.description}
-                                            onChange={e => setData('description', e.target.value)}
-                                            className='w-full rounded'
+                            </>
+                        )}
+                        {step == 1 && (
+                            <>
+                                <div className="mb-10 font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
+                                <div className='text-sm font-semibold'>Имя и Фамилия</div>
+                                <input
+                                    type='text'
+                                    className='w-[350px] mt-1 border-gray-300 rounded-lg'
+                                    placeholder='Введите ваше имя и фамилию'
+                                />
+                                <div className='mt-5 text-sm font-semibold'>Имя и Фамилия</div>
+                                <input
+                                    type='text'
+                                    className='w-[350px] mt-1 border-gray-300 rounded-lg'
+                                    placeholder='Введите ваше имя и фамилию'
+                                />
+                                <div className='flex w-[350px] gap-x-5'>
+                                    <div>
+                                        <div className='mt-5 text-sm font-semibold'>Дата рождения</div>
+                                        <input
+                                            type='text'
+                                            className='w-full mt-1 border-gray-300 rounded-lg'
+                                            placeholder='Введите ваше имя и фамилию'
                                         />
-                                    </>
-                                )}
-                                <div className="mb-2">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="password">
-                                        {t('password_label', { ns: 'register' })}
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        value={data.password}
-                                        onChange={e => setData('password', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
+                                    </div>
+                                    <div>
+                                        <div className='mt-5 text-sm font-semibold'>Пол</div>
+                                        <input
+                                            type='text'
+                                            className='w-full mt-1 border-gray-300 rounded-lg'
+                                            placeholder='Введите ваше имя и фамилию'
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={processing}
-                                    >
-                                        {t('next_button', { ns: 'register' })}
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 5 && isGraduate && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('upload_avatar_title', { ns: 'register' })}</div>
-                            <form onSubmit={(e) => { e.preventDefault(); setStep(6); }}>
-                                <div className='mt-5'>
-                                    {certificates.map((certificate, index) => (
-                                        <div key={index} className="mb-2 text-center">
-                                            {certificate.profession}: {certificate.number}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="button"
-                                        className="border border-gray-300 w-full hover:bg-gray-300 transition-all duration-100 text-gray-500 py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
-                                        onClick={() => setCertificateModalVisible(true)}
-                                    >
-                                        Добавить сертификат
-                                    </button>
-                                </div>
-                                <div className="flex mt-3 items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className={`w-full transition-all duration-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${certificates.length === 0 || processing ? 'bg-gray-300 font-regular cursor-not-allowed' : 'bg-orange-500 hover:bg-orange-600 text-white'
-                                            }`}
-                                        disabled={certificates.length === 0 || processing}
-                                    >
-                                        Далее
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 6 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('additional_info_title', { ns: 'register' })}</div>
-                            <form onSubmit={handleIPStatusSubmit}>
-                                <div className="mb-4 mt-4">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="ipStatus1">
-                                        {t('ipStatus1', { ns: 'register' })}
-                                    </label>
-                                    <select
-                                        id="ipStatus1"
-                                        value={data.ipStatus1}
-                                        onChange={e => setData('ipStatus1', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    >
-                                        <option value="no">{t('option1', { ns: 'register' })}</option>
-                                        <option value="yes">{t('option2', { ns: 'register' })}</option>
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="ipStatus2">
-                                        {t('ipStatus2', { ns: 'register' })}
-                                    </label>
-                                    <select
-                                        id="ipStatus2"
-                                        value={data.ipStatus2}
-                                        onChange={e => setData('ipStatus2', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    >
-                                        <option value="no">{t('option3', { ns: 'register' })}</option>
-                                        <option value="yes">{t('option4', { ns: 'register' })}</option>
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="ipStatus3">
-                                        {t('ipStatus3', { ns: 'register' })}
-                                    </label>
-                                    <select
-                                        id="ipStatus3"
-                                        value={data.ipStatus3}
-                                        onChange={e => setData('ipStatus3', e.target.value)}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    >
-                                        <option value="no">{t('option5', { ns: 'register' })}</option>
-                                        <option value="yes">{t('option6', { ns: 'register' })}</option>
-                                    </select>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={processing}
-                                    >
-                                        Далее
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 7 && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('upload_avatar_title', { ns: 'register' })}</div>
-                            <form onSubmit={handleRegistrationSubmit}>
-                                <div className="mb-2 mt-8 w-full">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2 w-full" htmlFor="avatar">
-                                        {t('avatar_label', { ns: 'register' })}
-                                    </label>
-                                    <Upload
-                                        id="avatar"
-                                        beforeUpload={handleAvatarUpload}
-                                        showUploadList={false}
-                                        className='w-full block'
-                                    >
-                                        <Button icon={<UploadOutlined />} className='w-[400px] block' >{t('upload_button', { ns: 'register' })}</Button>
-                                    </Upload>
-                                    {avatarPreview && (
-                                        <div className="mt-4 text-center">
-                                            <img src={avatarPreview} alt="Avatar Preview" className="mx-auto w-[150px] h-[150px] object-cover rounded-full border border-gray-300" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={!data.avatar || processing}
-                                    >
-                                        {t('register_button', { ns: 'register' })}
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
-                    {step === 8 && !isGraduate && (
-                        <>
-                            <div className="font-bold text-4xl text-center">{t('upload_avatar_title', { ns: 'register' })}</div>
-                            <form onSubmit={handleRegistrationSubmit}>
-                                <div className="mb-2 mt-8 w-full">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2 w-full" htmlFor="avatar">
-                                        {t('avatar_label', { ns: 'register' })}
-                                    </label>
-                                    <Upload
-                                        id="avatar"
-                                        beforeUpload={handleAvatarUpload}
-                                        showUploadList={false}
-                                        className='w-full block'
-                                    >
-                                        <Button icon={<UploadOutlined />} className='w-[400px] block' >{t('upload_button', { ns: 'register' })}</Button>
-                                    </Upload>
-                                    {avatarPreview && (
-                                        <div className="mt-4 text-center">
-                                            <img src={avatarPreview} alt="Avatar Preview" className="mx-auto w-[150px] h-[150px] object-cover rounded-full border border-gray-300" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <button
-                                        type="submit"
-                                        className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        disabled={!data.avatar || processing}
-                                    >
-                                        {t('register_button', { ns: 'register' })}
-                                    </button>
-                                </div>
-                            </form>
-                        </>
-                    )}
+                                <button
+                                    className='py-2 font-bold w-full text-white rounded-lg bg-blue-500 mt-5'
+                                >
+                                    Далее
+                                </button>
+                            </>
+                        )}
+                        <div className='flex mt-5'>
+                            <div className='flex mx-auto gap-x-5 mt-5'>
+                                <div className={`${step == 0 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
+                                <div className={`${step == 1 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
+                                <div className={`${step == 2 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
+                                <div className={`${step == 3 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 relative'>
+                    <div className='flex items-center gap-x-3'>
+                        <FaRegCheckCircle className={`text-2xl ${step == 0 ? ('text-blue-500') : ('text-gray-300')}`} />
+                        <div>
+                            <div className={`font-semibold ${step == 0 ? (''):('text-gray-500')}`}>Тип пользователя</div>
+                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-3 mt-7'>
+                        <FaRegCheckCircle className={`text-2xl ${step == 1 ? ('text-blue-500') : ('text-gray-300')}`} />
+                        <div>
+                            <div className={`font-semibold ${step == 1 ? (''):('text-gray-500')}`}>Основная информация</div>
+                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-3 mt-7'>
+                        <FaRegCheckCircle className={`text-2xl ${step == 2 ? ('text-blue-500') : ('text-gray-300')}`} />
+                        <div>
+                            <div className={`font-semibold ${step == 2 ? (''):('text-gray-500')}`}>Контактные данные</div>
+                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-3 mt-7'>
+                        <FaRegCheckCircle className={`text-2xl ${step == 2 ? ('text-blue-500') : ('text-gray-300')}`} />
+                        <div>
+                            <div className={`font-semibold ${step == 2 ? (''):('text-gray-500')}`}>Контактные данные</div>
+                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
+                        </div>
+                    </div>
+                    <div className='absolute bottom-5 pr-10'>
+                        <div className='text-lg'>Сложности с регистрацией?</div>
+                        <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                        <div className='mt-10 text-sm'>
+                            <div>+7 707 221 31 31</div>
+                            <div className='ml-auto'>janamumkindik@gmail.com</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <Modal

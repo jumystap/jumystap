@@ -64,34 +64,65 @@ export default function Employees({ auth, employees, professions, errors }) {
     return (
         <>
             <GuestLayout>
-                <div className='grid md:grid-cols-7 w-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700  py-10 mt-5 rounded-lg flex'>
-                    <div className='pl-5 pr-5 md:pl-20 my-auto col-span-3'>
+                <div className='grid grid-cols-7'>
+                <div className='col-span-5'>
+                <div className='grid m-5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700  py-10 mt-5 rounded-lg flex'>
+                    <div className='pl-5 pr-5 my-auto'>
                         <div className='text-xl text-center md:text-left uppercase mb-2 font-bold text-white'>{t('for_everyone', {ns: 'index'})}</div>
                         <div className='md:flex-row flex flex-col gap-2 md:gap-5 mt-4'>
                             <Link href="/create_announcement" className='px-3 block md:px-5 py-2 text-white md:text-md text-sm rounded-lg border-2 border-white hover:bg-white transition-all duration-150 hover:text-black'>{t('post_ad', { ns: 'carousel' })}</Link>
                             <Link href="/employees" className='px-3 md:px-5 inline-block py-2 text-white md:text-md text-sm rounded-lg border-2 border-white hover:bg-white transition-all duration-150 hover:text-black'>{t('find_employee', { ns: 'carousel' })}</Link>
                         </div>
                     </div>
-                    <div className='md:flex hidden text-white gap-x-20 col-span-4'>
-                        <div>
-                            <div className='font-bold text-4xl'>100+</div>
-                            <div className='font-light text-sm'>мобилографов</div>
-                        </div>
-                        <div>
-                            <div className='font-bold text-4xl'>100+</div>
-                            <div className='font-light text-sm'>СММщиков</div>
-                        </div>
-                        <div>
-                            <div className='font-bold text-4xl'>150+</div>
-                            <div className='font-light text-sm'>Швей</div>
-                        </div>
-                        <div>
-                            <div className='font-bold text-4xl'>70+</div>
-                            <div className='font-light text-sm'>Барист</div>
-                        </div>
-                    </div>
                 </div>
-                <div className="flex flex-col md:flex-row gap-5 mt-5">
+                <div className="gap-5 mt-5">
+                    {filteredEmployees.map((employee, index) => (
+                        <Link href={`/user/${employee.id}`} key={index} className="hover:bg-gray-100 block px-5 py-2 transition-all duration-150">
+                            <div className="flex gap-3">
+                                <div>
+                                    <img
+                                        src={`/storage/${employee.image_url}`}
+                                        alt=""
+                                        className="w-[40px] h-[40px] object-cover rounded-full"
+                                    />
+                                    <div className="text-sm font-bold text-gray-500 bg-gray-200 rounded text-center relative w-[40px] bottom-[10px]">
+                                        {toDoubleString(employee.rating)}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                    <div className='font-bold mb-auto gap-2 items-center flex'>{employee.name}<span style={{ display: 'inline-flex', alignItems: 'center' }}>{employee.is_graduate ? (<RiVerifiedBadgeFill className='fiex-star text-xl items-center text-blue-500' />):('')}</span></div>
+                                    <div className='text-gray-500'>@{employee.email.split('@')[0]}</div>
+                                    <div className='text-sm'>{employee.age} лет</div>
+                                        <div className='text-sm bg-green-100 text-green-500 py-1 px-2 rounded-lg mt-3'>{employee.status}</div>
+                                    </div>
+                                </div>
+                                <div className='ml-auto'>
+                                    <div className='px-5 py-2 rounded-full bg-blue-700 hover:bg-blue-500 transition-all duration-150 text-white text-sm inline-block font-semibold'>
+                                        Подробнее
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                            <div className="mt-2 text-sm">
+                                {employee.professions.length > 0 && (
+                                    <>
+                                        {employee.professions.map((profession, index) => (
+                                            <div key={index}>{i18n.language == 'ru' ? (profession.profession_name) : (profession.profession_name_kz)}</div>
+                                        ))}
+                                    </>
+                                )}
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+                <Pagination links={employees.links} />
+                </div>
+                <div className='col-span-2 px-3 border-l h-screen sticky top-0 border-gray-200'>
+                <div className="flex flex-col md:flex-col gap-2 mt-5">
                     <select
                         name="jobType"
                         value={jobType}
@@ -151,35 +182,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                         <option value="non-graduate">{t('non_graduate', { ns: 'employees' })}</option>
                     </select>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mt-5">
-                    {filteredEmployees.map((employee, index) => (
-                        <Link href={`/user/${employee.id}`} key={index} className="p-3 border border-gray-300 rounded-lg hover:border-orange-500 transition-all duration-150">
-                            <div className="flex gap-3">
-                                <div>
-                                    <img
-                                        src={`/storage/${employee.image_url}`}
-                                        alt=""
-                                        className="w-[40px] h-[40px] object-cover rounded-full"
-                                    />
-                                    <div className="text-sm font-bold text-white bg-orange-500 rounded text-center relative w-[40px] bottom-[10px]">
-                                        {toDoubleString(employee.rating)}
-                                    </div>
-                                </div>
-                                <div className='font-bold mb-auto gap-2 items-center flex'>{employee.name}<span style={{ display: 'inline-flex', alignItems: 'center' }}>{employee.is_graduate ? (<RiVerifiedBadgeFill className='fiex-star text-xl items-center text-orange-500' />):('')}</span></div>
-                            </div>
-                            <div className="mt-2 text-sm">
-                                {employee.professions.length > 0 && (
-                                    <>
-                                        {employee.professions.map((profession, index) => (
-                                            <div key={index}>{i18n.language == 'ru' ? (profession.profession_name) : (profession.profession_name_kz)}</div>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
                 </div>
-                <Pagination links={employees.links} />
+                </div>
             </GuestLayout>
         </>
     );

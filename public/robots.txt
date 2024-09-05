@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+
+Disallow: /admin/
+Disallow: /profile
+Disallow: /employees?page=
+Disallow: /update
+Diasllow: /fav
