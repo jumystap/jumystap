@@ -9,7 +9,6 @@ export default function Reviews({ reviews }) {
     const { t, i18n } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Initialize Inertia form
     const { data, setData, post, reset, processing, errors } = useForm({
         name: '',
         phone: '',
