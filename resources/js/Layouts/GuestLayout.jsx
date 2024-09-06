@@ -110,13 +110,13 @@ export default function Guest({ children }) {
                         Избранные
                     </Link>
                     <Link
-                        className='text-center block px-10 mt-10 text-white font-bold py-2 text-lg bg-gradient-to-r from-blue-500 to-blue-700 rounded-full'
+                        className='text-center block px-10 mt-10 text-white font-bold py-1 text-lg bg-blue-500 border-[3px] hover:bg-white hover:text-blue-500 transition-all duration-300 border-blue-500 rounded-full'
                         href='/register'
                     >
                         {t('register', { ns: 'header'})}
                     </Link>
                     <Link
-                        className='text-center block w-full mt-3 text-blue-500 font-bold py-2 text-lg border-[3px] border-blue-500 rounded-full'
+                        className='text-center hover:bg-blue-500 hover:text-white transition-all duration-300 block w-full mt-3 text-blue-500 font-bold py-1 text-lg border-[3px] border-blue-500 rounded-full'
                         href='/login'
                     >
                         Войти

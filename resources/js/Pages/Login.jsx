@@ -72,6 +72,16 @@ export default function Login({ errors }) {
                             {t('forgot_password', { ns: 'login' })} <span className="font-bold text-blue-500">{t('forgot_password_span', { ns: 'login' })}</span>
                         </Link>
                     </div>
+                    <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 relative'>
+                        <div className='absolute bottom-5 pr-10'>
+                            <div className='text-lg'>Сложности со входом?</div>
+                            <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                            <div className='mt-10 text-sm'>
+                                <div>+7 707 221 31 31</div>
+                                <div className='ml-auto'>janamumkindik@gmail.com</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </GuestLayout>
         </>

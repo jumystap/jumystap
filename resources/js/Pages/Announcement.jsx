@@ -37,109 +37,9 @@ export default function Announcement({ auth, announcement, top_announcement, urg
     return (
         <>
             <GuestLayout>
-                <div className='grid grid-cols-1 md:grid-cols-8 pt-10 gap-5'>
-                    <div className="md:col-span-5 px-5">
-                        <div className=''>
-                            <div className='font-bold text-xl md:text-2xl'>
-                                {i18n.language == 'ru' ? (
-                                    announcement.type_ru
-                                ) : (
-                                    announcement.type_kz
-                                )}
-                            </div>
-                            <div className='text-2xl md:text-3xl mt-1 font-bold text-blue-500 max-w-[700px]'>{announcement.title}</div>
-                            <div className="mt-2 font-semibold">{announcement.city} {announcement.location && (',')} {announcement.location}</div>
-                            <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description}} />
-                            <div className="mt-5">Тип оплаты: <span className="font-bold">{announcement.payment_type}</span></div>
-                            <div className='mt-2'>Стоимость: <span className='font-bold'>
-                                {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
-                                {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
-                                {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
-                                {announcement.salary_type == 'undefined' && (`Договорная`)}
-                            </span></div>
-                        </div>
-                        <Link href='/announcements' className="mt-5 border-b-2 py-2 border-blue-500 inline-block font-bold">Больше объявлений</Link>
-                        {urgent_announcement && (
-                            <Link href={`/announcement/${urgent_announcement.id}`}  className='md:hidden hover:border-red-600 transition-all duration-150 border border-gray-300 rounded-lg p-3 w-full block mt-2'>
-                                <div className='flex items-center'>
-                                    <div className='uppercase text-white text-xs px-2 bg-red-600 font-bold rounded'>Срочно</div>
-                                    <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
-                                        <SiFireship className='text-red-600 text-lg' />
-                                        {urgent_announcement.salary_type == 'exact' && urgent_announcement.cost && (`${urgent_announcement.cost.toLocaleString() } ₸ `)}
-                                        {urgent_announcement.salary_type == 'min' && (`от ${urgent_announcement.cost_min.toLocaleString()} ₸ `)}
-                                        {urgent_announcement.salary_type == 'max' && (`до ${urgent_announcement.cost_max.toLocaleString()} ₸ `)}
-                                        {urgent_announcement.salary_type == 'undefined' && (`Договорная`)}
-
-                                    </div>
-                                </div>
-                                <div className='mt-3 text-[11pt] max-w-[400px]'>
-                                        {urgent_announcement.title}
-                                    </div>
-                                    <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
-                                        {urgent_announcement.description.length > 60
-                                            ? `${urgent_announcement.description.substring(0, 60)}...`
-                                            : urgent_announcement.description}
-                                    </div>
-                            </Link>
-                        )}
-                        {top_announcement && (
-                        <Link href={`/announcement/${top_announcement.id}`} className='block w-full md:hidden mt-2 hover:border-blue-500 transition-all duration-150 border border-gray-300 rounded-lg p-3'>
-                            <div className='flex items-center'>
-                                <div className='uppercase text-white text-xs px-2 bg-blue-500 font-bold rounded'>Топ</div>
-                                <div className='flex gap-x-2 items-center font-bold text-sm ml-auto'>
-                                    <FaStar className='text-blue-500 text-lg'/>
-                                    {top_announcement.salary_type == 'exact' && top_announcement.cost && (`${top_announcement.cost.toLocaleString() } ₸ `)}
-                                    {top_announcement.salary_type == 'min' && (`от ${top_announcement.cost_min.toLocaleString()} ₸ `)}
-                                    {top_announcement.salary_type == 'max' && (`до ${top_announcement.cost_max.toLocaleString()} ₸ `)}
-                                    {top_announcement.salary_type == 'undefined' && (`Договорная`)}
-                                </div>
-                            </div>
-                            <div className='mt-3 text-[11pt] max-w-[400px]'>
-                                    {top_announcement.title}
-                                </div>
-                                <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
-                                    {top_announcement.description.length > 60
-                                        ? `${top_announcement.description.substring(0, 60)}...`
-                                        : top_announcement.description}
-                                </div>
-                        </Link>
-                        )}
-                        {more_announcement.length > 0 ? (
-                        <div className='mt-5 grid grid-cols-1 md:grid-cols-3 gap-5'>
-                            {more_announcement.map((anonce, key) => (
-                                <Link href={`/announcement/${anonce.id}`} key={key} className='hover:border-blue-500 transition-all duration-150 border border-gray-300 rounded-lg p-3'>
-                                    <div className='flex items-center'>
-                                        <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-[#f36706] '>
-                                            {i18n.language == 'ru' ? (
-                                                anonce.type_ru.toUpperCase()
-                                            ) : (
-                                                anonce.type_kz.toUpperCase()
-                                            )}
-                                        </div>
-                                        <div className='font-bold text-sm ml-auto'>
-                                            {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                            {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                            {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                            {anonce.salary_type == 'undefined' && (`Договорная`)}
-                                        </div>
-                                    </div>
-                                    <div className='mt-3 text-[11pt]'>
-                                            {anonce.title}
-                                        </div>
-                                        <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
-                                            {anonce.description.length > 60
-                                                ? `${anonce.description.substring(0, 60)}...`
-                                                : anonce.description}
-                                        </div>
-                                </Link>
-                            ))}
-                        </div>
-                        ) : (
-                            <div className='text-center'>123123</div>
-                        )}
-                    </div>
-                    <div className="col-span-3">
-                        <div className='md:mb-10 mb-2'>
+                <div className='grid grid-cols-1 md:grid-cols-7 pt-10 gap-5'>
+                    <div className="md:col-span-5">
+                        <div className='md:mb-10 mb-2 px-5'>
                             <div className='text-left font-bold text-xl'>{announcement.user.name}</div>
                             <div className='text-left mt-5 text-gray-500'>{announcement.user.description}</div>
                             <div className="flex-wrap">
@@ -195,6 +95,62 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                                 </div>
                             </div>
                         </div>
+                        <div className=' px-5'>
+                            <div className='font-bold text-xl md:text-2xl'>
+                                {i18n.language == 'ru' ? (
+                                    announcement.type_ru
+                                ) : (
+                                    announcement.type_kz
+                                )}
+                            </div>
+                            <div className='text-2xl md:text-3xl mt-1 font-bold text-blue-500 max-w-[700px]'>{announcement.title}</div>
+                            <div className="mt-2 font-semibold">{announcement.city} {announcement.location && (',')} {announcement.location}</div>
+                            <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description}} />
+                            <div className="mt-5">Тип оплаты: <span className="font-bold">{announcement.payment_type}</span></div>
+                            <div className='mt-2'>Стоимость: <span className='font-bold'>
+                                {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
+                                {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
+                                {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
+                                {announcement.salary_type == 'undefined' && (`Договорная`)}
+                            </span></div>
+                        </div>
+                        <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
+                        {more_announcement.length > 0 ? (
+                        <div className='grid grid-cols-1 md:grid-cols-1'>
+                            {more_announcement.map((anonce, key) => (
+                                <Link href={`/announcement/${anonce.id}`} key={key} className='px-5 hover:bg-gray-100 transition-all duration-150 border-b border-gray-200 p-3'>
+                                    <div className='flex items-center'>
+                                        <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-[#f36706] '>
+                                            {i18n.language == 'ru' ? (
+                                                anonce.type_ru.toUpperCase()
+                                            ) : (
+                                                anonce.type_kz.toUpperCase()
+                                            )}
+                                        </div>
+                                        <div className='font-bold text-sm ml-auto'>
+                                            {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                            {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                            {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                            {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        </div>
+                                    </div>
+                                    <div className='mt-3 text-[11pt]'>
+                                            {anonce.title}
+                                        </div>
+                                        <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
+                                            {anonce.description.length > 60
+                                                ? `${anonce.description.substring(0, 60)}...`
+                                                : anonce.description}
+                                        </div>
+                                </Link>
+                            ))}
+                        </div>
+                        ) : (
+                            <div className='text-center'>123123</div>
+                        )}
+                    </div>
+                    <div className="col-span-2">
+
                         {urgent_announcement && (
                             <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:border-red-600 transition-all duration-150 border border-gray-300 rounded-lg p-3 w-full hidden md:block mt-2'>
                                 <div className='flex items-center'>
