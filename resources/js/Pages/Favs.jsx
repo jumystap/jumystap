@@ -5,6 +5,7 @@ import { Link } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { MdAccessTime } from 'react-icons/md';
 
 export default function Favs({ auth, announcements, errors }) {
     const { t, i18n } = useTranslation();
@@ -133,65 +134,82 @@ export default function Favs({ auth, announcements, errors }) {
     return (
         <>
             <GuestLayout>
-                <div className='text-2xl font-bold mt-10'>
-                    Объявления которые вам понравились
-                </div>
-                <div className='flex flex-col md:flex-row gap-5 mt-5'>
-                    <select
-                        value={announcementType}
-                        onChange={handleAnnouncementTypeChange}
-                        name="announcementType"
-                        className={`block border rounded-lg w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-[#f36706]'}`}
-                    >
-                        <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
-                        <option value="vacancy">Вакансия</option>
-                        <option value="project">{t('project', { ns: 'announcements' })}</option>
-                    </select>
+                                <div className='grid grid-cols-7'>
+                    <div className='col-span-5'>
 
-                    <select
-                        value={searchCity}
-                        onChange={handleCityChange}
-                        name="searchCity"
-                        className='block border rounded-lg w-full md:w-auto border-gray-300 text-gray-500'
-                    >
-                        <option value="">{t('all_cities', { ns: 'announcements' })}</option>
-                        {uniqueCities.map((city, index) => (
-                            <option key={index} value={city}>{city}</option>
+                        <div className='mt-5'>
+                            <input
+                                type="text"
+                                value={searchKeyword}
+                                onChange={handleSearchKeywordChange}
+                                placeholder={t('search_placeholder', { ns: 'announcements' })}
+                                className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
+                            />
+                        </div>
+                        {filteredAnnouncements.map((anonce, index) => (
+                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
+                                <div className='flex'>
+                                    <div className='flex gap-x-1 text-blue-400 items-center'>
+                                        <FaLocationDot className='text-sm'/>
+                                        <div className='text-sm'>{anonce.city}, {anonce.location}</div>
+                                    </div>
+                                    <div className='ml-auto text-sm text-gray-500'>
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                    </div>
+                                </div>
+                                <div className='mt-7 text-lg font-bold'>
+                                    {anonce.title}
+                                </div>
+                                <div className='flex mt-4 gap-x-3 items-center'>
+                                    <div className='text-xl font-regular'>
+                                        {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                        {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                    </div>
+                                    <div className='bg-gray-200 py-1 px-2 text-gray-500 rounded-lg'>
+                                        Опыт 1-3 года
+                                    </div>
+                                </div>
+                                <div className='mt-4 text-sm text-gray-500 font-light'>
+                                    {anonce.description}
+                                </div>
+                                <div className='flex gap-x-1 items-center mt-4'>
+                                    <MdAccessTime className='text-xl'/>
+                                    <div className='text-sm'>График работы: {anonce.work_time}</div>
+                                </div>
+                            </Link>
                         ))}
-                    </select>
+                    </div>
+                    <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0'>
+                        <div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
+                        </div>
+                        <div className='flex flex-col md:flex-col'>
+                            <select
+                                value={announcementType}
+                                onChange={handleAnnouncementTypeChange}
+                                name="announcementType"
+                                className={`block border-b py-4 border-[0px] w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-blue-500'}`}
+                            >
+                                <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
+                                <option value="vacancy">Вакансия</option>
+                                <option value="project">{t('project', { ns: 'announcements' })}</option>
+                            </select>
 
-                    <input
-                        type="text"
-                        value={searchKeyword}
-                        onChange={handleSearchKeywordChange}
-                        placeholder={t('search_placeholder', { ns: 'announcements' })}
-                        className='block border rounded-lg w-full md:w-full border-gray-300 text-gray-500 p-2'
-                    />
-                </div>
-
-                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5'>
-                    {filteredAnnouncements.map((anonce, index) => (
-                        <Link href={`/announcement/${anonce.id}`} key={index} className='p-3 border hover:border-orange-500 transition-all duration-150 block border-gray-300 rounded-lg'>
-                            <div className='flex items-center'>
-                                <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-[#f36706] '>
-                                    {i18n.language === 'ru' ? anonce.type_ru.toUpperCase() : anonce.type_kz.toUpperCase()}
-                                </div>
-                                <div className='font-bold text-sm ml-auto'>
-                                    {anonce.cost.toLocaleString()} ₸
-                                </div>
-                            </div>
-                            <div className='mt-3 text-[10pt]'>
-                                {anonce.title}
-                            </div>
-                            <div className='mt-2 flex gap-x-1 text-gray-500 font-light items-center text-sm'>
-                                <FaLocationDot className='text-orange-500' />
-                                {anonce.city}
-                            </div>
-                            <div className='text-sm font-light text-gray-500'>
-                                {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
-                            </div>
-                        </Link>
-                    ))}
+                            <select
+                                value={searchCity}
+                                onChange={handleCityChange}
+                                name="searchCity"
+                                className='block border-b py-4 border-[0px] w-full md:w-auto border-gray-300 text-gray-500'
+                            >
+                                <option value="">{t('all_cities', { ns: 'announcements' })}</option>
+                                {uniqueCities.map((city, index) => (
+                                    <option key={index} value={city}>{city}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </GuestLayout>
         </>

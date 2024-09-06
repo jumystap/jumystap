@@ -138,25 +138,37 @@ export default function FAQ() {
 
     return (
         <GuestLayout>
-            <div className="max-w-2xl mx-auto my-8 p-4">
-                <h1 className="text-2xl md:text-4xl font-bold text-center mb-8">{t('title', { ns: 'faq' })}</h1>
-                {faqData.map((item, index) => (
-                    <div key={index} className="mb-4">
-                        <button
-                            onClick={() => toggleQuestion(index)}
-                            className="w-full text-left p-4 bg-gray-200 rounded-md focus:outline-none focus:ring"
-                        >
-                            <span className="font-semibold">{item.question}</span>
-                        </button>
-                        {openQuestion === index && (
-                            <div className="mt-2 p-4 bg-white border rounded-md shadow-md">
-                                {item.answers.map((answer, i) => (
-                                    <p key={i} dangerouslySetInnerHTML={{ __html: answer }}></p>
-                                ))}
-                            </div>
-                        )}
+            <div className='grid grid-cols-7'>
+                <div className="col-span-5 mx-auto p-10">
+                    <h1 className="text-2xl md:text-xl font-bold text-center mb-4">{t('title', { ns: 'faq' })}</h1>
+                    {faqData.map((item, index) => (
+                        <div key={index} className="mb-4">
+                            <button
+                                onClick={() => toggleQuestion(index)}
+                                className="w-full text-left p-4 bg-gray-100 text-gray-500 rounded-md focus:outline-none focus:ring"
+                            >
+                                <span className="font-semibold">{item.question}</span>
+                            </button>
+                            {openQuestion === index && (
+                                <div className="mt-2 p-4 bg-white border rounded-md shadow-md">
+                                    {item.answers.map((answer, i) => (
+                                        <p key={i} dangerouslySetInnerHTML={{ __html: answer }}></p>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div className='h-screen sticky top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
+                    <div className='pr-10'>
+                        <div className='text-lg'>Сложности со входом?</div>
+                        <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                        <div className='mt-10 text-sm'>
+                            <div>+7 707 221 31 31</div>
+                            <div className='mt-3'>janamumkindik@gmail.com</div>
+                        </div>
                     </div>
-                ))}
+                </div>
             </div>
         </GuestLayout>
     );
