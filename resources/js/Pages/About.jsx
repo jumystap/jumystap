@@ -4,8 +4,8 @@ import { IoStar } from "react-icons/io5";
 export default function About(){
     return(
         <GuestLayout>
-            <div className="grid md:grid-cols-2 grid-cols-1 mt-5">
-                <div className="mt-10">
+            <div className="grid grid-cols-7">
+                <div className="mt-10 col-span-5">
                     <div className="font-semibold text-3xl">JUMYSTAP.KZ - бесплатная площадка <br/>для <span className="border-b-[3px] border-orange-500">поиска сотрудников и вакансий!</span></div>
                     <div className="font-bold inline-block text-white bg-orange-500 rounded-lg px-5 py-2 text-lg mt-7">Для работодателей и заказчиков</div>
                     <div className="flex items-center text-lg gap-x-3 mt-4">
@@ -38,8 +38,7 @@ export default function About(){
                         Постоянная работа или заказы на объем: выбирайте что нужно Вам!
                     </div>
                 </div>
-                <div className="flex md:mt-[0px] mt-10">
-                    <img src="/images/banner.png" className="mx-auto my-auto w-[300px]"/>
+                <div className="border-l border-gray-200 h-screen sticky top-0 col-span-2">
                 </div>
             </div>
         </GuestLayout>

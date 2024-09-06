@@ -10,24 +10,44 @@ use Illuminate\Support\Facades\DB;
 
 class AnnouncementRepository
 {
-    public function getAnnouncementById($id): Announcement
+    public function getAllActiveAnnouncements()
+    {
+        return Announcement::where('active', 1)->get();
+    }
+
+    public function getAnnouncementById($id): ?Announcement
     {
         $announcement = Announcement::where('id', $id)->where('active', 1)->with('user.announcement')->first();
 
-        $is_favorite = false;
+        if ($announcement) {
+            $is_favorite = Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->exists();
+            $announcement->is_favorite = $is_favorite;
 
-        if(Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->first()){
-            $is_favorite = true;
-        }
-
-        $announcement->is_favorite = $is_favorite;
-
-        $announcement->responses_count = Response::where('announcement_id', $announcement->id)->count();
-        $announcement->visits_count = DB::table('visits')
+            $announcement->responses_count = Response::where('announcement_id', $announcement->id)->count();
+            $announcement->visits_count = DB::table('visits')
                 ->where('url', "https://jumystap.kz/announcement/{$announcement->id}")
                 ->count();
+        }
 
         return $announcement;
     }
 
+    public function createAnnouncement(array $data): Announcement
+    {
+        return Announcement::create($data);
+    }
+
+    public function updateAnnouncement($id, array $data): bool
+    {
+        $announcement = Announcement::findOrFail($id);
+        return $announcement->update($data);
+    }
+
+    public function deleteAnnouncement($id): bool
+    {
+        $announcement = Announcement::findOrFail($id);
+        Response::where('announcement_id', $id)->delete();
+        return $announcement->delete();
+    }
 }
+

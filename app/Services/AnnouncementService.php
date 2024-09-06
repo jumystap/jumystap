@@ -14,11 +14,29 @@ class AnnouncementService
         $this->announcementRepository = $announcementRepository;
     }
 
-    public function getAnnouncement($id): Announcement
+    public function getAllActiveAnnouncements()
     {
-        $announcement = $this->announcementRepository->getAnnouncementById($id);
-
-        return $announcement;
+        return $this->announcementRepository->getAllActiveAnnouncements();
     }
 
+    public function getAnnouncement($id): ?Announcement
+    {
+        return $this->announcementRepository->getAnnouncementById($id);
+    }
+
+    public function createAnnouncement(array $data): Announcement
+    {
+        return $this->announcementRepository->createAnnouncement($data);
+    }
+
+    public function updateAnnouncement($id, array $data): bool
+    {
+        return $this->announcementRepository->updateAnnouncement($id, $data);
+    }
+
+    public function deleteAnnouncement($id): bool
+    {
+        return $this->announcementRepository->deleteAnnouncement($id);
+    }
 }
+
