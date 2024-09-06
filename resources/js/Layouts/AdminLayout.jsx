@@ -69,25 +69,6 @@ export default function AdminLayout({ children }) {
                         >
                             Сертификаты
                         </Link>
-                        <Link
-                            href="/admin/announcements"
-                            className={`mt-2 block py-2 px-4 text-sm w-full font-semibold rounded-lg ${
-                                isActive('/admin/announcements') ? 'bg-[#f36706] text-white' : 'hover:bg-gray-100'
-                            }`}
-                        >
-                            Обьявления
-                        </Link>
-                    </div>
-                    <div className="w-full border-t border-gray-300 py-3 mt-3">
-                        <div className="text-sm text-gray-500">Справочники</div>
-                        <Link
-                            href="/admin/professions"
-                            className={`mt-2 block py-2 px-4 text-sm w-full font-semibold rounded-lg ${
-                                isActive('/admin/professions') ? 'bg-[#f36706] text-white' : 'hover:bg-gray-100'
-                            }`}
-                        >
-                            Професии
-                        </Link>
                     </div>
                 </div>
             </div>
