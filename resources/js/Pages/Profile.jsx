@@ -2,10 +2,6 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import ReactStars from "react-stars";
-import UpdateEmployeeProfileModal from '@/Components/UpdateEmployeeProfileModal';
-import UpdateNonEmployeeProfileModal from '@/Components/UpdateNonEmployeeProfileModal';
-import CreateAnnouncementModal from '@/Components/CreateAnnouncementModal';
 import CreatePortfolioModal from '@/Components/CreatePortfolioModal';
 import AddCertificateModal from '@/Components/AddCertificateModal';
 import { Inertia } from "@inertiajs/inertia";
@@ -14,12 +10,8 @@ import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 export default function Profile({ auth, user, announcements, employees, professions, userProfessions }) {
     const { t, i18n } = useTranslation();
-    const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-    const [isNonEmployeeModalOpen, setIsNonEmployeeModalOpen] = useState(false);
-    const [isCreateAnnouncementModalOpen, setIsCreateAnnouncementModalOpen] = useState(false);
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
-    const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
     const [missingCertificateProfession, setMissingCertificateProfession] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);

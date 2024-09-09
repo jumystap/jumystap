@@ -134,9 +134,8 @@ export default function Favs({ auth, announcements, errors }) {
     return (
         <>
             <GuestLayout>
-                                <div className='grid grid-cols-7'>
+                <div className='grid grid-cols-7'>
                     <div className='col-span-5'>
-
                         <div className='mt-5'>
                             <input
                                 type="text"
@@ -146,6 +145,12 @@ export default function Favs({ auth, announcements, errors }) {
                                 className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
                             />
                         </div>
+                        {announcements.length == 0 && (
+                            <div className='flex flex-col w-full py-10'>
+                                <div className='text-center text-gray-500'>У вас нет избранных вакансии</div>
+                                <Link href='/announcements' className='mx-auto mt-3 px-7 text-center inline-block py-2 bg-blue-500 text-white rounded-lg'>Добавить</Link>
+                            </div>
+                        )}
                         {filteredAnnouncements.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
                                 <div className='flex'>

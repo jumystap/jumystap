@@ -1,4 +1,3 @@
-import CreateAnnouncementModal from '@/Components/CreateAnnouncementModal';
 import { Inertia } from '@inertiajs/inertia';
 import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -9,19 +8,16 @@ import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-export default function Dashboard({user, announcements}) {
-    const [isCreateAnnouncementModalOpen, setIsCreateAnnouncementModalOpen] = useState(false);
+export default function Dashboard({ user, announcements }) {
     const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
     const { t, i18n } = useTranslation();
 
     const openCreateAnnouncementModal = () => {
         setSelectedAnnouncement(null);
-        setIsCreateAnnouncementModalOpen(true);
     };
 
     const openEditAnnouncementModal = (announcement) => {
         setSelectedAnnouncement(announcement);
-        setIsCreateAnnouncementModalOpen(true);
     };
 
     const deleteAnnouncement = (id) => {
@@ -49,9 +45,9 @@ export default function Dashboard({user, announcements}) {
 
     return (
         <>
-            <div className='grid grid-cols-1 md:grid-cols-3 pt-10 gap-5'>
-                <div>
-                    <div className='md:px-1 p-5'>
+            <div className='grid grid-cols-1 md:grid-cols-7'>
+                <div className='col-span-5 pt-10'>
+                    <div className='md:px-5 p-5'>
                         <div className='text-left font-bold text-2xl'>{user.name}</div>
                         <div className='mt-3'>
                             <div className='text-left text-gray-500'>
@@ -63,7 +59,7 @@ export default function Dashboard({user, announcements}) {
                             <div>{user.email}</div>
                         </div>
                         <div className='flex items-center mt-4 gap-x-2 text-base'>
-                            <LuPhone className='text-xl'/>
+                            <LuPhone className='text-xl' />
                             <div>{formatPhoneNumber(user.phone)}</div>
                         </div>
                         <div className='flex mt-5 gap-x-2 font-semibold text-xl'>
@@ -77,22 +73,20 @@ export default function Dashboard({user, announcements}) {
                                 <span className='text-light text-sm'>Редактировать</span>
                             </Link>
                             <Link href="/create_announcement"
-                                className='inline-block text-white rounded-lg text-center bg-orange-500 py-2 px-10 cursor-pointer'
+                                className='inline-block text-white rounded-lg text-center bg-blue-500 py-2 px-10 cursor-pointer'
                             >
                                 <span className='font-light text-sm'>Создать объявление</span>
                             </Link>
                         </div>
                     </div>
-                </div>
-                <div className='col-span-2'>
                     <div className='p-3 font-semibold'>Ваши объявления</div>
                     <div className='rounded-lg '>
                         {user.announcement.length > 0 ? (
-                            <div className='p-3 grid md:grid-cols-2 grid-cols-1 gap-5'>
+                            <div className='grid md:grid-cols-1 grid-cols-1'>
                                 {user.announcement.map((anonce, index) => (
-                                    <div key={index} className='p-3 border border-gray-300 rounded-lg'>
+                                    <div key={index} className='p-3 border-t border-gray-300 w-full'>
                                         <div className='flex items-center'>
-                                            <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-[#f36706] '>
+                                            <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-blue-500 '>
                                                 {i18n.language === 'ru' ? anonce.type_ru.toUpperCase() : anonce.type_kz.toUpperCase()}
                                             </div>
                                             {!anonce.active && (
@@ -102,7 +96,7 @@ export default function Dashboard({user, announcements}) {
                                             )}
                                             <div className="ml-auto">
                                                 <div className='font-bold text-sm ml-auto'>
-                                                    {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                                    {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString()} ₸ `)}
                                                     {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                                     {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                                     {anonce.salary_type == 'undefined' && (`Договорная`)}
@@ -113,7 +107,7 @@ export default function Dashboard({user, announcements}) {
                                             {anonce.title}
                                         </div>
                                         <div className='flex mt-2 text-gray-500 gap-x-1 font-light items-center text-sm'>
-                                            <FaLocationDot className='text-orange-500' />
+                                            <FaLocationDot className='text-blue-500' />
                                             {anonce.city}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
@@ -136,12 +130,10 @@ export default function Dashboard({user, announcements}) {
                         )}
                     </div>
                 </div>
+                <div className='col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>
+
+                </div>
             </div>
-            <CreateAnnouncementModal
-                isOpen={isCreateAnnouncementModalOpen}
-                onRequestClose={() => setIsCreateAnnouncementModalOpen(false)}
-                announcement={selectedAnnouncement}
-            />
         </>
     )
 }

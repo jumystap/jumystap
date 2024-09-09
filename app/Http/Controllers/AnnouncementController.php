@@ -41,13 +41,13 @@ class AnnouncementController extends Controller
 
         $top_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
         $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
-        $more_announcements = $this->announcementService->getAllActiveAnnouncements()->take(6);
+        $more_announcement = $this->announcementService->getAllActiveAnnouncements()->take(6);
 
         return Inertia::render('Announcement', [
             'announcement' => $announcement,
             'top_announcement' => $top_announcement,
             'urgent_announcement' => $urgent_announcement,
-            'more_announcements' => $more_announcements
+            'more_announcement' => $more_announcement
         ]);
     }
 

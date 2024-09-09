@@ -8,9 +8,10 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { useForm } from '@inertiajs/react';
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdAccessTime, MdOutlineRemoveRedEye } from "react-icons/md";
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { useInternalMessage } from "antd/es/message/useMessage";
+import { FaLocationDot } from "react-icons/fa6";
 
 
 
@@ -37,8 +38,8 @@ export default function Announcement({ auth, announcement, top_announcement, urg
     return (
         <>
             <GuestLayout>
-                <div className='grid grid-cols-1 md:grid-cols-7 pt-10 gap-5'>
-                    <div className="md:col-span-5">
+                <div className='grid grid-cols-1 md:grid-cols-7 gap-5'>
+                    <div className="md:col-span-5 pt-10">
                         <div className='md:mb-10 mb-2 px-5'>
                             <div className='text-left font-bold text-xl'>{announcement.user.name}</div>
                             <div className='text-left mt-5 text-gray-500'>{announcement.user.description}</div>
@@ -117,31 +118,35 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                         <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
                         {more_announcement.length > 0 ? (
                         <div className='grid grid-cols-1 md:grid-cols-1'>
-                            {more_announcement.map((anonce, key) => (
-                                <Link href={`/announcement/${anonce.id}`} key={key} className='px-5 hover:bg-gray-100 transition-all duration-150 border-b border-gray-200 p-3'>
-                                    <div className='flex items-center'>
-                                        <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-[#f36706] '>
-                                            {i18n.language == 'ru' ? (
-                                                anonce.type_ru.toUpperCase()
-                                            ) : (
-                                                anonce.type_kz.toUpperCase()
-                                            )}
+                            {more_announcement.map((anonce, index) => (
+                                <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
+                                    <div className='flex'>
+                                        <div className='flex gap-x-1 text-blue-400 items-center'>
+                                            <FaLocationDot className='text-sm'/>
+                                            <div className='text-sm'>{anonce.city}, {anonce.location}</div>
                                         </div>
-                                        <div className='font-bold text-sm ml-auto'>
+                                    </div>
+                                    <div className='mt-7 text-lg font-bold'>
+                                        {anonce.title}
+                                    </div>
+                                    <div className='flex mt-4 gap-x-3 items-center'>
+                                        <div className='text-xl font-regular'>
                                             {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                             {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                             {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                             {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         </div>
+                                        <div className='bg-gray-200 py-1 px-2 text-gray-500 rounded-lg'>
+                                            Опыт 1-3 года
+                                        </div>
                                     </div>
-                                    <div className='mt-3 text-[11pt]'>
-                                            {anonce.title}
-                                        </div>
-                                        <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
-                                            {anonce.description.length > 60
-                                                ? `${anonce.description.substring(0, 60)}...`
-                                                : anonce.description}
-                                        </div>
+                                    <div className='mt-4 text-sm text-gray-500 font-light'>
+                                        {anonce.description}
+                                    </div>
+                                    <div className='flex gap-x-1 items-center mt-4'>
+                                        <MdAccessTime className='text-xl'/>
+                                        <div className='text-sm'>График работы: {anonce.work_time}</div>
+                                    </div>
                                 </Link>
                             ))}
                         </div>
@@ -149,10 +154,9 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                             <div className='text-center'>123123</div>
                         )}
                     </div>
-                    <div className="col-span-2">
-
+                    <div className="col-span-2 border-l h-screen sticky top-0 border-gray-200">
                         {urgent_announcement && (
-                            <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:border-red-600 transition-all duration-150 border border-gray-300 rounded-lg p-3 w-full hidden md:block mt-2'>
+                            <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:bg-gray-100 transition-all duration-150 border-b border-gray-300 p-3 w-full hidden md:block '>
                                 <div className='flex items-center'>
                                     <div className='uppercase text-white text-xs px-2 bg-red-600 font-bold rounded'>Срочно</div>
                                     <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
@@ -174,7 +178,7 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                             </Link>
                         )}
                         {top_announcement && (
-                            <Link href={`/announcement/${top_announcement.id}`} className='md:block hidden w-full mt-2 hover:border-blue-500 transition-all duration-150 border border-gray-300 rounded-lg p-3'>
+                            <Link href={`/announcement/${top_announcement.id}`} className='md:block hidden w-full hover:bg-gray-100 transition-all duration-150 border-b border-gray-200 p-3'>
                                 <div className='flex items-center'>
                                     <div className='uppercase text-white text-xs px-2 bg-blue-500 font-bold rounded'>Топ</div>
                                     <div className='flex gap-x-2 items-center font-bold text-sm ml-auto'>

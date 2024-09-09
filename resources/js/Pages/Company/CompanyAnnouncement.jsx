@@ -60,6 +60,8 @@ export default function CompanyAnnouncement({
     return (
         <Guest>
             <div style={{ padding: '20px' }}>
+                <div className="text-xl mt-10 font-bold">{announcement.title}</div>
+                <div className="mt-5 mb-10">{announcement.description}</div>
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12} md={8}>
                         <Card>

@@ -32,14 +32,10 @@ export default function Registration({ errors, professions }) {
         professions_ids: [],
         certificate_numbers: [],
         avatar: null,
-        ipStatus1: '',
-        ipStatus2: '',
-        ipStatus3: '',
         role: '',
         description: '',
         is_graduate: 0,
         source: source,
-        age: null,
     });
     const login = 'janamumkindik@gmail.com';
     const password = '%Jana2023Mumkindik05';
@@ -319,11 +315,7 @@ export default function Registration({ errors, professions }) {
         formData.append('password', data.password);
         formData.append('date_of_birth', data.date_of_birth);
         formData.append('avatar', data.avatar);
-        formData.append('ipStatus1', data.ipStatus1);
-        formData.append('ipStatus2', data.ipStatus2);
-        formData.append('ipStatus3', data.ipStatus3);
         formData.append('source', source);
-        formData.append('age', data.age);
         data.professions_ids.forEach((id, index) => {
             formData.append(`professions_ids[${index}]`, id);
         });
@@ -393,43 +385,49 @@ export default function Registration({ errors, professions }) {
                                     className='w-[350px] mt-1 border-gray-300 rounded-lg'
                                     placeholder='Введите ваше имя и фамилию'
                                 />
-                                <div className='mt-5 text-sm font-semibold'>Имя и Фамилия</div>
+                                <div className='mt-5 text-sm font-semibold'>Электронная почта</div>
                                 <input
-                                    type='text'
+                                    type='email'
                                     className='w-[350px] mt-1 border-gray-300 rounded-lg'
-                                    placeholder='Введите ваше имя и фамилию'
+                                    placeholder='Введите вашу электронную почту'
                                 />
                                 <div className='flex w-[350px] gap-x-5'>
-                                    <div>
+                                    <div className='w-[50%]'>
                                         <div className='mt-5 text-sm font-semibold'>Дата рождения</div>
                                         <input
-                                            type='text'
+                                            type='date'
                                             className='w-full mt-1 border-gray-300 rounded-lg'
                                             placeholder='Введите ваше имя и фамилию'
                                         />
                                     </div>
-                                    <div>
+                                    <div className='w-[50%]'>
                                         <div className='mt-5 text-sm font-semibold'>Пол</div>
-                                        <input
-                                            type='text'
-                                            className='w-full mt-1 border-gray-300 rounded-lg'
-                                            placeholder='Введите ваше имя и фамилию'
-                                        />
+                                        <select
+                                            className='w-full mt-1 block border-gray-300 rounded-lg'
+                                        >
+                                            <option className='w-full' value='м'>Мужской</option>
+                                            <option className='w-full' value='ж'>Женский</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <button
                                     className='py-2 font-bold w-full text-white rounded-lg bg-blue-500 mt-5'
+                                    onClick={() => setStep(2)}
                                 >
                                     Далее
                                 </button>
                             </>
                         )}
+                        {step == 2 && (
+                            <div>
+                            </div>
+                        )}
                         <div className='flex mt-5'>
                             <div className='flex mx-auto gap-x-5 mt-5'>
-                                <div className={`${step == 0 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
-                                <div className={`${step == 1 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
-                                <div className={`${step == 2 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
-                                <div className={`${step == 3 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} inline-block rounded-full py-1`}></div>
+                                <div onClick={() => setStep(0)} className={`${step == 0 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
+                                <div onClick={() => setStep(1)} className={`${step == 1 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
+                                <div onClick={() => setStep(2)} className={`${step == 2 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
+                                <div onClick={() => setStep(3)} className={`${step == 3 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
                             </div>
                         </div>
                     </div>
@@ -457,9 +455,9 @@ export default function Registration({ errors, professions }) {
                         </div>
                     </div>
                     <div className='flex items-center gap-x-3 mt-7'>
-                        <FaRegCheckCircle className={`text-2xl ${step == 2 ? ('text-blue-500') : ('text-gray-300')}`} />
+                        <FaRegCheckCircle className={`text-2xl ${step == 3 ? ('text-blue-500') : ('text-gray-300')}`} />
                         <div>
-                            <div className={`font-semibold ${step == 2 ? (''):('text-gray-500')}`}>Контактные данные</div>
+                            <div className={`font-semibold ${step == 3 ? (''):('text-gray-500')}`}>Дополнительная информация</div>
                             <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
                         </div>
                     </div>

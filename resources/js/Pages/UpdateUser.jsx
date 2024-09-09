@@ -188,7 +188,7 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
         e.preventDefault();
 
         if (!data.avatar) {
-            clearErrors('avatar'); // Clear any existing avatar errors
+            clearErrors('avatar');
         }
 
         post('/update', {
@@ -211,9 +211,8 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
 
     return (
         <GuestLayout>
-            <div className="container mx-auto p-4">
-                <div className="bg-white rounded-lg p-6 max-w-full mx-auto">
-                    <div className="font-bold text-4xl text-left mb-4">{t('basic_info_title', { ns: 'register' })}</div>
+            <div className="grid grid-cols-7">
+                <div className="bg-white col-span-5 rounded-lg p-6">
                     <div className="text-left mb-4">
                         {avatarPreview ? (
                             <img src={avatarPreview} alt="Avatar Preview" className="w-[150px] h-[150px] object-cover rounded-full border border-gray-300 mx-auto md:mx-0" />
@@ -243,7 +242,7 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                                 name="name"
                                 value={data.name}
                                 onChange={handleChange}
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="appearance-none border rounded w-full border-gray-300 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                             {errors.name && <div className="text-red-500 text-sm">{errors.name}</div>}
                         </div>
@@ -257,7 +256,7 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                                 name="email"
                                 value={data.email}
                                 onChange={handleChange}
-                                className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="appearance-none border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                             {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
                         </div>
@@ -329,7 +328,7 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                                         id="certificateNumber"
                                         value={certificateNumber}
                                         onChange={e => setCertificateNumber(e.target.value)}
-                                        className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        className="appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                     <Button onClick={handleCertificateAdd} className="hover:bg-gray-600 transition-all text-gray-500 w-full duration-100 py-3 px-4 rounded focus:outline-none focus:shadow-outline mt-2">
                                         Добавить сертификат
@@ -354,7 +353,7 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                                     id='description'
                                     value={data.description}
                                     onChange={handleChange}
-                                    className="w-full rounded appearance-none border px-3 py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="w-full rounded appearance-none border border-gray-300 px-3 py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                                 {errors.description && <div className="text-red-500 text-sm">{errors.description}</div>}
                             </div>
@@ -362,13 +361,15 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                         <div className="flex items-center justify-between col-span-1 md:col-span-2">
                             <button
                                 type="submit"
-                                className="bg-orange-500 w-full hover:bg-orange-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                className="bg-blue-500 w-full hover:bg-blue-600 transition-all duration-100 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                                 disabled={processing}
                             >
                                 Cохранить
                             </button>
                         </div>
                     </form>
+                </div>
+                <div className='col-span-2 border-l border-gray-200 sticky top-0 h-screen'>
                 </div>
             </div>
         </GuestLayout>
