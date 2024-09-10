@@ -370,7 +370,7 @@ export default function Registration({ errors, professions }) {
                         </div>
                     </div>
                 </div>
-                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative hidden'>
+                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative md:block hidden'>
                     {['Тип пользователя', 'Основная информация', 'Контактные данные', 'Дополнительная информация'].map((label, i) => (
                         <div key={i} className='flex items-center gap-x-3 mt-7'>
                             <FaRegCheckCircle className={`text-2xl ${step === i ? 'text-blue-500' : 'text-gray-300'}`} />
