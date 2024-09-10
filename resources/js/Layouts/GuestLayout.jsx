@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { TbMessage2Plus, TbWorldCode } from "react-icons/tb";
-import { GrLanguage } from "react-icons/gr";
-import { FaPhoneAlt, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
-import { FaInstagram, FaTelegram } from "react-icons/fa";
-import FeedbackModal from '@/Components/FeedbackModal';
-import { message } from 'antd';
-import { CgClose, CgMenuRight, CgShoppingBag, CgChevronDown } from "react-icons/cg";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { RiHome2Line } from "react-icons/ri";
 import { MdOutlineBookmarks, MdOutlineCloud, MdOutlineGroupAdd, MdOutlineLogout, MdOutlineWorkOutline } from "react-icons/md";
 import { IoSchoolOutline } from 'react-icons/io5';
-import { BsGlobeAmericas } from "react-icons/bs";
 
 export default function Guest({ children }) {
     const { t, i18n } = useTranslation();
@@ -58,9 +50,22 @@ export default function Guest({ children }) {
     return (
         <>
         <Head title="JUMYSTAP – программа возможностей" />
-        <div className='flex font-regular'>
+        <div className='md:hidden block'>
+            <div className='flex py-5 px-3'>
+                <Link
+                    className={`block ${isActive('/') ? 'text-blue-500 font-semibold' : ''}`}
+                    href='/'
+                >
+                    <ApplicationLogo/>
+                </Link>
+                <div className='ml-auto'>
+                    <div>open</div>
+                </div>
+            </div>
+        </div>
+        <div className='md:flex hidden font-regular'>
             <div className="mx-auto min-h-[650px] max-w-[1400px] grid grid-cols-9 md:min-w-[1400px] px-5">
-                <div className='sticky top-0 pt-5 md:block hidden items-center col-span-2 h-screen border-r pr-5 border-gray-200'>
+                <div className='sticky top-0 pt-5 items-center col-span-2 h-screen border-r pr-5 border-gray-200'>
                     <Link
                         className={`block ${isActive('/') ? 'text-blue-500 font-semibold' : ''}`}
                         href='/'
@@ -142,7 +147,7 @@ export default function Guest({ children }) {
                     <div>
                     </div>
                 </div>
-                <div className='col-span-7'>
+                <div className='hidden md:block col-span-7'>
                     {children}
                 </div>
             </div>

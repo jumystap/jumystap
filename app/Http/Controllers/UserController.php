@@ -51,7 +51,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect('/profile');
         } else {
-            return redirect('/login');
+            return redirect()->back()->withErrors(['error' => 'Неверный логин или пароль. Пожалуйста, попробуйте снова'])->withInput();
         }
     }
 
@@ -73,12 +73,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ipStatus1' => 'nullable|string',
-            'ipStatus2' => 'nullable|string',
-            'ipStatus3' => 'nullable|string',
             'role' => 'required',
-            'age' => 'nullable',
+            'date_of_birth' => 'nullable',
+            'gender' => 'nullable',
             'professions_ids' => 'nullable|array',
             'professions_ids.*' => 'nullable|exists:professions,id',
             'certificate_numbers' => 'nullable|array',

@@ -1,6 +1,8 @@
 import GuestLayout from "@/Layouts/GuestLayout";
-import { Link, useForm } from "@inertiajs/react";
+import React, { useState } from 'react';
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
+import { notification, Modal, Input } from 'antd';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 
@@ -10,6 +12,8 @@ export default function Login({ errors }) {
         phone: '',
         password: '',
     });
+    const { props } = usePage();
+    const backendErrors = props.errors;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -17,6 +21,17 @@ export default function Login({ errors }) {
             onSuccess: () => reset()
         });
     };
+
+    React.useEffect(() => {
+        if (Object.keys(backendErrors).length > 0) {
+            Object.values(backendErrors).forEach((error) => {
+                notification.error({
+                    message: 'Ошибка авторизации',
+                    description: error,
+                });
+            });
+        }
+    }, [backendErrors]);
 
     return (
         <>

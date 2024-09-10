@@ -27,10 +27,7 @@ class UserService
 
     public function storeUser(array $validatedData)
     {
-        $image_url = $this->storeAvatar($validatedData['avatar'] ?? null);
-
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['image_url'] = $image_url;
         $validatedData['role_id'] = DB::table('roles')
             ->where('name', $validatedData['role'])
             ->first()

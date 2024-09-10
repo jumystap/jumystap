@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useForm, usePage } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
-import PhoneInput from 'react-phone-input-2';
-import { Upload, Button, notification, Modal, Input } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { notification, Modal, Input } from 'antd';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { FaRegCheckCircle } from "react-icons/fa";
-import { FaCheckCircle } from "react-icons/fa";
+import InputMask from 'react-input-mask';
+import { handleCertificateAdd } from '@/Share/certificateHandler';
 
 export default function Registration({ errors, professions }) {
     const { t, i18n } = useTranslation();
@@ -18,9 +19,9 @@ export default function Registration({ errors, professions }) {
     const [certificates, setCertificates] = useState([]);
     const [certificateModalVisible, setCertificateModalVisible] = useState(false);
     const [certificateNumber, setCertificateNumber] = useState('');
-    const [avatarPreview, setAvatarPreview] = useState(null);
-    const [isGraduate, setIsGraduate] = useState(false);
     const [source, setSource] = useState(localStorage.getItem('source'));
+    const [phoneCode, setPhoneCode] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm({
         phone: '',
@@ -28,7 +29,9 @@ export default function Registration({ errors, professions }) {
         name: '',
         email: '',
         password: '',
-        date_of_birth: null,
+        password_confirm: '',
+        date_of_birth: '',
+        gender: '',
         professions_ids: [],
         certificate_numbers: [],
         avatar: null,
@@ -46,16 +49,9 @@ export default function Registration({ errors, professions }) {
         setStep(1);
     };
 
-    const handleGraduateSelection = (graduateStatus) => {
-        setIsGraduate(graduateStatus);
-        setData('is_graduate', graduateStatus);
-        setStep(2);
-    };
-
-    console.log(data);
-
     const handlePhoneSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
         const message = `JOLTAP Ваш код: ${newVerificationCode}`;
         setVerificationCode(newVerificationCode);
@@ -80,18 +76,18 @@ export default function Registration({ errors, professions }) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
-            setStep(3);
+            setPhoneCode(true);
         } catch (error) {
             console.error('Error sending SMS:', error);
-            setStep(3);
+            setPhoneCode(true);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleVerificationSubmit = (e) => {
-        e.preventDefault();
+    const handleVerificationSubmit = () => {
         if (data.verificationCode == verificationCode) {
-            setStep(4);
+            setStep(3);
         } else {
             notification.error({
                 message: 'Верификация не прошла',
@@ -105,205 +101,32 @@ export default function Registration({ errors, professions }) {
         return cyrillicPattern.test(name);
     };
 
-
     const handleBasicInfoSubmit = (e) => {
         e.preventDefault();
-        if(data.role != 'employee'){
-            const formData = new FormData();
-            formData.append('phone', data.phone);
-            formData.append('name', data.name);
-            formData.append('email', data.email);
-            formData.append('password', data.password);
-            formData.append('source', source);
-
-            post('/register', {
-                data: formData,
-                onSuccess: () => reset(),
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-        }else{
-            if (data.role === 'employee' && !isValidCyrillicName(data.name)) {
-                notification.error({
-                    message: 'Ошибка в имени',
-                    description: 'Имя и фамилия должны быть на кириллице и разделены пробелом.',
-                });
-                return;
-            }
-            if (isGraduate) {
-                setStep(5);
-            } else {
-                setStep(6);
-            }
-        }
-    };
-
-    const handleAvatarUpload = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/heic';
-        if (!isJpgOrPng) {
+        if (data.role === 'employee' && !isValidCyrillicName(data.name)) {
             notification.error({
-                message: 'Неправильный формат файла',
-                description: 'Вы можете загрузить только JPG/PNG/HEIC файлы.',
+                message: 'Ошибка в имени',
+                description: 'Имя и фамилия должны быть на кириллице и разделены пробелом.',
             });
-            return false;
-        }
-        setData('avatar', file);
-        const reader = new FileReader();
-        reader.onload = (e) => setAvatarPreview(e.target.result);
-        reader.readAsDataURL(file);
-        return false;
-    };
-
-    const handleCertificateAdd = async () => {
-        if (certificates.some(certificate => certificate.number === certificateNumber)) {
-            notification.error({
-                message: 'Сертификат уже добавлен',
-                description: `Сертификат №${certificateNumber} уже добавлен.`,
-            });
-            setCertificateModalVisible(false);
             return;
         }
-
-        try {
-            let response = await fetch(`/api/certificates/${certificateNumber}`);
-            let result;
-
-            if (response.ok) {
-                result = await response.json();
-            } else {
-                result = null;
-            }
-
-            if (result) {
-                const formattedPhone = result.phone.replace(/[\s+()-]/g, '');
-                const userPhone = data.phone.replace(/[\s+()-]/g, '');
-
-                if (formattedPhone === userPhone) {
-                    const profession = professions.find(prof => prof.id === result.profession_id);
-
-                    if (profession) {
-                        setCertificates([...certificates, { number: certificateNumber, profession: profession.name_ru }]);
-                        setData(prevData => ({
-                            ...prevData,
-                            professions_ids: [...prevData.professions_ids, profession.id],
-                            certificate_numbers: [...prevData.certificate_numbers, certificateNumber]
-                        }));
-                        notification.success({
-                            message: 'Сертификат подтвержден',
-                            description: `Сертификат №${certificateNumber} подтвержден и добавлен в ваш профиль.`,
-                        });
-                    } else {
-                        notification.error({
-                            message: 'Профессия не найдена',
-                            description: `Профессия для сертификата №${certificateNumber} не найдена.`,
-                        });
-                    }
-                } else {
-                    notification.error({
-                        message: 'Сертификат не найден',
-                        description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                    });
-                }
-            }
-
-            if (!result) {
-                let url = `https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/working_certificates.certificates.list?number=${certificateNumber}`;
-                console.log('API URL:', url);
-
-                let response = await fetch(url);
-                let data2 = await response.json();
-                let result = data2.result[0];
-
-                if (!result) {
-                    url = `https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/digital_certificates.certificates.list?number=${certificateNumber}`;
-                    console.log('API URL:', url);
-
-                    response = await fetch(url);
-                    data2 = await response.json();
-                    result = data2.result[0];
-                }
-
-                if (result) {
-
-                    const formattedPhone = result.PHONE.replace(/[\s+()-]/g, '');
-                    const userPhone = data.phone.replace(/[\s+()-]/g, '');
-
-                    console.log(formattedPhone);
-                    console.log(userPhone);
-
-                    if (formattedPhone === userPhone) {
-                        const professionMap = {
-                            "Основы изготовления корпусной мебели": 5,
-                            "Ремонт обуви и изготовление ключей": 6,
-                            "Основы бухгалтерского учета": 8,
-                            "Модельер-конструктор": 2,
-                            "Швея": 1,
-                            "Электрогазосварщик": 7,
-                            "Бариста": 3,
-                            "Продавец-кассир": 4,
-                            "Базовые цифровые навыки": 16,
-                            "Веб-дизайн + Создание и разработка сайта": 14,
-                            "Графический дизайнер": 12,
-                            "Мобилограф": 10,
-                            "Маркетплейс": 15,
-                            "Видеомонтаж": 13,
-                            "Таргетолог": 11,
-                            "SMM": 9,
-                        };
-                        var professionId = 5;
-                        console.log(result.PROFESSION.NAME_RU);
-                        if (result.PROFESSION.ID == '42469') {
-                            professionId = 5;
-                            console.log('22');
-                        } else {
-                            professionId = professionMap[result.PROFESSION.NAME_RU];
-                            console.log('11');
-                        }
-                        console.log(professionId)
-                        if (professionId) {
-                            setCertificates([...certificates, { number: certificateNumber, profession: result.PROFESSION.NAME_RU }]);
-                            setData(prevData => ({
-                                ...prevData,
-                                professions_ids: [...prevData.professions_ids, professionId],
-                                certificate_numbers: [...prevData.certificate_numbers, certificateNumber]
-                            }));
-                            notification.success({
-                                message: 'Сертификат подтвержден',
-                                description: `Сертификат №${certificateNumber} подтвержден и добавлен в ваш профиль.`,
-                            });
-                            console.log(professionId)
-                        } else {
-                            notification.error({
-                                message: 'Сертификат не найден',
-                                description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                            });
-                        }
-                    } else {
-                        notification.error({
-                            message: 'Сертификат не найден',
-                            description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                        });
-                    }
-                }
-            }
-        } catch (error) {
-            console.error('Error validating certificate:', error);
+        if (!data.name || !data.email) {
             notification.error({
-                message: 'Ошибка проверки сертификата',
-                description: 'Произошла ошибка при проверке сертификата. Пожалуйста, попробуйте снова.',
+                message: 'Ошибка',
+                description: 'Все поля обязательны для заполнения.',
             });
-        } finally {
-            setCertificateNumber('');
-            setCertificateModalVisible(false);
+            return;
         }
+        setStep(2);
     };
 
-    const handleIPStatusSubmit = (e) => {
-        e.preventDefault();
-        if (isGraduate) {
-            setStep(7);
-        } else {
-            setStep(8);
-        }
+    const handlePhoneChange = (e) => {
+        const formattedPhone = e.target.value.replace(/[^\d]/g, '');
+        setData('phone', formattedPhone);
+    };
+
+    const handleCertificateAddLocal = () => {
+        handleCertificateAdd(certificateNumber, data, certificates, setCertificates, setData, professions, setCertificateNumber);
     };
 
     const handleRegistrationSubmit = (e) => {
@@ -314,8 +137,16 @@ export default function Registration({ errors, professions }) {
         formData.append('email', data.email);
         formData.append('password', data.password);
         formData.append('date_of_birth', data.date_of_birth);
+        formData.append('gender', data.gender);
         formData.append('avatar', data.avatar);
         formData.append('source', source);
+        if(certificates.length > 0){
+            setData('is_graduate', 1);
+            formData.append('is_graduate', 1);
+        }else{
+            formData.append('is_graduate', 0);
+            setData('is_graduate', 0);
+        }
         data.professions_ids.forEach((id, index) => {
             formData.append(`professions_ids[${index}]`, id);
         });
@@ -346,7 +177,7 @@ export default function Registration({ errors, professions }) {
             <div className='w-full h-screen grid grid-cols-7'>
                 <div className='flex col-span-5'>
                     <div className='mx-auto my-auto'>
-                        {step == 0 && (
+                        {step === 0 && (
                             <>
                                 <div className="font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
                                 <div className="mb-4 mt-8">
@@ -376,105 +207,185 @@ export default function Registration({ errors, professions }) {
                                 </div>
                             </>
                         )}
-                        {step == 1 && (
+                        {step === 1 && (
                             <>
-                                <div className="mb-10 font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
-                                <div className='text-sm font-semibold'>Имя и Фамилия</div>
+                                <div className="mb-10 font-semibold text-xl text-center">Введите основную информацию</div>
+                                <div className='text-sm font-semibold'>
+                                    {data.role === 'employee' ? 'Имя и Фамилия' : 'Название компании'}
+                                </div>
                                 <input
                                     type='text'
-                                    className='w-[350px] mt-1 border-gray-300 rounded-lg'
-                                    placeholder='Введите ваше имя и фамилию'
+                                    value={data.name}
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    className='w-[350px] mt-1 block border-gray-300 rounded-lg'
+                                    placeholder={data.role === 'employee' ? 'Введите ваше имя и фамилию' : 'Введите название компании'}
                                 />
+                                {errors.name && <p className='text-red-500 text-sm mt-2'>{errors.name}</p>}
                                 <div className='mt-5 text-sm font-semibold'>Электронная почта</div>
                                 <input
                                     type='email'
-                                    className='w-[350px] mt-1 border-gray-300 rounded-lg'
+                                    value={data.email}
+                                    onChange={(e) => setData('email', e.target.value)}
+                                    className='w-[350px] mt-1 block border-gray-300 rounded-lg'
                                     placeholder='Введите вашу электронную почту'
                                 />
-                                <div className='flex w-[350px] gap-x-5'>
-                                    <div className='w-[50%]'>
-                                        <div className='mt-5 text-sm font-semibold'>Дата рождения</div>
-                                        <input
-                                            type='date'
-                                            className='w-full mt-1 border-gray-300 rounded-lg'
-                                            placeholder='Введите ваше имя и фамилию'
-                                        />
+                                {errors.email && <p className='text-red-500 text-sm mt-2'>{errors.email}</p>}
+                                {data.role == 'employee' && (
+                                    <div className='flex w-[350px] gap-x-5'>
+                                        <div className='w-[50%]'>
+                                            <div className='mt-5 text-sm font-semibold'>Дата рождения</div>
+                                            <input
+                                                type='date'
+                                                value={data.date_of_birth}
+                                                onChange={(e) => setData('date_of_birth', e.target.value)}
+                                                className='w-full mt-1 border-gray-300 rounded-lg'
+                                                placeholder='Выберите дату рождения'
+                                            />
+                                        </div>
+                                        <div className='w-[50%]'>
+                                            <div className='mt-5 text-sm font-semibold'>Пол</div>
+                                            <select
+                                                value={data.gender}
+                                                onChange={(e) => setData('gender', e.target.value)}
+                                                className='w-full mt-1 block border-gray-300 rounded-lg'
+                                            >
+                                                <option value='м'>Мужской</option>
+                                                <option value='ж'>Женский</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div className='w-[50%]'>
-                                        <div className='mt-5 text-sm font-semibold'>Пол</div>
-                                        <select
-                                            className='w-full mt-1 block border-gray-300 rounded-lg'
-                                        >
-                                            <option className='w-full' value='м'>Мужской</option>
-                                            <option className='w-full' value='ж'>Женский</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                )}
                                 <button
-                                    className='py-2 font-bold w-full text-white rounded-lg bg-blue-500 mt-5'
-                                    onClick={() => setStep(2)}
+                                    className='py-2 font-bold w-full block text-white rounded-lg bg-blue-500 mt-5'
+                                    onClick={handleBasicInfoSubmit}
                                 >
                                     Далее
                                 </button>
                             </>
                         )}
-                        {step == 2 && (
-                            <div>
+                        {step === 2 && (
+                            <div className='w-[350px]'>
+                                <div className="mb-10 font-semibold text-xl text-center">Потвердите номер телефона</div>
+                                <InputMask
+                                  mask="+7 999 999 99 99"
+                                  value={data.phone}
+                                  onChange={handlePhoneChange}
+                                  maskChar={null}
+                                >
+                                  {(inputProps) => <Input {...inputProps} type="tel" className="block w-full mt-1 border-gray-300 rounded-lg" placeholder="Введите ваш телефон" />}
+                                </InputMask>
+                                {errors.phone && <p className='text-red-500 text-sm mt-2'>{errors.phone.message}</p>}
+                                {phoneCode ? (
+                                    <>
+                                        <input
+                                            type='number'
+                                            value={data.verificationCode}
+                                            onChange={(e) => setData('verificationCode', e.target.value)}
+                                            className='block mt-3 border-gray-300 w-full rounded-lg'
+                                            placeholder='Введите код потверждения'
+                                        />
+                                        <button
+                                            className='py-2 font-bold w-full inline-block text-white rounded-lg bg-blue-500 mt-5'
+                                            onClick={handleVerificationSubmit}
+                                        >
+                                            Подтвердить
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button
+                                        className='py-2 font-bold w-full inline-block text-white rounded-lg bg-blue-500 mt-5'
+                                        onClick={handlePhoneSubmit}
+                                    >
+                                        {loading ? (
+                                            <Spin indicator={<LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />} />
+                                        ) : (
+                                            'Отправить код'
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                        {step === 3 && (
+                            <div className='w-[350px]'>
+                                <div className='mt-5 text-sm font-semibold'>Придумайте пароль</div>
+                                <input
+                                    type='password'
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                    className='block mt-1 border-gray-300 w-full rounded-lg'
+                                    placeholder='Введите пароль'
+                                />
+                                <div className='mt-5 text-sm font-semibold'>Повторите пароль</div>
+                                <input
+                                    type='password'
+                                    value={data.password_confirm}
+                                    onChange={(e) => setData('password_confirm', e.target.value)}
+                                    className='block mt-1 border-gray-300 w-full rounded-lg'
+                                    placeholder='Повторите пароль'
+                                />
+                                {data.role === 'employee' ? (
+                                    <>
+                                        <div className='mt-5 text-sm font-semibold'>Если у вас есть сертификат JOLTAP</div>
+                                        <button
+                                            className='block mt-1 w-full border border-blue-500 rounded-lg text-blue-500 py-2'
+                                            onClick={() => setCertificateModalVisible(true)}
+                                        >
+                                            Добавить сертификат
+                                        </button>
+                                        {certificates.length > 0 && (
+                                            <>
+                                                {certificates.map((certificate, index) => (
+                                                    <div className='mt-3'>
+                                                        {certificate.profession} : {certificate.number}
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className='mt-5 text-sm font-semibold'>Описание компании</div>
+                                        <textarea
+                                            value={data.description}
+                                            onChange={(e) => setData('description', e.target.value)}
+                                            className='w-full h-[150px] mt-1 border-gray-300 rounded-lg capitalize'
+                                            placeholder='Введите описание компании'
+                                        />
+                                    </>
+                                )}
+                                <button
+                                    onClick={handleRegistrationSubmit}
+                                    className='bg-blue-500 text-white rounded-lg mt-5 py-2 text-center w-full'
+                                >
+                                    Создать аккаунт
+                                </button>
                             </div>
                         )}
                         <div className='flex mt-5'>
                             <div className='flex mx-auto gap-x-5 mt-5'>
-                                <div onClick={() => setStep(0)} className={`${step == 0 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
-                                <div onClick={() => setStep(1)} className={`${step == 1 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
-                                <div onClick={() => setStep(2)} className={`${step == 2 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
-                                <div onClick={() => setStep(3)} className={`${step == 3 ? ('px-10 bg-blue-500') : ('px-2 bg-gray-200')} cursor-pointer inline-block rounded-full py-1`}></div>
+                                {[...Array(4).keys()].map(i => (
+                                    <div key={i} className={`${step === i ? 'px-10 bg-blue-500' : 'px-2 bg-gray-200'} inline-block rounded-full py-1`}></div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 relative'>
-                    <div className='flex items-center gap-x-3'>
-                        <FaRegCheckCircle className={`text-2xl ${step == 0 ? ('text-blue-500') : ('text-gray-300')}`} />
-                        <div>
-                            <div className={`font-semibold ${step == 0 ? (''):('text-gray-500')}`}>Тип пользователя</div>
-                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
+                    {['Тип пользователя', 'Основная информация', 'Контактные данные', 'Дополнительная информация'].map((label, i) => (
+                        <div key={i} className='flex items-center gap-x-3 mt-7'>
+                            <FaRegCheckCircle className={`text-2xl ${step === i ? 'text-blue-500' : 'text-gray-300'}`} />
+                            <div>
+                                <div className={`font-semibold ${step === i ? '' : 'text-gray-500'}`}>{label}</div>
+                                <div className='text-sm text-gray-500'>Шаг {i + 1}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div className='flex items-center gap-x-3 mt-7'>
-                        <FaRegCheckCircle className={`text-2xl ${step == 1 ? ('text-blue-500') : ('text-gray-300')}`} />
-                        <div>
-                            <div className={`font-semibold ${step == 1 ? (''):('text-gray-500')}`}>Основная информация</div>
-                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
-                        </div>
-                    </div>
-                    <div className='flex items-center gap-x-3 mt-7'>
-                        <FaRegCheckCircle className={`text-2xl ${step == 2 ? ('text-blue-500') : ('text-gray-300')}`} />
-                        <div>
-                            <div className={`font-semibold ${step == 2 ? (''):('text-gray-500')}`}>Контактные данные</div>
-                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
-                        </div>
-                    </div>
-                    <div className='flex items-center gap-x-3 mt-7'>
-                        <FaRegCheckCircle className={`text-2xl ${step == 3 ? ('text-blue-500') : ('text-gray-300')}`} />
-                        <div>
-                            <div className={`font-semibold ${step == 3 ? (''):('text-gray-500')}`}>Дополнительная информация</div>
-                            <div className='text-sm text-gray-500'>Выберите что вы ищете на данной платформе</div>
-                        </div>
-                    </div>
-                    <div className='absolute bottom-5 pr-10'>
-                        <div className='text-lg'>Сложности с регистрацией?</div>
-                        <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
-                        <div className='mt-10 text-sm'>
-                            <div>+7 707 221 31 31</div>
-                            <div className='ml-auto'>janamumkindik@gmail.com</div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
             <Modal
                 title="Добавить сертификат"
                 visible={certificateModalVisible}
-                onOk={handleCertificateAdd}
+                onOk={handleCertificateAddLocal}
                 onCancel={() => setCertificateModalVisible(false)}
                 okText="Добавить"
                 cancelText="Отмена"
@@ -494,3 +405,4 @@ export default function Registration({ errors, professions }) {
         </GuestLayout>
     );
 }
+
