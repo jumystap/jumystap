@@ -134,9 +134,8 @@ export default function Announcements({ auth, announcements, errors }) {
     return (
         <>
             <GuestLayout>
-                <div className='grid grid-cols-7'>
+                <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
-
                         <div className='mt-5'>
                             <input
                                 type="text"
@@ -145,6 +144,30 @@ export default function Announcements({ auth, announcements, errors }) {
                                 placeholder={t('search_placeholder', { ns: 'announcements' })}
                                 className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
                             />
+                            <div className='flex flex-col md:flex-col'>
+                            <select
+                                value={announcementType}
+                                onChange={handleAnnouncementTypeChange}
+                                name="announcementType"
+                                className={`md:hidden block border-b py-4 border-[0px] w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-blue-500'}`}
+                            >
+                                <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
+                                <option value="vacancy">Вакансия</option>
+                                <option value="project">{t('project', { ns: 'announcements' })}</option>
+                            </select>
+
+                            <select
+                                value={searchCity}
+                                onChange={handleCityChange}
+                                name="searchCity"
+                                className='md:hidden block border-b py-4 border-[0px] w-full md:w-auto border-gray-300 text-gray-500'
+                            >
+                                <option value="">{t('all_cities', { ns: 'announcements' })}</option>
+                                {uniqueCities.map((city, index) => (
+                                    <option key={index} value={city}>{city}</option>
+                                ))}
+                            </select>
+                        </div>
                         </div>
                         {filteredAnnouncements.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
@@ -181,7 +204,7 @@ export default function Announcements({ auth, announcements, errors }) {
                             </Link>
                         ))}
                     </div>
-                    <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0'>
+                    <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>
                             <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
                         </div>

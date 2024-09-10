@@ -30,7 +30,7 @@ export default function User({ auth, user, employees, userProfessions}) {
     return (
         <>
             <GuestLayout>
-                <div className="grid grid-cols-7">
+                <div className="grid grid-cols-1 md:grid-cols-7">
                     <div className='col-span-5'>
                         <div className='flex gap-x-3 p-10 bg-white border-b border-gray-200'>
                             <img
@@ -51,8 +51,20 @@ export default function User({ auth, user, employees, userProfessions}) {
                                 <div className="py-1 px-3 rounded-lg mt-3 text-sm bg-green-100 inline-block text-green-500">
                                     {user.status}
                                 </div>
+                                {auth.user == null ? (
+                                    <Link href="/register"className='mt-3 text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
+                                        <span className='font-bold'>Связаться</span>
+                                    </Link>
+                                ):(
+                                    <a
+                                        href={`https://wa.me/${user.phone}?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A`}
+                                        className='text-white rounded-lg mt-3 text-center inline-block bg-blue-500 py-2 px-10'
+                                    >
+                                        <span className='font-bold'>Связаться</span>
+                                    </a>
+                                )}
                             </div>
-                            <div className="ml-auto">
+                            <div className="ml-auto hidden ">
                                 {auth.user == null ? (
                                     <Link href="/register"className='text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
                                         <span className='font-bold'>Связаться</span>
@@ -82,7 +94,7 @@ export default function User({ auth, user, employees, userProfessions}) {
 
                         </div>
                     </div>
-                    <div className="col-span-2 h-screen sticky top-0 border-l border-gray-200">
+                    <div className="col-span-2 h-screen sticky top-0 border-l md:block hidden border-gray-200">
                     </div>
                 </div>
             </GuestLayout>

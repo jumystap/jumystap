@@ -138,7 +138,7 @@ export default function FAQ() {
 
     return (
         <GuestLayout>
-            <div className='grid grid-cols-7'>
+            <div className='grid grid-cols-1 md:grid-cols-7'>
                 <div className="col-span-5 mx-auto p-10">
                     <h1 className="text-2xl md:text-xl font-bold text-center mb-4">{t('title', { ns: 'faq' })}</h1>
                     {faqData.map((item, index) => (
@@ -159,7 +159,7 @@ export default function FAQ() {
                         </div>
                     ))}
                 </div>
-                <div className='h-screen sticky top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
+                <div className='h-screen sticky md:block hidden top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
                     <div className='pr-10'>
                         <div className='text-lg'>Сложности со входом?</div>
                         <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>

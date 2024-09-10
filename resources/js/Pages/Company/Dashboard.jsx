@@ -130,7 +130,7 @@ export default function Dashboard({ user, announcements }) {
                         )}
                     </div>
                 </div>
-                <div className='col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>
+                <div className='md:block hidden col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>
 
                 </div>
             </div>

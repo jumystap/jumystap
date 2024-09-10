@@ -134,7 +134,7 @@ export default function Favs({ auth, announcements, errors }) {
     return (
         <>
             <GuestLayout>
-                <div className='grid grid-cols-7'>
+                <div className='grid grid-cols-1 md:grid-cols-7'>
                     <div className='col-span-5'>
                         <div className='mt-5'>
                             <input
@@ -186,7 +186,7 @@ export default function Favs({ auth, announcements, errors }) {
                             </Link>
                         ))}
                     </div>
-                    <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0'>
+                    <div className='col-span-2 md:block hidden border-l border-gray-200 h-screen sticky top-0'>
                         <div>
                             <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
                         </div>

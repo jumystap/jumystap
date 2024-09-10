@@ -114,8 +114,8 @@ export default function Reviews({ reviews }) {
 
     return (
         <Guest>
-            <div className="text-xl font-semibold text-orange-500 mt-4 md:hidden">Отзывы по платформе</div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-x-20'>
+            <div className="text-xl px-5 font-semibold text-black mt-4 md:hidden">Отзывы по платформе</div>
+            <div className='grid px-5 grid-cols-1 md:grid-cols-2 gap-x-20'>
                 <div className='md:block hidden mt-10'>
                     <h2 className="text-lg font-semibold mb-4">Оставить отзыв</h2>
                     <form onSubmit={handleSubmit}>
@@ -169,7 +169,7 @@ export default function Reviews({ reviews }) {
                 </div>
                 <div>
                     {reviews.length > 0 && (
-                        <div className="grid mt-5 grid-cols-1">
+                        <div className="grid md:mt-5 mt-3 grid-cols-1">
                             {reviews.map((review, index) => (
                                 <div className="py-4 border-b border-gray-300 mt-2" key={index}>
                                     <div className="flex">
@@ -186,7 +186,7 @@ export default function Reviews({ reviews }) {
                 </div>
             </div>
             <div className="px-5 fixed left-0 bottom-5 w-full md:hidden">
-                <button onClick={() => setIsModalOpen(true)} className="text-center bg-orange-500 w-full font-semibold text-white shadow-lg shadow-orange-500/50 rounded-full py-2">
+                <button onClick={() => setIsModalOpen(true)} className="text-center bg-blue-500 w-full font-semibold text-white shadow-lg shadow-blue-500/50 rounded-full py-2">
                     Оставить отзыв
                 </button>
             </div>
