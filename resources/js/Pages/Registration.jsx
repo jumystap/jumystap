@@ -174,7 +174,7 @@ export default function Registration({ errors, professions }) {
 
     return (
         <GuestLayout>
-            <div className='w-full h-screen grid grid-cols-7'>
+            <div className='w-full md:h-screen h-[700px] grid md:grid-cols-7 grid-cols-1 px-5 md:px-[0px]'>
                 <div className='flex col-span-5'>
                     <div className='mx-auto my-auto'>
                         {step === 0 && (
@@ -370,7 +370,7 @@ export default function Registration({ errors, professions }) {
                         </div>
                     </div>
                 </div>
-                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 relative'>
+                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative hidden'>
                     {['Тип пользователя', 'Основная информация', 'Контактные данные', 'Дополнительная информация'].map((label, i) => (
                         <div key={i} className='flex items-center gap-x-3 mt-7'>
                             <FaRegCheckCircle className={`text-2xl ${step === i ? 'text-blue-500' : 'text-gray-300'}`} />

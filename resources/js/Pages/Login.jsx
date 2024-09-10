@@ -36,7 +36,7 @@ export default function Login({ errors }) {
     return (
         <>
             <GuestLayout>
-                <div className="flex grid grid-cols-7 w-full h-screen">
+                <div className="flex grid md:grid-cols-7 md:grid-cols-1 w-full h-screen">
                     <div className="mx-auto my-auto col-span-5 w-full max-w-md p-5">
                         <div className="font-bold text-4xl text-center">{t('title', { ns: 'login' })}</div>
                         <form onSubmit={handleSubmit}>
@@ -87,8 +87,8 @@ export default function Login({ errors }) {
                             {t('forgot_password', { ns: 'login' })} <span className="font-bold text-blue-500">{t('forgot_password_span', { ns: 'login' })}</span>
                         </Link>
                     </div>
-                    <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 relative'>
-                        <div className='absolute bottom-5 pr-10'>
+                    <div className='md:h-full bg-[#F9FAFC] rounded-lg w-full md:col-span-2 p-5 md:relative'>
+                        <div className='md:absolute md:bottom-5 md:pr-10'>
                             <div className='text-lg'>Сложности со входом?</div>
                             <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
                             <div className='mt-10 text-sm'>

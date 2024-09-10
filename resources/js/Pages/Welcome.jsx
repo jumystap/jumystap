@@ -2,10 +2,8 @@ import React from 'react';
 import { Link, Head } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { useTranslation } from 'react-i18next';
-import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { SiFireship } from "react-icons/si";
 import { FaStar } from "react-icons/fa";
-import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -35,11 +33,11 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
         formatDistance: (token, count, options) => {
             const formatDistanceLocale = {
                 lessThanXSeconds: {
-                    one: 'Бірнеше секунд',
+                    one: '1 секунд',
                     other: 'Секунд',
                 },
                 xSeconds: {
-                    one: 'Бір секунд',
+                    one: '1 секунд',
                     other: '{{count}} секунд',
                 },
                 halfAMinute: 'жарты минут',
@@ -48,39 +46,39 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                     other: 'Минут',
                 },
                 xMinutes: {
-                    one: 'Бір минут',
+                    one: '1 минут',
                     other: '{{count}} минут',
                 },
                 aboutXHours: {
-                    one: 'Шамамен бір сағат',
+                    one: 'Шамамен 1 сағат',
                     other: 'Шамамен {{count}} сағат',
                 },
                 xHours: {
-                    one: 'Бір сағат',
+                    one: '1 сағат',
                     other: '{{count}} сағат',
                 },
                 xDays: {
-                    one: 'Бір күн',
+                    one: '1 күн',
                     other: '{{count}} күн',
                 },
                 aboutXWeeks: {
-                    one: 'Шамамен бір апта',
+                    one: 'Шамамен 1 апта',
                     other: 'Шамамен {{count}} апта',
                 },
                 xWeeks: {
-                    one: 'Бір апта',
+                    one: '1 апта',
                     other: '{{count}} апта',
                 },
                 aboutXMonths: {
-                    one: 'Шамамен бір ай',
+                    one: 'Шамамен 1 ай',
                     other: 'Шамамен {{count}} ай',
                 },
                 xMonths: {
-                    one: 'Бір ай',
+                    one: '1 ай',
                     other: '{{count}} ай',
                 },
                 aboutXYears: {
-                    one: 'Шамамен бір жыл',
+                    one: 'Шамамен 1 жыл',
                     other: 'Шамамен {{count}} жыл',
                 },
                 xYears: {
@@ -121,13 +119,13 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
         <>
             <GuestLayout>
                 <Head title="JUMYSTAP – программа возможностей" />
-                <div className='grid grid-cols-7'>
+                <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
-                        <div className='flex border-b sticky top-0 bg-white bg-opacity-50 backdrop-blur-md border-gray-200'>
+                        <div className='flex border-b md:sticky md:top-0 bg-white bg-opacity-50 backdrop-blur-md border-gray-200'>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500'>Вакансии для вас</div>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 text-gray-500 text-sm'>Вакансии дня</div>
                         </div>
-                        <div className='hidden md:block bg-gradient-to-r mx-5 p-5 from-blue-500 via-blue-600 to-blue-700 mt-5 rounded-lg md:px-10 md:py-7 text-white'>
+                        <div className='block bg-gradient-to-r md:mx-5 mx-3 p-5 from-blue-500 via-blue-600 to-blue-700 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div className='font-bold text-lg md:text-2xl'>
                                 {i18n.language == 'ru' ?
                                 (`Это размещение уже посмотрели ${visits.toLocaleString()} раз`)
@@ -158,8 +156,8 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                         <FaLocationDot className='text-sm'/>
                                         <div className='text-sm'>{anonce.city}, {anonce.location}</div>
                                     </div>
-                                    <div className='ml-auto text-sm text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                    <div className='ml-auto text-sm text-right text-gray-500'>
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
                                 <div className='mt-7 text-lg font-bold'>
@@ -172,9 +170,6 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
-                                    <div className='bg-gray-200 py-1 px-2 text-gray-500 rounded-lg'>
-                                        Опыт 1-3 года
-                                    </div>
                                 </div>
                                 <div className='mt-4 text-sm text-gray-500 font-light'>
                                     {anonce.description}
@@ -186,7 +181,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             </Link>
                         ))}
                     </div>
-                    <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0'>
+                    <div className='col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0'>
                         <div>
                             <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
                             {urgent_announcements.map((urgent, key) => (
@@ -209,7 +204,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                         {urgent.city}
                                     </div>
                                     <div className='text-sm font-light text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(urgent.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(urgent.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </Link>
                             ))}
@@ -233,7 +228,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                         {top.city}
                                     </div>
                                     <div className='text-sm font-light text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(top.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(top.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </Link>
                             ))}
