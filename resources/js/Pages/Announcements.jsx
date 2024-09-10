@@ -190,12 +190,9 @@ export default function Announcements({ auth, announcements, errors }) {
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
-                                    <div className='bg-gray-200 py-1 px-2 text-gray-500 rounded-lg'>
-                                        Опыт 1-3 года
-                                    </div>
                                 </div>
                                 <div className='mt-4 text-sm text-gray-500 font-light'>
-                                    {anonce.description}
+                                    {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
                                     <MdAccessTime className='text-xl'/>
