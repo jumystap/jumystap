@@ -164,7 +164,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                     {anonce.title}
                                 </div>
                                 <div className='flex mt-4 gap-x-3 items-center'>
-                                    <div className='text-xl font-regular'>
+                                    <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
