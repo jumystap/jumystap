@@ -175,7 +175,7 @@ class AnnouncementController extends Controller
             $message .= "Адрес: " . $announcement->location . "\n";
             $message .= "Описание: " . $announcement->description . "\n";
             $message .= "Тип оплаты: " . $announcement->payment_type . "\n";
-            $message .= "Стоимость: " . $announcement->cost . "\n";
+            $message .= "Зарплата: " . $announcement->cost . $announcement->cost_min . $announcement->cost_max . "\n";
             $message .= "Номер телефона: " . Auth::user()->phone. "\n";
 
             try {
