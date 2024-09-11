@@ -183,7 +183,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                     </div>
                     <div className='col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0'>
                         <div>
-                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравиться</div>
                             {urgent_announcements.map((urgent, key) => (
                                 <Link href={`/announcement/${urgent.id}`} key={key} className='block hover:bg-gray-100 transition-all duration-150 border-b border-gray-200 p-3'>
                                     <div className='flex items-center'>
