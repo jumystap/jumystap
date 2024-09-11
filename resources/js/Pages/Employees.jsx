@@ -41,7 +41,7 @@ export default function Employees({ auth, employees, professions, errors }) {
         return array;
     };
 
-    const shuffledEmployees = shuffleArray([...employees.data]);
+    const shuffledEmployees = shuffleArray([...employees]);
 
     const filteredEmployees = shuffledEmployees
         .filter((employee) => {
@@ -176,7 +176,6 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 </Link>
                             ))}
                         </div>
-                        <Pagination links={employees.links} />
                     </div>
                     <div className='col-span-2 hidden md:block px-3 border-l h-screen sticky top-0 border-gray-200'>
                         <div className="flex flex-col md:flex-col gap-2 mt-5">

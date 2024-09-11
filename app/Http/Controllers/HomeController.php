@@ -41,7 +41,7 @@ class HomeController extends Controller
                 return $user;
             });
 
-        $announcements = Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
+        $announcements = Announcement::orderBy('created_at', 'desc')->where('active', 1)->get();
         $urgent_announcements = Announcement::where('payment_status', 'urgent')->take(4)->get();
         $top_announcements = Announcement::where('payment_status', 'top')->take(4)->get();
         $work_professions = Profession::where('type', 'work')->with('group')->orderBy('created_at', 'desc')->get();

@@ -13,9 +13,9 @@ class UserRepository
             $query->where('name', $roleName);
         })
         ->with('role')
-        ->paginate($perPage);
+        ->get();
 
-        $users->getCollection()->transform(function ($user) {
+        $users->transform(function ($user) {
             $user->professions = $this->getUserWithProfessions($user->id);
             return $user;
         });
