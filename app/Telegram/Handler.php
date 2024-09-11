@@ -21,7 +21,7 @@ class Handler extends WebhookHandler
 
     public function help(): void
     {
-        $this->reply("we can't help');
+        $this->reply("we can't help");
     }
 
     protected function handleUnknownCommand(Stringable $text): void
