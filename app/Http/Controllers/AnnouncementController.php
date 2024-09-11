@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\Industry;
+use App\Models\Response;
 use App\Models\TelegramAdmin;
 use App\Services\AnnouncementService;
 use DefStudio\Telegraph\Facades\Telegraph;
@@ -30,7 +31,7 @@ class AnnouncementController extends Controller
         return Inertia::render('Announcements', [
             'announcements' => $announcements,
         ]);
-    }
+    e
 
     public function show($id): mixed
     {
@@ -214,6 +215,22 @@ class AnnouncementController extends Controller
         } else {
             Log::warning('No admin found for notification.');
         }
+    }
+
+    public function response($employee_id, $announcement_id): mixed
+    {
+        Response::create([
+            'announcement_id' => $announcement_id,
+            'employee_id' => $employee_id
+        ]);
+
+        $announcement = Announcement::find($announcement_id);
+
+        $employer = User::find($announcement->user_id);
+
+        $whatsappUrl = "https://wa.me/". $employer->phone ."?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
+
+        return redirect()->away($whatsappUrl);
     }
 }
 
