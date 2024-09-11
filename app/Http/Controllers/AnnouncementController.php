@@ -31,7 +31,7 @@ class AnnouncementController extends Controller
         return Inertia::render('Announcements', [
             'announcements' => $announcements,
         ]);
-    e
+    }
 
     public function show($id): mixed
     {
