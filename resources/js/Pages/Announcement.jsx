@@ -50,7 +50,7 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                         <div className='md:mb-10 mb-2 px-5'>
                             <div className='text-left font-bold text-xl'>{announcement.user.name}</div>
                             <div className='text-left mt-5 text-gray-500'>
-                                {showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}...`}
+                                {showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}`}
                                 {isLongText && (
                                     <span
                                         onClick={toggleShowFullText}
