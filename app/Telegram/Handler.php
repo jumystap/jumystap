@@ -16,29 +16,12 @@ class Handler extends WebhookHandler
 {
     public function start() : void
     {
-        $chat = $this->chat;
-
-        if ($chat instanceof TelegraphChat) {
-            Telegraph::chat($chat)
-                ->message('Добро пожаловать!')
-                ->send();
-
-            $telegramAdmin = TelegramAdmin::where('chat_id', (string)$chat->chat_id)->first();
-
-            if(!$telegramAdmin){
-                TelegramAdmin::create([
-                    'chat_id' => (string)$chat->chat_id,
-                    'name' => (string)$this->message->from()->username(),
-                ]);
-            }
-        } else {
-            $this->reply('Чат не найден');
-        }
+        $this->reply('Добро пожаловать!');
     }
 
     public function help(): void
     {
-        $this->reply("we can't help");
+        $this->reply("we can't help');
     }
 
     protected function handleUnknownCommand(Stringable $text): void
