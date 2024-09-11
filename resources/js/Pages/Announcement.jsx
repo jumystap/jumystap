@@ -24,7 +24,7 @@ export default function Announcement({ auth, announcement, top_announcement, urg
 
     const maxLength = 90;
     const isLongText = announcement.user.description.length > maxLength;
-    const displayedText = showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}...`;
+    const displayedText = showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}`;
 
 
     const handleFavoriteClick = () => {
