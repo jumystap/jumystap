@@ -13,7 +13,7 @@ class UserRepository
             $query->where('name', $roleName);
         })
         ->with('role')
-        ->get();
+        ->paginate($perPage);
 
         $users->transform(function ($user) {
             $user->professions = $this->getUserWithProfessions($user->id);

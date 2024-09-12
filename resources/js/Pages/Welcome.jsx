@@ -152,7 +152,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                         </div>
                         <div className='border-b border-gray-200 mt-5'>
                         </div>
-                        {announcements.map((anonce, index) => (
+                        {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
                                 <div className='flex'>
                                     <div className='flex gap-x-1 text-blue-400 items-center'>
@@ -183,6 +183,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                 </div>
                             </Link>
                         ))}
+                        <Pagination links={announcements.links} />
                     </div>
                     <div className='col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0'>
                         <div>

@@ -23,7 +23,7 @@ class UserService
 
     public function getEmployees()
     {
-        return $this->userRepository->getUsersByRoleName('employee', 20);
+        return $this->userRepository->getUsersByRoleName('employee', 10);
     }
 
     public function storeUser(array $validatedData)

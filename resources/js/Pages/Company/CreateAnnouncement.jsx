@@ -9,16 +9,7 @@ const { Option } = Select;
 const { Title } = Typography;
 
 const forbiddenWords = [
-     "abuse", "ass", "bastard", "bitch", "bollocks", "bugger", "bullshit", "crap", "cunt",
-    "damn", "dick", "dildo", "fag", "faggot", "fuck", "goddamn", "hell", "jerk", "motherfucker",
-    "nigga", "nigger", "penis", "piss", "prick", "pussy", "shit", "slut", "twat", "whore",
-    "asshole", "bastards", "bitches", "bollock", "cocksucker", "cunts", "dicks", "dildos",
-    "faggots", "fucks", "fucking", "motherfuckers", "niggers", "penises", "shits", "sluts",
-    "twats", "whores", "дурак", "идиот", "тупица", "болван", "кретин", "жопа", "мудак", "сволочь", "ублюдок",
-    "говно", "мразь", "сука", "падла", "дрянь", "проститутка", "шлюха", "пидор", "пидорас",
-    "гандон", "хуесос", "хуево", "ебать", "блядь", "бля", "пиздец", "мать твою", "нахуй",
-    "пошел нахуй", "ебаный", "ебануть", "ебанутый", "ебать", "заебал", "заебись", "пидорас",
-    "хуй", "хер", "пизда", "ебать", "выебать", "ебло", "блядский", "ебаный", "нахуй"
+     "abuse"
 ];
 
 const phoneRegex = /(\b8\d{10}\b|\+7\d{10}\b|\+7 \(\d{3}\) \d{3} \d{2} \d{2}\b)/;

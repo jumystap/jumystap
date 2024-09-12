@@ -41,7 +41,7 @@ export default function Employees({ auth, employees, professions, errors }) {
         return array;
     };
 
-    const shuffledEmployees = shuffleArray([...employees]);
+    const shuffledEmployees = shuffleArray([...employees.data]);
 
     const filteredEmployees = shuffledEmployees
         .filter((employee) => {
@@ -81,8 +81,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={jobType}
                                 onChange={handleJobTypeChange}
                                 className={`block border rounded-lg w-full md:w-auto ${jobType === 'all'
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                             >
                                 <option value="all">
@@ -98,8 +98,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={profession}
                                 onChange={handleProfessionChange}
                                 className={`block border rounded-lg w-full md:w-auto ${profession === ''
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                                 placeholder="Направление"
                             >
@@ -119,8 +119,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={graduateStatus}
                                 onChange={handleGraduateStatusChange}
                                 className={`block border rounded-lg w-full md:w-auto ${graduateStatus === 'all'
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                             >
                                 <option value="all">
@@ -175,6 +175,7 @@ export default function Employees({ auth, employees, professions, errors }) {
                                     </div>
                                 </Link>
                             ))}
+                            <Pagination links={employees.links} />
                         </div>
                     </div>
                     <div className='col-span-2 hidden md:block px-3 border-l h-screen sticky top-0 border-gray-200'>
@@ -184,8 +185,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={jobType}
                                 onChange={handleJobTypeChange}
                                 className={`block border rounded-lg w-full md:w-auto ${jobType === 'all'
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                             >
                                 <option value="all">
@@ -201,8 +202,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={profession}
                                 onChange={handleProfessionChange}
                                 className={`block border rounded-lg w-full md:w-auto ${profession === ''
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                                 placeholder="Направление"
                             >
@@ -222,8 +223,8 @@ export default function Employees({ auth, employees, professions, errors }) {
                                 value={graduateStatus}
                                 onChange={handleGraduateStatusChange}
                                 className={`block border rounded-lg w-full md:w-auto ${graduateStatus === 'all'
-                                        ? 'border-gray-300 text-gray-500'
-                                        : 'font-bold border-[#f36706]'
+                                    ? 'border-gray-300 text-gray-500'
+                                    : 'font-bold border-[#f36706]'
                                     }`}
                             >
                                 <option value="all">
