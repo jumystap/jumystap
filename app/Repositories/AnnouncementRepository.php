@@ -12,7 +12,7 @@ class AnnouncementRepository
 {
     public function getAllActiveAnnouncements()
     {
-        return Announcement::where('active', 1)->paginate(10);
+        return Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
     }
 
     public function getAnnouncementById($id): ?Announcement
