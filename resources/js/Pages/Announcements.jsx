@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -135,6 +135,9 @@ export default function Announcements({ auth, announcements, errors }) {
     return (
         <>
             <GuestLayout>
+                <Head title="Работа в Казахстане | свежие вакансии и объявления ">
+                    <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
+                </Head>
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
                         <div className='mt-5'>

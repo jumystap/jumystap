@@ -1,69 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import Pagination from '@/Components/Pagination.jsx';
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 export default function Employees({ auth, employees, professions, errors }) {
     const { t, i18n } = useTranslation();
-    const { url } = usePage();
-    const searchParams = new URLSearchParams(url.split('?')[1]);
-    const jobTypeParam = searchParams.get('job-type');
-    const professionParam = searchParams.get('profession');
-
-    const [jobType, setJobType] = useState(jobTypeParam || 'all');
-    const [profession, setProfession] = useState(professionParam || '');
-    const [graduateStatus, setGraduateStatus] = useState('all');
 
     function toDoubleString(value) {
         const number = parseFloat(value);
         return isNaN(number) ? '0.0' : number.toFixed(1);
     }
 
-    const handleJobTypeChange = (event) => {
-        setJobType(event.target.value);
-    };
-
-    const handleProfessionChange = (event) => {
-        setProfession(event.target.value);
-    };
-
-    const handleGraduateStatusChange = (event) => {
-        setGraduateStatus(event.target.value);
-    };
-
-    const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    };
-
-    const shuffledEmployees = shuffleArray([...employees.data]);
-
-    const filteredEmployees = shuffledEmployees
-        .filter((employee) => {
-            const jobTypeMatches =
-                jobType === 'all' ||
-                (jobType === 'vacancy' && employee.work_status === 'Ищет работу') ||
-                (jobType === 'project' && employee.work_status === 'Ищет заказы');
-            const professionMatches =
-                profession === '' ||
-                (employee.professions && employee.professions.some(prof => prof.profession_name === profession));
-            const graduateStatusMatches =
-                graduateStatus === 'all' ||
-                (graduateStatus === 'graduate' && employee.is_graduate) ||
-                (graduateStatus === 'non-graduate' && !employee.is_graduate);
-
-            return jobTypeMatches && professionMatches && graduateStatusMatches;
-        })
-        .reverse();
-
     return (
         <>
             <GuestLayout>
+                <Head title="Биржа фрилансеров в Астане | Поиск работы и услуг фрилансеров">
+                    <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
+                </Head>
                 <div className='grid grid-cols-1 md:grid-cols-7'>
                     <div className='col-span-5'>
                         <div className='grid m-5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700  py-10 mt-5 rounded-lg flex'>
@@ -78,35 +33,21 @@ export default function Employees({ auth, employees, professions, errors }) {
                         <div className='block md:hidden px-5 gap-y-3 flex flex-col'>
                             <select
                                 name="jobType"
-                                value={jobType}
-                                onChange={handleJobTypeChange}
-                                className={`block border rounded-lg w-full md:w-auto ${jobType === 'all'
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                             >
                                 <option value="all">
-                                    {jobType === 'all'
-                                        ? t('any_job_default', { ns: 'employees' })
-                                        : t('any_job', { ns: 'employees' })}
+                                    {t('any_job_default', { ns: 'employees' })}
                                 </option>
                                 <option value="vacancy">{t('search_job', { ns: 'employees' })}</option>
                                 <option value="project">{t('search_project', { ns: 'employees' })}</option>
                             </select>
                             <select
                                 name="profession"
-                                value={profession}
-                                onChange={handleProfessionChange}
-                                className={`block border rounded-lg w-full md:w-auto ${profession === ''
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                                 placeholder="Направление"
                             >
                                 <option value="">
-                                    {profession === ''
-                                        ? t('any_work_default', { ns: 'employees' })
-                                        : t('any_work', { ns: 'employees' })}
+                                    {t('any_work_default', { ns: 'employees' })}
                                 </option>
                                 {professions.map((profession, index) => (
                                     <option key={index} value={profession.name_ru}>
@@ -116,24 +57,17 @@ export default function Employees({ auth, employees, professions, errors }) {
                             </select>
                             <select
                                 name="graduateStatus"
-                                value={graduateStatus}
-                                onChange={handleGraduateStatusChange}
-                                className={`block border rounded-lg w-full md:w-auto ${graduateStatus === 'all'
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                             >
                                 <option value="all">
-                                    {graduateStatus === 'all'
-                                        ? t('any_graduate_default', { ns: 'employees' })
-                                        : t('any_graduate', { ns: 'employees' })}
+                                    {t('any_graduate_default', { ns: 'employees' })}
                                 </option>
                                 <option value="graduate">{t('graduate', { ns: 'employees' })}</option>
                                 <option value="non-graduate">{t('non_graduate', { ns: 'employees' })}</option>
                             </select>
                         </div>
                         <div className="gap-5 mt-5">
-                            {filteredEmployees.map((employee, index) => (
+                            {employees.data.map((employee, index) => (
                                 <Link href={`/user/${employee.id}`} key={index} className="hover:bg-gray-100 block px-5 py-2 transition-all duration-150">
                                     <div className="flex gap-3">
                                         <div>
@@ -179,35 +113,21 @@ export default function Employees({ auth, employees, professions, errors }) {
                         <div className="flex flex-col md:flex-col gap-2 mt-5">
                             <select
                                 name="jobType"
-                                value={jobType}
-                                onChange={handleJobTypeChange}
-                                className={`block border rounded-lg w-full md:w-auto ${jobType === 'all'
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                             >
                                 <option value="all">
-                                    {jobType === 'all'
-                                        ? t('any_job_default', { ns: 'employees' })
-                                        : t('any_job', { ns: 'employees' })}
+                                    {t('any_job_default', { ns: 'employees' })}
                                 </option>
                                 <option value="vacancy">{t('search_job', { ns: 'employees' })}</option>
                                 <option value="project">{t('search_project', { ns: 'employees' })}</option>
                             </select>
                             <select
                                 name="profession"
-                                value={profession}
-                                onChange={handleProfessionChange}
-                                className={`block border rounded-lg w-full md:w-auto ${profession === ''
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                                 placeholder="Направление"
                             >
                                 <option value="">
-                                    {profession === ''
-                                        ? t('any_work_default', { ns: 'employees' })
-                                        : t('any_work', { ns: 'employees' })}
+                                    {t('any_work_default', { ns: 'employees' })}
                                 </option>
                                 {professions.map((profession, index) => (
                                     <option key={index} value={profession.name_ru}>
@@ -217,17 +137,10 @@ export default function Employees({ auth, employees, professions, errors }) {
                             </select>
                             <select
                                 name="graduateStatus"
-                                value={graduateStatus}
-                                onChange={handleGraduateStatusChange}
-                                className={`block border rounded-lg w-full md:w-auto ${graduateStatus === 'all'
-                                    ? 'border-gray-300 text-gray-500'
-                                    : 'font-bold border-[#f36706]'
-                                    }`}
+                                className={`block border rounded-lg w-full md:w-auto`}
                             >
                                 <option value="all">
-                                    {graduateStatus === 'all'
-                                        ? t('any_graduate_default', { ns: 'employees' })
-                                        : t('any_graduate', { ns: 'employees' })}
+                                    {t('any_graduate_default', { ns: 'employees' })}
                                 </option>
                                 <option value="graduate">{t('graduate', { ns: 'employees' })}</option>
                                 <option value="non-graduate">{t('non_graduate', { ns: 'employees' })}</option>

@@ -121,7 +121,9 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
     return (
         <>
             <GuestLayout>
-                <Head title="JUMYSTAP – программа возможностей" />
+                <Head title="Работа и вакансии в Казахстане | Биржа труда - Жумыстап">
+                    <meta name="description" content="Жумыстап – биржа труда в Казахстане. Удобный поиск работы и вакансий, размещение резюме. Тысячи актуальных предложений для соискателей и работодателей" />
+                </Head>
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
                         <div className='flex border-b md:sticky md:top-0 bg-white bg-opacity-50 backdrop-blur-md border-gray-200'>
