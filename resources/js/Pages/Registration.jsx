@@ -129,19 +129,6 @@ export default function Registration({ errors, professions }) {
         formData.append('gender', data.gender);
         formData.append('avatar', data.avatar);
         formData.append('source', source);
-        if(certificates.length > 0){
-            setData('is_graduate', 1);
-            formData.append('is_graduate', 1);
-        }else{
-            formData.append('is_graduate', 0);
-            setData('is_graduate', 0);
-        }
-        data.professions_ids.forEach((id, index) => {
-            formData.append(`professions_ids[${index}]`, id);
-        });
-        data.certificate_numbers.forEach((number, index) => {
-            formData.append(`certificate_numbers[${index}]`, number);
-        });
 
         post('/register', {
             data: formData,

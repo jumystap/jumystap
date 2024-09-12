@@ -7,6 +7,7 @@ use App\Models\Profession\Profession;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
@@ -35,17 +36,127 @@ class UserService
 
         $user = $this->userRepository->createUser($validatedData);
 
-        if (isset($validatedData['professions_ids']) && isset($validatedData['certificate_numbers'])) {
-            foreach ($validatedData['professions_ids'] as $index => $profession_id) {
-                $this->userRepository->addUserProfession(
-                    $user->id,
-                    $profession_id,
-                    $validatedData['certificate_numbers'][$index] ?? null
-                );
-            }
+        if($this->getCertificates($validatedData, $user)){
+            $user->update(['is_graduate' => 1]);
+        } else {
+            $user->update(['is_graduate' => 0]);
         }
 
         return $user;
+    }
+
+    public function getCertificates(array $validatedData, $user)
+    {
+        $certificate_numbers = [];
+        $profession_ids = [];
+
+        $certificates = DB::table('certificates')
+            ->where('phone', $validatedData['phone'])
+            ->get();
+
+        if($certificates->isNotEmpty()){
+            foreach($certificates as $certificate){
+                $certificate_numbers[] = $certificate->certificate_number;
+                $profession_ids[] = $certificate->profession_id;
+            }
+
+            foreach($profession_ids as $index => $profession_id){
+                $this->userRepository->addUserProfession(
+                    $user->id,
+                    $profession_id,
+                    $certificate_numbers[$index] ?? null
+                );
+            }
+
+            return true;
+        }
+
+        $professionMap = [
+            "Основы изготовления корпусной мебели" => 5,
+            "Ремонт обуви и изготовление ключей" => 6,
+            "Основы бухгалтерского учета" => 8,
+            "Модельер-конструктор" => 2,
+            "Швея" => 1,
+            "Электрогазосварщик" => 7,
+            "Бариста" => 3,
+            "Продавец-кассир" => 4,
+            "Базовые цифровые навыки" => 16,
+            "Веб-дизайн + Создание и разработка сайта" => 14,
+            "Графический дизайнер" => 12,
+            "Мобилограф" => 10,
+            "Маркетплейс" => 15,
+            "Видеомонтаж" => 13,
+            "Таргетолог" => 11,
+            "SMM" => 9,
+        ];
+
+        $url = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/crm.duplicate.findbycomm?type=PHONE&entity_type=CONTACT&values[]=' . $validatedData['phone'];
+
+        $response = Http::get($url);
+
+        $responseData = $response->json();
+
+        if (isset($responseData['result']['CONTACT']) && !empty($responseData['result']['CONTACT'])) {
+            $contact_id = $responseData['result']['CONTACT'][0];
+
+            $workUrl = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/working_certificates.certificates.list?contact_id=' . $contact_id;
+            $workResponse = Http::get($workUrl);
+            $workData = $workResponse->json();
+
+            if (isset($workData['result']) && !empty($workData['result'])) {
+                foreach ($workData['result'] as $certificate) {
+                    $certificate_numbers[] = $certificate['NUMBER'];
+
+                    $profession_name = $certificate['PROFESSION']['NAME_RU'];
+                    $profession_id = $professionMap[$profession_name] ?? null;
+
+                    if ($profession_id) {
+                        $profession_ids[] = $profession_id;
+                    }
+                }
+
+                foreach ($profession_ids as $index => $profession_id) {
+                    $this->userRepository->addUserProfession(
+                        $user->id,
+                        $profession_id,
+                        $certificate_numbers[$index] ?? null
+                    );
+                }
+
+                return true;
+            }
+
+            $digitalUrl = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/digital_certificates.certificates.list?contact_id=' . $contact_id;
+            $digitalResponse = Http::get($digitalUrl);
+            $digitalData = $digitalResponse->json();
+
+            if (isset($digitalData['result']) && !empty($digitalData['result'])) {
+                foreach ($digitalData['result'] as $certificate) {
+                    $certificate_numbers[] = $certificate['NUMBER'];
+
+                    $profession_name = $certificate['PROFESSION']['NAME_RU'];
+                    $profession_id = $professionMap[$profession_name] ?? null;
+
+                    if ($profession_id) {
+                        $profession_ids[] = $profession_id;
+                    }
+                }
+
+                foreach ($profession_ids as $index => $profession_id) {
+                    $this->userRepository->addUserProfession(
+                        $user->id,
+                        $profession_id,
+                        $certificate_numbers[$index] ?? null
+                    );
+                }
+                return true;
+            }
+        } else {
+            $contact_id = null;
+            return false;
+        }
+
+        return false;
     }
 
     public function updateUser($user, array $validatedData)
