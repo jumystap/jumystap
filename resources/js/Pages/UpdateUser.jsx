@@ -6,7 +6,7 @@ import { useForm } from '@inertiajs/react';
 import { Upload, Button, notification, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-const UpdateUser = ({ user, professions, userProfessions }) => {
+const UpdateUser = ({ user }) => {
     const { t } = useTranslation();
     const { data, setData, post, processing, errors, clearErrors } = useForm({
         name: user.name || '',
@@ -17,15 +17,10 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
         ipStatus2: user.status == 'В активном поиске' ? 'yes' : 'no',
         ipStatus3: user.work_status == 'Ищет работу' ? 'yes' : 'no',
         avatar: null,
-        professions_ids: userProfessions.map(up => up.profession_id) || [],
-        certificate_numbers: userProfessions.map(up => up.certificate_number) || [],
         description: user.description || '',
         is_graduate: user.is_graduate,
     });
 
-
-    const [certificateNumber, setCertificateNumber] = useState('');
-    const [certificates, setCertificates] = useState(userProfessions || []);
     const [avatarPreview, setAvatarPreview] = useState(user.image_url ? `/storage/${user.image_url}` : null);
 
     useEffect(() => {
@@ -46,142 +41,6 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
         reader.onload = (e) => setAvatarPreview(e.target.result);
         reader.readAsDataURL(file);
         return false;
-    };
-
-    const handleCertificateAdd = async () => {
-        if (certificates.some(certificate => certificate.number === certificateNumber)) {
-            notification.error({
-                message: 'Сертификат уже добавлен',
-                description: `Сертификат №${certificateNumber} уже добавлен.`,
-            });
-            return;
-        }
-
-        try {
-            let response = await fetch(`/api/certificates/${certificateNumber}`);
-            let result;
-
-            if (response.ok) {
-                result = await response.json();
-            } else {
-                result = null;
-            }
-
-            if (result) {
-                const formattedPhone = result.phone.replace(/[\s+()-]/g, '');
-                const userPhone = data.phone.replace(/[\s+()-]/g, '');
-
-                if (formattedPhone === userPhone) {
-                    const profession = professions.find(prof => prof.id === result.profession_id);
-
-                    if (profession) {
-                        setCertificates([...certificates, { number: certificateNumber, profession: profession.name_ru }]);
-                        setData(prevData => ({
-                            ...prevData,
-                            is_graduate: true,
-                            professions_ids: [...prevData.professions_ids, profession.id],
-                            certificate_numbers: [...prevData.certificate_numbers, certificateNumber]
-                        }));
-                        notification.success({
-                            message: 'Сертификат подтвержден',
-                            description: `Сертификат №${certificateNumber} подтвержден и добавлен в ваш профиль.`,
-                        });
-                        return;
-                    } else {
-                        notification.error({
-                            message: 'Профессия не найдена',
-                            description: `Профессия для сертификата №${certificateNumber} не найдена.`,
-                        });
-                    }
-                } else {
-                    notification.error({
-                        message: 'Сертификат не найден',
-                        description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                    });
-                }
-            }
-
-            if (!result) {
-                let url = `https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/working_certificates.certificates.list?number=${certificateNumber}`;
-                console.log('API URL:', url);
-
-                response = await fetch(url);
-                let data2 = await response.json();
-                result = data2.result[0];
-
-                if (!result) {
-                    url = `https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/digital_certificates.certificates.list?number=${certificateNumber}`;
-                    console.log('API URL:', url);
-
-                    response = await fetch(url);
-                    data2 = await response.json();
-                    result = data2.result[0];
-                }
-
-                if (result) {
-                    const formattedPhone = result.PHONE.replace(/[\s+()-]/g, '');
-                    const userPhone = data.phone.replace(/[\s+()-]/g, '');
-
-                    if (formattedPhone === userPhone) {
-                        const professionMap = {
-                            "Основы изготовления корпусной мебели": 5,
-                            "Ремонт обуви и изготовление ключей": 6,
-                            "Основы бухгалтерского учета": 8,
-                            "Модельер-конструктор": 2,
-                            "Швея": 1,
-                            "Электрогазосварщик": 7,
-                            "Бариста": 3,
-                            "Продавец-кассир": 4,
-                            "Базовые цифровые навыки": 16,
-                            "Веб-дизайн + Создание и разработка сайта": 14,
-                            "Графический дизайнер": 12,
-                            "Мобилограф": 10,
-                            "Маркетплейс": 15,
-                            "Видеомонтаж": 13,
-                            "Таргетолог": 11,
-                            "SMM": 9,
-                        };
-                        const professionId = professionMap[result.PROFESSION.NAME_RU];
-                        if (professionId) {
-                            setCertificates([...certificates, { number: certificateNumber, profession: result.PROFESSION.NAME_RU }]);
-                            setData(prevData => ({
-                                ...prevData,
-                                is_graduate: true,
-                                professions_ids: [...prevData.professions_ids, professionId],
-                                certificate_numbers: [...prevData.certificate_numbers, certificateNumber]
-                            }));
-                            notification.success({
-                                message: 'Сертификат подтвержден',
-                                description: `Сертификат №${certificateNumber} подтвержден и добавлен в ваш профиль.`,
-                            });
-                        } else {
-                            notification.error({
-                                message: 'Сертификат не найден',
-                                description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                            });
-                        }
-                    } else {
-                        notification.error({
-                            message: 'Сертификат не найден',
-                            description: `Сертификат №${certificateNumber} не найден или не соответствует вашему номеру телефона.`,
-                        });
-                    }
-                } else {
-                    notification.error({
-                        message: 'Сертификат не найден',
-                        description: `Сертификат №${certificateNumber} не найден.`,
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Error validating certificate:', error);
-            notification.error({
-                message: 'Ошибка проверки сертификата',
-                description: 'Произошла ошибка при проверке сертификата. Пожалуйста, попробуйте снова.',
-            });
-        } finally {
-            setCertificateNumber('');
-        }
     };
 
     const handleSubmit = (e) => {
@@ -319,27 +178,6 @@ const UpdateUser = ({ user, professions, userProfessions }) => {
                                         <option value="yes">{t('option6', { ns: 'register' })}</option>
                                     </select>
                                     {errors.ipStatus3 && <div className="text-red-500 text-sm">{errors.ipStatus3}</div>}
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="certificateNumber">
-                                        Укажите номер сертификата
-                                    </label>
-                                    <Input
-                                        id="certificateNumber"
-                                        value={certificateNumber}
-                                        onChange={e => setCertificateNumber(e.target.value)}
-                                        className="appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
-                                    <Button onClick={handleCertificateAdd} className="hover:bg-gray-600 transition-all text-gray-500 w-full duration-100 py-3 px-4 rounded focus:outline-none focus:shadow-outline mt-2">
-                                        Добавить сертификат
-                                    </Button>
-                                </div>
-                                <div className="col-span-1 md:col-span-2">
-                                    {certificates.map((certificate, index) => (
-                                        <div key={index} className="mb-2 text-center border-b border-gray-300 pb-2">
-                                            <span className="font-semibold">{certificate.profession_name}:</span> {certificate.certificate_number}
-                                        </div>
-                                    ))}
                                 </div>
                             </>
                         )}

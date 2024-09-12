@@ -7,7 +7,6 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { FaRegCheckCircle } from "react-icons/fa";
 import InputMask from 'react-input-mask';
-import { handleCertificateAdd } from '@/Share/certificateHandler';
 
 export default function Registration({ errors, professions }) {
     const { t, i18n } = useTranslation();
@@ -16,9 +15,6 @@ export default function Registration({ errors, professions }) {
 
     const [step, setStep] = useState(0);
     const [verificationCode, setVerificationCode] = useState(null);
-    const [certificates, setCertificates] = useState([]);
-    const [certificateModalVisible, setCertificateModalVisible] = useState(false);
-    const [certificateNumber, setCertificateNumber] = useState('');
     const [source, setSource] = useState(localStorage.getItem('source'));
     const [phoneCode, setPhoneCode] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -32,12 +28,9 @@ export default function Registration({ errors, professions }) {
         password_confirm: '',
         date_of_birth: '',
         gender: '',
-        professions_ids: [],
-        certificate_numbers: [],
         avatar: null,
         role: '',
         description: '',
-        is_graduate: 0,
         source: source,
     });
     const login = 'janamumkindik@gmail.com';
@@ -123,10 +116,6 @@ export default function Registration({ errors, professions }) {
     const handlePhoneChange = (e) => {
         const formattedPhone = e.target.value.replace(/[^\d]/g, '');
         setData('phone', formattedPhone);
-    };
-
-    const handleCertificateAddLocal = () => {
-        handleCertificateAdd(certificateNumber, data, certificates, setCertificates, setData, professions, setCertificateNumber);
     };
 
     const handleRegistrationSubmit = (e) => {
@@ -323,26 +312,7 @@ export default function Registration({ errors, professions }) {
                                     className='block mt-1 border-gray-300 w-full rounded-lg'
                                     placeholder='Повторите пароль'
                                 />
-                                {data.role === 'employee' ? (
-                                    <>
-                                        <div className='mt-5 text-sm font-semibold'>Если у вас есть сертификат JOLTAP</div>
-                                        <button
-                                            className='block mt-1 w-full border border-blue-500 rounded-lg text-blue-500 py-2'
-                                            onClick={() => setCertificateModalVisible(true)}
-                                        >
-                                            Добавить сертификат
-                                        </button>
-                                        {certificates.length > 0 && (
-                                            <>
-                                                {certificates.map((certificate, index) => (
-                                                    <div className='mt-3'>
-                                                        {certificate.profession} : {certificate.number}
-                                                    </div>
-                                                ))}
-                                            </>
-                                        )}
-                                    </>
-                                ) : (
+                                {data.role != 'employee' && (
                                     <>
                                         <div className='mt-5 text-sm font-semibold'>Описание компании</div>
                                         <textarea
@@ -382,26 +352,6 @@ export default function Registration({ errors, professions }) {
                     ))}
                 </div>
             </div>
-            <Modal
-                title="Добавить сертификат"
-                visible={certificateModalVisible}
-                onOk={handleCertificateAddLocal}
-                onCancel={() => setCertificateModalVisible(false)}
-                okText="Добавить"
-                cancelText="Отмена"
-            >
-                <div className="mb-4">
-                    <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="certificateNumber">
-                        Укажите номер сертификата
-                    </label>
-                    <Input
-                        id="certificateNumber"
-                        value={certificateNumber}
-                        onChange={e => setCertificateNumber(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    />
-                </div>
-            </Modal>
         </GuestLayout>
     );
 }
