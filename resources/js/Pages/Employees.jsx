@@ -150,8 +150,18 @@ export default function Employees({ auth, employees, professions, errors }) {
                                             <div>
                                                 <div className='font-bold mb-auto gap-2 items-center flex'>{employee.name}<span style={{ display: 'inline-flex', alignItems: 'center' }}>{employee.is_graduate ? (<RiVerifiedBadgeFill className='fiex-star text-xl items-center text-blue-500' />) : ('')}</span></div>
                                                 <div className='text-gray-500'>@{employee.email.split('@')[0]}</div>
-                                                <div className='text-sm'>{employee.age} лет</div>
-                                                <div className='text-sm bg-green-100 text-green-500 py-1 px-2 rounded-lg mt-3'>{employee.status}</div>
+                                                <div className="mt-2 text-sm">
+                                                    {employee.professions.length > 0 && (
+                                                        <>
+                                                            {employee.professions.map((profession, index) => (
+                                                                <div key={index}>{i18n.language == 'ru' ? (profession.profession_name) : (profession.profession_name_kz)}</div>
+                                                            ))}
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <div className='inline-block'>
+                                                    <div className='text-sm bg-green-100 text-green-500 py-1 px-2 rounded-lg mt-3'>{employee.status}</div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className='ml-auto md:block hidden'>
@@ -159,19 +169,6 @@ export default function Employees({ auth, employees, professions, errors }) {
                                                 Подробнее
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                    </div>
-                                    <div>
-                                    </div>
-                                    <div className="mt-2 text-sm">
-                                        {employee.professions.length > 0 && (
-                                            <>
-                                                {employee.professions.map((profession, index) => (
-                                                    <div key={index}>{i18n.language == 'ru' ? (profession.profession_name) : (profession.profession_name_kz)}</div>
-                                                ))}
-                                            </>
-                                        )}
                                     </div>
                                 </Link>
                             ))}

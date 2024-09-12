@@ -49,17 +49,17 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                     <div className="md:col-span-5 pt-10">
                         <div className='md:mb-10 mb-2 px-5'>
                             <div className='text-left font-bold text-xl'>{announcement.user.name}</div>
-                            <div className='text-left mt-5 text-gray-500'>
-                                {showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}`}
-                                {isLongText && (
-                                    <span
-                                        onClick={toggleShowFullText}
-                                        className="text-blue-500 cursor-pointer"
-                                    >
-                                        {showFullText ? ' Скрыть' : ' Подробнее'}
-                                    </span>
-                                )}
-                            </div>
+                                <div className='text-left mt-5 text-gray-500'>
+                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                    {isLongText && (
+                                        <span
+                                            onClick={toggleShowFullText}
+                                            className="text-blue-500 cursor-pointer"
+                                        >
+                                            {showFullText ? ' Скрыть' : ' Подробнее'}
+                                        </span>
+                                    )}
+                                </div>
                             <div className="flex-wrap">
                                 {announcement.responses_count != 0 && (
                                     <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
