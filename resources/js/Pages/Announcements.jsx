@@ -6,6 +6,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
+import Pagination from '@/Components/Pagination';
 
 export default function Announcements({ auth, announcements, errors }) {
     const { t, i18n } = useTranslation();
@@ -113,9 +114,9 @@ export default function Announcements({ auth, announcements, errors }) {
         setSearchKeyword(event.target.value);
     };
 
-    const sortedAnnouncements = announcements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const sortedAnnouncements = announcements.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    const uniqueCities = [...new Set(announcements.map(anonce => anonce.city))];
+    const uniqueCities = [...new Set(announcements.data.map(anonce => anonce.city))];
 
     const filteredAnnouncements = sortedAnnouncements.filter((anonce) => {
         const announcementTypeMatches = (announcementType === 'all') ||
@@ -200,6 +201,7 @@ export default function Announcements({ auth, announcements, errors }) {
                                 </div>
                             </Link>
                         ))}
+                        <Pagination links={announcements.links} />
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>
