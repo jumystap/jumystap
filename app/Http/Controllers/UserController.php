@@ -76,8 +76,13 @@ class UserController extends Controller
             'role' => 'required',
             'date_of_birth' => 'nullable',
             'gender' => 'nullable',
+            'professions_ids' => 'nullable|array',
+            'professions_ids.*' => 'nullable|exists:professions,id',
+            'certificate_numbers' => 'nullable|array',
+            'certificate_numbers.*' => 'nullable|string',
             'description' => 'nullable|string',
             'source' => 'nullable|string',
+            'is_graduate' => 'nullable',
         ]);
 
         try {
@@ -117,7 +122,12 @@ class UserController extends Controller
             'ipStatus1' => 'nullable|string',
             'ipStatus2' => 'nullable|string',
             'ipStatus3' => 'nullable|string',
+            'professions_ids' => 'nullable|array',
+            'professions_ids.*' => 'nullable|exists:professions,id',
+            'certificate_numbers' => 'nullable|array',
+            'certificate_numbers.*' => 'nullable|string',
             'description' => 'nullable|string',
+            'is_graduate' => 'nullable',
             'age' => 'nullable'
         ]);
 
