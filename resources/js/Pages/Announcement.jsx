@@ -61,18 +61,22 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                                 )}
                             </div>
                             <div className="flex-wrap">
-                                <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                    <div className="flex items-center gap-x-1">
-                                        <HiOutlineUserGroup className="text-xl" />
-                                        <div>{announcement.responses_count} {announcement.responses_count == 1 && ('отклик')} {announcement.responses_count >= 2 && announcement.responses_count <= 4 && announcement.responses_count != 1 ? ('отклика'):('')} {(announcement.responses_count == 0 || announcement.responses_count >= 5) && ('откликов')}</div>
+                                {announcement.responses_count != 0 && (
+                                    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                        <div className="flex items-center gap-x-1">
+                                            <HiOutlineUserGroup className="text-xl" />
+                                            <div>{announcement.responses_count} {announcement.responses_count == 1 && ('отклик')} {announcement.responses_count >= 2 && announcement.responses_count <= 4 && announcement.responses_count != 1 ? ('отклика'):('')} {(announcement.responses_count == 0 || announcement.responses_count >= 5) && ('откликов')}</div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                    <div className="flex items-center gap-x-1">
-                                        <MdOutlineRemoveRedEye className="text-xl" />
-                                        <div>{announcement.visits_count} {announcement.visits_count == 1 && ('просмотр')} {announcement.visits_count >= 2 && announcement.visits_count <= 4 && announcement.visits_count != 1 ? ('просмотра'):('')} {(announcement.visits_count == 0 || announcement.visits_count >= 5) && ('просмотров')}</div>
+                                )}
+                                {announcement.visits_count != 0 && (
+                                    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                        <div className="flex items-center gap-x-1">
+                                            <MdOutlineRemoveRedEye className="text-xl" />
+                                            <div>{announcement.visits_count} {announcement.visits_count == 1 && ('просмотр')} {announcement.visits_count >= 2 && announcement.visits_count <= 4 && announcement.visits_count != 1 ? ('просмотра'):('')} {(announcement.visits_count == 0 || announcement.visits_count >= 5) && ('просмотров')}</div>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                                 {orderCount != 0 && (
                                     <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
                                         <div className="flex items-center gap-x-1">

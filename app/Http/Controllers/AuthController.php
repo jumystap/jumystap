@@ -12,8 +12,8 @@ class AuthController extends Controller
 {
     public function forgetPassword(): mixed
     {
-        return Inertia::render("ForgotPassword"); 
-    }    
+        return Inertia::render("ForgotPassword");
+    }
 
     public function restorePassword(Request $request): mixed
     {

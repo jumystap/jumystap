@@ -76,13 +76,8 @@ class UserController extends Controller
             'role' => 'required',
             'date_of_birth' => 'nullable',
             'gender' => 'nullable',
-            'professions_ids' => 'nullable|array',
-            'professions_ids.*' => 'nullable|exists:professions,id',
-            'certificate_numbers' => 'nullable|array',
-            'certificate_numbers.*' => 'nullable|string',
             'description' => 'nullable|string',
             'source' => 'nullable|string',
-            'is_graduate' => 'nullable',
         ]);
 
         try {
@@ -122,12 +117,7 @@ class UserController extends Controller
             'ipStatus1' => 'nullable|string',
             'ipStatus2' => 'nullable|string',
             'ipStatus3' => 'nullable|string',
-            'professions_ids' => 'nullable|array',
-            'professions_ids.*' => 'nullable|exists:professions,id',
-            'certificate_numbers' => 'nullable|array',
-            'certificate_numbers.*' => 'nullable|string',
             'description' => 'nullable|string',
-            'is_graduate' => 'nullable',
             'age' => 'nullable'
         ]);
 
@@ -186,46 +176,35 @@ class UserController extends Controller
 
     public function myAnnouncement($id)
     {
-        // Fetch the specific announcement by ID
         $announcement = Announcement::findOrFail($id);
 
-        // Extract announcement visits by matching the ID in the URL
         $visits = Visit::where('url', 'like', "%/announcement/$id%")->get();
 
-        // Calculate the total views
         $totalViews = $visits->count();
 
-        // Calculate the total responses
         $totalResponses = Response::where('announcement_id', $id)->count();
 
-        // Fetch users who responded (handling duplicates)
         $respondedUsers = Response::where('announcement_id', $id)
             ->with('user')  // Assuming a relationship with User model is defined
             ->get()
             ->unique('employee_id');
 
-        // Calculate the unique visitors
         $uniqueVisitors = $visits->unique('user_id')->count(); // Assuming 'user_id' is available in visits
 
-        // Calculate repeated visitors
         $repeatedVisitors = $visits->countBy('user_id')->filter(function ($count) {
             return $count > 1;
         })->count();
 
-        // Calculate the response rate
         $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
 
-        // Data for views over time (e.g., daily, weekly, monthly)
         $viewsOverTime = $visits->groupBy(function ($visit) {
             return $visit->created_at->format('Y-m-d'); // Group by day
         })->map->count();
 
-        // Peak viewing times (identify the time of day with the most views)
         $peakViewingTimes = $visits->groupBy(function ($visit) {
             return $visit->created_at->format('H'); // Group by hour
         })->map->count();
 
-        // Pass all analytics data to Inertia
         return Inertia::render('Company/CompanyAnnouncement', [
             'announcement' => $announcement,
             'totalViews' => $totalViews,
@@ -238,8 +217,6 @@ class UserController extends Controller
             'respondedUsers' => $respondedUsers
         ]);
     }
-
-
 
     public function rate($employee_id, $rating): mixed
     {
