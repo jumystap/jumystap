@@ -124,7 +124,8 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500'>Вакансии для вас</div>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 text-gray-500 text-sm'>Вакансии дня</div>
                         </div>
-                        <div className='block bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                        <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                            <div>
                             <div className='font-bold text-lg md:text-2xl'>
                                 {i18n.language == 'ru' ?
                                     (`Пройди бесплатное обучение`)
@@ -146,6 +147,10 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                 >
                                     {i18n.language == 'ru' ? ('Подробнее'):('Толығырақ')}
                                 </a>
+                            </div>
+                            </div>
+                            <div className='ml-auto pt-2'>
+                                <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                             </div>
                         </div>
                         <div className='border-b border-gray-200 mt-5'>
