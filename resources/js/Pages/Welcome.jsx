@@ -159,9 +159,9 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                 <div className='flex'>
                                     <div className='flex gap-x-1 text-blue-400 items-center'>
                                         <FaLocationDot className='text-sm'/>
-                                        <div className='text-sm'>{anonce.city}, {anonce.location}</div>
+                                        <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
                                     </div>
-                                    <div className='ml-auto text-sm text-right text-gray-500'>
+                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
