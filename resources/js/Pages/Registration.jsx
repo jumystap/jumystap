@@ -321,7 +321,7 @@ export default function Registration({ errors, professions }) {
                                 )}
                                 <button
                                     onClick={handleRegistrationSubmit}
-                                    className='bg-blue-500 text-white rounded-lg mt-5 py-2 text-center w-full'
+                                    className='register bg-blue-500 text-white rounded-lg mt-5 py-2 text-center w-full'
                                 >
                                     Создать аккаунт
                                 </button>
