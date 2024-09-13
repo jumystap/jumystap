@@ -7,12 +7,14 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
+import FeedbackModal from '@/Components/FeedbackModal';
 
 export default function Announcements({ auth, announcements, errors }) {
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
 
     const kz = {
         ...ru,
@@ -102,6 +104,14 @@ export default function Announcements({ auth, announcements, errors }) {
         }
     };
 
+    const handleFeedbackSubmit = (feedback) => {
+        axios.post('/send-feedback', { feedback }).then((response) => {
+            console.log((t('feedback_sent', { ns: 'header' })));
+        }).catch((error) => {
+            console.error(error);
+        });
+    };
+
     const handleAnnouncementTypeChange = (event) => {
         setAnnouncementType(event.target.value);
     };
@@ -138,6 +148,7 @@ export default function Announcements({ auth, announcements, errors }) {
                 <Head title="Работа в Казахстане | свежие вакансии и объявления ">
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
+                <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
