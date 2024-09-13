@@ -120,6 +120,15 @@ export default function Registration({ errors, professions }) {
 
     const handleRegistrationSubmit = (e) => {
         e.preventDefault();
+
+        if (data.role !== 'employee' && !data.description.trim()) {
+            notification.error({
+                message: 'Ошибка',
+                description: 'Описание компании обязательно для заполнения.',
+            });
+            return;
+        }
+
         const formData = new FormData();
         formData.append('phone', data.phone);
         formData.append('name', data.name);
