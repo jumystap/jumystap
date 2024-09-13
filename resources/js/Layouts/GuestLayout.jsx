@@ -54,7 +54,7 @@ export default function Guest({ children }) {
             <meta name="description" content="Найдите работу и вакансии в Казахстане на Жумыстап. Биржа труда с актуальными вакансиями для соискателей." />
         </Head>
         <div className='md:hidden block'>
-            <div className='sticky top-0 bg-white z-30 flex py-5 px-3 items-center'>
+            <div className='sticky top-0 bg-white z-20 flex py-5 px-3 items-center'>
                 <Link
                     className={`block ${isActive('/') ? 'text-blue-500 font-semibold' : ''}`}
                     href='/'

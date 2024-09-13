@@ -18,11 +18,10 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
 
         const templateParams = {
             name,
-            message,
             phone,
         };
 
-        emails.send('service_gemcvsd', 'template_u38otnw', templateParams, '2aHWUXyiS63MSOUf3')
+        emails.send('service_gemcvsd', 'template_3p0vezb', templateParams, '2aHWUXyiS63MSOUf3')
             .then((response) => {
                 console.log('SUCCESS!', response.status, response.text);
                 onSubmit(templateParams);
@@ -33,7 +32,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                 onClose();
                 notification.success({
                     message: 'Успех',
-                    description: 'Ваш отзыв был успешно отправлен!',
+                    description: 'Ваша заявка успешно отправлена!',
                 });
             }, (error) => {
                 console.log('FAILED...', error);
@@ -42,9 +41,9 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
-                <h2 className="text-xl mb-4">{t('send_feedback', { ns: 'header' })}</h2>
+                <h2 className="text-xl mb-4">Отправить заявку</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -62,23 +61,15 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                         onChange={(e) => setPhone(e.target.value)}
                         required
                     />
-                    <textarea
-                        className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
-                        rows="5"
-                        placeholder={t('your_feedback', { ns: 'header' })}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        required
-                    ></textarea>
                     <div className="flex justify-end mt-4">
-                        <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
+                        <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
                             {t('cancel', { ns: 'header' })}
-                        </button>
+                        </Button>
                         <Button
                             type="primary"
                             htmlType="submit"
                             loading={loading}
-                            className="bg-[#F36706] text-white rounded-lg"
+                            className="bg-[#F36706] hover:bg-orange-500 text-white rounded-lg"
                         >
                             {t('send', { ns: 'header' })}
                         </Button>

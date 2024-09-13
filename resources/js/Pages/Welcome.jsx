@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link, Head } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { useTranslation } from 'react-i18next';
@@ -9,27 +9,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
+import FeedbackModal from '@/Components/FeedbackModal';
 
 export default function Welcome({ auth, employees, freelancers, visits, announcements, top_announcements, urgent_announcements, work_professions, digital_professions }) {
     const { t, i18n } = useTranslation();
-
-    function toDoubleString(value) {
-        const number = parseFloat(value);
-        return isNaN(number) ? '0.0' : number.toFixed(1);
-    }
-
-    console.log(announcements);
-
-    const sliderSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        fade: true,
-    };
+    const [isOpen, setIsOpen] = useState(false);
 
     const kz = {
         ...ru,
@@ -118,38 +102,50 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
         }
     };
 
+    const handleFeedbackSubmit = (feedback) => {
+        axios.post('/send-feedback', { feedback }).then((response) => {
+            console.log((t('feedback_sent', { ns: 'header' })));
+        }).catch((error) => {
+            console.error(error);
+        });
+    };
+
+
     return (
         <>
+            <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit}/>
             <GuestLayout>
                 <Head title="Работа и вакансии в Казахстане | Биржа труда - Жумыстап">
                     <meta name="description" content="Жумыстап – биржа труда в Казахстане. Удобный поиск работы и вакансий, размещение резюме. Тысячи актуальных предложений для соискателей и работодателей" />
                 </Head>
-                <div className='grid md:grid-cols-7 grid-cols-1'>
+                <div className='grid md:grid-cols-7 grid-cols-1 z-20'>
                     <div className='col-span-5'>
                         <div className='flex border-b md:sticky md:top-0 bg-white bg-opacity-50 backdrop-blur-md border-gray-200'>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500'>Вакансии для вас</div>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 text-gray-500 text-sm'>Вакансии дня</div>
                         </div>
-                        <div className='block bg-gradient-to-r md:mx-5 mx-3 p-5 from-blue-500 via-blue-600 to-blue-700 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                        <div className='block bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div className='font-bold text-lg md:text-2xl'>
                                 {i18n.language == 'ru' ?
-                                (`Это размещение уже посмотрели ${visits.toLocaleString()} раз`)
+                                    (`Пройди бесплатное обучение`)
                                 :
-                                (`Бұл орналастыру қазірдің өзінде ${visits.toLocaleString()} рет қаралды`)}
+                                    (`Пройди бесплатное обучение `)
+                                }
                             </div>
-                            <div className='font-light md:text-lg md:mt-3'>{i18n.language == 'ru' ? ('Здесь могла бы быть Ваша реклама') : ('Сіздің жарнамаңыз осында болуы мүмкін')}</div>
+                            <div className='font-light md:text-lg md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
                             <div className='flex gap-x-5 mt-3 items-center'>
-                                <a
-                                    href="tel:87072213131"
-                                    className='px-3 md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-blue-500 hover:bg-white transition-all duration-150 hover:text-black'
+                                <div
+                                    onClick={() => setIsOpen(true)}
+                                    className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
                                 >
-                                    {i18n.language == 'ru' ? ('Связаться'):('Байланысу')}
-                                </a>
-                                <Link
+                                    {i18n.language == 'ru' ? ('Оставить заявку'):('Оставить заявку')}
+                                </div>
+                                <a
+                                    href='https://www.instagram.com/joltap.kz'
                                     className='block text-white text-sm font-light md:text-sm'
                                 >
                                     {i18n.language == 'ru' ? ('Подробнее'):('Толығырақ')}
-                                </Link>
+                                </a>
                             </div>
                         </div>
                         <div className='border-b border-gray-200 mt-5'>
