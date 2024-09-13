@@ -30,7 +30,7 @@ export default function Registration({ errors, professions }) {
         gender: '',
         avatar: null,
         role: '',
-        description: '',
+        description: ' ',
         source: source,
     });
     const login = 'janamumkindik@gmail.com';
