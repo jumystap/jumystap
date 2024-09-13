@@ -42,8 +42,8 @@ class HomeController extends Controller
             });
 
         $announcements = Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
-        $urgent_announcements = Announcement::inRandomOrder()->take(2)->get();
-        $top_announcements = Announcement::inRandomOrder()->take(2)->get();
+        $urgent_announcements = Announcement::inRandomOrder()->where('active',1 )->take(2)->get();
+        $top_announcements = Announcement::inRandomOrder()->where('active', 1)->take(2)->get();
         $work_professions = Profession::where('type', 'work')->with('group')->orderBy('created_at', 'desc')->get();
         $digital_professions = Profession::where('type', 'digital')->with('group')->orderBy('created_at', 'desc')->get();
         $visits = Visit::count();
