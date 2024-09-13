@@ -140,6 +140,35 @@ export default function Announcements({ auth, announcements, errors }) {
                 </Head>
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
+                        <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                            <div>
+                                <div className='font-bold text-lg md:text-2xl'>
+                                    {i18n.language == 'ru' ?
+                                        (`Пройди бесплатное обучение`)
+                                    :
+                                        (`Пройди бесплатное обучение `)
+                                    }
+                                </div>
+                                <div className='font-light md:text-lg md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
+                                <div className='flex gap-x-5 mt-3 items-center'>
+                                    <div
+                                        onClick={() => setIsOpen(true)}
+                                        className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
+                                    >
+                                        {i18n.language == 'ru' ? ('Оставить заявку'):('Оставить заявку')}
+                                    </div>
+                                    <a
+                                        href='https://www.instagram.com/joltap.kz'
+                                        className='block text-white text-sm font-light md:text-sm'
+                                    >
+                                        {i18n.language == 'ru' ? ('Подробнее'):('Толығырақ')}
+                                    </a>
+                                </div>
+                            </div>
+                            <div className='ml-auto pt-2'>
+                                <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
+                            </div>
+                        </div>
                         <div className='mt-5'>
                             <input
                                 type="text"
