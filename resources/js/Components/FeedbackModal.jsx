@@ -95,7 +95,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                         </ConfigProvider>
                     </div>
 
-                    <Checkbox className='mt-5' >Я подтверждаю что проживаю в городе Астана</Checkbox>
+                    <Checkbox className='mt-5' >Я подтверждаю, что проживаю в городе Астана</Checkbox>
 
                     <div className="flex justify-end mt-4">
                         <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
