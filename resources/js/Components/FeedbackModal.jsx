@@ -78,7 +78,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                     />
 
                     <div>
-                        <div className='mb-2 text-gray-500'>Выберите желаемые профессии:</div>
+                        <div className='mb-2 text-gray-500'>Выберите желаемые навыки:</div>
                         <ConfigProvider
                             theme={{
                                 token: {

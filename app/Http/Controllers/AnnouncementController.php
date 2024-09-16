@@ -55,10 +55,14 @@ class AnnouncementController extends Controller
 
     public function store(): mixed
     {
-        $industries = Industry::all();
-        return Inertia::render('Company/CreateAnnouncement', [
-            'industries' => $industries,
-        ]);
+        if(Auth::user()->role_id != 2){
+            $industries = Industry::all();
+            return Inertia::render('Company/CreateAnnouncement', [
+                'industries' => $industries,
+            ]);
+        }else{
+            return redirect('/');
+        }
     }
 
     public function create(Request $request)
@@ -104,10 +108,14 @@ class AnnouncementController extends Controller
         $announcement = Announcement::find($id);
         $industries = Industry::all();
 
-        return Inertia::render('Company/UpdateAnnouncement', [
-            'announcement' => $announcement,
-            'industries' => $industries,
-        ]);
+        if(Auth::user() == $announcement->user_id || Auth::user()->email == 'admin@example.com'){
+            return Inertia::render('Company/UpdateAnnouncement', [
+                'announcement' => $announcement,
+                'industries' => $industries,
+            ]);
+        }else{
+            return redirect('/');
+        }
     }
 
     public function update(Request $request, $id)
