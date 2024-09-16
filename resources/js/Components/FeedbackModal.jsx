@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import emails from 'emailjs-com';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
@@ -9,6 +9,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     const [phone, setPhone] = useState('');
     const [loading, setLoading] = useState(false);
     const [selectedProfessions, setSelectedProfessions] = useState([]);
+    const [error, setError] = useState('');
 
     const professions = [
         'Основы изготовления корпусной мебели',
@@ -22,11 +23,19 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
 
     const handleProfessionChange = (checkedValues) => {
         setSelectedProfessions(checkedValues);
+        setError('');  // Clear error when user selects a profession
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+
+        // Check if at least one profession is selected
+        if (selectedProfessions.length === 0) {
+            setLoading(false);
+            setError('Пожалуйста, выберите хотя бы один навык.');
+            return;
+        }
 
         const templateParams = {
             name,
@@ -93,9 +102,12 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                                 style={{ display: 'flex', flexDirection: 'column' }}
                             />
                         </ConfigProvider>
+                        {error && <div className="text-red-500 mt-2">{error}</div>} {/* Display error if no profession is selected */}
                     </div>
 
-                    <Checkbox className='mt-5' >Я подтверждаю, что проживаю в городе Астана</Checkbox>
+                    <Checkbox className='mt-5' required>
+                        Я подтверждаю, что проживаю в городе Астана
+                    </Checkbox>
 
                     <div className="flex justify-end mt-4">
                         <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
