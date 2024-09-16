@@ -126,7 +126,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'payment_type' => 'required|string|max:255',
-            'cost' => 'required|numeric',
+            'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable',
             'location' => 'nullable',
