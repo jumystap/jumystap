@@ -249,6 +249,46 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             </Link>
                         ))}
                         <Pagination links={announcements.links} />
+                        <div className='hidden'>
+                            <div className='flex mt-5'>
+                                <div className='mx-auto'>
+                                    <div className='border-orange-500 text-orange-500 border px-10 rounded-lg py-2 font-light'>{work_professions.length} {t('work_skills', { ns: 'index'})}</div>
+                                </div>
+                            </div>
+                            <div className='grid px-5 md:grid-cols-2 gap-5 mt-7'>
+                                {work_professions.map((work, index) => (
+                                    <Link href={`/profession/${work.group.name}#${work.id}`} key={index} className='flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150'>
+                                        <img src={`/storage/${work.icon_url}`} className="w-[30px] h-[30px]" alt="" />
+                                        <div>
+                                            {i18n.language == 'ru' ? (
+                                                work.name_ru
+                                            ) : (
+                                                work.name_kz
+                                            )}
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                            <div className='flex mt-5'>
+                                <div className='mx-auto'>
+                                    <div className='border-orange-500 border px-10 text-orange-500 rounded-lg mt-5 py-2 font-light'>{digital_professions.length} {t('digital_skills', { ns: 'index'})}</div>
+                                </div>
+                            </div>
+                            <div className='grid px-5 md:grid-cols-2 gap-5 mt-7'>
+                                {digital_professions.map((digital, index) => (
+                                    <Link href={`/profession/${digital.group.name}#${digital.id}`} key={index} className='flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150'>
+                                        <img src={`/storage/${digital.icon_url}`} className="w-[30px] h-[30px]" alt="" />
+                                        <div>
+                                            {i18n.language == 'ru' ? (
+                                                digital.name_ru
+                                            ) : (
+                                                digital.name_kz
+                                            )}
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                     <div className='col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0'>
                         <div>

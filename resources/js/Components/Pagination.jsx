@@ -17,7 +17,7 @@ const Pagination = ({ links, currentPage }) => {
     }
 
     return (
-        <div className="mb-10 mt-5 flex w-full items-center">
+        <div className="mb-5 mt-5 flex w-full items-center">
             <div className='flex mx-auto px-2 bg-gray-100 text-base rounded-full py-1  items-center'>
                 {links.find(link => link.label === '&laquo; Previous') && (
                     <Link
