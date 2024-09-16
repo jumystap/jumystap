@@ -42,8 +42,11 @@ export default function User({ auth, user, employees, userProfessions}) {
                                     className='font-bold text-lg flex items-center gap-2'
                                 >
                                     {user.name}
-                                    {user.is_graduate && (
-                                        <RiVerifiedBadgeFill className='text-lg text-blue-500' />)}
+                                    {user.is_graduate ? (
+                                        <RiVerifiedBadgeFill className='text-lg text-blue-500' />
+                                    ): (
+                                        ''
+                                    )}
                                 </div>
                                 <div className="text-gray-500">
                                     @{user.email.split('@')[0]}
@@ -52,19 +55,19 @@ export default function User({ auth, user, employees, userProfessions}) {
                                     {user.status}
                                 </div>
                                 {auth.user == null ? (
-                                    <Link href="/register"className='mt-3 text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
+                                    <Link href="/register"className='md:hidden mt-3 text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
                                         <span className='font-bold'>Связаться</span>
                                     </Link>
                                 ):(
                                     <a
                                         href={`https://wa.me/${user.phone}?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A`}
-                                        className='text-white rounded-lg mt-3 text-center inline-block bg-blue-500 py-2 px-10'
+                                        className='text-white rounded-lg mt-3 md:hidden text-center inline-block bg-blue-500 py-2 px-10'
                                     >
                                         <span className='font-bold'>Связаться</span>
                                     </a>
                                 )}
                             </div>
-                            <div className="ml-auto hidden ">
+                            <div className="ml-auto hidden md:block">
                                 {auth.user == null ? (
                                     <Link href="/register"className='text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
                                         <span className='font-bold'>Связаться</span>
