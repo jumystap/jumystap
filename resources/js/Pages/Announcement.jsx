@@ -26,7 +26,6 @@ export default function Announcement({ auth, announcement, top_announcement, urg
     const isLongText = announcement.user.description.length > maxLength;
     const displayedText = showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}`;
 
-
     const handleFavoriteClick = () => {
         if (isFavorite) {
             destroy(`/fav/${announcement.id}`, {
@@ -96,10 +95,18 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                             </div>
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
-                                    <a href={`/connect/${auth.user.id}/${announcement.id}`}
-                                       className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                        <span className='font-bold'>Связаться</span>
-                                    </a>
+                                    <>
+                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
+                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>Связаться</span>
+                                        </a>
+                                        {auth.user.email = 'admin@example.com' && (
+                                            <a href={`/announcement/update/${announcement.id}`}
+                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>Изменить</span>
+                                            </a>
+                                        )}
+                                    </>
                                 ) : (
                                      <Link href='/register'
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
