@@ -108,7 +108,7 @@ class AnnouncementController extends Controller
         $announcement = Announcement::find($id);
         $industries = Industry::all();
 
-        if(Auth::user() == $announcement->user_id || Auth::user()->email == 'admin@example.com'){
+        if(Auth::user()->id == $announcement->user_id || Auth::user()->email == 'admin@example.com'){
             return Inertia::render('Company/UpdateAnnouncement', [
                 'announcement' => $announcement,
                 'industries' => $industries,
