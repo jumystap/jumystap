@@ -156,20 +156,20 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                         <div className='border-b border-gray-200 mt-5'>
                         </div>
                         {urgent_announcements.map((anonce, index) => (
-                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
-                                <div className='flex'>
+                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200 md:hidden block'>
+                                <div className='flex items-center'>
                                     <div className='flex gap-x-1 text-blue-400 items-center'>
-                                        <FaLocationDot className='text-sm'/>
-                                        <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
+                                        <div className='text-white bg-red-600 font-bold text-sm px-2 rounded'>СРОЧНО</div>
                                     </div>
-                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
+                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center'>
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
                                 <div className='mt-7 text-lg font-bold'>
                                     {anonce.title}
                                 </div>
-                                <div className='flex mt-4 gap-x-3 items-center'>
+                                <div className='flex mt-4 gap-x-1 items-center'>
+                                    <SiFireship className='text-red-600 text-lg' />
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
@@ -187,11 +187,10 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             </Link>
                         ))}
                         {top_announcements.map((anonce, index) => (
-                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
+                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200 md:hidden'>
                                 <div className='flex'>
                                     <div className='flex gap-x-1 text-blue-400 items-center'>
-                                        <FaLocationDot className='text-sm'/>
-                                        <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
+                                        <div className='text-white bg-blue-500 font-bold text-sm px-2 rounded'>ТОП</div>
                                     </div>
                                     <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
@@ -200,7 +199,8 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                                 <div className='mt-7 text-lg font-bold'>
                                     {anonce.title}
                                 </div>
-                                <div className='flex mt-4 gap-x-3 items-center'>
+                                <div className='flex mt-4 gap-x-1 items-center'>
+                                    <FaStar className='text-blue-500 text-lg'/>
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
