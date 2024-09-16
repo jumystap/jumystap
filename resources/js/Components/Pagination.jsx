@@ -5,7 +5,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Pagination = ({ links, currentPage }) => {
     const filteredLinks = links.filter(link => !['&laquo; Previous', 'Next &raquo;'].includes(link.label));
 
-    const maxVisiblePages = 5;
+    const maxVisiblePages = 3;
     const totalPages = filteredLinks.length;
     const currentIndex = filteredLinks.findIndex(link => link.active);
 
@@ -18,7 +18,7 @@ const Pagination = ({ links, currentPage }) => {
 
     return (
         <div className="mb-10 mt-5 flex w-full items-center">
-            <div className='flex mx-auto px-2 bg-gray-100 md:text-base text-sm rounded-full py-1  items-center'>
+            <div className='flex mx-auto px-2 bg-gray-100 text-base rounded-full py-1  items-center'>
                 {links.find(link => link.label === '&laquo; Previous') && (
                     <Link
                         href={links.find(link => link.label === '&laquo; Previous').url || '#'}
@@ -57,7 +57,6 @@ const Pagination = ({ links, currentPage }) => {
                     </>
                 )}
 
-                {/* Next Button */}
                 {links.find(link => link.label === 'Next &raquo;') && (
                     <Link
                         href={links.find(link => link.label === 'Next &raquo;').url || '#'}
