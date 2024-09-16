@@ -188,6 +188,7 @@ class AnnouncementController extends Controller
             $message .= "Тип зарплаты: " . $announcement->salary_type . "\n";
             $message .= "Зарплата: " . $announcement->cost . $announcement->cost_min . $announcement->cost_max . "\n";
             $message .= "Номер телефона: " . Auth::user()->phone. "\n";
+            $message .= "https://jumystap.kz/announcement/" . $announcement->id . "\n";
 
             try {
                 $keyboard = Keyboard::make()
