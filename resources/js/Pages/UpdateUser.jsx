@@ -11,7 +11,7 @@ const UpdateUser = ({ user }) => {
     const { data, setData, post, processing, errors, clearErrors } = useForm({
         name: user.name || '',
         email: user.email || '',
-        age: user.age || 30,
+        date_of_birth: user.date_of_birth || '',
         phone: user.phone || '',
         ipStatus1: user.ip == 'Есть ИП' ? 'yes' : 'no',
         ipStatus2: user.status == 'В активном поиске' ? 'yes' : 'no',
@@ -70,7 +70,7 @@ const UpdateUser = ({ user }) => {
 
     return (
         <GuestLayout>
-            <div className="grid grid-cols-7">
+            <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="bg-white col-span-5 rounded-lg p-6">
                     <div className="text-left mb-4">
                         {avatarPreview ? (
@@ -123,13 +123,13 @@ const UpdateUser = ({ user }) => {
                             <>
                                 <div className="mb-2">
                                     <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="age">
-                                        {t('age_label', { ns: 'register' })}
+                                        Дата рождения
                                     </label>
                                     <input
-                                        id="age"
-                                        value={data.age}
-                                        name="age"
-                                        type="number"
+                                        id="date_of_birth"
+                                        value={data.date_of_birth}
+                                        name="date_of_birth"
+                                        type="date"
                                         onChange={handleChange}
                                         className="w-full appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     />
@@ -207,7 +207,7 @@ const UpdateUser = ({ user }) => {
                         </div>
                     </form>
                 </div>
-                <div className='col-span-2 border-l border-gray-200 sticky top-0 h-screen'>
+                <div className='md:block hidden col-span-2 border-l border-gray-200 sticky top-0 h-screen'>
                 </div>
             </div>
         </GuestLayout>

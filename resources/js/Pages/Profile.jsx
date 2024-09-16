@@ -54,7 +54,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-7">
                             <div className='col-span-5'>
-                                <div className='flex gap-x-3 p-10 bg-white border-b border-gray-200'>
+                                <div className='flex md:flex-row flex-col gap-x-3 p-10 bg-white border-b border-gray-200'>
                                     <img
                                         src={`/storage/${user.image_url}`}
                                         className='w-[70px] h-[70px] rounded-full object-cover'
@@ -80,7 +80,14 @@ export default function Profile({ auth, user, announcements, employees, professi
                                         <div className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
                                             {user.status}
                                         </div>
-
+                                    </div>
+                                    <div className='md:ml-auto'>
+                                        <Link
+                                            href='update'
+                                            className='text-center mt-2 block bg-blue-500 px-5 py-2 text-white rounded-lg'
+                                        >
+                                            Изменить
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className='mt-10'>
