@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Visit;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -28,12 +29,17 @@ class TrackVisitJob implements ShouldQueue
 
     public function handle()
     {
-        Visit::create([
-            'user_id' => $this->user,
-            'url' => $this->url,
-            'ip_address' => $this->ip,
-            'device_type' => $this->deviceType,
-        ]);
+        try {
+            Visit::create([
+                'user_id' => $this->user,
+                'url' => $this->url,
+                'ip_address' => $this->ip,
+                'device_type' => $this->deviceType,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('TrackVisitJob failed: ' . $e->getMessage());
+        }
     }
+
 }
 
