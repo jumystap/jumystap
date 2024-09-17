@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Announcement;
 use App\Models\Industry;
 use App\Models\Response;
+use App\Models\Specialization;
+use App\Models\SpecializationCategory;
 use App\Models\TelegramAdmin;
 use App\Models\User;
 use App\Services\AnnouncementService;
@@ -25,12 +27,14 @@ class AnnouncementController extends Controller
         $this->announcementService = $announcementService;
     }
 
-    public function index(): mixed
+    public function index(Request $request): mixed
     {
         $announcements = $this->announcementService->getAllActiveAnnouncements();
+        $specializations = SpecializationCategory::with('specialization')->get();
 
         return Inertia::render('Announcements', [
             'announcements' => $announcements,
+            'specializations' => $specializations,
         ]);
     }
 

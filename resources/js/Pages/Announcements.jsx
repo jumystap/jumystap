@@ -8,13 +8,17 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
+import { Cascader } from 'antd';
+import { CgArrowsExchangeAltV } from "react-icons/cg";
 
-export default function Announcements({ auth, announcements, errors }) {
+export default function Announcements({ auth, announcements, specializations, errors }) {
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedSpecialization, setSelectedSpecialization] = useState([]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const kz = {
         ...ru,
@@ -104,6 +108,16 @@ export default function Announcements({ auth, announcements, errors }) {
         }
     };
 
+    const cascaderOptions = specializations.map(category => ({
+        value: category.id,
+        label: category.name_ru,
+        children: category.specialization.map(spec => ({
+            value: spec.id,
+            label: spec.name_ru
+        }))
+    }));
+
+
     const handleFeedbackSubmit = (feedback) => {
         axios.post('/send-feedback', { feedback }).then((response) => {
             console.log((t('feedback_sent', { ns: 'header' })));
@@ -124,23 +138,12 @@ export default function Announcements({ auth, announcements, errors }) {
         setSearchKeyword(event.target.value);
     };
 
-    const sortedAnnouncements = announcements.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const handleSpecializationChange = (value) => {
+        setSelectedSpecialization(value);
+        console.log("Selected specialization: ", value);
+    };
 
     const uniqueCities = [...new Set(announcements.data.map(anonce => anonce.city))];
-
-    const filteredAnnouncements = sortedAnnouncements.filter((anonce) => {
-        const announcementTypeMatches = (announcementType === 'all') ||
-                                        (announcementType === 'vacancy' && anonce.type_ru === 'Вакансия') ||
-                                        (announcementType === 'project' && anonce.type_ru === 'Заказ');
-
-        const cityMatches = searchCity === '' || anonce.city === searchCity;
-
-        const keywordMatches = searchKeyword === '' ||
-                               anonce.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-                               anonce.description?.toLowerCase().includes(searchKeyword.toLowerCase());
-
-        return announcementTypeMatches && cityMatches && keywordMatches;
-    });
 
     return (
         <>
@@ -149,6 +152,11 @@ export default function Announcements({ auth, announcements, errors }) {
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
                 <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
+                {isFilterOpen && (
+                    <div className='fixed top-0 left-0 w-full h-screen bg-black z-40'>
+                        123
+                    </div>
+                )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
@@ -180,40 +188,22 @@ export default function Announcements({ auth, announcements, errors }) {
                                 <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                             </div>
                         </div>
-                        <div className='mt-5'>
+                        <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
                                 type="text"
                                 value={searchKeyword}
                                 onChange={handleSearchKeywordChange}
                                 placeholder={t('search_placeholder', { ns: 'announcements' })}
-                                className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
+                                className='block border rounded-lg w-full text-xl border-gray-300 text-gray-500 px-5 p-2'
                             />
-                            <div className='flex flex-col md:flex-col'>
-                            <select
-                                value={announcementType}
-                                onChange={handleAnnouncementTypeChange}
-                                name="announcementType"
-                                className={`md:hidden block border-b py-4 border-[0px] w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-blue-500'}`}
+                            <div
+                                onClick={() => setIsFilterOpen(false)}
+                                className='text-4xl px-2 border rounded-lg text-blue-500 md:hidden border-gray-300 py-1'
                             >
-                                <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
-                                <option value="vacancy">Вакансия</option>
-                                <option value="project">{t('project', { ns: 'announcements' })}</option>
-                            </select>
-
-                            <select
-                                value={searchCity}
-                                onChange={handleCityChange}
-                                name="searchCity"
-                                className='md:hidden block border-b py-4 border-[0px] w-full md:w-auto border-gray-300 text-gray-500'
-                            >
-                                <option value="">{t('all_cities', { ns: 'announcements' })}</option>
-                                {uniqueCities.map((city, index) => (
-                                    <option key={index} value={city}>{city}</option>
-                                ))}
-                            </select>
+                                <CgArrowsExchangeAltV />
+                            </div>
                         </div>
-                        </div>
-                        {filteredAnnouncements.map((anonce, index) => (
+                        {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
                                 <div className='flex'>
                                     <div className='flex gap-x-1 text-blue-400 items-center'>
@@ -261,7 +251,6 @@ export default function Announcements({ auth, announcements, errors }) {
                                 <option value="vacancy">Вакансия</option>
                                 <option value="project">{t('project', { ns: 'announcements' })}</option>
                             </select>
-
                             <select
                                 value={searchCity}
                                 onChange={handleCityChange}

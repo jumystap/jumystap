@@ -12,6 +12,7 @@ export default function Profession({ professions }) {
     return (
         <>
             <GuestLayout>
+                <div className='px-5'>
                 {professions.map((profession, index) => (
                     <div key={index} id={profession.id} className={`mt-10 border-b-2 border-gray-300 pb-10 ${profession.name_ru === 'Продажи на Wildberries' && (`hidden`)}  ${profession.name_ru === 'Базовые цифровые навыки' && (`hidden`)}`}>
                         {profession.name_ru === 'SMM-специалист' && (
@@ -639,6 +640,7 @@ export default function Profession({ professions }) {
                         )}
                     </div>
                 ))}
+                </div>
             </GuestLayout>
         </>
     )

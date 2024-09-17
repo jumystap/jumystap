@@ -249,7 +249,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             </Link>
                         ))}
                         <Pagination links={announcements.links} />
-                        <div className='hidden'>
+                        <div className='pb-10'>
                             <div className='flex mt-5'>
                                 <div className='mx-auto'>
                                     <div className='border-orange-500 text-orange-500 border px-10 rounded-lg py-2 font-light'>{work_professions.length} {t('work_skills', { ns: 'index'})}</div>

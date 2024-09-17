@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class SpecializationCategory extends Model
 {
     use HasFactory;
+
+    public function specialization()
+    {
+        return $this->hasMany(Specialization::class, 'category_id');
+    }
 }
