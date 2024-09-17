@@ -10,9 +10,19 @@ use Illuminate\Support\Facades\DB;
 
 class AnnouncementRepository
 {
-    public function getAllActiveAnnouncements()
+    public function getAllActiveAnnouncements($searchKeyword = null)
     {
-        return Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
+        $query = Announcement::orderBy('created_at', 'desc')
+        ->where('active', 1);
+
+        if ($searchKeyword) {
+            $query->where(function ($q) use ($searchKeyword) {
+                $q->where('title', 'LIKE', "%$searchKeyword%")
+                  ->orWhere('description', 'LIKE', "%$searchKeyword%");
+            });
+        }
+
+        return $query->paginate(10);
     }
 
     public function getAnnouncementById($id): ?Announcement

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -10,15 +10,38 @@ import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
 import { Cascader } from 'antd';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
+import { IoSearch } from "react-icons/io5";
 
 export default function Announcements({ auth, announcements, specializations, errors }) {
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
-    const [searchKeyword, setSearchKeyword] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    const { searchKeyword: querySearchKeyword } = usePage().props;
+
+    const { data, setData, get } = useForm({
+        searchKeyword: querySearchKeyword || ''
+    });
+
+    const handleSearchKeywordChange = (event) => {
+        setData('searchKeyword', event.target.value);
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const searchKeyword = params.get('searchKeyword');
+
+        if (searchKeyword) {
+            setData('searchKeyword', searchKeyword);
+        }
+    }, []);
+
+    const handleSearch = () => {
+        get('/announcements', {preserveScroll: true});
+    };
 
     const kz = {
         ...ru,
@@ -134,10 +157,6 @@ export default function Announcements({ auth, announcements, specializations, er
         setSearchCity(event.target.value);
     };
 
-    const handleSearchKeywordChange = (event) => {
-        setSearchKeyword(event.target.value);
-    };
-
     const handleSpecializationChange = (value) => {
         setSelectedSpecialization(value);
         console.log("Selected specialization: ", value);
@@ -191,14 +210,26 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
                                 type="text"
-                                value={searchKeyword}
+                                value={data.searchKeyword}
                                 onChange={handleSearchKeywordChange}
                                 placeholder={t('search_placeholder', { ns: 'announcements' })}
-                                className='block border rounded-lg w-full text-xl border-gray-300 text-gray-500 px-5 p-2'
+                                className='block border rounded-lg w-full text-base border-gray-300 text-gray-500 px-5 p-2'
                             />
+                            <button
+                                className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
+                                onClick={handleSearch}
+                            >
+                                Найти
+                            </button>
+                            <button
+                                className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                                onClick={handleSearch}
+                            >
+                                <IoSearch />
+                            </button>
                             <div
                                 onClick={() => setIsFilterOpen(false)}
-                                className='text-4xl px-2 border rounded-lg text-blue-500 md:hidden border-gray-300 py-1'
+                                className='text-3xl px-2 border rounded-lg text-blue-500 md:hidden border-gray-300 py-1'
                             >
                                 <CgArrowsExchangeAltV />
                             </div>
@@ -234,7 +265,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                 </div>
                             </Link>
                         ))}
-                        <Pagination links={announcements.links} />
+                        <Pagination links={announcements.links} searchKeyword={data.searchKeyword} />
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>

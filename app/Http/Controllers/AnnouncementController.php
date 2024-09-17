@@ -29,7 +29,9 @@ class AnnouncementController extends Controller
 
     public function index(Request $request): mixed
     {
-        $announcements = $this->announcementService->getAllActiveAnnouncements();
+        $searchKeyword = $request->input('searchKeyword');
+
+        $announcements = $this->announcementService->getAllActiveAnnouncements($searchKeyword);
         $specializations = SpecializationCategory::with('specialization')->get();
 
         return Inertia::render('Announcements', [

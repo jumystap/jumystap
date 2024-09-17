@@ -14,9 +14,9 @@ class AnnouncementService
         $this->announcementRepository = $announcementRepository;
     }
 
-    public function getAllActiveAnnouncements()
+    public function getAllActiveAnnouncements($searchKeyword = null)
     {
-        return $this->announcementRepository->getAllActiveAnnouncements();
+        return $this->announcementRepository->getAllActiveAnnouncements($searchKeyword);
     }
 
     public function getAnnouncement($id): ?Announcement

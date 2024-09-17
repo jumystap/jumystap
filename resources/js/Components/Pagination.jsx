@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const Pagination = ({ links, currentPage }) => {
+const Pagination = ({ links, currentPage, searchKeyword }) => {
     const filteredLinks = links.filter(link => !['&laquo; Previous', 'Next &raquo;'].includes(link.label));
 
     const maxVisiblePages = 3;
@@ -16,12 +16,29 @@ const Pagination = ({ links, currentPage }) => {
         startPage = Math.max(endPage - maxVisiblePages, 0);
     }
 
+    const appendSearchKeyword = (url) => {
+        if (url && searchKeyword) {
+            const separator = url.includes('?') ? '&' : '?';
+            const newUrl = `${url}${separator}searchKeyword=${encodeURIComponent(searchKeyword)}`;
+
+            // Debug: log the URL and searchKeyword
+            console.log('Appending searchKeyword:', searchKeyword, 'to URL:', newUrl);
+
+            return newUrl;
+        }
+        return url;
+    };
+
+    // Debug: log the searchKeyword and links
+    console.log('searchKeyword:', searchKeyword);
+    console.log('links:', links);
+
     return (
         <div className="mb-5 mt-5 flex w-full items-center">
-            <div className='flex mx-auto px-2 bg-gray-100 text-base rounded-full py-1  items-center'>
+            <div className='flex mx-auto px-2 bg-gray-100 text-base rounded-full py-1 items-center'>
                 {links.find(link => link.label === '&laquo; Previous') && (
                     <Link
-                        href={links.find(link => link.label === '&laquo; Previous').url || '#'}
+                        href={appendSearchKeyword(links.find(link => link.label === '&laquo; Previous').url) || '#'}
                         className='block px-2'
                     >
                         <IoIosArrowBack />
@@ -30,7 +47,12 @@ const Pagination = ({ links, currentPage }) => {
 
                 {startPage > 0 && (
                     <>
-                        <Link href={filteredLinks[0].url} className="block px-3 py-1 rounded-full text-gray-400">1</Link>
+                        <Link
+                            href={appendSearchKeyword(filteredLinks[0].url)}
+                            className="block px-3 py-1 rounded-full text-gray-400"
+                        >
+                            1
+                        </Link>
                         <span className="block px-3 py-1">...</span>
                     </>
                 )}
@@ -38,7 +60,7 @@ const Pagination = ({ links, currentPage }) => {
                 {filteredLinks.slice(startPage, endPage).map((link, index) => (
                     <Link
                         key={index}
-                        href={link.url || '#'}
+                        href={appendSearchKeyword(link.url) || '#'}
                         className={`block px-3 py-1 rounded-full ${link.active ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
                     >
                         {link.label}
@@ -49,7 +71,7 @@ const Pagination = ({ links, currentPage }) => {
                     <>
                         <span className="block px-3 py-1">...</span>
                         <Link
-                            href={filteredLinks[totalPages - 1].url}
+                            href={appendSearchKeyword(filteredLinks[totalPages - 1].url)}
                             className="block px-3 py-1 rounded-full text-gray-400"
                         >
                             {filteredLinks[totalPages - 1].label}
@@ -59,7 +81,7 @@ const Pagination = ({ links, currentPage }) => {
 
                 {links.find(link => link.label === 'Next &raquo;') && (
                     <Link
-                        href={links.find(link => link.label === 'Next &raquo;').url || '#'}
+                        href={appendSearchKeyword(links.find(link => link.label === 'Next &raquo;').url) || '#'}
                         className='block px-2'
                     >
                         <IoIosArrowForward />
