@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
+import { CgClose} from "react-icons/cg";
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
@@ -47,69 +48,23 @@ export default function Announcements({ auth, announcements, specializations, er
         ...ru,
         formatDistance: (token, count, options) => {
             const formatDistanceLocale = {
-                lessThanXSeconds: {
-                    one: 'Бірнеше секунд',
-                    other: 'Секунд',
-                },
-                xSeconds: {
-                    one: 'Бір секунд',
-                    other: '{{count}} секунд',
-                },
+                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
+                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
                 halfAMinute: 'жарты минут',
-                lessThanXMinutes: {
-                    one: 'Бірнеше минут',
-                    other: 'Минут',
-                },
-                xMinutes: {
-                    one: 'Бір минут',
-                    other: '{{count}} минут',
-                },
-                aboutXHours: {
-                    one: 'Шамамен бір сағат',
-                    other: 'Шамамен {{count}} сағат',
-                },
-                xHours: {
-                    one: 'Бір сағат',
-                    other: '{{count}} сағат',
-                },
-                xDays: {
-                    one: 'Бір күн',
-                    other: '{{count}} күн',
-                },
-                aboutXWeeks: {
-                    one: 'Шамамен бір апта',
-                    other: 'Шамамен {{count}} апта',
-                },
-                xWeeks: {
-                    one: 'Бір апта',
-                    other: '{{count}} апта',
-                },
-                aboutXMonths: {
-                    one: 'Шамамен бір ай',
-                    other: 'Шамамен {{count}} ай',
-                },
-                xMonths: {
-                    one: 'Бір ай',
-                    other: '{{count}} ай',
-                },
-                aboutXYears: {
-                    one: 'Шамамен бір жыл',
-                    other: 'Шамамен {{count}} жыл',
-                },
-                xYears: {
-                    one: 'Бір жыл',
-                    other: '{{count}} жыл',
-                },
-                overXYears: {
-                    one: 'Бір жылдан астам',
-                    other: '{{count}} жылдан астам',
-                },
-                almostXYears: {
-                    one: 'Бір жылға жуық',
-                    other: '{{count}} жылға жуық',
-                },
+                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
+                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
+                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
+                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
+                xDays: { one: 'Бір күн', other: '{{count}} күн' },
+                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
+                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
+                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
+                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
+                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
+                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
+                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
+                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
             };
-
 
             const result = formatDistanceLocale[token];
 
@@ -171,9 +126,29 @@ export default function Announcements({ auth, announcements, specializations, er
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
                 <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
+                <div
+                    className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'
+                >
+                    <div className='w-[80%] bg-white rounded-lg h-[20%]'>
+                    </div>
+                </div>
                 {isFilterOpen && (
-                    <div className='fixed top-0 left-0 w-full h-screen bg-black z-40'>
-                        123
+                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
+                        <div className='flex w-full items-center'>
+                            <div className='text-xl font-bold'>Фильтры</div>
+                            <CgClose
+                                onClick={() => setIsFilterOpen(false)}
+                                className='ml-auto text-2xl inline-block cursor-pointer'
+                            />
+                        </div>
+                        <div className='text-center mt-10 text-xl text-gray-500 font-light'>Здесь будут филтры</div>
+                        <div className='mt-5 hidden'>
+                            <div>Выберите город</div>
+                            <select
+                                className='w-full'
+                            >
+                            </select>
+                        </div>
                     </div>
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
@@ -213,7 +188,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                 value={data.searchKeyword}
                                 onChange={handleSearchKeywordChange}
                                 placeholder={t('search_placeholder', { ns: 'announcements' })}
-                                className='block border rounded-lg w-full text-base border-gray-300 text-gray-500 px-5 p-2'
+                                className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                             />
                             <button
                                 className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
@@ -228,16 +203,25 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <IoSearch />
                             </button>
                             <div
-                                onClick={() => setIsFilterOpen(false)}
-                                className='text-3xl px-2 border rounded-lg text-blue-500 md:hidden border-gray-300 py-1'
+                                onClick={() => setIsFilterOpen(true)}
+                                className='text-3xl px-2 border-2 rounded-lg text-blue-500 md:hidden border-blue-500 py-1'
                             >
                                 <CgArrowsExchangeAltV />
                             </div>
                         </div>
+                        <div
+                            className='mx-3 md:mx-5 px-4 py-4 hidden border border-gray-300 mt-2 rounded-lg'
+                        >
+                            <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
+                            <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>
+                            <div className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'>Заполнить</div>
+                        </div>
+                        <div className='border-b border-gray-200 mt-3'>
+                        </div>
                         {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
                                 <div className='flex'>
-                                    <div className='flex gap-x-1 text-blue-400 items-center'>
+                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-black'):('text-blue-400')} items-center`}>
                                         <FaLocationDot className='text-sm'/>
                                         <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
                                     </div>
@@ -245,10 +229,10 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
                                     </div>
                                 </div>
-                                <div className='mt-7 text-lg font-bold'>
+                                <div className='md:mt-7 mt-5 text-lg font-bold'>
                                     {anonce.title}
                                 </div>
-                                <div className='flex mt-4 gap-x-3 items-center'>
+                                <div className='flex md:mt-4 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
@@ -256,7 +240,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
                                 </div>
-                                <div className='mt-4 text-sm text-gray-500 font-light'>
+                                <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
                                     {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
