@@ -34,6 +34,7 @@ class Announcement extends Model
         'salary_type',
         'cost_min',
         'cost_max',
+        'specialization_id',
     ];
 
     /**

@@ -63,8 +63,10 @@ class AnnouncementController extends Controller
     {
         if(Auth::user()->role_id != 2){
             $industries = Industry::all();
+            $specializations = SpecializationCategory::with('specialization')->get();
             return Inertia::render('Company/CreateAnnouncement', [
                 'industries' => $industries,
+                'specializations' => $specializations,
             ]);
         }else{
             return redirect('/');
@@ -84,7 +86,7 @@ class AnnouncementController extends Controller
             'work_time' => 'nullable',
             'location' => 'nullable',
             'city' => 'nullable',
-            'industry_id' => 'nullable',
+            'specialization_id' => 'nullable',
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
@@ -113,11 +115,13 @@ class AnnouncementController extends Controller
     {
         $announcement = Announcement::find($id);
         $industries = Industry::all();
+        $specializations = SpecializationCategory::with('specialization')->get();
 
         if(Auth::user()->id == $announcement->user_id || Auth::user()->email == 'admin@example.com'){
             return Inertia::render('Company/UpdateAnnouncement', [
                 'announcement' => $announcement,
                 'industries' => $industries,
+                'specializations' => $specializations
             ]);
         }else{
             return redirect('/');
@@ -137,7 +141,7 @@ class AnnouncementController extends Controller
             'work_time' => 'nullable',
             'location' => 'nullable',
             'city' => 'nullable',
-            'industry_id' => 'nullable',
+            'specialization_id' => 'nullable',
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',

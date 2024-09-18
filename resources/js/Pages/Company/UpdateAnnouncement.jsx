@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message } from 'antd';
+import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 
 const { TextArea } = Input;
@@ -11,7 +11,7 @@ const { Title } = Typography;
 const forbiddenWords = [
     "abuse"];
 
-const UpdateAnnouncement = ({ announcement, industries }) => {
+const UpdateAnnouncement = ({ announcement, industries, specializations }) => {
     const { t } = useTranslation();
 
     const { data, setData, put, processing, errors } = useForm({
@@ -25,12 +25,30 @@ const UpdateAnnouncement = ({ announcement, industries }) => {
         location: announcement.location || '',
         work_time: announcement.work_time || '',
         payment_type: announcement.payment_type || '',
-        industry_id: announcement.industry_id || null,
+        specialization_id: announcement.specialization_id || null,
         salary_type: announcement.salary_type || null,
         cost_min: announcement.cost_min || null,
         cost_max: announcement.cost_max || null,
 
     });
+
+    const cascaderData = specializations.map(category => ({
+        value: category.id,
+        label: category.name_ru,
+        children: category.specialization.map(spec => ({
+            value: spec.id,
+            label: spec.name_ru
+        }))
+    }));
+
+    const findCategoryForSpecialization = (specializationId) => {
+        for (const category of specializations) {
+            if (category.specialization.some(spec => spec.id === specializationId)) {
+                return category.id;
+            }
+        }
+        return null;
+    };
 
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(data.city === 'Другое');
@@ -237,20 +255,6 @@ const UpdateAnnouncement = ({ announcement, industries }) => {
                             </Select>
                         </Form.Item>
                         <Form.Item
-                            label='Выберите отрасль'
-                            name="industry_id"
-                        >
-                            <Select
-                                defaultValue={data.industry_id}
-                                value={data.industry_id}
-                                onChange={(value) => setData('industry_id', value)}
-                            >
-                                {industries.map((item) => (
-                                    <Option key={item.id} value={item.id}>{item.name_ru}</Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item
                             label='Город'
                             name="city"
                             help={errors.city}
@@ -269,7 +273,20 @@ const UpdateAnnouncement = ({ announcement, industries }) => {
                                     ))}
                             </Select>
                         </Form.Item>
-
+                        <Form.Item
+                            label="Специализация"
+                            name="specialization_id"
+                        >
+                            <Cascader
+                                options={cascaderData}
+                                onChange={(value) => setData('specialization_id', value[1])}
+                                placeholder="Выберите специализацию"
+                                defaultValue={(() => {
+                                    const category_id = findCategoryForSpecialization(announcement.specialization_id);
+                                    return category_id ? [category_id, announcement.specialization_id] : [];
+                                })()}
+                            />
+                        </Form.Item>
                         {showOtherCityInput && (
                             <Form.Item
                                 label='Введите другой город'

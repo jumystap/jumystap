@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message } from 'antd';
+import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 
 const { TextArea } = Input;
@@ -21,10 +21,19 @@ const kazakhstanCities = [
     "Экибастуз", "Рудный", "Жезказган"
 ];
 
-const CreateAnnouncement = ({ announcement = null, industries }) => {
+const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const { t } = useTranslation();
     const isEdit = announcement !== null;
     const [salaryType, setSalaryType] = useState('');
+
+    const cascaderData = specializations.map(category => ({
+        value: category.id,
+        label: category.name_ru,
+        children: category.specialization.map(spec => ({
+            value: spec.id,
+            label: spec.name_ru
+        }))
+    }));
 
     const { data, setData, post, put, processing, errors } = useForm({
         type_kz: 'Тапсырыс',
@@ -37,11 +46,13 @@ const CreateAnnouncement = ({ announcement = null, industries }) => {
         location: '',
         city: '',
         active: true,
-        industry_id: null,
+        specialization_id: null,
         salary_type: '',
         cost_min: null,
         cost_max: null,
     });
+
+    console.log(data);
 
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
@@ -285,17 +296,15 @@ const CreateAnnouncement = ({ announcement = null, industries }) => {
                             </Form.Item>
                         )}
                         <Form.Item
-                            label='Выберите отрасль'
-                            name="industry_id"
+                            label="Специализация"
+                            name="specialization_id"
+                            rules={[{ required: true, message: 'Пожалуйста, выберите специализацию' }]}
                         >
-                            <Select
-                                value={data.industry_id}
-                                onChange={(value) => setData('industry_id', value)}
-                            >
-                                {industries.map((item) => (
-                                    <Option key={item.id} value={item.id}>{item.name_ru}</Option>
-                                ))}
-                            </Select>
+                            <Cascader
+                                options={cascaderData}
+                                onChange={(value) => setData('specialization_id', value[1])}
+                                placeholder="Выберите специализацию"
+                            />
                         </Form.Item>
                     </div>
                     <Form.Item
