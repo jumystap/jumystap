@@ -46,7 +46,7 @@ export default function Announcement({ auth, announcement, top_announcement, urg
             <GuestLayout>
                 <div className='grid grid-cols-1 md:grid-cols-7'>
                     <div className="md:col-span-5 pt-5">
-                        <div className='md:mb-10 mb-2 px-5'>
+                        <div className='md:mb-5 mb-2 px-5'>
                             <div className=''>
                                 <div className='text-2xl md:text-3xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
                                 <div className="mt-2 text-sm font-light">{announcement.city} {announcement.location && (',')} {announcement.location}</div>
