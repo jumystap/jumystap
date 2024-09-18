@@ -9,6 +9,7 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
+import InfoModal from '@/Components/InfoModal';
 import { Cascader } from 'antd';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
@@ -20,6 +21,7 @@ export default function Announcements({ auth, announcements, specializations, er
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 
@@ -126,6 +128,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
                 <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
+                <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
                 <div
                     className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'
                 >
@@ -210,11 +213,16 @@ export default function Announcements({ auth, announcements, specializations, er
                             </div>
                         </div>
                         <div
-                            className='mx-3 md:mx-5 px-4 py-4 hidden border border-gray-300 mt-2 rounded-lg'
+                            className='mx-3 md:mx-5 px-4 py-4 border hidden border-gray-300 mt-2 rounded-lg'
                         >
                             <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
                             <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>
-                            <div className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'>Заполнить</div>
+                            <div
+                                className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                onClick={() => setIsInfoOpen(true)}
+                            >
+                                Заполнить
+                            </div>
                         </div>
                         <div className='border-b border-gray-200 mt-3'>
                         </div>

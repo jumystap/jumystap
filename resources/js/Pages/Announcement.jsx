@@ -44,21 +44,74 @@ export default function Announcement({ auth, announcement, top_announcement, urg
     return (
         <>
             <GuestLayout>
-                <div className='grid grid-cols-1 md:grid-cols-7 gap-5'>
-                    <div className="md:col-span-5 pt-10">
+                <div className='grid grid-cols-1 md:grid-cols-7'>
+                    <div className="md:col-span-5 pt-5">
                         <div className='md:mb-10 mb-2 px-5'>
-                            <div className='text-left font-bold text-xl'>{announcement.user.name}</div>
-                                <div className='text-left mt-5 text-gray-500'>
-                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
-                                    {isLongText && (
-                                        <span
-                                            onClick={toggleShowFullText}
-                                            className="text-blue-500 cursor-pointer"
-                                        >
-                                            {showFullText ? ' Скрыть' : ' Подробнее'}
-                                        </span>
+                            <div className=''>
+                                <div className='text-2xl md:text-3xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
+                                <div className="mt-2 text-sm font-light">{announcement.city} {announcement.location && (',')} {announcement.location}</div>
+                                <div className='mt-2 text-2xl'>
+                                    {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
+                                    {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'undefined' && (`Договорная`)}
+                                </div>
+                            </div>
+                            <div className='flex-wrap flex gap-2 mt-2'>
+                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
+                                    График работы: {announcement.work_time}
+                                </div>
+                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
+                                    {announcement.payment_type}
+                                </div>
+                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
+                                    {announcement.type_ru}
+                                </div>
+                            </div>
+                            <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
+                                {auth.user ? (
+                                    <>
+                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
+                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>Связаться</span>
+                                        </a>
+                                        {auth.user.email == 'admin@example.com' && (
+                                            <a href={`/announcement/update/${announcement.id}`}
+                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>Изменить</span>
+                                            </a>
+                                        )}
+                                    </>
+                                ) : (
+                                     <Link href='/register'
+                                        className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                         <span className='font-bold'>Связаться</span>
+                                     </Link>
+                                )}
+                                <div
+                                    onClick={handleFavoriteClick}
+                                    className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
+                                    {isFavorite ? (
+                                        <FaHeart className={`text-blue-500 text-xl`} />
+                                    ) : (
+                                        <FaRegHeart className="text-blue-500 text-xl" />
                                     )}
                                 </div>
+                            </div>
+                        </div>
+                        <div className='mx-5 mt-5 px-5 py-4 rounded-lg shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.07),_0_20px_40px_-10px_rgba(0,0,0,0.07)]'>
+                            <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
+                            <div className='text-left mt-2 font-light text-gray-500'>
+                                {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                {isLongText && (
+                                    <span
+                                        onClick={toggleShowFullText}
+                                        className="text-blue-500 cursor-pointer"
+                                    >
+                                        {showFullText ? ' Скрыть' : ' Подробнее'}
+                                    </span>
+                                )}
+                            </div>
                             <div className="flex-wrap">
                                 {announcement.responses_count != 0 && (
                                     <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
@@ -93,55 +146,10 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                                     </div>
                                 )}
                             </div>
-                            <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                                {auth.user ? (
-                                    <>
-                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
-                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>Связаться</span>
-                                        </a>
-                                        {auth.user.email == 'admin@example.com' && (
-                                            <a href={`/announcement/update/${announcement.id}`}
-                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>Изменить</span>
-                                            </a>
-                                        )}
-                                    </>
-                                ) : (
-                                     <Link href='/register'
-                                        className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                         <span className='font-bold'>Связаться</span>
-                                     </Link>
-                                )}
-                                <div
-                                    onClick={handleFavoriteClick}
-                                    className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                                    {isFavorite ? (
-                                        <FaHeart className={`text-blue-500 text-xl`} />
-                                    ) : (
-                                        <FaRegHeart className="text-blue-500 text-xl" />
-                                    )}
-                                </div>
-                            </div>
                         </div>
-                        <div className=' px-5'>
-                            <div className='font-bold text-xl md:text-2xl'>
-                                {i18n.language == 'ru' ? (
-                                    announcement.type_ru
-                                ) : (
-                                    announcement.type_kz
-                                )}
-                            </div>
-                            <div className='text-2xl md:text-3xl mt-1 font-bold text-blue-500 max-w-[700px]'>{announcement.title}</div>
-                            <div className="mt-2 font-semibold">{announcement.city} {announcement.location && (',')} {announcement.location}</div>
+                        <div className='px-5'>
+                            <div className='font-semibold mt-5'>Описание:</div>
                             <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description}} />
-                            <div className="mt-5">Тип оплаты: <span className="font-bold">{announcement.payment_type}</span></div>
-                            <div className='mt-2'>Стоимость: <span className='font-bold'>
-                                {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
-                                {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
-                                {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
-                                {announcement.salary_type == 'undefined' && (`Договорная`)}
-                            </span></div>
                         </div>
                         <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
                         {more_announcement.length > 0 ? (
@@ -179,7 +187,7 @@ export default function Announcement({ auth, announcement, top_announcement, urg
                             <div className='text-center'>123123</div>
                         )}
                     </div>
-                    <div className="col-span-2 border-l h-screen sticky top-0 border-gray-200">
+                    <div className="col-span-2 border-l h-screen md:block hidden sticky top-0 border-gray-200">
                         {urgent_announcement && (
                             <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:bg-gray-100 transition-all duration-150 border-b border-gray-300 p-3 w-full hidden md:block '>
                                 <div className='flex items-center'>
