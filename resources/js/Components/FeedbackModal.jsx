@@ -16,21 +16,21 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         'Бариста',
         'Электрогазосварщик',
         'Ремонт обуви и изготовление ключей',
-        'Продавец-кассир'
+        'Продавец-кассир',
+        'Автоспециалист по замене масла и автошин'
     ];
 
     if (!isOpen) return null;
 
     const handleProfessionChange = (checkedValues) => {
         setSelectedProfessions(checkedValues);
-        setError('');  // Clear error when user selects a profession
+        setError('');
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
 
-        // Check if at least one profession is selected
         if (selectedProfessions.length === 0) {
             setLoading(false);
             setError('Пожалуйста, выберите хотя бы один навык.');
@@ -40,7 +40,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         const templateParams = {
             name,
             phone,
-            message: selectedProfessions.join(', '), // Send selected professions as message
+            message: selectedProfessions.join(', '),
         };
 
         emails.send('service_gemcvsd', 'template_3p0vezb', templateParams, '2aHWUXyiS63MSOUf3')
@@ -63,14 +63,13 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     };
 
     return (
-        <div className="fixed inset-0 z-40 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
-                <h2 className="text-xl mb-4" style={{ fontSize: '24px', textAlign: 'center' }}>Отправить заявку</h2>
+                <div className="mb-4">Отправить заявку</div>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <input
                         type="text"
                         className="w-full p-2 border border-gray-300 rounded-lg"
-                        style={{ fontSize: '18px' }} // Larger text for input
                         placeholder={t('your_name', { ns: 'header' })}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -79,7 +78,6 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                     <input
                         type="tel"
                         className="w-full p-2 border border-gray-300 rounded-lg"
-                        style={{ fontSize: '18px' }} // Larger text for input
                         placeholder="Ваш номер телефона"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
@@ -91,7 +89,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                         <ConfigProvider
                             theme={{
                                 token: {
-                                    fontSize: '16px', // Font size token for checkboxes
+                                    fontSize: '16px',
                                 },
                             }}
                         >

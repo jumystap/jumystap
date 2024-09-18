@@ -12,7 +12,7 @@ import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
 import InfoModal from '@/Components/InfoModal';
 
-export default function Welcome({ auth, employees, freelancers, visits, announcements, top_announcements, urgent_announcements, work_professions, digital_professions }) {
+export default function Welcome({ specializations, auth, employees, freelancers, visits, announcements, top_announcements, urgent_announcements, work_professions, digital_professions }) {
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -112,11 +112,10 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
         });
     };
 
-
     return (
         <>
             <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit}/>
-            <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
+            <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializations}/>
             <GuestLayout>
                 <Head title="Работа и вакансии в Казахстане | Биржа труда - Жумыстап">
                     <meta name="description" content="Жумыстап – биржа труда в Казахстане. Удобный поиск работы и вакансий, размещение резюме. Тысячи актуальных предложений для соискателей и работодателей" />
@@ -157,7 +156,7 @@ export default function Welcome({ auth, employees, freelancers, visits, announce
                             </div>
                         </div>
                         <div
-                            className='mx-3 md:mx-5 px-4 py-4 border hidden border-gray-300 mt-2 rounded-lg'
+                            className='mx-3 md:mx-5 md:px-10 px-5 hidden py-4 border border-gray-300 mt-2 rounded-lg'
                         >
                             <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
                             <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>

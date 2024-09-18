@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\Profession\Profession;
+use App\Models\SpecializationCategory;
 use App\Models\User;
 use App\Models\Visit;
 use Inertia\Inertia;
@@ -47,6 +48,7 @@ class HomeController extends Controller
         $work_professions = Profession::where('type', 'work')->with('group')->orderBy('created_at', 'desc')->get();
         $digital_professions = Profession::where('type', 'digital')->with('group')->orderBy('created_at', 'desc')->get();
         $visits = Visit::count();
+        $specializations = SpecializationCategory::with('specialization')->get();
 
         return Inertia::render('Welcome', [
             'employees' => $employees,
@@ -56,7 +58,8 @@ class HomeController extends Controller
             'urgent_announcements' => $urgent_announcements,
             'work_professions' => $work_professions,
             'digital_professions' => $digital_professions,
-            'visits' => $visits
+            'visits' => $visits,
+            'specializations' => $specializations,
         ]);
     }
 

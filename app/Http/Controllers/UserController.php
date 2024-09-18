@@ -52,7 +52,12 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             return redirect('/profile');
         } else {
-            return redirect()->back()->withErrors(['error' => 'Неверный логин или пароль. Пожалуйста, попробуйте снова'])->withInput();
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'error' => 'Неверный логин или пароль. Пожалуйста, попробуйте снова'
+                ])
+                ->withInput();
         }
     }
 
@@ -88,7 +93,12 @@ class UserController extends Controller
             return redirect('/profile');
         } catch (\Exception $e) {
             Log::error('Error creating user', ['exception' => $e]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the user'])->withInput();
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'error' => 'An error occurred while creating the user'
+                ])
+                ->withInput();
         }
     }
 
@@ -150,7 +160,12 @@ class UserController extends Controller
             return redirect('/profile');
         } catch (\Exception $e) {
             Log::error('Error updating user', ['exception' => $e]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the user'])->withInput();
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'error' => 'An error occurred while updating the user'
+                ])
+                ->withInput();
         }
     }
 
@@ -203,11 +218,11 @@ class UserController extends Controller
         $totalResponses = Response::where('announcement_id', $id)->count();
 
         $respondedUsers = Response::where('announcement_id', $id)
-            ->with('user')  // Assuming a relationship with User model is defined
+            ->with('user')
             ->get()
             ->unique('employee_id');
 
-        $uniqueVisitors = $visits->unique('user_id')->count(); // Assuming 'user_id' is available in visits
+        $uniqueVisitors = $visits->unique('user_id')->count();
 
         $repeatedVisitors = $visits->countBy('user_id')->filter(function ($count) {
             return $count > 1;
@@ -216,11 +231,11 @@ class UserController extends Controller
         $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
 
         $viewsOverTime = $visits->groupBy(function ($visit) {
-            return $visit->created_at->format('Y-m-d'); // Group by day
+            return $visit->created_at->format('Y-m-d');
         })->map->count();
 
         $peakViewingTimes = $visits->groupBy(function ($visit) {
-            return $visit->created_at->format('H'); // Group by hour
+            return $visit->created_at->format('H');
         })->map->count();
 
         return Inertia::render('Company/CompanyAnnouncement', [
