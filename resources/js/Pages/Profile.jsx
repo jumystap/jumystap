@@ -83,10 +83,16 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     </div>
                                     <div className='md:ml-auto'>
                                         <Link
-                                            href='update'
+                                            href='/update'
                                             className='text-center mt-2 block bg-blue-500 px-5 py-2 text-white rounded-lg'
                                         >
                                             Изменить
+                                        </Link>
+                                        <Link
+                                            href='/update_certificate'
+                                            className='text-center mt-2 block border-2 text-blue-500 border-blue-500 px-5 py-2 rounded-lg'
+                                        >
+                                            Обновить сертификат
                                         </Link>
                                     </div>
                                 </div>

@@ -61,11 +61,13 @@ class UserService
             }
 
             foreach($profession_ids as $index => $profession_id){
-                $this->userRepository->addUserProfession(
-                    $user->id,
-                    $profession_id,
-                    $certificate_numbers[$index] ?? null
-                );
+                if (!$this->hasUserProfession($user->id, $certificate_numbers[$index], $profession_id)) {
+                    $this->userRepository->addUserProfession(
+                        $user->id,
+                        $profession_id,
+                        $certificate_numbers[$index] ?? null
+                    );
+                }
             }
 
             return true;
@@ -105,22 +107,17 @@ class UserService
 
             if (isset($workData['result']) && !empty($workData['result'])) {
                 foreach ($workData['result'] as $certificate) {
-                    $certificate_numbers[] = $certificate['NUMBER'];
-
+                    $certificate_number = $certificate['NUMBER'];
                     $profession_name = $certificate['PROFESSION']['NAME_RU'];
                     $profession_id = $professionMap[$profession_name] ?? null;
 
-                    if ($profession_id) {
-                        $profession_ids[] = $profession_id;
+                    if ($profession_id && !$this->hasUserProfession($user->id, $certificate_number, $profession_id)) {
+                        $this->userRepository->addUserProfession(
+                            $user->id,
+                            $profession_id,
+                            $certificate_number
+                        );
                     }
-                }
-
-                foreach ($profession_ids as $index => $profession_id) {
-                    $this->userRepository->addUserProfession(
-                        $user->id,
-                        $profession_id,
-                        $certificate_numbers[$index] ?? null
-                    );
                 }
 
                 return true;
@@ -132,23 +129,19 @@ class UserService
 
             if (isset($digitalData['result']) && !empty($digitalData['result'])) {
                 foreach ($digitalData['result'] as $certificate) {
-                    $certificate_numbers[] = $certificate['NUMBER'];
-
+                    $certificate_number = $certificate['NUMBER'];
                     $profession_name = $certificate['PROFESSION']['NAME_RU'];
                     $profession_id = $professionMap[$profession_name] ?? null;
 
-                    if ($profession_id) {
-                        $profession_ids[] = $profession_id;
+                    if ($profession_id && !$this->hasUserProfession($user->id, $certificate_number, $profession_id)) {
+                        $this->userRepository->addUserProfession(
+                            $user->id,
+                            $profession_id,
+                            $certificate_number
+                        );
                     }
                 }
 
-                foreach ($profession_ids as $index => $profession_id) {
-                    $this->userRepository->addUserProfession(
-                        $user->id,
-                        $profession_id,
-                        $certificate_numbers[$index] ?? null
-                    );
-                }
                 return true;
             }
         } else {
@@ -157,6 +150,23 @@ class UserService
         }
 
         return false;
+    }
+
+    /**
+     * Check if the user already has the profession with the given certificate.
+     *
+     * @param int $user_id
+     * @param string $certificate_number
+     * @param int $profession_id
+     * @return bool
+     */
+    protected function hasUserProfession($user_id, $certificate_number, $profession_id)
+    {
+        return DB::table('user_professions')
+            ->where('user_id', $user_id)
+            ->where('certificate_number', $certificate_number)
+            ->where('profession_id', $profession_id)
+            ->exists();
     }
 
     public function updateUser($user, array $validatedData)

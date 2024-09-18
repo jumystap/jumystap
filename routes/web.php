@@ -24,6 +24,7 @@ Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
 Route::delete('/announcements/{id}', [AnnouncementController::class, 'delete'])->name('announcements.delete');
+Route::get('/update_certificate', [UserController::class, 'updateCertificate']);
 Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);

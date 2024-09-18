@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 use Illuminate\Support\Facades\DB;
 use App\Models\Response;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -89,6 +90,22 @@ class UserController extends Controller
             Log::error('Error creating user', ['exception' => $e]);
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the user'])->withInput();
         }
+    }
+
+    public function updateCertificate(): mixed
+    {
+        $user = User::where('id', Auth::id())->first();
+        $validatedData = ['phone' => $user->phone];
+
+        if($this->userService->getCertificates($validatedData, $user)){
+            $user->update(['is_graduate' => 1]);
+            return redirect('/profile');
+        } else {
+            $user->update(['is_graduate' => 0]);
+            return redirect('/profile');
+        }
+
+        return 0;
     }
 
     public function edit(): mixed
