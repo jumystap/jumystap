@@ -163,7 +163,7 @@ export default function InfoModal({ isOpen, onClose, specializations }) {
                             </Select>
                             {data.city === 'Астана' && (
                                 <>
-                                    <div className='mt-5'>Выберите район проживания</div>
+                                    <div className='mt-5'>В каком районе вы ищете работу?</div>
                                     <Select
                                         className='w-full mt-2'
                                         defaultValue={data.district}

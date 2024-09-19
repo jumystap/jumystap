@@ -157,7 +157,7 @@ const UpdateAnnouncement = ({ announcement, industries, specializations }) => {
                             >
                                 <Option value='min'>От</Option>
                                 <Option value='max'>До</Option>
-                                <Option value='undefined'>Договарная</Option>
+                                <Option value='undefined'>Договорная</Option>
                                 <Option value='exact'>Точная</Option>
                             </Select>
                         </Form.Item>
