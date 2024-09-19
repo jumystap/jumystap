@@ -171,7 +171,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                 </div>
                             ):(
                                 <Link
-                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                    className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
                                     href='/login'
                                 >
                                     Заполнить
