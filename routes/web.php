@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/create_announcement', [AnnouncementController::class, 'create']);
     Route::get('/create_announcement', [AnnouncementController::class, 'store']);
     Route::get('/profile/announcement/{id}', [UserController::class, 'myAnnouncement']);
+    Route::post('/resume', [ResumeController::class, 'create']);
 });
 
 

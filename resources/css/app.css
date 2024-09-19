@@ -13,6 +13,11 @@
     flex-shrink: 0; /* Prevent shrinking */
 }
 
+.checkbox-group-custom .ant-checkbox-group-item {
+    margin-bottom: 8px; /* Adjust the space as needed */
+}
+
+
 body {
   --jt-o: #F36706;
   --jt-b: #000000;

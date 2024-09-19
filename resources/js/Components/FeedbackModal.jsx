@@ -97,6 +97,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                                 options={professions}
                                 value={selectedProfessions}
                                 onChange={handleProfessionChange}
+                                className='checkbox-group-custom'
                                 style={{ display: 'flex', flexDirection: 'column' }}
                             />
                         </ConfigProvider>

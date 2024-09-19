@@ -156,16 +156,25 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                             </div>
                         </div>
                         <div
-                            className='mx-3 md:mx-5 md:px-10 px-5 hidden py-4 border border-gray-300 mt-2 rounded-lg'
+                            className='mx-3 md:mx-5 md:px-10 px-5 py-4 border border-gray-300 mt-2 rounded-lg'
                         >
                             <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
                             <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>
-                            <div
-                                className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
-                                onClick={() => setIsInfoOpen(true)}
-                            >
-                                Заполнить
-                            </div>
+                            {auth.user ? (
+                                <div
+                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                    onClick={() => setIsInfoOpen(true)}
+                                >
+                                    Заполнить
+                                </div>
+                            ):(
+                                <Link
+                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                    href='/login'
+                                >
+                                    Заполнить
+                                </Link>
+                            )}
                         </div>
                         <div className='border-b border-gray-200 mt-5'>
                         </div>
