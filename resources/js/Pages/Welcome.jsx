@@ -10,6 +10,7 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
+import Carousel from '@/Components/Carousel';
 import InfoModal from '@/Components/InfoModal';
 
 export default function Welcome({ specializations, auth, employees, freelancers, visits, announcements, top_announcements, urgent_announcements, work_professions, digital_professions }) {
@@ -126,6 +127,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500'>Вакансии для вас</div>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 text-gray-500 text-sm'>Вакансии дня</div>
                         </div>
+                        <Carousel>
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div>
                                 <div className='font-bold text-lg md:text-2xl'>
@@ -156,13 +158,13 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                             </div>
                         </div>
                         <div
-                            className='mx-3 md:mx-5 md:px-10 px-5 py-4 border border-gray-300 mt-2 rounded-lg'
+                        className='mx-3 md:mx-5 md:px-10 px-4 py-7 bg-gradient-to-r from-blue-500 to-blue-800  mt-2 rounded-lg'
                         >
-                            <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
-                            <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>
+                            <div className='font-semibold text-lg md:text-xl text-white'>Подбери вакансии для себя!</div>
+                            <div className='font-light mt-2 text-white'>Заполни анкету и найди подходящие вакансии</div>
                             {auth.user ? (
                                 <div
-                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                    className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
                                     onClick={() => setIsInfoOpen(true)}
                                 >
                                     Заполнить
@@ -176,6 +178,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                 </Link>
                             )}
                         </div>
+                        </Carousel>
                         <div className='border-b border-gray-200 mt-5'>
                         </div>
                         {urgent_announcements.map((anonce, index) => (

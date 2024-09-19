@@ -9,6 +9,7 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
+import Carousel from '@/Components/Carousel';
 import InfoModal from '@/Components/InfoModal';
 import { Cascader } from 'antd';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
@@ -156,6 +157,7 @@ export default function Announcements({ auth, announcements, specializations, er
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
+                        <Carousel>
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div>
                                 <div className='font-bold text-lg md:text-2xl'>
@@ -185,8 +187,31 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                             </div>
                         </div>
+                        <div
+                        className='mx-3 md:mx-5 md:px-10 px-4 py-7 bg-gradient-to-r from-blue-500 to-blue-800  mt-2 rounded-lg'
+                        >
+                            <div className='font-semibold text-lg md:text-xl text-white'>Подбери вакансии для себя!</div>
+                            <div className='font-light mt-2 text-white'>Заполни анкету и найди подходящие вакансии</div>
+                            {auth.user ? (
+                                <div
+                                    className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
+                                    onClick={() => setIsInfoOpen(true)}
+                                >
+                                    Заполнить
+                                </div>
+                            ):(
+                                <Link
+                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
+                                    href='/login'
+                                >
+                                    Заполнить
+                                </Link>
+                            )}
+                        </div>
+                        </Carousel>
                         <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
+
                                 type="text"
                                 value={data.searchKeyword}
                                 onChange={handleSearchKeywordChange}
@@ -212,27 +237,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <CgArrowsExchangeAltV />
                             </div>
                         </div>
-                        <div
-                            className='mx-3 md:mx-5 md:px-10 px-4 py-4 border border-gray-300 mt-2 rounded-lg'
-                        >
-                            <div className='font-semibold text-lg'>Подбери вакансии для себя</div>
-                            <div className='font-light mt-1 text-gray-500'>Заполни анкету и найди подходящие вакансии</div>
-                            {auth.user ? (
-                                <div
-                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
-                                    onClick={() => setIsInfoOpen(true)}
-                                >
-                                    Заполнить
-                                </div>
-                            ):(
-                                <Link
-                                    className='text-white px-5 py-2 mt-2 cursor-pointer text-white rounded-lg bg-blue-600 inline-block'
-                                    href='/login'
-                                >
-                                    Заполнить
-                                </Link>
-                            )}
-                        </div>
+
                         <div className='border-b border-gray-200 mt-3'>
                         </div>
                         {announcements.data.map((anonce, index) => (
