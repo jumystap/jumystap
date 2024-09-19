@@ -128,7 +128,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
                 <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
-                <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
+                <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializations} />
                 <div
                     className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'
                 >
