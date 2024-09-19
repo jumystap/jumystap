@@ -7,6 +7,7 @@ use App\Models\Profession\Profession;
 use App\Models\SpecializationCategory;
 use App\Models\User;
 use App\Models\Visit;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
@@ -36,13 +37,59 @@ class HomeController extends Controller
             ->map(function ($user) {
                 $user->professions = DB::table('user_professions')
                     ->join('professions', 'user_professions.profession_id', '=', 'professions.id')
-                    ->select('professions.name_ru as profession_name', 'professions.name_kz as profession_name_kz','user_professions.certificate_number')
+                    ->select('professions.name_ru as profession_name', 'professions.name_kz as profession_name_kz', 'user_professions.certificate_number')
                     ->where('user_professions.user_id', $user->id)
                     ->get();
                 return $user;
             });
 
-        $announcements = Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
+        if(Auth::user()){
+            $user = Auth::user();
+
+            $resumeSpecializations = DB::table('resume_specializations')
+                ->where('resume_id', function($query) use ($user) {
+                    $query->select('id')
+                        ->from('resumes')
+                        ->where('user_id', $user->id)
+                        ->limit(1);
+                })
+                ->pluck('specialization_id');
+
+            $matchedBySpecialization = Announcement::whereIn('specialization_id', $resumeSpecializations)
+                ->where('active', 1)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $specializationCategories = DB::table('specializations')
+                ->whereIn('id', $resumeSpecializations)
+                ->pluck('category_id');
+
+            $relatedSpecializationIds = DB::table('specializations')
+                ->whereIn('category_id', $specializationCategories)
+                ->pluck('id');
+
+            $matchedByCategory = Announcement::whereIn('specialization_id', $relatedSpecializationIds)
+                ->where('active', 1)
+                ->whereNotIn('id', $matchedBySpecialization->pluck('id')) // Exclude already fetched
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $otherAnnouncements = Announcement::where('active', 1)
+                ->whereNotIn('id', $matchedBySpecialization->pluck('id')->merge($matchedByCategory->pluck('id')))
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $announcements = Announcement::where(function($query) use ($resumeSpecializations, $relatedSpecializationIds) {
+                $query->whereIn('specialization_id', $resumeSpecializations)
+                    ->orWhereIn('specialization_id', $relatedSpecializationIds);
+            })->where('active', 1)
+              ->orderBy('created_at', 'desc')
+              ->paginate(10);
+        } else {
+            $announcements = Announcement::orderBy('created_at', 'desc')->where('active', 1)->paginate(10);
+        }
+
+        // Other data remains unchanged
         $urgent_announcements = Announcement::inRandomOrder()->where('active',1 )->take(2)->get();
         $top_announcements = Announcement::inRandomOrder()->where('active', 1)->take(2)->get();
         $work_professions = Profession::where('type', 'work')->with('group')->orderBy('created_at', 'desc')->get();
@@ -62,6 +109,7 @@ class HomeController extends Controller
             'specializations' => $specializations,
         ]);
     }
+
 
     public function faq(): mixed
     {
