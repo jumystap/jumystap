@@ -64,8 +64,9 @@ export default function Profile({ auth, user, announcements, employees, professi
                                             className='font-bold text-lg flex items-center gap-2'
                                         >
                                             {user.name}
-                                            {user.is_graduate && (
-                                                <RiVerifiedBadgeFill className='text-lg text-blue-500' />)}
+                                            {user.is_graduate ? (
+                                                <RiVerifiedBadgeFill className='text-lg text-blue-500' />
+                                            ):('')}
                                         </div>
                                         <div className="text-gray-500">
                                             @{user.email.split('@')[0]}

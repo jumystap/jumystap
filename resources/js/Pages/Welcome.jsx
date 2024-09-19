@@ -105,6 +105,8 @@ export default function Welcome({ specializations, auth, employees, freelancers,
         }
     };
 
+
+    console.log(announcements);
     const handleFeedbackSubmit = (feedback) => {
         axios.post('/send-feedback', { feedback }).then((response) => {
             console.log((t('feedback_sent', { ns: 'header' })));
