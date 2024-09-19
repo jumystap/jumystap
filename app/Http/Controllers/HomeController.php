@@ -49,17 +49,16 @@ class HomeController extends Controller
         if(Auth::user()){
             $user = Auth::user();
 
-            // Check if the user has a resume
             $isResume = Resume::where('user_id', $user->id)->first();
 
             if ($isResume){
 
-                // Get the user's resume specializations
                 $resumeSpecializations = DB::table('resume_specializations')
                     ->where('resume_id', function($query) use ($user) {
                         $query->select('id')
                             ->from('resumes')
                             ->where('user_id', $user->id)
+                            ->orderBy('created_at', 'desc')
                             ->limit(1);
                     })
                     ->pluck('specialization_id');
