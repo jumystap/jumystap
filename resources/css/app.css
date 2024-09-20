@@ -67,6 +67,18 @@ body::-webkit-scrollbar-corner {
 body::-webkit-resizer {
   background: var(--jt-o);
 }
+.flex::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.flex::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.flex::-webkit-scrollbar-track {
+  background-color: transparent; /* Track background */
+}
+
 .font-thin {
   font-family: "Inter", sans-serif;
   font-weight: 100;

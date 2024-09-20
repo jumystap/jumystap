@@ -181,6 +181,53 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                             )}
                         </div>
                         </Carousel>
+                        <div className='flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto'>
+                            <div onClick={() => setIsOpen(true)} className='border border-gray-200 rounded-lg'>
+                                <div
+                                    className="w-[300px] px-3 bg-[url('/images/image1.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2"
+                                >
+                                    <div className='flex-wrap flex gap-1'>
+                                        <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
+                                        <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Новый</div>
+                                    </div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Автоспециалист по замене масел и автошин</div>
+                                </div>
+                                <div className='px-3 mb-2 mt-2 text-sm font-light text-gray-500'>Освойте навыки по замене масел и автошин с нуля!</div>
+                            </div>
+                            <div onClick={() => setIsOpen(true)} className='border border-gray-200 rounded-lg'>
+                                <div
+                                    className="w-[300px] px-3 bg-[url('/images/image2.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2"
+                                >
+                                    <div className='flex-wrap flex gap-1'>
+                                        <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
+                                    </div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Основы изготовления корпусной мебели</div>
+                                </div>
+                                <div className='px-3 mt-2 text-sm font-light text-gray-500 mb-2'>Практические навыки — для тех, кто хочет начать карьеру в мебельном деле.</div>
+                            </div>
+                            <div onClick={() => setIsOpen(true)} className='border border-gray-200 rounded-lg'>
+                                <div
+                                    className="w-[300px] px-3 bg-[url('/images/image3.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2"
+                                >
+                                    <div className='flex-wrap flex gap-1'>
+                                        <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
+                                    </div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Ремонт обуви и изготовление ключей</div>
+                                </div>
+                                <div className='px-3 mb-2 mt-2 text-sm font-light text-gray-500'>Научитесь ремонту обуви и изготовлению ключей с нуля!</div>
+                            </div>
+                            <div onClick={() => setIsOpen(true)} className='border border-gray-200 rounded-lg'>
+                                <div
+                                    className="w-[300px] px-3 bg-[url('/images/image4.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2"
+                                >
+                                    <div className='flex-wrap flex gap-1'>
+                                        <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
+                                    </div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold"><br/>Электрогазосварщик</div>
+                                </div>
+                                <div className='px-3 mt-2 text-sm font-light text-gray-500'>Идеально для тех, кто хочет начать карьеру в промышленности</div>
+                            </div>
+                        </div>
                         <div className='border-b border-gray-200 mt-5'>
                         </div>
                         {urgent_announcements.map((anonce, index) => (
