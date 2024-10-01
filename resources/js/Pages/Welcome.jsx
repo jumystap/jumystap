@@ -190,7 +190,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
                                         <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Новый</div>
                                     </div>
-                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Автоспециалист по замене масел и автошин</div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Пункт замены масла и шиномонтаж</div>
                                 </div>
                                 <div className='px-3 mb-2 mt-2 text-sm font-light text-gray-500'>Освойте навыки по замене масел и автошин с нуля!</div>
                             </div>
@@ -212,7 +212,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     <div className='flex-wrap flex gap-1'>
                                         <div className='px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block'>Идет запись</div>
                                     </div>
-                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Ремонт обуви и изготовление ключей</div>
+                                    <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">Мастерская по ремонту обуви</div>
                                 </div>
                                 <div className='px-3 mb-2 mt-2 text-sm font-light text-gray-500'>Научитесь ремонту обуви и изготовлению ключей с нуля!</div>
                             </div>
