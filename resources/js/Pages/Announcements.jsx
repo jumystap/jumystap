@@ -9,6 +9,7 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
 import FeedbackModal from '@/Components/FeedbackModal';
+import { Switch } from 'antd';
 import Carousel from '@/Components/Carousel';
 import InfoModal from '@/Components/InfoModal';
 import { Cascader } from 'antd';
@@ -137,7 +138,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     </div>
                 </div>
                 {isFilterOpen && (
-                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
+                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-7 py-7'>
                         <div className='flex w-full items-center'>
                             <div className='text-xl font-bold'>Фильтры</div>
                             <CgClose
@@ -145,13 +146,35 @@ export default function Announcements({ auth, announcements, specializations, er
                                 className='ml-auto text-2xl inline-block cursor-pointer'
                             />
                         </div>
-                        <div className='text-center mt-10 text-xl text-gray-500 font-light'>Здесь будут филтры</div>
-                        <div className='mt-5 hidden'>
-                            <div>Выберите город</div>
-                            <select
-                                className='w-full'
-                            >
-                            </select>
+                        <input
+                            type="text"
+                            value={data.searchKeyword}
+                            onChange={handleSearchKeywordChange}
+                            placeholder={t('search_placeholder', { ns: 'announcements' })}
+                            className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                        />
+                        <div className='text-gray-500 mt-5'>Специализация</div>
+                        <div className='mt-2 text-blue-600 cursor-pointer'>+ Добавить специализацию</div>
+                        <div className='text-gray-500 mt-5'>Регион</div>
+                        <div className='mt-2 text-blue-600 cursor-pointer'>+ Добавить регион</div>
+                        <input
+                            type="text"
+                            placeholder='Уровень дохода от'
+                            className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                        />
+                        <div className='mt-5 flex items-center'>
+                            <div>Указан доход</div>
+                            <Switch className='ml-auto' />
+                        </div>
+                        <div className='text-gray-500 mt-5'>Время публикации</div>
+                        <div className='mt-2 flex gap-2 flex-wrap items-center'>
+                            <div className='text-white bg-black px-5 py-2 rounded-full inline-block font-semibold'>За месяц</div>
+                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За неделю</div>
+                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За последние три дня</div>
+                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За сутки</div>
+                        </div>
+                        <div className='bottom-10'>
+                            <div className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10'>Применить</div>
                         </div>
                     </div>
                 )}
