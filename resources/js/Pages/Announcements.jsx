@@ -16,21 +16,54 @@ import { Cascader } from 'antd';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { IoSearch } from "react-icons/io5";
 
-export default function Announcements({ auth, announcements, specializations, errors }) {
+export default function Announcements({ auth, announcements, specializations, errors, cities}) {
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
+    const [specialization, setSpecialization] = useState('');
+    const [city, setCity] = useState('');
+    const [minSalary, setMinSalary] = useState('');
+    const [isSalary, setIsSalary] = useState(false);
+    const [publicTime, setPublicTime] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
-    console.log(specializations)
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 
     const { data, setData, get } = useForm({
-        searchKeyword: querySearchKeyword || ''
+        searchKeyword: querySearchKeyword || '',
+        specialization: '',
+        city: '',
+        minSalary: '',
+        isSalary: false,
     });
+
+    const handleCityChange = (event) => {
+        setCity(event.target.value);
+        setData('city', event.target.value);
+    };
+
+    const handleSpecializationChange = (value) => {
+        setSpecialization(value);
+        setData('specialization', value[1]);
+    };
+
+    const handleMinSalaryChange = (event) => {
+        setMinSalary(event.target.value);
+        setData('minSalary', event.target.value);
+    };
+
+    const handleIsSalaryChange = (checked) => {
+        setIsSalary(checked);
+        setData('isSalary', checked);
+    };
+
+    const handlePublicTimeChange = (value) => {
+        setPublicTime(value);
+        setData('publicTime', value);
+    };
 
     const handleSearchKeywordChange = (event) => {
         setData('searchKeyword', event.target.value);
@@ -39,9 +72,21 @@ export default function Announcements({ auth, announcements, specializations, er
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const searchKeyword = params.get('searchKeyword');
+        const isSalary = params.get('isSalary');
+        const city = params.get('city');
+        const minSalary = params.get('minSalary');
+        const specialization = params.get('specialization');
 
         if (searchKeyword) {
             setData('searchKeyword', searchKeyword);
+            setData('isSalary', isSalary);
+            setIsSalary(isSalary);
+            setData('city', city);
+            setCity(city);
+            setData('minSalary', minSalary);
+            setMinSalary(minSalary)
+            setData('specialization', specialization);
+            setSpecialization(specialization);
         }
     }, []);
 
@@ -113,15 +158,6 @@ export default function Announcements({ auth, announcements, specializations, er
         setAnnouncementType(event.target.value);
     };
 
-    const handleCityChange = (event) => {
-        setSearchCity(event.target.value);
-    };
-
-    const handleSpecializationChange = (value) => {
-        setSelectedSpecialization(value);
-        console.log("Selected specialization: ", value);
-    };
-
     const uniqueCities = [...new Set(announcements.data.map(anonce => anonce.city))];
 
     return (
@@ -154,28 +190,46 @@ export default function Announcements({ auth, announcements, specializations, er
                             placeholder={t('search_placeholder', { ns: 'announcements' })}
                             className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
+
                         <div className='text-gray-500 mt-5'>Специализация</div>
-                        <div className='mt-2 text-blue-600 cursor-pointer'>+ Добавить специализацию</div>
+                        <Cascader
+                            options={cascaderOptions}
+                            placeholder="Выберите специализацию"
+                            onChange={handleSpecializationChange}
+                            className="block mt-2 w-full text-base"
+                        />
+
                         <div className='text-gray-500 mt-5'>Регион</div>
-                        <div className='mt-2 text-blue-600 cursor-pointer'>+ Добавить регион</div>
+                        <select
+                            value={city}
+                            onChange={handleCityChange}
+                            className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
+                        >
+                            <option value="">Выберите город</option>
+                            {cities.map((cityName, index) => (
+                                <option key={index} value={cityName}>
+                                    {cityName}
+                                </option>
+                            ))}
+                        </select>
+
                         <input
-                            type="text"
+                            type="number"
+                            value={minSalary}
+                            onChange={handleMinSalaryChange}
                             placeholder='Уровень дохода от'
                             className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
+
                         <div className='mt-5 flex items-center'>
                             <div>Указан доход</div>
-                            <Switch className='ml-auto' />
+                            <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
                         </div>
-                        <div className='text-gray-500 mt-5'>Время публикации</div>
-                        <div className='mt-2 flex gap-2 flex-wrap items-center'>
-                            <div className='text-white bg-black px-5 py-2 rounded-full inline-block font-semibold'>За месяц</div>
-                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За неделю</div>
-                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За последние три дня</div>
-                            <div className='text-black bg-gray-200 px-5 py-2 rounded-full inline-block font-semibold'>За сутки</div>
-                        </div>
+
                         <div className='bottom-10'>
-                            <div className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10'>Применить</div>
+                            <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
+                                Применить
+                            </div>
                         </div>
                     </div>
                 )}

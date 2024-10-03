@@ -29,14 +29,23 @@ class AnnouncementController extends Controller
 
     public function index(Request $request): mixed
     {
-        $searchKeyword = $request->input('searchKeyword');
+        $filters = [
+            'searchKeyword' => $request->input('searchKeyword'),
+            'specialization' => $request->input('specialization'),
+            'city' => $request->input('city'),
+            'minSalary' => $request->input('minSalary'),
+            'isSalary' => $request->input('isSalary'),
+            'publicTime' => $request->input('publicTime'),
+        ];
 
-        $announcements = $this->announcementService->getAllActiveAnnouncements($searchKeyword);
+        $announcements = $this->announcementService->getAllActiveAnnouncements($filters);
         $specializations = SpecializationCategory::with('specialization')->get();
+        $cities = Announcement::pluck('city')->unique()->filter();
 
         return Inertia::render('Announcements', [
             'announcements' => $announcements,
             'specializations' => $specializations,
+            'cities' => $cities,
         ]);
     }
 

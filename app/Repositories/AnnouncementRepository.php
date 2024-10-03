@@ -10,16 +10,35 @@ use Illuminate\Support\Facades\DB;
 
 class AnnouncementRepository
 {
-    public function getAllActiveAnnouncements($searchKeyword = null)
+    public function getAllActiveAnnouncements(array $filters)
     {
         $query = Announcement::orderBy('created_at', 'desc')
         ->where('active', 1);
 
-        if ($searchKeyword) {
-            $query->where(function ($q) use ($searchKeyword) {
-                $q->where('title', 'LIKE', "%$searchKeyword%")
-                  ->orWhere('description', 'LIKE', "%$searchKeyword%");
-            });
+        if (!empty($filters['specialization'])) {
+            $query->where('specialization_id', $filters['specialization']);
+        }
+
+        // Filter by city
+        if (!empty($filters['city'])) {
+            $query->where('city', $filters['city']);
+        }
+
+        // Filter by minimum salary
+        if (!empty($filters['minSalary'])) {
+            $query->where('cost', '>=', $filters['minSalary']);
+        }
+
+        // Filter announcements with a salary
+        if (!empty($filters['isSalary'])) {
+            if($filters['isSalary'] == 'true'){
+                $query->where('salary_type', '!=', 'undefined');
+            }
+        }
+
+        // Filter by publication time
+        if (!empty($filters['publicTime'])) {
+            $query->where('created_at', '>=', $filters['publicTime']);
         }
 
         return $query->paginate(10);
