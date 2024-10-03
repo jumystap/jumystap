@@ -29,6 +29,7 @@ export default function Announcements({ auth, announcements, specializations, er
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    console.log(cities)
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 

@@ -16,29 +16,35 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
         startPage = Math.max(endPage - maxVisiblePages, 0);
     }
 
-    const appendSearchKeyword = (url) => {
-        if (url && searchKeyword) {
-            const separator = url.includes('?') ? '&' : '?';
-            const newUrl = `${url}${separator}searchKeyword=${encodeURIComponent(searchKeyword)}`;
+    const appendSearchKeywordAndPage = (url, page) => {
+        if (!url) return url;
 
-            // Debug: log the URL and searchKeyword
-            console.log('Appending searchKeyword:', searchKeyword, 'to URL:', newUrl);
+        const urlObj = new URL(url, window.location.origin); // Ensure base URL is set correctly
 
-            return newUrl;
+        // Update searchKeyword if provided
+        if (searchKeyword) {
+            urlObj.searchParams.set('searchKeyword', encodeURIComponent(searchKeyword));
+        } else {
+            urlObj.searchParams.delete('searchKeyword'); // Remove if it's empty
         }
-        return url;
-    };
 
-    // Debug: log the searchKeyword and links
-    console.log('searchKeyword:', searchKeyword);
-    console.log('links:', links);
+        // Set the page parameter
+        if (page) {
+            urlObj.searchParams.set('page', page);
+        }
+
+        // Debug: log the final URL
+        console.log('Final URL:', urlObj.toString());
+
+        return urlObj.toString();
+    };
 
     return (
         <div className="mb-5 mt-5 flex w-full items-center">
             <div className='flex mx-auto px-2 bg-gray-100 text-base rounded-full py-1 items-center'>
                 {links.find(link => link.label === '&laquo; Previous') && (
                     <Link
-                        href={appendSearchKeyword(links.find(link => link.label === '&laquo; Previous').url) || '#'}
+                        href={appendSearchKeywordAndPage(links.find(link => link.label === '&laquo; Previous').url, currentPage - 1) || '#'}
                         className='block px-2'
                     >
                         <IoIosArrowBack />
@@ -48,7 +54,7 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
                 {startPage > 0 && (
                     <>
                         <Link
-                            href={appendSearchKeyword(filteredLinks[0].url)}
+                            href={appendSearchKeywordAndPage(filteredLinks[0].url, 1)}
                             className="block px-3 py-1 rounded-full text-gray-400"
                         >
                             1
@@ -60,7 +66,7 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
                 {filteredLinks.slice(startPage, endPage).map((link, index) => (
                     <Link
                         key={index}
-                        href={appendSearchKeyword(link.url) || '#'}
+                        href={appendSearchKeywordAndPage(link.url, link.active ? currentPage : filteredLinks[index].page) || '#'}
                         className={`block px-3 py-1 rounded-full ${link.active ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
                     >
                         {link.label}
@@ -71,7 +77,7 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
                     <>
                         <span className="block px-3 py-1">...</span>
                         <Link
-                            href={appendSearchKeyword(filteredLinks[totalPages - 1].url)}
+                            href={appendSearchKeywordAndPage(filteredLinks[totalPages - 1].url, totalPages)}
                             className="block px-3 py-1 rounded-full text-gray-400"
                         >
                             {filteredLinks[totalPages - 1].label}
@@ -81,7 +87,7 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
 
                 {links.find(link => link.label === 'Next &raquo;') && (
                     <Link
-                        href={appendSearchKeyword(links.find(link => link.label === 'Next &raquo;').url) || '#'}
+                        href={appendSearchKeywordAndPage(links.find(link => link.label === 'Next &raquo;').url, currentPage + 1) || '#'}
                         className='block px-2'
                     >
                         <IoIosArrowForward />
