@@ -29,9 +29,10 @@ export default function Announcements({ auth, announcements, specializations, er
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
-    console.log(cities)
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
+
+    const cityArray = Object.entries(cities).map(([id, name]) => ({ id, name }));
 
     const { data, setData, get } = useForm({
         searchKeyword: querySearchKeyword || '',
@@ -207,6 +208,11 @@ export default function Announcements({ auth, announcements, specializations, er
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
                             <option value="">Выберите город</option>
+                            {cityArray.map(city => (
+                                <option key={city.id} value={city.id}>
+                                  {city.name}
+                                </option>
+                             ))}
                         </select>
 
                         <input
