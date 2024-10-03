@@ -206,11 +206,6 @@ export default function Announcements({ auth, announcements, specializations, er
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
                             <option value="">Выберите город</option>
-                            {cities.map((cityName, index) => (
-                                <option key={index} value={cityName}>
-                                    {cityName}
-                                </option>
-                            ))}
                         </select>
 
                         <input
