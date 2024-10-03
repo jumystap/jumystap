@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class AnnouncementRepository
 {
-    public function getAllActiveAnnouncements(array $filters)
+    public function getAllActiveAnnouncements(array $filters = null)
     {
         $query = Announcement::orderBy('created_at', 'desc')
         ->where('active', 1);
