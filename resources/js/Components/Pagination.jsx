@@ -19,17 +19,18 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
     const appendPageToUrl = (url, page) => {
         if (!url) return url;
 
-        const urlObj = new URL(url, window.location.origin); // Ensure base URL is set correctly
+        const currentUrl = window.location.href;
 
-        // Set the page parameter
-        if (page) {
-            urlObj.searchParams.set('page', page);
+        const hasPageParam = currentUrl.includes('&page=') || currentUrl.includes('?page=');
+
+        if (hasPageParam) {
+            console.log(currentUrl.replace(/([&?])page=\d+/, `$1page=${page}`))
+            return currentUrl.replace(/([&?])page=\d+/, `$1page=${page}`);
+        } else {
+            const separator = currentUrl.includes('?') ? '&' : '?';
+            console.log(`${currentUrl}${separator}page=${page}`);
+            return `${currentUrl}${separator}page=${page}`;
         }
-
-        // Debug: log the final URL
-        console.log('Final URL:', urlObj.toString());
-
-        return urlObj.toString();
     };
 
     return (
