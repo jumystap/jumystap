@@ -209,7 +209,7 @@ export default function Announcements({ auth, announcements, specializations, er
                         >
                             <option value="">Выберите город</option>
                             {cityArray.map(city => (
-                                <option key={city.id} value={city.id}>
+                                <option key={city.id} value={city.name}>
                                   {city.name}
                                 </option>
                              ))}
@@ -374,7 +374,7 @@ export default function Announcements({ auth, announcements, specializations, er
                             >
                                 <option value="">Выберите город</option>
                                 {cityArray.map(city => (
-                                    <option key={city.id} value={city.id}>
+                                    <option key={city.id} value={city.name}>
                                       {city.name}
                                     </option>
                                  ))}
