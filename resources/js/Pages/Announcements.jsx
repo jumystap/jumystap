@@ -24,6 +24,7 @@ export default function Announcements({ auth, announcements, specializations, er
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    console.log(specializations)
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 
@@ -138,7 +139,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     </div>
                 </div>
                 {isFilterOpen && (
-                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-7 py-7'>
+                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
                         <div className='flex w-full items-center'>
                             <div className='text-xl font-bold'>Фильтры</div>
                             <CgClose
