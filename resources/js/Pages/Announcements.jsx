@@ -357,28 +357,47 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div>
                             <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
                         </div>
-                        <div className='flex flex-col md:flex-col'>
+                        <div className='flex px-3 flex-col md:flex-col'>
+                            <div className='text-gray-500 mt-5'>Специализация</div>
+                            <Cascader
+                                options={cascaderOptions}
+                                placeholder="Выберите специализацию"
+                                onChange={handleSpecializationChange}
+                                className="block mt-2 w-full text-base"
+                            />
+
+                            <div className='text-gray-500 mt-5'>Регион</div>
                             <select
-                                value={announcementType}
-                                onChange={handleAnnouncementTypeChange}
-                                name="announcementType"
-                                className={`block border-b py-4 border-[0px] w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-blue-500'}`}
-                            >
-                                <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
-                                <option value="vacancy">Вакансия</option>
-                                <option value="project">{t('project', { ns: 'announcements' })}</option>
-                            </select>
-                            <select
-                                value={searchCity}
+                                value={city}
                                 onChange={handleCityChange}
-                                name="searchCity"
-                                className='block border-b py-4 border-[0px] w-full md:w-auto border-gray-300 text-gray-500'
+                                className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
-                                <option value="">{t('all_cities', { ns: 'announcements' })}</option>
-                                {uniqueCities.map((city, index) => (
-                                    <option key={index} value={city}>{city}</option>
-                                ))}
+                                <option value="">Выберите город</option>
+                                {cityArray.map(city => (
+                                    <option key={city.id} value={city.id}>
+                                      {city.name}
+                                    </option>
+                                 ))}
                             </select>
+
+                            <input
+                                type="number"
+                                value={minSalary}
+                                onChange={handleMinSalaryChange}
+                                placeholder='Уровень дохода от'
+                                className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                            />
+
+                            <div className='mt-5 flex items-center'>
+                                <div>Указан доход</div>
+                                <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
+                            </div>
+
+                            <div className='bottom-10'>
+                                <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
+                                    Применить
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
