@@ -21,6 +21,8 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
 
         const currentUrl = window.location.href;
 
+        console.log(page)
+
         const hasPageParam = currentUrl.includes('&page=') || currentUrl.includes('?page=');
 
         if (hasPageParam) {
@@ -60,7 +62,7 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
                 {filteredLinks.slice(startPage, endPage).map((link, index) => (
                     <Link
                         key={index}
-                        href={appendPageToUrl(link.url, link.active ? currentPage : filteredLinks[index].page) || '#'}
+                        href={appendPageToUrl(link.url, filteredLinks[index].label) || '#'}
                         className={`block px-3 py-1 rounded-full ${link.active ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
                     >
                         {link.label}
