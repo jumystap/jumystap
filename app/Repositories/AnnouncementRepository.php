@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Announcement;
+use App\Models\Specialization;
 use App\Models\Favorite;
 use App\Models\Response;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,7 @@ class AnnouncementRepository
         if ($announcement) {
             $is_favorite = Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->exists();
             $announcement->is_favorite = $is_favorite;
+            $announcement->specialization = Specialization::find($announcement->specialization_id);
 
             $announcement->responses_count = Response::where('announcement_id', $announcement->id)->count();
             $announcement->visits_count = DB::table('visits')

@@ -1,7 +1,7 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, Head } from "@inertiajs/react";
 import { SiFireship } from "react-icons/si";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
@@ -37,12 +37,28 @@ export default function Announcement({ auth, announcement, top_announcement, urg
             });
         }
     };
+    console.log(announcement);
 
     const vacancyCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Вакансия').length;
     const orderCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Заказ').length;
 
+    var salary = 'договорная';
+    if (announcement.salary_type == 'exact') {
+        salary = `${announcement.cost} ₸`
+    }
+    if (announcement.salary_type == 'max') {
+        salary = `до ${announcement.cost_max} ₸`
+    }
+    if (announcement.salary_type == 'min') {
+        salary = `от ${announcement.cost_min} ₸`
+    }
+
     return (
         <>
+            <Head title={`${announcement.specialization.name_ru} в ${announcement.city} | Вакансия от ${announcement.user.name}`}>
+                <meta name="description" content={`Вакансия ${announcement.specialization.name_ru} в ${announcement.city} от ${announcement.user.name}. Заработная плата ${salary}. Конкурентные условия и перспективы роста. Оставьте заявку сейчас!`}
+                />
+            </Head>
             <GuestLayout>
                 <div className='grid grid-cols-1 md:grid-cols-7'>
                     <div className="md:col-span-5 pt-5">
