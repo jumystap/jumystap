@@ -157,7 +157,9 @@ class AnnouncementController extends Controller
         ]);
 
         try {
-            $success = $this->announcementService->updateAnnouncement($id, $validated);
+            $success = $this->announcementService->updateAnnouncement($id, array_merge($validated, [
+                'active' => 0,
+            ]));
             if ($success) {
                 Log::info('Announcement updated successfully');
                 return redirect('/profile');
