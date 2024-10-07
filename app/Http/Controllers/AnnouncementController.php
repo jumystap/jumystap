@@ -164,6 +164,9 @@ class AnnouncementController extends Controller
                 Log::info('Announcement updated successfully');
                 return redirect('/profile');
             }
+            $announcement = Announcement::find($id);
+            $user = Auth::user();
+            $this->notifyAdmin($announcement, $user);
 
             throw new \Exception('Failed to update announcement');
         } catch (\Exception $e) {
