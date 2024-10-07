@@ -21,16 +21,12 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
 
         const currentUrl = window.location.href;
 
-        console.log(page)
-
         const hasPageParam = currentUrl.includes('&page=') || currentUrl.includes('?page=');
 
         if (hasPageParam) {
-            console.log(currentUrl.replace(/([&?])page=\d+/, `$1page=${page}`))
             return currentUrl.replace(/([&?])page=\d+/, `$1page=${page}`);
         } else {
             const separator = currentUrl.includes('?') ? '&' : '?';
-            console.log(`${currentUrl}${separator}page=${page}`);
             return `${currentUrl}${separator}page=${page}`;
         }
     };
@@ -59,10 +55,10 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
                     </>
                 )}
 
-                {filteredLinks.slice(startPage, endPage).map((link, index) => (
+                {filteredLinks.slice(startPage, endPage).map((link) => (
                     <Link
-                        key={index}
-                        href={appendPageToUrl(link.url, filteredLinks[index].label) || '#'}
+                        key={link.label} // Use `link.label` as key
+                        href={appendPageToUrl(link.url, link.label) || '#'} // Use `link.label` directly
                         className={`block px-3 py-1 rounded-full ${link.active ? 'bg-gray-200 text-gray-700' : 'text-gray-400'}`}
                     >
                         {link.label}
@@ -95,3 +91,4 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
 };
 
 export default Pagination;
+
