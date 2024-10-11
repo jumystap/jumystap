@@ -311,7 +311,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             </Form.Item>
                         )}
                         <Form.Item
-                            label='Адрес'
+                            label='Адрес рабочего места:'
                             name="location"
                             rules={[{ required: true, message: 'Please enter an address' }]}
                         >
