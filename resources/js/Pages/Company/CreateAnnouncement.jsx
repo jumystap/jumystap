@@ -79,9 +79,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         employemnt_type: '',
         start_time: '',
         location: [''],
-        condition: ['', '', ''],
-        requirement: ['', '', ''],
-        responsobility: ['', '', ''],
+        condition: [''],
+        requirement: [''],
+        responsobility: [''],
         city: '',
         active: true,
         specialization_id: null,
@@ -445,6 +445,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             <Form.Item
                                 label='Необходимый опыт работы'
                                 name="experience"
+                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
                                     value={data.work_time}
@@ -462,6 +463,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             <Form.Item
                                 label='Необходимое образование'
                                 name="education"
+                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
                                     value={data.work_time}
@@ -476,7 +478,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             </Form.Item>
                         </div>
                         {/* Критерии/Требования */}
-                        <Form.Item label='Критерии/Требования' name="requirement">
+                        <Form.Item label={
+                                <span>
+                                    Критерии/Требования
+                                    <span className="ml-2 text-gray-500">
+                                        (например: черты характера, навыки, аккредитации и тд.)
+                                    </span>
+                                </span>
+                            } name="requirement">
                             {data.requirement.map((req, index) => (
                                 <Input
                                     key={index}
@@ -493,7 +502,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         </div>
 
                         {/* Обязанности */}
-                        <Form.Item label='Обязанности' name="responsibility">
+                        <Form.Item label={
+                                <span>
+                                    Обязанности работника
+                                    <span className="ml-2 text-gray-500">
+                                        (какие рабочие задачи сотрудник будет выполнять)
+                                    </span>
+                                </span>
+                            } name="responsibility">
                             {data.responsobility.map((resp, index) => (
                                 <Input
                                     key={index}
@@ -510,7 +526,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         </div>
 
                         {/* Условия труда */}
-                        <Form.Item label='Условия труда' name="condition">
+                        <Form.Item  label={
+                                <span>
+                                    Условия труда
+                                    <span className="ml-2 text-gray-500">
+                                        (например:питание, развозка, и тд.)
+                                    </span>
+                                </span>
+                            }name="condition">
                             {data.condition.map((cond, index) => (
                                 <Input
                                     key={index}
@@ -534,9 +557,6 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </span>
                             }
                             name="description"
-                            rules={[{ required: true, message: 'Please enter a description' }]}
-                            help={errors.description || validationErrors.description}
-                            validateStatus={errors.description || validationErrors.description ? 'error' : ''}
                         >
                             <TextArea
                                 name="description"

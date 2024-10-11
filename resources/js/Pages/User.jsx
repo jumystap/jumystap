@@ -55,7 +55,7 @@ export default function User({ auth, user, employees, userProfessions}) {
                                     {user.status}
                                 </div>
                                 {auth.user == null ? (
-                                    <Link href="/register"className='md:hidden mt-3 text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
+                                    <Link href="/register" className='md:hidden mt-3 text-white rounded-lg text-center inline-block bg-blue-500 py-2 px-10'>
                                         <span className='font-bold'>Связаться</span>
                                     </Link>
                                 ):(

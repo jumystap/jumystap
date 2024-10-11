@@ -97,10 +97,8 @@ export default function Profile({ auth, user, announcements, employees, professi
                                         </Link>
                                     </div>
                                 </div>
-                                <div className='mt-10'>
-                                    <div className='text-center font-bold text-lg'>
-
-                                    </div>
+                                <div className='px-5 mt-5'>
+                                    <Link href='#' className='block px-7 py-2 bg-blue-500 text-white inline-block rounded-lg'>Создать резюме</Link>
                                 </div>
                                 <div className='flex'>
                                 </div>
