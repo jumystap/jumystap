@@ -27,7 +27,6 @@ class Announcement extends Model
         'active',
         'payment_status',
         'payed_until',
-        'location',
         'work_time',
         'city',
         'industry_id',
@@ -35,6 +34,11 @@ class Announcement extends Model
         'cost_min',
         'cost_max',
         'specialization_id',
+        'experience',
+        'education',
+        'employemnt_type',
+        'work_hours',
+        'start_time',
     ];
 
     /**
@@ -48,5 +52,25 @@ class Announcement extends Model
     public function responses()
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function address()
+    {
+        return $this->hasMany(AnnouncementAdress::class);
+    }
+
+    public function conditions()
+    {
+        return $this->hasMany(AnnouncementCondition::class);
+    }
+
+    public function requirements()
+    {
+        return $this->hasMany(AnnouncementRequirement::class);
+    }
+
+    public function responsibilities()
+    {
+        return $this->hasMany(AnnouncementResponsibility::class);
     }
 }

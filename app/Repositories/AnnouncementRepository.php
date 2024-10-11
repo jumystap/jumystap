@@ -47,7 +47,7 @@ class AnnouncementRepository
 
     public function getAnnouncementById($id): ?Announcement
     {
-        $announcement = Announcement::where('id', $id)->with('user.announcement')->first();
+        $announcement = Announcement::where('id', $id)->with('user.announcement', 'address', 'conditions', 'requirements', 'responsibilities')->first();
 
         if ($announcement) {
             $is_favorite = Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->exists();
