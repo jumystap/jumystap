@@ -19,7 +19,7 @@
 
 
 body {
-  --jt-o: #F36706;
+  --jt-o: #EFEFEF;
   --jt-b: #000000;
   --jt-w: #ffffff;
   --jt-r: #F30606;
@@ -37,7 +37,7 @@ body {
 }
 
 body::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   height: 10px;
 }
 

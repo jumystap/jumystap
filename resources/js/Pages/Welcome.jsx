@@ -132,14 +132,14 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                         <Carousel>
                         <div className='block flex bg-gradient-to-r z-10 md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div>
-                                <div className='font-bold text-lg md:text-2xl'>
+                                <div className='font-bold text-lg md:text-xl'>
                                     {i18n.language == 'ru' ?
                                         (`Пройди бесплатное обучение`)
                                     :
                                         (`Пройди бесплатное обучение `)
                                     }
                                 </div>
-                                <div className='font-light md:text-lg md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
+                                <div className='font-light md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
                                 <div className='flex gap-x-5 mt-3 items-center'>
                                     <div
                                         onClick={() => setIsOpen(true)}
@@ -248,6 +248,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
@@ -280,6 +281,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
                                 </div>
@@ -294,10 +296,10 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                         ))}
                         {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200`}>
-                                <div className='flex'>
-                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-black'):('text-blue-400')} items-center`}>
+                                <div className='flex items-center'>
+                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                         <FaLocationDot className='text-sm'/>
-                                        <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
+                                        <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
                                     </div>
                                     <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
@@ -311,6 +313,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
                                 </div>
@@ -377,6 +380,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                             {urgent.salary_type == 'exact' && urgent.cost && (`${urgent.cost.toLocaleString() } ₸ `)}
                                             {urgent.salary_type == 'min' && (`от ${urgent.cost_min.toLocaleString()} ₸ `)}
                                             {urgent.salary_type == 'max' && (`до ${urgent.cost_max.toLocaleString()} ₸ `)}
+                                            {urgent.salary_type == 'diapason' && (`от ${urgent.cost_min.toLocaleString()} ₸`)}
                                             {urgent.salary_type == 'undefined' && (`Договорная`)}
                                         </div>
                                     </div>
@@ -401,6 +405,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                             {top.salary_type == 'exact' && top.cost && (`${top.cost.toLocaleString() } ₸ `)}
                                             {top.salary_type == 'min' && (`от ${top.cost_min.toLocaleString()} ₸ `)}
                                             {top.salary_type == 'max' && (`до ${top.cost_max.toLocaleString()} ₸ `)}
+                                            {top.salary_type == 'diapason' && (`от ${top.cost_min.toLocaleString()} ₸`)}
                                             {top.salary_type == 'undefined' && (`Договорная`)}
                                         </div>
                                     </div>

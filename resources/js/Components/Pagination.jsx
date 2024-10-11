@@ -91,4 +91,3 @@ const Pagination = ({ links, currentPage, searchKeyword }) => {
 };
 
 export default Pagination;
-

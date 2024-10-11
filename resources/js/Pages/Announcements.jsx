@@ -240,14 +240,14 @@ export default function Announcements({ auth, announcements, specializations, er
                         <Carousel>
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div>
-                                <div className='font-bold text-lg md:text-2xl'>
+                                <div className='font-bold text-lg md:text-xl'>
                                     {i18n.language == 'ru' ?
                                         (`Пройди бесплатное обучение`)
                                     :
                                         (`Пройди бесплатное обучение `)
                                     }
                                 </div>
-                                <div className='font-light md:text-lg md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
+                                <div className='font-light md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
                                 <div className='flex gap-x-5 mt-3 items-center'>
                                     <div
                                         onClick={() => setIsOpen(true)}
@@ -321,14 +321,14 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div className='border-b border-gray-200 mt-3'>
                         </div>
                         {announcements.data.map((anonce, index) => (
-                            <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
-                                <div className='flex'>
-                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-black'):('text-blue-400')} items-center`}>
+                            <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200`}>
+                                <div className='flex items-center'>
+                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                         <FaLocationDot className='text-sm'/>
-                                        <div className='text-[10pt] md:text-sm'>{anonce.city}, {anonce.location}</div>
+                                        <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
                                     </div>
-                                    <div className='ml-auto md:text-sm text-right text-[10pt] text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
                                 <div className='md:mt-7 mt-5 text-lg font-bold'>
@@ -339,6 +339,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
                                         {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
                                 </div>

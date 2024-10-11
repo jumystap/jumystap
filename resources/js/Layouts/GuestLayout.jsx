@@ -126,7 +126,7 @@ export default function Guest({ children }) {
             </div>
         </div>
         <div className='md:flex hidden font-regular'>
-            <div className="mx-auto min-h-[650px] max-w-[1400px] grid grid-cols-9 md:min-w-[1400px] px-5">
+            <div className="mx-auto min-h-[650px] md:w-[1250px] grid grid-cols-9 px-5">
                 <div className='sticky top-0 pt-5 items-center col-span-2 h-screen border-r pr-5 border-gray-200'>
                     <Link
                         className={`block ${isActive('/') ? 'text-blue-500 font-semibold' : ''}`}

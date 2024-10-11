@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\AnnouncementAdress;
+use App\Models\AnnouncementCondition;
+use App\Models\AnnouncementRequirement;
+use App\Models\AnnouncementResponsibility;
 use App\Models\Industry;
 use App\Models\Response;
 use App\Models\Specialization;
@@ -93,12 +97,19 @@ class AnnouncementController extends Controller
             'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable',
-            'location' => 'nullable',
-            'city' => 'nullable',
+            'location' => 'nullable|array', // Validate as an array
+            'location.*' => 'string|max:255', // Validate each location item
+            'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable',
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
+            'responsobility' => 'nullable|array', // Validate as an array
+            'responsobility.*' => 'string|max:255', // Validate each responsibility item
+            'requirement' => 'nullable|array', // Validate as an array
+            'requirement.*' => 'string|max:255', // Validate each requirement item
+            'condition' => 'nullable|array', // Validate as an array
+            'condition.*' => 'string|max:255', // Validate each requirement item
         ]);
 
         $user = Auth::user();
@@ -110,6 +121,42 @@ class AnnouncementController extends Controller
                 'active' => 0,
             ]));
 
+            if (!empty($validated['location'])) {
+                foreach ($validated['location'] as $location) {
+                    AnnouncementAdress::create([
+                        'announcement_id' => $announcement->id,
+                        'adress' => $location,
+                    ]);
+                }
+            }
+
+            if (!empty($validated['responsobility'])) {
+                foreach ($validated['responsobility'] as $responsibility) {
+                    AnnouncementResponsibility::create([
+                        'announcement_id' => $announcement->id,
+                        'responsibility' => $responsibility,
+                    ]);
+                }
+            }
+
+            if (!empty($validated['requirement'])) {
+                foreach ($validated['requirement'] as $requirement) {
+                    AnnouncementRequirement::create([
+                        'announcement_id' => $announcement->id,
+                        'requirement' => $requirement,
+                    ]);
+                }
+            }
+
+            if (!empty($validated['condition'])) {
+                foreach ($validated['condition'] as $requirement) {
+                    AnnouncementCondition::create([
+                        'announcement_id' => $announcement->id,
+                        'condition' => $requirement,
+                    ]);
+                }
+            }
+
             Log::info('Announcement created successfully', ['announcement' => $announcement]);
             $this->notifyAdmin($announcement, $user);
 
@@ -119,6 +166,7 @@ class AnnouncementController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the announcement'])->withInput();
         }
     }
+
 
     public function edit($id): mixed
     {
