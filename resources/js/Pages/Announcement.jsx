@@ -62,9 +62,7 @@ export default function Announcement({ auth, announcement }) {
                                 <div className='text-2xl md:text-3xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
                                 <div className="mt-2 text-sm font-light">
                                     {announcement.city}
-                                    {announcement.location && announcement.location.length > 0 && (
-                                        <> , {announcement.location.join(', ')} </> // Join locations with commas
-                                    )}
+                                    {announcement.location}
                                     {announcement.address && announcement.address.length > 0 && (
                                         <span>
                                             {announcement.address.map((address, index) => (
@@ -167,27 +165,40 @@ export default function Announcement({ auth, announcement }) {
                         </div>
                         <div className='mx-5 mt-5 rounded-lg'>
                             <div className='font-semibold mt-5'>Описание:</div>
-                            <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description}} />
-                            <div className='text-lg font-semibold mb-2 mt-2'>Условия</div>
-                            <ul className='list-disc list-inside'>
-                                {announcement.conditions.map((condition, index) => (
-                                    <li key={index} className='mb-2'>{condition.condition}</li>
-                                ))}
-                            </ul>
+                            <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
 
-                            <div className='text-lg font-semibold mb-2 mt-2'>Обязанности</div>
-                            <ul className='list-disc list-inside'>
-                                {announcement.responsibilities.map((responsibility, index) => (
-                                    <li key={index} className='mb-2'>{responsibility.responsibility}</li>
-                                ))}
-                            </ul>
+                            {announcement.conditions.length > 0 && (
+                                <>
+                                    <div className='text-lg font-semibold mb-2 mt-2'>Условия</div>
+                                    <ul className='list-disc list-inside'>
+                                        {announcement.conditions.map((condition, index) => (
+                                            <li key={index} className='mb-2'>{condition.condition}</li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
 
-                            <div className='text-lg font-semibold mb-2 mt-2'>Требования</div>
-                            <ul className='list-disc list-inside'>
-                                {announcement.requirements.map((requirement, index) => (
-                                    <li key={index} classname='mb-2'>{requirement.requirement}</li>
-                                ))}
-                            </ul>
+                            {announcement.responsibilities.length > 0 && (
+                                <>
+                                    <div className='text-lg font-semibold mb-2 mt-2'>Обязанности</div>
+                                    <ul className='list-disc list-inside'>
+                                        {announcement.responsibilities.map((responsibility, index) => (
+                                            <li key={index} className='mb-2'>{responsibility.responsibility}</li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+
+                            {announcement.requirements.length > 0 && (
+                                <>
+                                    <div className='text-lg font-semibold mb-2 mt-2'>Требования</div>
+                                    <ul className='list-disc list-inside'>
+                                        {announcement.requirements.map((requirement, index) => (
+                                            <li key={index} className='mb-2'>{requirement.requirement}</li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
