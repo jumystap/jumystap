@@ -37,7 +37,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     const vacancyCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Вакансия').length;
     const orderCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Заказ').length;
 
-    let salary = 'договорная';
+    let salary = 'Договорная';
     if (announcement.salary_type === 'exact') {
         salary = `${announcement.cost} ₸`;
     } else if (announcement.salary_type === 'max') {
