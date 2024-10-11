@@ -7,17 +7,16 @@ import { FaStar } from "react-icons/fa";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useForm } from '@inertiajs/react';
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { MdOutlineRemoveRedEye, MdOutlineWorkOutline } from "react-icons/md";
+import { MdOutlineRemoveRedEye, MdOutlineWorkOutline, MdAccessTime } from "react-icons/md";
 import { useInternalMessage } from "antd/es/message/useMessage";
 import { FaLocationDot } from "react-icons/fa6";
 
-export default function Announcement({ auth, announcement }) {
+export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation();
     const { post, delete: destroy } = useForm();
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
     const toggleShowFullText = () => setShowFullText(!showFullText);
-    console.log(announcement)
 
     const maxLength = 90;
     const isLongText = announcement.user.description.length > maxLength;
@@ -163,9 +162,10 @@ export default function Announcement({ auth, announcement }) {
                                 )}
                             </div>
                         </div>
-                        <div className='mx-5 mt-5 rounded-lg'>
+                        <div className='mt-5 rounded-lg'>
+                            <div className='mx-5'>
                             <div className='font-semibold mt-5'>Описание:</div>
-                            <div className='mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
+                            <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
 
                             {announcement.conditions.length > 0 && (
                                 <>
@@ -199,7 +199,91 @@ export default function Announcement({ auth, announcement }) {
                                     </ul>
                                 </>
                             )}
+                            </div>
+
+                            <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
+                            {more_announcement.length > 0 ? (
+                            <div className='grid grid-cols-1 md:grid-cols-1'>
+                                {more_announcement.map((anonce, index) => (
+                                    <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
+                                        <div className='flex'>
+                                            <div className='flex gap-x-1 text-blue-400 items-center'>
+                                                <FaLocationDot className='text-sm'/>
+                                                <div className='text-sm'>{anonce.city}</div>
+                                            </div>
+                                        </div>
+                                        <div className='mt-7 text-lg font-bold'>
+                                            {anonce.title}
+                                        </div>
+                                        <div className='flex mt-4 gap-x-3 items-center'>
+                                            <div className='md:text-xl text-lg font-regular'>
+                                                {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                                {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                            </div>
+                                        </div>
+                                        <div className='mt-4 text-sm text-gray-500 font-light'>
+                                            {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
+                                        </div>
+                                        <div className='flex gap-x-1 items-center mt-4'>
+                                            <MdAccessTime className='text-xl'/>
+                                            <div className='text-sm'>График работы: {anonce.work_time}</div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                            ) : (
+                                <div className='text-center'>123123</div>
+                            )}
                         </div>
+                    </div>
+                        <div className="col-span-2 border-l h-screen md:block hidden sticky top-0 border-gray-200">
+                        {urgent_announcement && (
+                            <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:bg-gray-100 transition-all duration-150 border-b border-gray-300 p-3 w-full hidden md:block '>
+                                <div className='flex items-center'>
+                                    <div className='uppercase text-white text-xs px-2 bg-red-600 font-bold rounded'>Срочно</div>
+                                    <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
+                                        <SiFireship className='text-red-600 text-lg' />
+                                        {urgent_announcement.salary_type == 'exact' && urgent_announcement.cost && (`${urgent_announcement.cost.toLocaleString() } ₸ `)}
+                                        {urgent_announcement.salary_type == 'min' && (`от ${urgent_announcement.cost_min.toLocaleString()} ₸ `)}
+                                        {urgent_announcement.salary_type == 'max' && (`до ${urgent_announcement.cost_max.toLocaleString()} ₸ `)}
+                                        {urgent_announcement.salary_type == 'undefined' && (`Договорная`)}
+                                    </div>
+                                </div>
+                                <div className='mt-3 text-[11pt] max-w-[400px]'>
+                                        {urgent_announcement.title}
+                                    </div>
+                                    <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
+                                        {urgent_announcement.description.length > 60
+                                            ? `${urgent_announcement.description.substring(0, 60)}...`
+                                            : urgent_announcement.description}
+                                    </div>
+                            </Link>
+                        )}
+                        {top_announcement && (
+                            <Link href={`/announcement/${top_announcement.id}`} className='md:block hidden w-full hover:bg-gray-100 transition-all duration-150 border-b border-gray-200 p-3'>
+                                <div className='flex items-center'>
+                                    <div className='uppercase text-white text-xs px-2 bg-blue-500 font-bold rounded'>Топ</div>
+                                    <div className='flex gap-x-2 items-center font-bold text-sm ml-auto'>
+                                        <FaStar className='text-blue-500 text-lg'/>
+                                        {top_announcement.salary_type == 'exact' && top_announcement.cost && (`${top_announcement.cost.toLocaleString() } ₸ `)}
+                                        {top_announcement.salary_type == 'min' && (`от ${top_announcement.cost_min.toLocaleString()} ₸ `)}
+                                        {top_announcement.salary_type == 'max' && (`до ${top_announcement.cost_max.toLocaleString()} ₸ `)}
+                                        {top_announcement.salary_type == 'undefined' && (`Договорная`)}
+                                    </div>
+                                </div>
+                                <div className='mt-3 text-[11pt] max-w-[400px]'>
+                                        {top_announcement.title}
+                                    </div>
+                                    <div className='mt-1 text-[11pt] text-gray-500 max-w-[350px]'>
+                                        {top_announcement.description.length > 60
+                                            ? `${top_announcement.description.substring(0, 60)}...`
+                                            : top_announcement.description}
+                                    </div>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </GuestLayout>
