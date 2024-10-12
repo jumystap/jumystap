@@ -3,7 +3,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import { CgClose, CgMenuRight, CgShoppingBag, CgChevronDown } from "react-icons/cg";
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineUserGroup } from "react-icons/hi2";
+import { HiOutlineHome, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiHome2Line } from "react-icons/ri";
 import { MdOutlineBookmarks, MdOutlineCloud, MdOutlineGroupAdd, MdOutlineLogout, MdOutlineWorkOutline } from "react-icons/md";
 import { IoSchoolOutline } from 'react-icons/io5';
@@ -78,26 +78,26 @@ export default function Guest({ children }) {
                         <CgClose />
                     </button>
                     </div>
-                    <Link href='/reviews' className="block py-3 border-b hover:font-semibold transition-all px-2 w-full text-left ease-in-out duration-100">
-                        {t('feeback', { ns: 'header'})}
+                    <Link href='/reviews' className="block py-3 hover:font-semibold transition-all w-full text-left ease-in-out duration-100 flex items-center">
+                        <CgShoppingBag className="mr-2 text-xl" /> {t('feeback', { ns: 'header'})}
                     </Link>
-                    <Link href="/employees?job-type=vacancy" className="block py-3 px-2 border-b hover:font-semibold transition-all duration-200" onClick={() => setIsMobileMenuOpen(false)}>
-                        {t('nav_for_employers', { ns: 'header'})}
+                    <Link href="/employees?job-type=vacancy" className="block py-3 hover:font-semibold transition-all duration-200 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <HiOutlineUserGroup className="mr-2 text-xl" /> {t('nav_for_employers', { ns: 'header'})}
                     </Link>
-                    <Link href="/employees?job-type=project" className="block py-3 px-2 border-b hover:font-semibold transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                        {t('nav_for_clients', { ns: 'header'})}
+                    <Link href="/employees?job-type=project" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <MdOutlineWorkOutline className="mr-2 text-xl" /> {t('nav_for_clients', { ns: 'header'})}
                     </Link>
-                    <Link href="/announcements" className="block py-3 border-b px-2  hover:font-semibold transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                        {t('nav_for_graduates', { ns: 'header'})}
+                    <Link href="/announcements" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <MdOutlineBookmarks className="mr-2 text-xl" /> {t('nav_for_graduates', { ns: 'header'})}
                     </Link>
-                    <Link href="/faq" className="block py-3 border-b hover:font-semibold px-2 transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                        {t('nav_about_training', { ns: 'header'})}
+                    <Link href="/faq" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <IoSchoolOutline className="mr-2 text-xl" /> {t('nav_about_training', { ns: 'header'})}
                     </Link>
-                    <Link href="/fav" className="block py-3 border-b hover:font-semibold px-2 transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                        Избранные
+                    <Link href="/fav" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <MdOutlineBookmarks className="mr-2 text-xl" /> Избранные
                     </Link>
-                    <Link href="/about" className="block py-3  hover:font-semibold px-2 transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                        О платформе
+                    <Link href="/about" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+                        <MdOutlineCloud className="mr-2 text-xl" /> О платформе
                     </Link>
 
                     {auth.user ? (
@@ -135,45 +135,45 @@ export default function Guest({ children }) {
                         <ApplicationLogo/>
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-5 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 font-regular mt-5 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/') ? 'text-black' : 'text-gray-500'}`}
                         href='/'
                     >
-                        <RiHome2Line className='text-3xl'/>
+                        <HiOutlineHome className='text-2xl'/>
                         Главная
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/employees') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/employees') ? 'text-black' : 'text-gray-500'}`}
                         href='/employees'
                     >
-                        <HiOutlineUserGroup className='text-3xl'/>
+                        <HiOutlineUserGroup className='text-2xl'/>
                         {t('nav_for_employers', { ns: 'header'})}
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/announcements') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/announcements') ? 'text-black' : 'text-gray-500'}`}
                         href='/announcements'
                     >
-                        <MdOutlineWorkOutline className='text-3xl'/>
+                        <MdOutlineWorkOutline className='text-2xl'/>
                         Вакансии
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/about') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/about') ? 'text-black' : 'text-gray-500'}`}
                         href='/about'
                     >
-                        <MdOutlineCloud className='text-3xl'/>
+                        <MdOutlineCloud className='text-2xl'/>
                         О платформе
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/faq') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/faq') ? 'text-black' : 'text-gray-500'}`}
                         href='/faq'
                     >
-                        <IoSchoolOutline className='text-3xl'/>
+                        <IoSchoolOutline className='text-2xl'/>
                         Об обучении
                     </Link>
                     <Link
-                        className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/fav') ? 'text-blue-500 font-semibold' : ''}`}
+                        className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive('/fav') ? 'text-black' : 'text-gray-500'}`}
                         href='/fav'
                     >
-                        <MdOutlineBookmarks className='text-3xl'/>
+                        <MdOutlineBookmarks className='text-2xl'/>
                         Избранные
                     </Link>
                     {!auth.user ? (
@@ -200,8 +200,8 @@ export default function Guest({ children }) {
                                 <div className='text-sm text-gray-500'>{auth.user.email}</div>
                             </div>
                         </Link>
-                        <button onClick={handleLogout} className="text-xl flex items-center gap-x-4 mt-2 font-regular transition-all duration-150 py-2 hover:bg-gray-100 w-full text-left rounded-full hover:px-5">
-                            <MdOutlineLogout className='text-3xl'/>
+                        <button onClick={handleLogout} className="text-lg flex items-center gap-x-4 mt-2 font-regular transition-all duration-150 py-2 hover:bg-gray-100 w-full text-left rounded-full hover:px-5">
+                            <MdOutlineLogout className='text-2xl'/>
                             {t('logout', { ns: 'header' })}
                         </button>
                         </>

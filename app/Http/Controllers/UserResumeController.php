@@ -50,7 +50,7 @@ class UserResumeController extends Controller
             $resume->languages()->create(['language' => $language]);
         }
 
-        return redirect()->route('resumes.index');
+        return redirect('/');
     }
 
     public function show(UserResume $resume)

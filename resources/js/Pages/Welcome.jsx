@@ -17,6 +17,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
     const { t, i18n } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    console.log(announcements)
 
     const kz = {
         ...ru,
@@ -290,6 +291,14 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        {anonce.salary_type == 'za_smenu' && (
+                                            <>
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
@@ -322,6 +331,14 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        {anonce.salary_type == 'za_smenu' && (
+                                            <>
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>

@@ -14,6 +14,7 @@ class AnnouncementRepository
     public function getAllActiveAnnouncements(array $filters = null)
     {
         $query = Announcement::orderBy('created_at', 'desc')
+        ->with('user')
         ->where('active', 1);
 
         if (!empty($filters['specialization'])) {
