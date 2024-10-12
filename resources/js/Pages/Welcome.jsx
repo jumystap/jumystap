@@ -262,7 +262,6 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
-                                    {anonce.description && (anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description)}
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
                                     <MdAccessTime className='text-xl'/>
@@ -326,7 +325,6 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
-                                    {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
                                     <MdAccessTime className='text-xl'/>
