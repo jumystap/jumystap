@@ -128,7 +128,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     </Link>
                                 )}
                                 <div
-                                    onClick={handleShare} // Trigger sharing on click
+                                    onClick={handleShare}
                                     className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
                                     <MdIosShare className='text-blue-500 text-xl' />
                                 </div>
@@ -180,40 +180,35 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     )}
                                 </div>
                             </div>
-
-
                         </div>
-
+                        <div className='p-5 rounded-lg mx-5 border border-gray-200 gap-5 mt-5 grid md:grid-cols-3 grid-cols-2'>
+                            <div>
+                                <div className='text-sm text-gray-500'>Опыт работы</div>
+                                <div>{announcement.experience}</div>
+                            </div>
+                            <div>
+                                <div className='text-sm text-gray-500'>Тип оплаты</div>
+                                <div>{announcement.payment_type}</div>
+                            </div>
+                            <div>
+                                <div className='text-sm text-gray-500'>Тип объявления</div>
+                                <div>{announcement.type_ru}</div>
+                            </div>
+                            <div>
+                                <div className='text-sm text-gray-500'>График работы</div>
+                                <div>{announcement.work_time}</div>
+                            </div>
+                            <div>
+                                <div className='text-sm text-gray-500'>Тип занятости</div>
+                                <div>{announcement.employemnt_type}</div>
+                            </div>
+                            <div>
+                                <div className='text-sm text-gray-500'>Образование</div>
+                                <div>{announcement.education}</div>
+                            </div>
+                        </div>
                         <div className='mt-5 rounded-lg border mx-5'>
                             <div className='mx-5'>
-                                <div className='gap-5 mt-5 grid md:grid-cols-3 grid-cols-2'>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>Опыт работы</div>
-                                        <div>{announcement.experience}</div>
-                                    </div>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>Тип оплаты</div>
-                                        <div>{announcement.payment_type}</div>
-                                    </div>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>Тип объявления</div>
-                                        <div>{announcement.type_ru}</div>
-                                    </div>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>График работы</div>
-                                        <div>{announcement.work_time}</div>
-                                    </div>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>Тип занятости</div>
-                                        <div>{announcement.employemnt_type}</div>
-                                    </div>
-                                    <div>
-                                        <div className='text-sm text-gray-500'>Образование</div>
-                                        <div>{announcement.education}</div>
-                                    </div>
-                                </div>
-
-
                             {announcement.conditions.length > 0 && (
                                 <>
                                     <div className='font-semibold mb-2 mt-5'>Условия</div>
@@ -224,7 +219,6 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     </ul>
                                 </>
                             )}
-
                             {announcement.responsibilities.length > 0 && (
                                 <>
                                     <div className='font-semibold mb-2 mt-2'>Обязанности</div>
@@ -246,8 +240,12 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     </ul>
                                 </>
                             )}
-                            <div className='font-semibold mt-5'>Описание:</div>
-                            <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
+                            {announcement.description && (
+                                <>
+                                    <div className='font-semibold mt-5'>Описание:</div>
+                                    <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
+                                </>
+                            )}
                             </div>
 
                             <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
