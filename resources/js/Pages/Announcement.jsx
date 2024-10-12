@@ -10,6 +10,8 @@ import { HiOutlineUserGroup } from "react-icons/hi2";
 import { MdOutlineRemoveRedEye, MdOutlineWorkOutline, MdAccessTime } from "react-icons/md";
 import { useInternalMessage } from "antd/es/message/useMessage";
 import { FaLocationDot } from "react-icons/fa6";
+import { MdIosShare } from "react-icons/md";
+
 
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation();
@@ -34,6 +36,24 @@ export default function Announcement({ auth, announcement, more_announcement, ur
         }
     };
 
+    const handleShare = () => {
+        const url = `https://jumystap.kz/announcement/${announcement.id}`; // Ensure 'announcement' is in scope and has 'id'
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Check out this announcement',
+                url: url,
+            }).then(() => {
+                console.log('Share was successful.');
+            }).catch((error) => {
+                console.error('Sharing failed:', error);
+            });
+        } else {
+            // Fallback for browsers that do not support the Web Share API
+            alert(`Share this link: ${url}`);
+        }
+    };
+
     const vacancyCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Вакансия').length;
     const orderCount = announcement.user.announcement.filter(anonce => anonce.type_ru === 'Заказ').length;
 
@@ -54,14 +74,15 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                 <meta name="description" content={`Вакансия ${announcement.specialization.name_ru} в ${announcement.city} от ${announcement.user.name}. Заработная плата ${salary}. Конкурентные условия и перспективы роста. Оставьте заявку сейчас!`} />
             </Head>
             <GuestLayout>
-                <div className='grid grid-cols-1 md:grid-cols-7'>
-                    <div className="md:col-span-5 pt-5">
+                <div className='grid grid-cols-1 md:grid-cols-9'>
+                    <div className="md:col-span-6 pt-5">
                         <div className='md:mb-5 mb-2 px-5'>
+                            <div className='p-5 rounded-lg border border-gray-200'>
                             <div className=''>
-                                <div className='text-2xl md:text-3xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
+                                <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
                                 <div className="mt-2 text-sm font-light">
                                     {announcement.city}
-                                    {announcement.location}
+                                     {announcement.location}
                                     {announcement.address && announcement.address.length > 0 && (
                                         <span>
                                             {announcement.address.map((address, index) => (
@@ -71,27 +92,19 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     )}
                                 </div>
                                 <div className='mt-2 text-2xl'>
-                                    {salary}
-                                </div>
-                            </div>
-                            <div className='flex-wrap flex gap-2 mt-2'>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    График работы: {announcement.work_time}
-                                </div>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    {announcement.payment_type}
-                                </div>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    {announcement.type_ru}
-                                </div>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    {announcement.employemnt_type}
-                                </div>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    Опыт работы: {announcement.experience}
-                                </div>
-                                <div className='px-4 py-2 rounded-full bg-gray-100 text-gray-700 inline-block text-sm'>
-                                    Образование: {announcement.education}
+                                    {announcement.salary_type == 'exact' && announcement.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                    {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'diapason' && (`от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'undefined' && (`Договорная`)}
+                                    {announcement.salary_type == 'za_smenu' && (
+                                        <>
+                                            {announcement.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                            {announcement.cost_min && !announcement.cost_max && `от ${announcement.cost_min.toLocaleString()} ₸ / за смену`}
+                                            {!announcement.cost_min && announcement.cost_max && `до ${announcement.cost_max.toLocaleString()} ₸ / за смену`}
+                                            {announcement.cost_min && announcement.cost_max && `от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ / за смену`}
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
@@ -115,6 +128,11 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     </Link>
                                 )}
                                 <div
+                                    onClick={handleShare} // Trigger sharing on click
+                                    className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
+                                    <MdIosShare className='text-blue-500 text-xl' />
+                                </div>
+                                <div
                                     onClick={handleFavoriteClick}
                                     className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
                                     {isFavorite ? (
@@ -124,52 +142,81 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     )}
                                 </div>
                             </div>
-                        </div>
-                        <div className='mx-5 mt-5 px-5 py-4 rounded-lg shadow-[0_-20px_40px_-10px_rgba(0,0,0,0.07),_0_20px_40px_-10px_rgba(0,0,0,0.07)]'>
-                            <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
-                            <div className='text-left mt-2 font-light text-gray-500'>
-                                {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
-                                {isLongText && (
-                                    <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
-                                        {showFullText ? ' Скрыть' : ' Подробнее'}
-                                    </span>
-                                )}
                             </div>
-                            <div className="flex-wrap">
-                                {announcement.responses_count !== 0 && (
-                                    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                        <div className="flex items-center gap-x-1">
-                                            <HiOutlineUserGroup className="text-xl" />
-                                            <div>{announcement.responses_count} {announcement.responses_count === 1 ? 'отклик' : (announcement.responses_count >= 2 && announcement.responses_count <= 4) ? 'отклика' : 'откликов'}</div>
+                            <div className='md:hidden mt-5 px-5 py-4 rounded-lg border border-gray-200'>
+                                <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
+                                <div className='text-left mt-2 font-light text-gray-500'>
+                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                    {isLongText && (
+                                        <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
+                                            {showFullText ? ' Скрыть' : ' Подробнее'}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex-wrap">
+                                    {announcement.responses_count !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <HiOutlineUserGroup className="text-xl" />
+                                                <div>{announcement.responses_count} {announcement.responses_count === 1 ? 'отклик' : (announcement.responses_count >= 2 && announcement.responses_count <= 4) ? 'отклика' : 'откликов'}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                                {announcement.visits_count !== 0 && (
-                                    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                        <div className="flex items-center gap-x-1">
-                                            <MdOutlineRemoveRedEye className="text-xl" />
-                                            <div>{announcement.visits_count} {announcement.visits_count === 1 ? 'просмотр' : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? 'просмотра' : 'просмотров'}</div>
+                                    )}
+                                    {announcement.visits_count !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <MdOutlineRemoveRedEye className="text-xl" />
+                                                <div>{announcement.visits_count} {announcement.visits_count === 1 ? 'просмотр' : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? 'просмотра' : 'просмотров'}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                                {orderCount !== 0 && (
-                                    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                        <div className="flex items-center gap-x-1">
-                                            <MdOutlineWorkOutline className="text-xl" />
-                                            <div>{orderCount} {orderCount === 1 ? 'заказ' : 'заказов'}</div>
+                                    )}
+                                    {orderCount !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <MdOutlineWorkOutline className="text-xl" />
+                                                <div>{orderCount} {orderCount === 1 ? 'заказ' : 'заказов'}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
+
+
                         </div>
-                        <div className='mt-5 rounded-lg'>
+
+                        <div className='mt-5 rounded-lg border mx-5'>
                             <div className='mx-5'>
-                            <div className='font-semibold mt-5'>Описание:</div>
-                            <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
+                                <div className='gap-5 mt-5 grid md:grid-cols-3 grid-cols-2'>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>Опыт работы</div>
+                                        <div>{announcement.experience}</div>
+                                    </div>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>Тип оплаты</div>
+                                        <div>{announcement.payment_type}</div>
+                                    </div>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>Тип объявления</div>
+                                        <div>{announcement.type_ru}</div>
+                                    </div>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>График работы</div>
+                                        <div>{announcement.work_time}</div>
+                                    </div>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>Тип занятости</div>
+                                        <div>{announcement.employemnt_type}</div>
+                                    </div>
+                                    <div>
+                                        <div className='text-sm text-gray-500'>Образование</div>
+                                        <div>{announcement.education}</div>
+                                    </div>
+                                </div>
+
 
                             {announcement.conditions.length > 0 && (
                                 <>
-                                    <div className='text-lg font-semibold mb-2 mt-2'>Условия</div>
+                                    <div className='font-semibold mb-2 mt-5'>Условия</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.conditions.map((condition, index) => (
                                             <li key={index} className='mb-2'>{condition.condition}</li>
@@ -180,7 +227,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
 
                             {announcement.responsibilities.length > 0 && (
                                 <>
-                                    <div className='text-lg font-semibold mb-2 mt-2'>Обязанности</div>
+                                    <div className='font-semibold mb-2 mt-2'>Обязанности</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.responsibilities.map((responsibility, index) => (
                                             <li key={index} className='mb-2'>{responsibility.responsibility}</li>
@@ -191,7 +238,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
 
                             {announcement.requirements.length > 0 && (
                                 <>
-                                    <div className='text-lg font-semibold mb-2 mt-2'>Требования</div>
+                                    <div className='font-semibold mb-2 mt-2'>Требования</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.requirements.map((requirement, index) => (
                                             <li key={index} className='mb-2'>{requirement.requirement}</li>
@@ -199,6 +246,8 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     </ul>
                                 </>
                             )}
+                            <div className='font-semibold mt-5'>Описание:</div>
+                            <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
                             </div>
 
                             <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
@@ -238,7 +287,44 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             )}
                         </div>
                     </div>
-                        <div className="col-span-2 border-l h-screen md:block hidden sticky top-0 border-gray-200">
+                        <div className="col-span-3 border-l h-screen md:block hidden sticky top-0 border-gray-200">
+                            <div className='px-5 py-4 border-b border-t border-gray-200'>
+                                <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
+                                <div className='text-left mt-2 font-light text-gray-500'>
+                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                    {isLongText && (
+                                        <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
+                                            {showFullText ? ' Скрыть' : ' Подробнее'}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex-wrap">
+                                    {announcement.responses_count !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <HiOutlineUserGroup className="text-xl" />
+                                                <div>{announcement.responses_count} {announcement.responses_count === 1 ? 'отклик' : (announcement.responses_count >= 2 && announcement.responses_count <= 4) ? 'отклика' : 'откликов'}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {announcement.visits_count !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <MdOutlineRemoveRedEye className="text-xl" />
+                                                <div>{announcement.visits_count} {announcement.visits_count === 1 ? 'просмотр' : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? 'просмотра' : 'просмотров'}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {orderCount !== 0 && (
+                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
+                                            <div className="flex items-center gap-x-1">
+                                                <MdOutlineWorkOutline className="text-xl" />
+                                                <div>{orderCount} {orderCount === 1 ? 'заказ' : 'заказов'}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         {urgent_announcement && (
                             <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:bg-gray-100 transition-all duration-150 border-b border-gray-300 p-3 w-full hidden md:block '>
                                 <div className='flex items-center'>
