@@ -14,16 +14,16 @@ class UserResume extends Model
     ];
 
     protected $casts = [
-        'skills' => 'array', // Cast the skills as an array
+        'skills' => 'array',
     ];
 
     public function organizations()
     {
-        return $this->hasMany(Organization::class);
+        return $this->hasMany(Organization::class, 'resume_id');
     }
 
     public function languages()
     {
-        return $this->hasMany(Language::class);
+        return $this->hasMany(Language::class, 'resume_id');
     }
 }

@@ -42,6 +42,7 @@ export default function Announcements({ auth, announcements, specializations, er
         isSalary: false,
     });
 
+    console.log(announcements)
     const handleCityChange = (event) => {
         setCity(event.target.value);
         setData('city', event.target.value);
@@ -341,6 +342,14 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        {anonce.salary_type == 'za_smenu' && (
+                                            <>
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
