@@ -251,10 +251,18 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        {anonce.salary_type == 'za_smenu' && (
+                                            <>
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
-                                    {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
+                                    {anonce.description && (anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description)}
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
                                     <MdAccessTime className='text-xl'/>
