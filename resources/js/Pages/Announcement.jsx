@@ -225,7 +225,6 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                             </div>
                                         </div>
                                         <div className='mt-4 text-sm text-gray-500 font-light'>
-                                            {anonce.description.length > 60 ? anonce.description.substring(0, 90) + '...' : anonce.description}
                                         </div>
                                         <div className='flex gap-x-1 items-center mt-4'>
                                             <MdAccessTime className='text-xl'/>
