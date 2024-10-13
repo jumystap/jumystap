@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/resume', [ResumeController::class, 'create']);
     Route::get('/create_resume', [UserResumeController::class, 'create']);
     Route::post('/create_resume', [UserResumeController::class, 'store']);
+    Route::post('/update_resume', [UserResumeController::class, 'store']);
 });
 
 
