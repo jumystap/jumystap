@@ -26,6 +26,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const isEdit = true;
     const [salaryType, setSalaryType] = useState('');
     const [isExactSalary, setIsExactSalary] = useState(false);
+    console.log(announcement)
 
     const handleSalaryTypeChange = (e) => {
         if (e.target.checked) {
@@ -37,7 +38,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
     const formatNumber = (value) => {
         if (!value) return '';
-        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); // Add spaces every 3 digits
+        return value // Add spaces every 3 digits
     };
 
     const parseNumber = (value) => {
@@ -68,26 +69,26 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const { data, setData, post, put, processing, errors } = useForm({
         type_kz: 'Тапсырыс',
         type_ru: 'Заказ',
-        title: '',
-        description: '',
-        payment_type: '',
-        cost: null,
-        work_time: '',
-        work_hours: '',
-        education: '',
-        experience: '',
-        employemnt_type: '',
-        start_time: '',
+        title: announcement.title || '',
+        description: announcement.description || '',
+        payment_type: announcement.payment_type || '',
+        cost: announcement.cost || null,
+        work_time: announcement.work_time || '',
+        work_hours: announcement.work_hours || '',
+        education: announcement.education || '',
+        experience: announcement.experience || '',
+        employemnt_type: announcement.employemnt_type || '',
+        start_time: announcement.start_time || '',
         location: [''],
-        condition: [''],
-        requirement: [''],
-        responsobility: [''],
-        city: '',
-        active: true,
-        specialization_id: null,
-        salary_type: '',
-        cost_min: null,
-        cost_max: null,
+        condition:  [''],
+        requirement:  [''],
+        responsobility:  [''],
+        city: announcement.city || '',
+        active: announcement.active || true,
+        specialization_id: announcement.specialization_id || null,
+        salary_type: announcement.salary_type || '',
+        cost_min: announcement.cost_min || null,
+        cost_max: announcement.cost_max || null,
     });
 
 
@@ -98,7 +99,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             [name]: parsedValue,
         }));
-        console.log(name, parsedValue);
 
         if (name === 'cost_min' || name === 'cost_max') {
             const minFilled = !!value; // Use the updated value for checking
@@ -244,11 +244,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                     <Title level={3} className="">
                         {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
                     </Title>
-                    <Form onFinish={handleSubmit} layout="vertical">
+                     <Form onFinish={handleSubmit} layout="vertical" initialValues={data}>
                         <Form.Item
                             label={
                                 <span>
-                                    {t('title', { ns: 'createAnnouncement' })}
+                                    Загаловок
                                     <span className="ml-2 text-gray-500">
                                         (Напишите наименование вакансии с заглавной буквы без дополнительной информации)
                                     </span>
@@ -256,8 +256,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             }
                             name="title"
                             rules={[{ required: true, message: 'Пожалуйста, введите заголовок' }]}
-                            help={errors.title || validationErrors.title}
-                            validateStatus={errors.title || validationErrors.title ? 'error' : ''}
                         >
                             <Input
                                 type="text"
@@ -274,8 +272,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         >
                             <Cascader
                                 options={cascaderData}
-                                onChange={(value) => setData('specialization_id', value[1])}
                                 placeholder="Выберите специализацию"
+                                onChange={(value) => setData('specialization_id', value[1])}
                             />
                         </Form.Item>
                         <Form.Item
@@ -298,13 +296,13 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         {showOtherCityInput && (
                             <Form.Item
                                 label='Введите другой город'
-                                name="city"
+                                name="other_city"
                                 rules={[{ required: true, message: 'Please enter a city' }]}
                             >
                                 <Input
                                     type="text"
-                                    name="city"
                                     className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                    name="city"
                                     value={data.city}
                                     onChange={handleChange}
                                 />
@@ -319,7 +317,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 <Input
                                     key={index}
                                     type="text"
-                                    name={`location-${index}`}
                                     className='text-sm rounded py-1 mt-2 border border-gray-300'
                                     value={loc}
                                     onChange={(e) => handleLocationChange(index, e)}
@@ -368,11 +365,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         </div>
                         <Form.Item
-                            label={t('paymentType', { ns: 'createAnnouncement' })}
+                            label={t('paymentType')}
                             name="payment_type"
                             rules={[{ required: true, message: 'Please select a payment type' }]}
-                            help={errors.payment_type || validationErrors.payment_type}
-                            validateStatus={errors.payment_type || validationErrors.payment_type ? 'error' : ''}
                         >
                             <Select
                                 value={data.payment_type}
@@ -388,8 +383,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             <Form.Item label='Точная Зарплата' name="cost" rules={[{ required: true, message: 'Please enter the exact salary' }]}>
                                 <Input
                                     type="number"
-                                    name="cost"
                                     className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                    name="cost"
                                     value={data.cost}
                                     onChange={handleChange}
                                 />
@@ -400,23 +395,22 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     <Input
                                         type="text"
                                         name="cost_min"
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
                                         value={formatNumber(data.cost_min)}
-                                        onChange={handleSalaryChange} // Change here to handle salary type updates
+                                        onChange={handleSalaryChange}
+                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
                                     />
                                 </Form.Item>
                                 <Form.Item label='Зарплата До' name="cost_max" rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
                                     <Input
                                         type="number"
-                                        name="cost_max"
                                         className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                        name="cost_max"
                                         value={data.cost_max}
-                                        onChange={handleSalaryChange} // Change here to handle salary type updates
+                                        onChange={handleSalaryChange}
                                     />
                                 </Form.Item>
                             </div>
                         )}
-
                         <div className='flex items-center gap-x-2 mt-[-15px]'>
                             <input
                                 type='checkbox'
@@ -450,34 +444,30 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 <Select
                                     value={data.work_time}
                                     onChange={(value) => setData('experience', value)}
-                                    rules={[{ required: true, message: 'Please select a payment type' }]}
                                 >
                                     <Option value="Без опыта работы">Без опыта работы</Option>
-                                    <Option value="От 3 мес. до 6 мес.">От 3 мес. до 6 мес.</Option>
-                                    <Option value="От 6 мес. до 1 года.">От 6 мес. до 1 года.</Option>
-                                    <Option value="От 1 года до 3 лет.">От 1 года до 3 лет.</Option>
-                                    <Option value="От 3 лет до 6 лет.">От 3 лет до 6 лет.</Option>
-                                    <Option value="Более 6 лет">Более 6 лет</Option>
+                                    <Option value="От 1 года">От 1 года</Option>
+                                    <Option value="От 3 лет">От 3 лет</Option>
+                                    <Option value="От 5 лет">От 5 лет</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label='Необходимое образование'
+                                label='Образование'
                                 name="education"
                                 rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
                                     value={data.work_time}
                                     onChange={(value) => setData('education', value)}
-                                    rules={[{ required: true, message: 'Please select a payment type' }]}
                                 >
-                                    <Option value="Не требуется">Не требуется</Option>
+                                    <Option value="Необязательно">Необязательно</Option>
                                     <Option value="Среднее">Среднее</Option>
                                     <Option value="Высшее">Высшее</Option>
-                                    <Option value="Сертификат Joltap">Сертификат Joltap</Option>
+                                    <Option value="Специальное">Специальное</Option>
                                 </Select>
                             </Form.Item>
                         </div>
-                        {/* Критерии/Требования */}
+                          {/* Критерии/Требования */}
                         <Form.Item label={
                                 <span>
                                     Критерии/Требования
@@ -492,7 +482,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     type="text"
                                     name={`requirement-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={req}
+                                    defaultValue={req.requirement}
+                                    value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
                                 />
                             ))}
@@ -516,7 +507,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     type="text"
                                     name={`responsibility-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={resp}
+                                    value={resp.responsobility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
                                 />
                             ))}
@@ -540,7 +531,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     type="text"
                                     name={`condition-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={cond}
+                                    value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
                                 />
                             ))}
@@ -549,37 +540,17 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             + Добавить
                         </div>
                         <Form.Item
-                            label={
-                                <span>
-                                    Заполните дополнительную информацию, если присутствует
-                                    <span className="ml-2 text-gray-500">
-                                    </span>
-                                </span>
-                            }
+                            label='Описание'
                             name="description"
+                            rules={[{ required: true, message: 'Пожалуйста, введите описание' }]}
+                            value={data.description}
+                            onChange={handleChange}
                         >
-                            <TextArea
-                                name="description"
-                                value={data.description}
-                                onChange={handleChange}
-                                rows={12}
-                            />
+                            <TextArea rows={4} />
                         </Form.Item>
                         <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                loading={processing}
-                                className="w-full md:w-auto"
-                            >
-                                {isEdit ? "Сохранить" : t('create', { ns: 'createAnnouncement' })}
-                            </Button>
-                            <Button
-                                type="default"
-                                onClick={() => window.location.href = '/profile'}
-                                className="w-full md:w-auto mt-2 md:mt-0 md:ml-2"
-                            >
-                                Назад
+                            <Button type="primary" htmlType="submit" loading={processing}>
+                                Изменить
                             </Button>
                         </Form.Item>
                     </Form>

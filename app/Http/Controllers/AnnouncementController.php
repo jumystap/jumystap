@@ -170,7 +170,7 @@ class AnnouncementController extends Controller
 
     public function edit($id): mixed
     {
-        $announcement = Announcement::find($id);
+        $announcement = $this->announcementService->getAnnouncement($id);
         $industries = Industry::all();
         $specializations = SpecializationCategory::with('specialization')->get();
 
@@ -186,94 +186,110 @@ class AnnouncementController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'type_kz' => 'required|string|max:255',
-            'type_ru' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'payment_type' => 'required|string|max:255',
-            'cost' => 'nullable|numeric',
-            'active' => 'required|boolean',
-            'work_time' => 'nullable',
-            'location' => 'nullable|array',
-            'location.*' => 'string|max:255',
-            'city' => 'nullable|string|max:255',
-            'specialization_id' => 'nullable',
-            'salary_type' => 'required',
-            'cost_min' => 'nullable|numeric',
-            'cost_max' => 'nullable|numeric',
-            'responsobility' => 'nullable|array',
-            'responsobility.*' => 'string|max:255',
-            'requirement' => 'nullable|array',
-            'requirement.*' => 'string|max:255',
-            'condition' => 'nullable|array',
-            'condition.*' => 'string|max:255',
-        ]);
+{
+    // Log incoming request data
+    Log::info('Update request received', ['request' => $request->all(), 'announcement_id' => $id]);
 
-        try {
-            // Update the announcement
-            $success = $this->announcementService->updateAnnouncement($id, array_merge($validated, [
-                'active' => 0,
-            ]));
+    $validated = $request->validate([
+        'type_kz' => 'required|string|max:255',
+        'type_ru' => 'required|string|max:255',
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'payment_type' => 'required|string|max:255',
+        'cost' => 'nullable|numeric',
+        'active' => 'required|boolean',
+        'work_time' => 'nullable',
+        'location' => 'nullable|array',
+        'location.*' => 'string|max:255',
+        'city' => 'nullable|string|max:255',
+        'specialization_id' => 'nullable',
+        'salary_type' => 'required',
+        'cost_min' => 'nullable|numeric',
+        'cost_max' => 'nullable|numeric',
+        'responsobility' => 'nullable|array',
+        'responsobility.*' => 'string|max:255',
+        'requirement' => 'nullable|array',
+        'requirement.*' => 'string|max:255',
+        'condition' => 'nullable|array',
+        'condition.*' => 'string|max:255',
+    ]);
 
-            if ($success) {
-                // Clear existing related data
-                AnnouncementAdress::where('announcement_id', $id)->delete();
-                AnnouncementResponsibility::where('announcement_id', $id)->delete();
-                AnnouncementRequirement::where('announcement_id', $id)->delete();
-                AnnouncementCondition::where('announcement_id', $id)->delete();
+    Log::info('Validation passed', ['validated_data' => $validated]);
 
-                // Save new related data
-                if (!empty($validated['location'])) {
-                    foreach ($validated['location'] as $location) {
-                        AnnouncementAdress::create([
-                            'announcement_id' => $id,
-                            'adress' => $location,
-                        ]);
-                    }
+    try {
+        $success = $this->announcementService->updateAnnouncement($id, array_merge($validated, [
+            'active' => 0,
+        ]));
+
+        Log::info('Announcement update attempt', ['success' => $success]);
+
+        if ($success) {
+            Log::info('Fetching existing related records for announcement', ['announcement_id' => $id]);
+
+            // Delete existing related records
+            AnnouncementAdress::where('announcement_id', $id)->delete();
+            AnnouncementResponsibility::where('announcement_id', $id)->delete();
+            AnnouncementRequirement::where('announcement_id', $id)->delete();
+            AnnouncementCondition::where('announcement_id', $id)->delete();
+
+            Log::info('Deleted existing related records');
+
+            // Save new related data
+            if (!empty($validated['location'])) {
+                Log::info('Saving new locations', ['locations' => $validated['location']]);
+                foreach ($validated['location'] as $location) {
+                    AnnouncementAdress::create([
+                        'announcement_id' => $id,
+                        'adress' => $location,
+                    ]);
                 }
-
-                if (!empty($validated['responsobility'])) {
-                    foreach ($validated['responsobility'] as $responsibility) {
-                        AnnouncementResponsibility::create([
-                            'announcement_id' => $id,
-                            'responsibility' => $responsibility,
-                        ]);
-                    }
-                }
-
-                if (!empty($validated['requirement'])) {
-                    foreach ($validated['requirement'] as $requirement) {
-                        AnnouncementRequirement::create([
-                            'announcement_id' => $id,
-                            'requirement' => $requirement,
-                        ]);
-                    }
-                }
-
-                if (!empty($validated['condition'])) {
-                    foreach ($validated['condition'] as $condition) {
-                        AnnouncementCondition::create([
-                            'announcement_id' => $id,
-                            'condition' => $condition,
-                        ]);
-                    }
-                }
-
-                Log::info('Announcement updated successfully', ['announcement_id' => $id]);
-                $announcement = Announcement::find($id);
-                $user = Auth::user();
-                $this->notifyAdmin($announcement, $user);
-                return redirect('/profile');
             }
 
-            throw new \Exception('Failed to update announcement');
-        } catch (\Exception $e) {
-            Log::error('Error updating announcement', ['exception' => $e]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the announcement'])->withInput();
+            if (!empty($validated['responsobility'])) {
+                Log::info('Saving new responsibilities', ['responsibilities' => $validated['responsobility']]);
+                foreach ($validated['responsobility'] as $responsibility) {
+                    AnnouncementResponsibility::create([
+                        'announcement_id' => $id,
+                        'responsibility' => $responsibility,
+                    ]);
+                }
+            }
+
+            if (!empty($validated['requirement'])) {
+                Log::info('Saving new requirements', ['requirements' => $validated['requirement']]);
+                foreach ($validated['requirement'] as $requirement) {
+                    AnnouncementRequirement::create([
+                        'announcement_id' => $id,
+                        'requirement' => $requirement,
+                    ]);
+                }
+            }
+
+            if (!empty($validated['condition'])) {
+                Log::info('Saving new conditions', ['conditions' => $validated['condition']]);
+                foreach ($validated['condition'] as $condition) {
+                    AnnouncementCondition::create([
+                        'announcement_id' => $id,
+                        'condition' => $condition,
+                    ]);
+                }
+            }
+
+            Log::info('All related records saved successfully for announcement', ['announcement_id' => $id]);
+            $announcement = Announcement::find($id);
+            $user = Auth::user();
+            $this->notifyAdmin($announcement, $user);
+            return redirect('/profile');
         }
+
+        Log::warning('Update announcement failed', ['announcement_id' => $id]);
+        throw new \Exception('Failed to update announcement');
+    } catch (\Exception $e) {
+        Log::error('Error updating announcement', ['exception' => $e->getMessage(), 'announcement_id' => $id]);
+        return redirect()->back()->withErrors(['error' => 'An error occurred while updating the announcement'])->withInput();
     }
+}
+
 
     public function delete($id): mixed
     {
