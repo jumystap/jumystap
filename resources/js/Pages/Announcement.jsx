@@ -88,7 +88,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     {announcement.address && announcement.address.length > 0 && (
                                         <span>
                                             {announcement.address.map((address, index) => (
-                                                <span key={index}>, {address.adress}{index < announcement.address.length - 1 ? ', ' : ''}</span> // Add comma only between addresses
+                                                <span key={index}>, {address.adress}{index < announcement.address.length - 1 ? '' : ''}</span> // Add comma only between addresses
                                             ))}
                                         </span>
                                     )}

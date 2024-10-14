@@ -105,6 +105,36 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         cost_max: announcement.cost_max || null,
     });
 
+    const deleteRequirement = (index) => {
+        const newRequirements = [...data.requirement]; // Create a shallow copy
+        newRequirements.splice(index, 1); // Remove the requirement at the specified index
+        setData((prevData) => ({
+            ...prevData,
+            requirement: newRequirements.length > 0 ? newRequirements : [], // Set to empty array if nothing left
+        }));
+    };
+
+    // Function to delete a responsibility
+    const deleteResponsibility = (index) => {
+        const newResponsibilities = [...data.responsobility]; // Create a shallow copy
+        newResponsibilities.splice(index, 1); // Remove the responsibility at the specified index
+        setData((prevData) => ({
+            ...prevData,
+            responsobility: newResponsibilities.length > 0 ? newResponsibilities : [], // Set to empty array if nothing left
+        }));
+    };
+
+    // Function to delete a condition
+    const deleteCondition = (index) => {
+        const newConditions = [...data.condition]; // Create a shallow copy
+        newConditions.splice(index, 1); // Remove the condition at the specified index
+        setData((prevData) => ({
+            ...prevData,
+            condition: newConditions.length > 0 ? newConditions : [], // Set to empty array if nothing left
+        }));
+    };
+
+
 
     const handleSalaryChange = (e) => {
         const { name, value } = e.target;
@@ -336,7 +366,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     onChange={(e) => handleLocationChange(index, e)}
                                 />
                         </Form.Item>
-                            ))}
+                        ))}
                         <div
                             className='text-blue-500 mt-[-15px] mb-2'
                             onClick={addLocation}
@@ -521,6 +551,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
                                 />
+                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteRequirement(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
@@ -547,6 +578,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     defaultValue={resp.responsibility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
                                 />
+                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteResponsibility(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
@@ -572,6 +604,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
                                 />
+                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteCondition(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
