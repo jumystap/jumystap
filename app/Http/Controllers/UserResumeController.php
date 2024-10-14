@@ -58,7 +58,7 @@ class UserResumeController extends Controller
             $resume->languages()->create(['language' => $language]);
         }
 
-        return redirect('/');
+        return redirect('/profile');
     }
 
     public function show(UserResume $resume)
@@ -107,12 +107,13 @@ class UserResumeController extends Controller
             $resume->languages()->create(['language' => $language]);
         }
 
-        return redirect()->route('resumes.index');
+        return redirect('/profile');
     }
 
-    public function destroy(UserResume $resume)
+    public function destroy($id)
     {
+        $resume = UserResume::find($id);
         $resume->delete();
-        return redirect()->route('resumes.index');
+        return redirect('/profile');
     }
 }

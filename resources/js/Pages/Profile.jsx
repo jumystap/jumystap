@@ -2,19 +2,16 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
 import { FaLocationDot } from "react-icons/fa6";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react"; // Import useForm from Inertia
 import CreatePortfolioModal from '@/Components/CreatePortfolioModal';
 import AddCertificateModal from '@/Components/AddCertificateModal';
-import { Inertia } from "@inertiajs/inertia";
 import Dashboard from "./Company/Dashboard";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
-import moment from 'moment';
-import 'moment/locale/ru'; // Импортируем русскую локаль
-
-moment.locale('ru');
+import { formatDistanceToNow } from 'date-fns'; // Import format function
+import { ru } from 'date-fns/locale'; // Import Russian locale
 
 const formatCreatedAt = (createdAt) => {
-    return moment(createdAt).fromNow(); // например, "2 часа назад"
+    return formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: ru });
 };
 
 export default function Profile({ auth, user, announcements, employees, professions, userProfessions, resumes }) {
@@ -24,6 +21,9 @@ export default function Profile({ auth, user, announcements, employees, professi
     const [missingCertificateProfession, setMissingCertificateProfession] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // Create form instance using useForm from Inertia
+    const { delete: deleteResumeForm } = useForm();
 
     useEffect(() => {
         const professionWithEmptyCertificate = userProfessions.find(prof => !prof.certificate_number);
@@ -38,21 +38,19 @@ export default function Profile({ auth, user, announcements, employees, professi
         setIsImageModalOpen(true);
     };
 
-    const deleteImage = (imageId) => {
-        Inertia.delete(route('portfolio.delete', { id: imageId }), {
-            onSuccess: () => { },
-            onError: (errors) => {
-                console.log(errors);
-            }
-        });
-    };
-
     const nextImage = () => {
         setCurrentImageIndex((currentImageIndex + 1) % user.portfolio.length);
     };
 
     const prevImage = () => {
         setCurrentImageIndex((currentImageIndex - 1 + user.portfolio.length) % user.portfolio.length);
+    };
+
+    // Function to delete resume
+    const deleteResume = (resumeId) => {
+        if (confirm("Вы уверены, что хотите удалить это резюме?")) {
+            deleteResumeForm(route('delete_resume', resumeId)); // Submit the delete request using useForm
+        }
     };
 
     return (
@@ -130,20 +128,28 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             <div className='text-sm text-gray-500'>Опыт работы:</div>
                                                             <ul className="">
                                                                 {resume.organizations.map(org => (
-                                                                    <li key={org.id}>- {org.organization} - {org.position}</li>
+                                                                    <li key={org.id}>- {org.organization} - {org.position_name}</li>
                                                                 ))}
                                                             </ul>
                                                         </div>
                                                     )}
                                                     {resume.skills.length > 0 && (
-                                                        <div className='flex-wrap mt-2'>
+                                                        <div className='flex-wrap mt-5 flex gap-2'>
                                                             {resume.skills.map((skill, index) => (
-                                                                <div className='mr-2 rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
+                                                                <div className='rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
                                                                     {skill}
                                                                 </div>
                                                             ))}
                                                         </div>
                                                     )}
+
+                                                    {/* Delete button for resume */}
+                                                    <button
+                                                        onClick={() => deleteResume(resume.id)}
+                                                        className="mt-4 text-sm text-red-500"
+                                                    >
+                                                        Удалить резюме
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>
