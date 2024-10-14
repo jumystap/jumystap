@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Form, Input, Select, DatePicker, Button, Upload, Space } from 'antd';
+import { Form, Input, Select, DatePicker, Button, Upload, Space, Cascader, Avatar} from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import GuestLayout from '@/Layouts/GuestLayout';
 
 const { Option } = Select;
 
-const CreateUpdateResume = () => {
+const kazakhstanCities = [
+    "Алматы", "Астана", "Шымкент", "Караганда", "Актобе", "Тараз",
+    "Павлодар", "Усть-Каменогорск", "Семей", "Костанай", "Петропавловск",
+    "Кызылорда", "Атырау", "Актау", "Уральск", "Темиртау", "Талдыкорган",
+    "Экибастуз", "Рудный", "Жезказган"
+];
+
+const CreateUpdateResume = ({specialization}) => {
+    const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const { data, setData, post } = useForm({
-        organizations: [{ organization: '', position: '', period: null }],
+        organizations: [{ organization: '', position: '', period: '' }],
         city: '',
         district: '',
         languages: [],
@@ -22,6 +30,22 @@ const CreateUpdateResume = () => {
         desired_field: '',
         skills: ['', '', ''],
     });
+
+    const handleCityChange = (value) => {
+        setData('city', value);
+        setShowOtherCityInput(value === 'Другое');
+    };
+
+    console.log(specialization)
+
+    const cascaderData = specialization.map(category => ({
+        value: category.id,
+        label: category.name_ru,
+        children: category.specialization.map(spec => ({
+            value: spec.id,
+            label: spec.name_ru
+        }))
+    }));
 
     const addOrganization = () => {
         setData('organizations', [...data.organizations, { organization: '', position: '', period: null }]);
@@ -58,12 +82,19 @@ const CreateUpdateResume = () => {
 
     return (
         <GuestLayout>
-            <div className="grid grid-cols-7">
+            <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="col-span-5 p-5">
                     <Form layout="vertical" onFinish={handleSubmit}>
+                        <Form.Item label="Загрузите вашу фотографию" rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
+                            <Upload {...uploadProps} showUploadList={false}>
+                                <Button icon={<UploadOutlined />}>Загрузить фото</Button>
+                            </Upload>
+                            {data.photo && <Avatar src={URL.createObjectURL(data.photo)} size={64} />}
+                        </Form.Item>
+
                         <h2>Укажите ваш опыт работы</h2>
                         {data.organizations.map((organization, index) => (
-                            <Space key={index} direction="vertical" style={{ display: 'flex', marginBottom: 16 }}>
+                            <Space key={index} direction="vertical" style={{ display: 'flex', marginBottom: 5 }}>
                                 <Form.Item
                                     label="Наименование организации"
                                     rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
@@ -78,20 +109,27 @@ const CreateUpdateResume = () => {
                                     label="Должность"
                                     rules={[{ required: true, message: 'Пожалуйста, укажите должность' }]}
                                 >
-                                    <Input
-                                        value={organization.position}
-                                        onChange={(e) => handleNestedChange(index, 'position', e.target.value)}
-                                        className="text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                    <Cascader
+                                        options={cascaderData}
+                                        onChange={(value) => handleNestedChange(index, 'position', value[1])}
+                                        placeholder="Должность"
                                     />
                                 </Form.Item>
                                 <Form.Item
                                     label="Период работы"
                                     rules={[{ required: true, message: 'Пожалуйста, укажите период работы' }]}
                                 >
-                                    <DatePicker
-                                        value={organization.period ? moment(organization.period) : null}
-                                        onChange={(date) => handleNestedChange(index, 'period', date ? date.format('YYYY-MM-DD') : null)}
-                                    />
+                                    <Space direction="horizontal">
+                                        <DatePicker
+                                            onChange={(date) => handlePeriodChange(index, date, null)}
+                                            placeholder="Начало"
+                                        />
+                                        <DatePicker
+                                            onChange={(date) => handlePeriodChange(index, null, date)}
+                                            placeholder="Конец"
+                                        />
+                                        <div>{organization.period}</div>
+                                    </Space>
                                 </Form.Item>
                                 <Button danger onClick={() => removeOrganization(index)}>
                                     Удалить место работы
@@ -103,14 +141,38 @@ const CreateUpdateResume = () => {
                         </Button>
 
                         <Form.Item
-                            label="Укажите город проживания"
-                            rules={[{ required: true, message: 'Пожалуйста, укажите город' }]}
+                            label='Город'
+                            name="city"
+                            rules={[{ required: true, message: ' select a city' }]}
                         >
-                            <Select value={data.city} onChange={(value) => handleInputChange('city', value)}>
-                                <Option value="Астана">Астана</Option>
-                                <Option value="Алматы">Алматы</Option>
+                            <Select
+                                value={data.city}
+                                onChange={handleCityChange}
+                            >
+                                {kazakhstanCities.map((city) => (
+                                    <Option key={city} value={city}>{city}</Option>
+                                ))}
+                                <Option value="Дистанционное">Дистанционное</Option>
+                                <Option value="Другое">Другое</Option>
                             </Select>
                         </Form.Item>
+
+                        {showOtherCityInput && (
+                            <Form.Item
+                                label='Введите другой город'
+                                name="city"
+                                rules={[{ required: true, message: 'Please enter a city' }]}
+                            >
+                                <Input
+                                    type="text"
+                                    name="city"
+                                    className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                    value={data.city}
+                                    onChange={() => setData('city', data.city)}
+                                />
+                            </Form.Item>
+                        )}
+
 
                         {data.city === 'Астана' && (
                             <Form.Item
@@ -141,16 +203,6 @@ const CreateUpdateResume = () => {
                                 <Option value="Английский">Английский</Option>
                             </Select>
                         </Form.Item>
-
-                        <Form.Item
-                            label="Загрузите вашу фотографию"
-                            rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}
-                        >
-                            <Upload {...uploadProps}>
-                                <Button icon={<UploadOutlined />}>Загрузить фото</Button>
-                            </Upload>
-                        </Form.Item>
-
                         <Form.Item
                             label="Укажите ваше образование"
                             rules={[{ required: true, message: 'Пожалуйста, укажите образование' }]}
@@ -175,6 +227,7 @@ const CreateUpdateResume = () => {
                                 <Form.Item label="Год окончания">
                                     <DatePicker
                                         picker="year"
+                                        placeholder='Год окончания'
                                         value={data.graduation_year ? moment(data.graduation_year) : null}
                                         onChange={(date) => handleInputChange('graduation_year', date ? date.format('YYYY') : null)}
                                     />
@@ -196,16 +249,15 @@ const CreateUpdateResume = () => {
                             label="В какой сфере вы желаете работать"
                             rules={[{ required: true, message: 'Пожалуйста, укажите желаемую сферу работы' }]}
                         >
-                            <Select value={data.desired_field} onChange={(value) => handleInputChange('desired_field', value)}>
-                                <Option value="IT">IT</Option>
-                                <Option value="Маркетинг">Маркетинг</Option>
-                                <Option value="Строительство">Строительство</Option>
-                                <Option value="Финансы">Финансы</Option>
-                            </Select>
+                            <Cascader
+                                options={cascaderData}
+                                onChange={(value) => setData('desired_field', value[1])}
+                                placeholder="В какой сфере вы желаете работать"
+                            />
                         </Form.Item>
 
                         <Form.Item
-                            label="Какие навыки вы хотите указать"
+                            label="Укажите ваши ключевые навыки"
                             rules={[{ required: true, message: 'Пожалуйста, укажите навыки' }]}
                         >
                             {data.skills.map((skill, index) => (
@@ -217,7 +269,7 @@ const CreateUpdateResume = () => {
                                         updatedSkills[index] = e.target.value;
                                         setData('skills', updatedSkills);
                                     }}
-                                    className="text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                    className="text-sm rounded py-1 mt-2 border border-gray-300"
                                 />
                             ))}
                         </Form.Item>

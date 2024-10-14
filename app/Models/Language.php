@@ -13,6 +13,6 @@ class Language extends Model
 
     public function resume()
     {
-        return $this->belongsTo(UserResume::class, 'resume_id');
+        return $this->belongsTo(UserResume::class);
     }
 }

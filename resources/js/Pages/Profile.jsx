@@ -1,14 +1,23 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
+import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "@inertiajs/react";
 import CreatePortfolioModal from '@/Components/CreatePortfolioModal';
 import AddCertificateModal from '@/Components/AddCertificateModal';
 import { Inertia } from "@inertiajs/inertia";
 import Dashboard from "./Company/Dashboard";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import moment from 'moment';
+import 'moment/locale/ru'; // Импортируем русскую локаль
 
-export default function Profile({ auth, user, announcements, employees, professions, userProfessions }) {
+moment.locale('ru');
+
+const formatCreatedAt = (createdAt) => {
+    return moment(createdAt).fromNow(); // например, "2 часа назад"
+};
+
+export default function Profile({ auth, user, announcements, employees, professions, userProfessions, resumes }) {
     const { t, i18n } = useTranslation();
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
@@ -31,8 +40,7 @@ export default function Profile({ auth, user, announcements, employees, professi
 
     const deleteImage = (imageId) => {
         Inertia.delete(route('portfolio.delete', { id: imageId }), {
-            onSuccess: () => {
-            },
+            onSuccess: () => { },
             onError: (errors) => {
                 console.log(errors);
             }
@@ -66,7 +74,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                             {user.name}
                                             {user.is_graduate ? (
                                                 <RiVerifiedBadgeFill className='text-lg text-blue-500' />
-                                            ):('')}
+                                            ) : ''}
                                         </div>
                                         <div className="text-gray-500">
                                             @{user.email.split('@')[0]}
@@ -74,7 +82,9 @@ export default function Profile({ auth, user, announcements, employees, professi
                                         {userProfessions.length > 0 && (
                                             <>
                                                 {userProfessions.map((profession, index) => (
-                                                    <div className='mt-1' key={index}>{i18n.language == 'ru' ? (profession.profession_name):(profession.professions_name_kz)}</div>
+                                                    <div className='mt-1' key={index}>
+                                                        {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                    </div>
                                                 ))}
                                             </>
                                         )}
@@ -98,9 +108,46 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     </div>
                                 </div>
                                 <div className='px-5 mt-5'>
-                                    <Link href='#' className='block px-7 py-2 bg-blue-500 text-white inline-block rounded-lg'>Создать резюме</Link>
-                                </div>
-                                <div className='flex'>
+                                    <Link href='/create_resume' className='block px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
+                                        Создать резюме
+                                    </Link>
+                                    {resumes.length > 0 && (
+                                        <div className="grid grid-cols-1 gap-4 mt-5">
+                                            {resumes.map((resume, index) => (
+                                                <div className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                                    <div className='flex'>
+                                                        <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
+                                                            <FaLocationDot className='text-sm'/>
+                                                            <div className='text-[10pt] md:text-sm'>{resume.city}</div>
+                                                        </div>
+                                                        <div className='text-gray-500 text-sm ml-auto'>
+                                                            Размещено {formatCreatedAt(resume.created_at)}
+                                                        </div>
+                                                    </div>
+                                                    <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>
+                                                    {resume.organizations.length > 0 && (
+                                                        <div className='mt-2'>
+                                                            <div className='text-sm text-gray-500'>Опыт работы:</div>
+                                                            <ul className="">
+                                                                {resume.organizations.map(org => (
+                                                                    <li key={org.id}>- {org.organization} - {org.position}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                    {resume.skills.length > 0 && (
+                                                        <div className='flex-wrap mt-2'>
+                                                            {resume.skills.map((skill, index) => (
+                                                                <div className='mr-2 rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
+                                                                    {skill}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="col-span-2 h-screen sticky top-0 border-l md:block hidden border-gray-200">
@@ -108,7 +155,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                         </div>
                     </>
                 ) : (
-                    <Dashboard user={user} announcements={announcements}/>
+                    <Dashboard user={user} announcements={announcements} />
                 )}
             </GuestLayout>
 
@@ -155,3 +202,4 @@ export default function Profile({ auth, user, announcements, employees, professi
         </>
     );
 }
+

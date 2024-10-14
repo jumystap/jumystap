@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('organizations', function (Blueprint $table) {
-            $table->foreign('resume_id', 'fk_organizations_resume_id')
-                  ->references('id')->on('user_resumes')->onDelete('cascade');
+        Schema::table('user_resumes', function (Blueprint $table) {
+            $table->foreignId('user_id');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('organization', function (Blueprint $table) {
-            $table->dropForeign('fk_organizations_resume_id');
+        Schema::table('user_resumes', function (Blueprint $table) {
+            //
         });
     }
 };

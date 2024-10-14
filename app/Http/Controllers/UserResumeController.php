@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserResume;
+use App\Models\SpecializationCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserResumeController extends Controller
@@ -16,7 +18,11 @@ class UserResumeController extends Controller
 
     public function create()
     {
-        return Inertia::render('CreateResume');
+        $specialization = SpecializationCategory::with('specialization')->get();
+
+        return Inertia::render('CreateResume', [
+            'specialization' => $specialization
+        ]);
     }
 
     public function store(Request $request)
@@ -35,6 +41,8 @@ class UserResumeController extends Controller
             'organizations' => 'required|array',
             'languages' => 'required|array',
         ]);
+
+        $data['user_id'] = Auth::id();
 
         if ($request->hasFile('photo_path')) {
             $data['photo_path'] = $request->file('photo_path')->store('photos');

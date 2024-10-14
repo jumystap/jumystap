@@ -196,20 +196,72 @@ class AnnouncementController extends Controller
             'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable',
-            'location' => 'nullable',
-            'city' => 'nullable',
+            'location' => 'nullable|array',
+            'location.*' => 'string|max:255',
+            'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable',
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
+            'responsobility' => 'nullable|array',
+            'responsobility.*' => 'string|max:255',
+            'requirement' => 'nullable|array',
+            'requirement.*' => 'string|max:255',
+            'condition' => 'nullable|array',
+            'condition.*' => 'string|max:255',
         ]);
 
         try {
+            // Update the announcement
             $success = $this->announcementService->updateAnnouncement($id, array_merge($validated, [
                 'active' => 0,
             ]));
+
             if ($success) {
-                Log::info('Announcement updated successfully');
+                // Clear existing related data
+                AnnouncementAdress::where('announcement_id', $id)->delete();
+                AnnouncementResponsibility::where('announcement_id', $id)->delete();
+                AnnouncementRequirement::where('announcement_id', $id)->delete();
+                AnnouncementCondition::where('announcement_id', $id)->delete();
+
+                // Save new related data
+                if (!empty($validated['location'])) {
+                    foreach ($validated['location'] as $location) {
+                        AnnouncementAdress::create([
+                            'announcement_id' => $id,
+                            'adress' => $location,
+                        ]);
+                    }
+                }
+
+                if (!empty($validated['responsobility'])) {
+                    foreach ($validated['responsobility'] as $responsibility) {
+                        AnnouncementResponsibility::create([
+                            'announcement_id' => $id,
+                            'responsibility' => $responsibility,
+                        ]);
+                    }
+                }
+
+                if (!empty($validated['requirement'])) {
+                    foreach ($validated['requirement'] as $requirement) {
+                        AnnouncementRequirement::create([
+                            'announcement_id' => $id,
+                            'requirement' => $requirement,
+                        ]);
+                    }
+                }
+
+                if (!empty($validated['condition'])) {
+                    foreach ($validated['condition'] as $condition) {
+                        AnnouncementCondition::create([
+                            'announcement_id' => $id,
+                            'condition' => $condition,
+                        ]);
+                    }
+                }
+
+                Log::info('Announcement updated successfully', ['announcement_id' => $id]);
                 $announcement = Announcement::find($id);
                 $user = Auth::user();
                 $this->notifyAdmin($announcement, $user);

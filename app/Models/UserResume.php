@@ -10,7 +10,7 @@ class UserResume extends Model
     use HasFactory;
 
     protected $fillable = [
-        'city', 'district', 'education', 'faculty', 'specialization', 'graduation_year', 'ip_status', 'desired_field', 'skills', 'photo_path'
+        'user_id', 'city', 'district', 'education', 'faculty', 'specialization', 'graduation_year', 'ip_status', 'desired_field', 'skills', 'photo_path'
     ];
 
     protected $casts = [
@@ -19,11 +19,11 @@ class UserResume extends Model
 
     public function organizations()
     {
-        return $this->hasMany(Organization::class, 'resume_id');
+        return $this->hasMany(Organization::class);
     }
 
     public function languages()
     {
-        return $this->hasMany(Language::class, 'resume_id');
+        return $this->hasMany(Language::class);
     }
 }

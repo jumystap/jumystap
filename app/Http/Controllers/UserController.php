@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use App\Models\Visit;
+use App\Models\UserResume;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -177,10 +178,25 @@ class UserController extends Controller
         $employeeProfessionIds = $this->userService->getUserProfessionIds($id);
         $employees = $this->userService->getUsersByProfessionIds($employeeProfessionIds);
 
+        $resumes = UserResume::where('user_id', Auth::id())
+            ->with(['organizations', 'languages'])
+            ->get()
+            ->map(function ($resume) {
+                $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
+
+                $resume->organizations = $resume->organizations->map(function ($organization) {
+                    $organization->position_name = $this->getSpecializationName($organization->position);
+                    return $organization;
+                });
+
+                return $resume;
+            });
+
         return Inertia::render('User', [
             'user' => $user,
             'employees' => $employees,
             'userProfessions' => $userProfessions,
+            'resumes' => $resumes,
         ]);
     }
 
@@ -198,13 +214,33 @@ class UserController extends Controller
         $announcements = $this->userService->getLatestAnnouncements(true);
         $professions = $this->userService->getAllProfessions();
 
+        $resumes = UserResume::where('user_id', Auth::id())
+            ->with(['organizations', 'languages'])
+            ->get()
+            ->map(function ($resume) {
+                $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
+
+                $resume->organizations = $resume->organizations->map(function ($organization) {
+                    $organization->position_name = $this->getSpecializationName($organization->position);
+                    return $organization;
+                });
+
+                return $resume;
+            });
+
         return Inertia::render('Profile', [
             'user' => $user,
             'announcements' => $announcements,
             'employees' => $user,
             'professions' => $professions,
             'userProfessions' => $userProfessions,
+            'resumes' => $resumes,
         ]);
+    }
+
+    private function getSpecializationName($id)
+    {
+        return DB::table('specializations')->where('id', $id)->value('name_ru');
     }
 
     public function myAnnouncement($id)

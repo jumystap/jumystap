@@ -1,10 +1,19 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState } from "react";
+import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "@inertiajs/react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import moment from 'moment';
+import 'moment/locale/ru'; // Импортируем русскую локаль
 
-export default function User({ auth, user, employees, userProfessions}) {
+moment.locale('ru'); // Устанавливаем локаль на русский
+
+const formatCreatedAt = (createdAt) => {
+    return moment(createdAt).fromNow(); // например, "2 часа назад"
+};
+
+export default function User({ auth, user, employees, userProfessions, resumes}) {
     const { t, i18n } = useTranslation();
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -82,16 +91,44 @@ export default function User({ auth, user, employees, userProfessions}) {
                                 )}
                             </div>
                         </div>
-                        <div className='mt-10'>
-                            <div className='text-center font-bold text-lg'>
-                                {userProfessions.length > 0 && (
-                                    <>
-                                        {userProfessions.map((profession, index) => (
-                                            <div key={index}>{i18n.language == 'ru' ? (profession.profession_name):(profession.professions_name_kz)}</div>
-                                        ))}
-                                    </>
-                                )}
-                            </div>
+                        <div className='mt-2 mx-5'>
+                            {resumes.length > 0 && (
+                                <div className="grid grid-cols-1 gap-4 mt-5">
+                                    {resumes.map((resume, index) => (
+                                        <div className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                            <div className='flex'>
+                                                <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
+                                                    <FaLocationDot className='text-sm'/>
+                                                    <div className='text-[10pt] md:text-sm'>{resume.city}</div>
+                                                </div>
+                                                <div className='text-gray-500 text-sm ml-auto'>
+                                                    Размещено {formatCreatedAt(resume.created_at)}
+                                                </div>
+                                            </div>
+                                            <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>
+                                            {resume.organizations.length > 0 && (
+                                                <div className='mt-2'>
+                                                    <div className='text-sm text-gray-500'>Опыт работы:</div>
+                                                    <ul className="">
+                                                        {resume.organizations.map(org => (
+                                                            <li key={org.id}>- {org.organization} - {org.position}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                            {resume.skills.length > 0 && (
+                                                <div className='flex-wrap mt-2'>
+                                                    {resume.skills.map((skill, index) => (
+                                                        <div className='mr-2 rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
+                                                            {skill}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         <div className='flex'>
 
