@@ -31,6 +31,8 @@ const CreateUpdateResume = ({specialization}) => {
         skills: ['', '', ''],
     });
 
+    console.log(data)
+
     const handleCityChange = (value) => {
         setData('city', value);
         setShowOtherCityInput(value === 'Другое');
@@ -49,6 +51,18 @@ const CreateUpdateResume = ({specialization}) => {
 
     const addOrganization = () => {
         setData('organizations', [...data.organizations, { organization: '', position: '', period: null }]);
+    };
+
+    const handlePeriodChange = (index, startDate, endDate) => {
+        const updatedOrganizations = [...data.organizations];
+
+        const start = startDate ? startDate.format('YYYY-MM-DD') : updatedOrganizations[index].period?.split(' - ')[0];
+        const end = endDate ? endDate.format('YYYY-MM-DD') : updatedOrganizations[index].period?.split(' - ')[1];
+
+        const period = `${start} - ${end}`;
+
+        updatedOrganizations[index] = { ...updatedOrganizations[index], period };
+        setData('organizations', updatedOrganizations);
     };
 
     const removeOrganization = (index) => {
