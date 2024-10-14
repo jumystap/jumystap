@@ -97,11 +97,11 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
                                     {announcement.salary_type == 'min' && announcement.cost_min && !announcement.cost_max && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
                                     {announcement.salary_type == 'max' && announcement.cost_max && !announcement.cost_min && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
-                                    {announcement.salary_type == 'diapason' announcement.cost_min && announcement.cost_max && (`от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ `)}
+                                    {announcement.salary_type == 'diapason' && announcement.cost_min && announcement.cost_max && (`от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ `)}
                                     {announcement.salary_type == 'undefined' && (`Договорная`)}
                                     {announcement.salary_type == 'za_smenu' && (
                                         <>
-                                            {announcement.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                            {announcement.cost && `${announcement.cost.toLocaleString()} ₸ / за смену`}
                                             {announcement.cost_min && !announcement.cost_max && `от ${announcement.cost_min.toLocaleString()} ₸ / за смену`}
                                             {!announcement.cost_min && announcement.cost_max && `до ${announcement.cost_max.toLocaleString()} ₸ / за смену`}
                                             {announcement.cost_min && announcement.cost_max && `от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ / за смену`}
