@@ -168,5 +168,4 @@ export default function User({ auth, user, employees, userProfessions, resumes})
             )}
         </>
     );
-e
 
