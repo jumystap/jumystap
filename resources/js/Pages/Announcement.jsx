@@ -94,7 +94,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     )}
                                 </div>
                                 <div className='mt-2 text-2xl'>
-                                    {announcement.salary_type == 'exact' && announcement.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                    {announcement.salary_type == 'exact' && announcement.cost && (`${announcement.cost.toLocaleString() } ₸ `)}
                                     {announcement.salary_type == 'min' && (`от ${announcement.cost_min.toLocaleString()} ₸ `)}
                                     {announcement.salary_type == 'max' && (`до ${announcement.cost_max.toLocaleString()} ₸ `)}
                                     {announcement.salary_type == 'diapason' && (`от ${announcement.cost_min.toLocaleString()} ₸ до ${announcement.cost_max.toLocaleString()} ₸ `)}
