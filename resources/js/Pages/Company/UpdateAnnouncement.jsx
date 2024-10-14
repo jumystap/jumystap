@@ -420,17 +420,16 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 name="work_time"
                                 rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
+
                                 <Select
                                     value={data.work_time}
                                     onChange={(value) => setData('work_time', value)}
                                 >
-                                    <Option value="5/2">5/2</Option>
-                                    <Option value="2/2">2/2</Option>
-                                    <Option value="6/1">6/1</Option>
-                                    <Option value="Гибкий график">Гибкий график</Option>
-                                    <Option value="Вахтовый метод">Вахтовый метод</Option>
+                                    <Option value="Полный день">Полный день</Option>
                                     <Option value="Сменный график">Сменный график</Option>
-                                    <Option value="Другое">Другое</Option>
+                                    <Option value="Гибкий график">Гибкий график</Option>
+                                    <Option value="Удаленная работа">Удаленная работа</Option>
+                                    <Option value="Вахта">Вахта</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item
@@ -439,7 +438,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
-                                    value={data.work_time}
+                                    name="employemnt_type"
+                                    value={data.employemnt_type}
                                     onChange={(value) => setData('employemnt_type', value)}
                                 >
                                     <Option value="Полная занятость">Полная занятость</Option>
@@ -449,6 +449,26 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </Select>
                             </Form.Item>
                         </div>
+                        <Form.Item
+                            label={
+                                <span>
+                                    Заполните рабочее время и дни
+                                    <span className="ml-2 text-gray-500">
+                                        (например: 5/2 с 10:00 до 19:00)
+                                    </span>
+                                </span>
+                            }
+                            name="work_hours"
+                            rules={[{ required: true, message: 'Please select a payment type' }]}
+                        >
+                             <Input
+                                type="text"
+                                className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                name="work_hours"
+                                value={data.work_hours}
+                                onChange={handleChange}
+                            />
+                        </Form.Item>
                         <Form.Item
                             label="Тип оплаты"
                             name="payment_type"
