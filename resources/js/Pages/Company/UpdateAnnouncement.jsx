@@ -350,7 +350,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label="Специализация"
+                            label="Укажите отрасль/сферу"
                             rules={[{ required: true, message: 'Пожалуйста, выберите специализацию' }]}
                             initialValue={defaultValue}
                         >
@@ -572,22 +572,22 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         </div>
                           {/* Критерии/Требования */}
-                        {data.requirement.map((req, index) => (
-                        <Form.Item
-                            label={
+                        <div className='mb-4'>
                                 <span>
                                     Критерии/Требования
-                                    <span className="ml-2 text-gray-500">
+                                    <span className="ml-2 mb-4 text-gray-500">
                                         (например: черты характера, навыки, аккредитации и тд.)
                                     </span>
                                 </span>
-                            }
+                        </div>
+                        {data.requirement.map((req, index) => (
+                        <Form.Item
                             name={`requirement[${index}].requirement`}
                             >
                                 <Input
                                     key={index}
                                     type="text"
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
+                                    className='text-sm w-full rounded py-1 border border-gray-300'
                                     defaultValue={req.requirement}
                                     value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
@@ -600,21 +600,21 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
 
                         {/* Обязанности */}
+                        <div className='mb-4'>
+                            Обязанности работника
+                            <span className="ml-2 text-gray-500">
+                                (какие рабочие задачи сотрудник будет выполнять)
+                            </span>
+                        </div>
                         {data.responsobility.map((resp, index) => (
-                        <Form.Item label={
-                                <span>
-                                    Обязанности работника
-                                    <span className="ml-2 text-gray-500">
-                                        (какие рабочие задачи сотрудник будет выполнять)
-                                    </span>
-                                </span>
-                            } name={`responsibility[${index}].responsibility`}
-                            >
+                        <Form.Item
+                            name={`responsibility[${index}].responsibility`}
+                        >
                                 <Input
                                     key={index}
                                     type="text"
                                     name={`responsibility-${index}`}
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
+                                    className='text-sm rounded py-1 border border-gray-300'
                                     value={resp.responsibility}
                                     defaultValue={resp.responsibility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
@@ -627,20 +627,19 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
 
                         {/* Условия труда */}
+                        <div className='mb-4'>
+                            Условия труда
+                            <span className="ml-2 text-gray-500">
+                                (например:питание, развозка, и тд.)
+                            </span>
+                        </div>
                         {data.condition.map((cond, index) => (
-                        <Form.Item  label={
-                                <span>
-                                    Условия труда
-                                    <span className="ml-2 text-gray-500">
-                                        (например:питание, развозка, и тд.)
-                                    </span>
-                                </span>
-                            }name={`condition[${index}].condition`}>
+                        <Form.Item name={`condition[${index}].condition`}>
                                 <Input
                                     key={index}
                                     type="text"
                                     name={`condition-${index}`}
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
+                                    className='text-sm rounded py-1 border border-gray-300'
                                     defaultValue={cond.condition}
                                     value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
