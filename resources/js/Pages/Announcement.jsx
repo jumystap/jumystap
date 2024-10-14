@@ -56,6 +56,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
 
     const vacancyCount = announcement.user.announcement.filter(anonce => anonce && anonce.type_ru === 'Вакансия').length;
     const orderCount = announcement.user.announcement.filter(anonce => anonce && anonce.type_ru === 'Заказ').length;
+    console.log(announcement.user.announcement)
 
 
     let salary = 'Договорная';
