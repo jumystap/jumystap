@@ -41,6 +41,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         return value // Add spaces every 3 digits
     };
 
+
     const parseNumber = (value) => {
         return value.replace(/\s/g, ''); // Remove spaces for storing as a number
     };
@@ -79,9 +80,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         experience: announcement.experience || '',
         employemnt_type: announcement.employemnt_type || '',
         start_time: announcement.start_time || '',
-        location: [''],
+        location: announcement.address || [''],
         condition:  [''],
-        requirement:  [''],
+        requirement:  announcement.requirements || [''],
         responsobility:  [''],
         city: announcement.city || '',
         active: announcement.active || true,
@@ -145,7 +146,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     // Функции для обновления значений в массивах
     const handleRequirementChange = (index, e) => {
         const updatedRequirements = [...data.requirement];
-        updatedRequirements[index] = e.target.value;
+        updatedRequirements[index].requirement = e.target.value;
         setData('requirement', updatedRequirements);
     };
 
@@ -184,7 +185,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
     const handleLocationChange = (index, e) => {
         const updatedLocations = [...data.location];
-        updatedLocations[index] = e.target.value;
+        updatedLocations[index].adress = e.target.value;
         setData('location', updatedLocations);
     };
 
@@ -308,21 +309,22 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 />
                             </Form.Item>
                         )}
+                        {data.location.map((loc, index) => (
                         <Form.Item
                             label='Адрес рабочего места:'
-                            name="location"
+                            name={`location[${index}].adress`}
                             rules={[{ required: true, message: 'Please enter an address' }]}
                         >
-                            {data.location.map((loc, index) => (
-                                <Input
+                                <input
                                     key={index}
                                     type="text"
-                                    className='text-sm rounded py-1 mt-2 border border-gray-300'
-                                    value={loc}
+                                    className='text-sm w-full rounded py-1 mt-2 border border-gray-300'
+                                    value={loc.adress}
+                                    defaultValue={loc.adress}
                                     onChange={(e) => handleLocationChange(index, e)}
                                 />
-                            ))}
                         </Form.Item>
+                            ))}
                         <div
                             className='text-blue-500 mt-[-15px] mb-2'
                             onClick={addLocation}
@@ -365,7 +367,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         </div>
                         <Form.Item
-                            label={t('paymentType')}
+                            label="Тип оплаты"
                             name="payment_type"
                             rules={[{ required: true, message: 'Please select a payment type' }]}
                         >
@@ -468,26 +470,28 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         </div>
                           {/* Критерии/Требования */}
-                        <Form.Item label={
+                        {data.requirement.map((req, index) => (
+                        <Form.Item
+                            label={
                                 <span>
                                     Критерии/Требования
                                     <span className="ml-2 text-gray-500">
                                         (например: черты характера, навыки, аккредитации и тд.)
                                     </span>
                                 </span>
-                            } name="requirement">
-                            {data.requirement.map((req, index) => (
+                            }
+                            name={`requirement[${index}].requirement`}
+                            >
                                 <Input
                                     key={index}
                                     type="text"
-                                    name={`requirement-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
                                     defaultValue={req.requirement}
                                     value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
                                 />
-                            ))}
                         </Form.Item>
+                        ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
                             + Добавить
                         </div>

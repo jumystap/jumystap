@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "@inertiajs/react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
-import moment from 'moment';
-import 'moment/locale/ru'; // Импортируем русскую локаль
-
-moment.locale('ru'); // Устанавливаем локаль на русский
+import { formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale'; // Импортируем русскую локаль
 
 const formatCreatedAt = (createdAt) => {
-    return moment(createdAt).fromNow(); // например, "2 часа назад"
+    const date = new Date(createdAt);
+    return formatDistanceToNow(date, { locale: ru, addSuffix: true }); // например, "2 часа назад"
 };
 
 export default function User({ auth, user, employees, userProfessions, resumes}) {
@@ -119,7 +118,7 @@ export default function User({ auth, user, employees, userProfessions, resumes})
                                             {resume.skills.length > 0 && (
                                                 <div className='flex-wrap mt-2'>
                                                     {resume.skills.map((skill, index) => (
-                                                        <div className='mr-2 rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
+                                                        <div className='mr-2 rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500' key={index}>
                                                             {skill}
                                                         </div>
                                                     ))}
@@ -169,4 +168,5 @@ export default function User({ auth, user, employees, userProfessions, resumes})
             )}
         </>
     );
-}
+e
+
