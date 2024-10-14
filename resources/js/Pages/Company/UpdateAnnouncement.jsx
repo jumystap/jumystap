@@ -80,6 +80,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }))
     }));
 
+    // Find the path based on the specialization_id
+
     const { data, setData, post, put, processing, errors } = useForm({
         type_kz: 'Тапсырыс',
         type_ru: 'Заказ',
@@ -105,6 +107,18 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         cost_max: announcement.cost_max || null,
     });
 
+    const findCascaderValue = (specializations, specialization_id) => {
+        for (let category of specializations) {
+            const specialization = category.specialization.find(spec => spec.id === specialization_id);
+            if (specialization) {
+                return [category.id, specialization.id]; // Return the category id and specialization id as a path
+            }
+        }
+        return []; // Return empty if not found
+    };
+
+    const defaultValue = findCascaderValue(specializations, data.specialization_id);
+
     const deleteRequirement = (index) => {
         const newRequirements = [...data.requirement]; // Create a shallow copy
         newRequirements.splice(index, 1); // Remove the requirement at the specified index
@@ -114,7 +128,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }));
     };
 
-    // Function to delete a responsibility
     const deleteResponsibility = (index) => {
         const newResponsibilities = [...data.responsobility]; // Create a shallow copy
         newResponsibilities.splice(index, 1); // Remove the responsibility at the specified index
@@ -176,32 +189,59 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
 
     console.log(data)
+    // Function to add a new requirement
     const addRequirement = () => {
-        setData('requirement', [...data.requirement, '']);
+        setData((prevData) => ({
+            ...prevData,
+            requirement: [
+                ...prevData.requirement,
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, requirement: "" }
+            ]
+        }));
     };
+
+    // Function to add a new responsibility
     const addResponsibility = () => {
-        setData('responsobility', [...data.responsobility, '']);
+        setData((prevData) => ({
+            ...prevData,
+            responsobility: [
+                ...prevData.responsobility,
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, responsibility: "" }
+            ]
+        }));
     };
+
+    // Function to add a new condition
     const addCondition = () => {
-        setData('condition', [...data.condition, '']);
+        setData((prevData) => ({
+            ...prevData,
+            condition: [
+                ...prevData.condition,
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, condition: "" }
+            ]
+        }));
     };
+
 
     // Функции для обновления значений в массивах
     const handleRequirementChange = (index, e) => {
         const updatedRequirements = [...data.requirement];
         updatedRequirements[index].requirement = e.target.value;
+        updatedRequirements[index].id = index;
         setData('requirement', updatedRequirements);
     };
 
     const handleResponsibilityChange = (index, e) => {
         const updatedResponsibilities = [...data.responsobility];
         updatedResponsibilities[index].responsibility = e.target.value;
+        updatedResponsibilities[index].id = index;
         setData('responsobility', updatedResponsibilities);
     };
 
     const handleConditionChange = (index, e) => {
         const updatedConditions = [...data.condition];
         updatedConditions[index].condition = e.target.value;
+        updatedConditions[index].id = index;
         setData('condition', updatedConditions);
     };
 
@@ -311,12 +351,13 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </Form.Item>
                         <Form.Item
                             label="Специализация"
-                            name="specialization_id"
                             rules={[{ required: true, message: 'Пожалуйста, выберите специализацию' }]}
+                            initialValue={defaultValue}
                         >
                             <Cascader
                                 options={cascaderData}
                                 placeholder="Выберите специализацию"
+                                defaultValue={defaultValue}
                                 onChange={(value) => setData('specialization_id', value[1])}
                             />
                         </Form.Item>
