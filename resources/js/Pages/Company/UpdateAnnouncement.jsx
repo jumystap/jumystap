@@ -26,6 +26,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const isEdit = true;
     const [salaryType, setSalaryType] = useState('');
     const [isExactSalary, setIsExactSalary] = useState(false);
+    const [isUndefiendSalary, setIsUndefiendSalary] = useState(false);
     console.log(announcement)
 
     const handleSalaryTypeChange = (e) => {
@@ -52,8 +53,20 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             setData('cost_min', null);
             setData('cost_max', null);
             setSalaryType('exact')
+            setData('salary_type', 'exact');
         } else {
             setData('cost', null);
+            setSalaryType('')
+        }
+    };
+    const handleUndefiendSalaryChange = (e) => {
+        setIsUndefiendSalary(e.target.checked);
+        if (e.target.checked) {
+            setData('cost_min', null);
+            setData('cost_max', null);
+            setSalaryType('undefiend');
+            setData('salary_type', 'undefined');
+        } else {
             setSalaryType('')
         }
     };
@@ -81,9 +94,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         employemnt_type: announcement.employemnt_type || '',
         start_time: announcement.start_time || '',
         location: announcement.address || [''],
-        condition:  [''],
+        condition: announcement.conditions || [''],
         requirement:  announcement.requirements || [''],
-        responsobility:  [''],
+        responsobility: announcement.responsibilities || [''],
         city: announcement.city || '',
         active: announcement.active || true,
         specialization_id: announcement.specialization_id || null,
@@ -152,13 +165,13 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
     const handleResponsibilityChange = (index, e) => {
         const updatedResponsibilities = [...data.responsobility];
-        updatedResponsibilities[index] = e.target.value;
+        updatedResponsibilities[index].responsibility = e.target.value;
         setData('responsobility', updatedResponsibilities);
     };
 
     const handleConditionChange = (index, e) => {
         const updatedConditions = [...data.condition];
-        updatedConditions[index] = e.target.value;
+        updatedConditions[index].condition = e.target.value;
         setData('condition', updatedConditions);
     };
 
@@ -220,11 +233,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             return;
         }
 
-        const submitAction = isEdit ? put : post;
-        const url = isEdit ? `/announcements/${announcement.id}` : '/create_announcement';
+        const submitAction = put;
+        const url = `/announcements/${announcement.id}`;
 
         try {
-            submitAction(url, data, {
+            put(url, data, {
                 onSuccess: () => {
                     message.success('Announcement saved successfully');
                 },
@@ -313,7 +326,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             label='Адрес рабочего места:'
                             name={`location[${index}].adress`}
-                            rules={[{ required: true, message: 'Please enter an address' }]}
                         >
                                 <input
                                     key={index}
@@ -381,6 +393,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 <Option value="Сдельная оплата">Сдельная оплата</Option>
                             </Select>
                         </Form.Item>
+                        {!isUndefiendSalary && (
+                        <>
                         {isExactSalary ? (
                             <Form.Item label='Точная Зарплата' name="cost" rules={[{ required: true, message: 'Please enter the exact salary' }]}>
                                 <Input
@@ -413,7 +427,22 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </Form.Item>
                             </div>
                         )}
+                        </>
+                        )}
                         <div className='flex items-center gap-x-2 mt-[-15px]'>
+                            <input
+                                type='checkbox'
+                                name='undefiend'
+                                id='undefiend'
+                                className='rounded border-gray-400'
+                                checked={isUndefiendSalary}
+                                onChange={handleUndefiendSalaryChange}
+                            />
+                            <label htmlFor='undefiend'>Договорная зарплата</label>
+                        </div>
+                        {!isUndefiendSalary && (
+                        <>
+                        <div className='flex items-center gap-x-2 mt-2'>
                             <input
                                 type='checkbox'
                                 name='exact_salary'
@@ -436,6 +465,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                             <label htmlFor='za_smenu'>За смену</label>
                         </div>
+                        </>
+                        )}
 
                         <div className='grid mt-4 grid-cols-2 gap-x-5'>
                             <Form.Item
@@ -497,6 +528,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
 
                         {/* Обязанности */}
+                        {data.responsobility.map((resp, index) => (
                         <Form.Item label={
                                 <span>
                                     Обязанности работника
@@ -504,23 +536,25 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         (какие рабочие задачи сотрудник будет выполнять)
                                     </span>
                                 </span>
-                            } name="responsibility">
-                            {data.responsobility.map((resp, index) => (
+                            } name={`responsibility[${index}].responsibility`}
+                            >
                                 <Input
                                     key={index}
                                     type="text"
                                     name={`responsibility-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={resp.responsobility}
+                                    value={resp.responsibility}
+                                    defaultValue={resp.responsibility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
                                 />
-                            ))}
                         </Form.Item>
+                        ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
                             + Добавить
                         </div>
 
                         {/* Условия труда */}
+                        {data.condition.map((cond, index) => (
                         <Form.Item  label={
                                 <span>
                                     Условия труда
@@ -528,18 +562,18 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         (например:питание, развозка, и тд.)
                                     </span>
                                 </span>
-                            }name="condition">
-                            {data.condition.map((cond, index) => (
+                            }name={`condition[${index}].condition`}>
                                 <Input
                                     key={index}
                                     type="text"
                                     name={`condition-${index}`}
                                     className='text-sm rounded py-1 mt-3 border border-gray-300'
+                                    defaultValue={cond.condition}
                                     value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
                                 />
-                            ))}
                         </Form.Item>
+                        ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
                             + Добавить
                         </div>
