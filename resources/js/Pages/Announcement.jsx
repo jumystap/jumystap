@@ -211,16 +211,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                         </div>
                         <div className='mt-5 rounded-lg border mx-5'>
                             <div className='mx-5'>
-                            {announcement.conditions.length > 0 && (
-                                <>
-                                    <div className='font-semibold mb-2 mt-5'>Условия</div>
-                                    <ul className='list-disc list-inside'>
-                                        {announcement.conditions.map((condition, index) => (
-                                            <li key={index} className='mb-2'>{condition.condition}</li>
-                                        ))}
-                                    </ul>
-                                </>
-                            )}
+
                             {announcement.responsibilities.length > 0 && (
                                 <>
                                     <div className='font-semibold mb-2 mt-2'>Обязанности</div>
@@ -238,6 +229,17 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <ul className='list-disc list-inside'>
                                         {announcement.requirements.map((requirement, index) => (
                                             <li key={index} className='mb-2'>{requirement.requirement}</li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+
+                            {announcement.conditions.length > 0 && (
+                                <>
+                                    <div className='font-semibold mb-2 mt-5'>Условия</div>
+                                    <ul className='list-disc list-inside'>
+                                        {announcement.conditions.map((condition, index) => (
+                                            <li key={index} className='mb-2'>{condition.condition}</li>
                                         ))}
                                     </ul>
                                 </>
