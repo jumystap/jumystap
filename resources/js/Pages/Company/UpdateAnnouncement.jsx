@@ -113,18 +113,58 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     useEffect(() => {
         if (newRequirementRef.current) {
             newRequirementRef.current.focus(); // Move focus to the new TextArea
+            newRequirementRef.current.selectionStart = 0; // Move cursor to the beginning
+            newRequirementRef.current.selectionEnd = 0;
         }
     }, [data.requirement.length]);
+
     useEffect(() => {
         if (newResponsibilityRef.current) {
             newResponsibilityRef.current.focus(); // Move focus to the new TextArea
+            newResponsibilityRef.current.selectionStart = 0; // Move cursor to the beginning
+            newResponsibilityRef.current.selectionEnd = 0;
         }
     }, [data.responsobility.length]);
     useEffect(() => {
         if (newConditionRef.current) {
             newConditionRef.current.focus(); // Move focus to the new TextArea
+            newConditionRef.current.selectionStart = 0; // Move cursor to the beginning
+            newConditionRef.current.selectionEnd = 0;
         }
     }, [data.condition.length]);
+
+    const addRequirementAtIndex = (index, newText) => {
+        setData((prevData) => ({
+            ...prevData,
+            requirement: [
+                ...prevData.requirement.slice(0, index + 1),
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, requirement: newText }, // Add a new item with correct structure
+                ...prevData.requirement.slice(index + 1)
+            ]
+        }));
+    };
+
+    const addResponsibilityAtIndex = (index, newText) => {
+        setData((prevData) => ({
+            ...prevData,
+            responsobility: [
+                ...prevData.responsobility.slice(0, index + 1),
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText }, // Add a new item with correct structure
+                ...prevData.responsobility.slice(index + 1)
+            ]
+        }));
+    };
+
+    const addConditionAtIndex = (index, newText) => {
+        setData((prevData) => ({
+            ...prevData,
+            condition: [
+                ...prevData.condition.slice(0, index + 1),
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, condition: newText }, // Add a new item with correct structure
+                ...prevData.condition.slice(index + 1)
+            ]
+        }));
+    };
 
     const findCascaderValue = (specializations, specialization_id) => {
         for (let category of specializations) {
@@ -628,8 +668,19 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     onChange={(e) => handleRequirementChange(index, e)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
-                                            addRequirement();    // Call the function to add a new TextArea
+                                            e.preventDefault();
+                                            const textarea = e.target;
+                                            const cursorPosition = textarea.selectionStart;
+                                            const currentText = textarea.value;
+
+                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                            const textAfterCursor = currentText.substring(cursorPosition);
+
+                                            handleRequirementChange(index, {
+                                                target: { value: textBeforeCursor },
+                                            });
+
+                                            addRequirementAtIndex(index, textAfterCursor);
                                         }
                                     }}
                                 />
@@ -663,8 +714,19 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     onChange={(e) => handleResponsibilityChange(index, e)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
-                                            addResponsibility();    // Call the function to add a new TextArea
+                                            e.preventDefault();
+                                            const textarea = e.target;
+                                            const cursorPosition = textarea.selectionStart;
+                                            const currentText = textarea.value;
+
+                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                            const textAfterCursor = currentText.substring(cursorPosition);
+
+                                            handleResponsibilityChange(index, {
+                                                target: { value: textBeforeCursor },
+                                            });
+
+                                            addResponsibilityAtIndex(index, textAfterCursor);
                                         }
                                     }}
                                 />
@@ -696,7 +758,18 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
                                             e.preventDefault();  // Prevent default "Enter" behavior (line break)
-                                            addCondition();    // Call the function to add a new TextArea
+                                            const textarea = e.target;
+                                            const cursorPosition = textarea.selectionStart;
+                                            const currentText = textarea.value;
+
+                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                            const textAfterCursor = currentText.substring(cursorPosition);
+
+                                            handleConditionChange(index, {
+                                                target: { value: textBeforeCursor },
+                                            });
+
+                                            addConditionAtIndex(index, textAfterCursor);
                                         }
                                     }}
                                 />
