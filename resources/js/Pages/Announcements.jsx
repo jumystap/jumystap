@@ -344,10 +344,10 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
-                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / <span className='text-base'> за смену</span>`}
-                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / <span className='text-base'> за смену</span>`}
-                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-base'> за смену</span>`}
-                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-base'> за смену</span>`}
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
                                             </>
                                         )}
                                     </div>
@@ -413,4 +413,4 @@ export default function Announcements({ auth, announcements, specializations, er
             </GuestLayout>
         </>
     );
-}
+}Announcements
