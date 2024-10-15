@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
@@ -29,6 +29,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const [isExactSalary, setIsExactSalary] = useState(false);
     const [isUndefiendSalary, setIsUndefiendSalary] = useState(false);
     console.log(announcement)
+    const newRequirementRef = useRef(null);
+    const newResponsibilityRef = useRef(null);
+    const newConditionRef = useRef(null);
 
     const handleSalaryTypeChange = (e) => {
         if (e.target.checked) {
@@ -106,6 +109,22 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         cost_min: announcement.cost_min || null,
         cost_max: announcement.cost_max || null,
     });
+
+    useEffect(() => {
+        if (newRequirementRef.current) {
+            newRequirementRef.current.focus(); // Move focus to the new TextArea
+        }
+    }, [data.requirement.length]);
+    useEffect(() => {
+        if (newResponsibilityRef.current) {
+            newResponsibilityRef.current.focus(); // Move focus to the new TextArea
+        }
+    }, [data.responsobility.length]);
+    useEffect(() => {
+        if (newConditionRef.current) {
+            newConditionRef.current.focus(); // Move focus to the new TextArea
+        }
+    }, [data.condition.length]);
 
     const findCascaderValue = (specializations, specialization_id) => {
         for (let category of specializations) {
@@ -586,10 +605,10 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         </div>
                           {/* Критерии/Требования */}
-                        <div className='mb-4'>
+                        <div className='font-semibold mb-4'>
                                 <span>
                                     Критерии/Требования
-                                    <span className="ml-2 mb-4 text-gray-500">
+                                    <span className="font-regular ml-2 mb-4 text-gray-500">
                                         (например: черты характера, навыки, аккредитации и тд.)
                                     </span>
                                 </span>
@@ -597,16 +616,24 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         {data.requirement.map((req, index) => (
                         <Form.Item
                             name={`requirement[${index}].requirement`}
+                            className='mt-[-10px]'
                             >
                                 <TextArea
+                                    ref={index === data.requirement.length - 1 ? newRequirementRef : null}
                                     key={index}
                                     type="text"
                                     className='text-sm w-full rounded py-1 border border-gray-300'
                                     defaultValue={req.requirement}
                                     value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
+                                            addRequirement();    // Call the function to add a new TextArea
+                                        }
+                                    }}
                                 />
-                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteRequirement(index)}>Удалить</button>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteRequirement(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
@@ -614,17 +641,19 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
 
                         {/* Обязанности */}
-                        <div className='mb-4'>
+                        <div className='mb-4 font-semibold'>
                             Обязанности работника
-                            <span className="ml-2 text-gray-500">
+                            <span className="font-regular ml-2 text-gray-500">
                                 (какие рабочие задачи сотрудник будет выполнять)
                             </span>
                         </div>
                         {data.responsobility.map((resp, index) => (
                         <Form.Item
                             name={`responsibility[${index}].responsibility`}
+                            className='mt-[-10px]'
                         >
                                 <TextArea
+                                    ref={index === data.responsobility.length - 1 ? newResponsibilityRef : null}
                                     key={index}
                                     type="text"
                                     name={`responsibility-${index}`}
@@ -632,8 +661,14 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     value={resp.responsibility}
                                     defaultValue={resp.responsibility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
+                                            addResponsibility();    // Call the function to add a new TextArea
+                                        }
+                                    }}
                                 />
-                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteResponsibility(index)}>Удалить</button>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteResponsibility(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
@@ -641,15 +676,16 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
 
                         {/* Условия труда */}
-                        <div className='mb-4'>
+                        <div className='mb-4 font-semibold'>
                             Условия труда
-                            <span className="ml-2 text-gray-500">
+                            <span className="ml-2 font-regular text-gray-500">
                                 (например:питание, развозка, и тд.)
                             </span>
                         </div>
                         {data.condition.map((cond, index) => (
-                        <Form.Item name={`condition[${index}].condition`}>
+                        <Form.Item name={`condition[${index}].condition`} className='mt-[-10px]'>
                                 <TextArea
+                                    ref={index === data.condition.length - 1 ? newConditionRef : null}
                                     key={index}
                                     type="text"
                                     name={`condition-${index}`}
@@ -657,8 +693,14 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     defaultValue={cond.condition}
                                     value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
+                                            addCondition();    // Call the function to add a new TextArea
+                                        }
+                                    }}
                                 />
-                                <button type="button" className='text-red-500 mt-2' onClick={() => deleteCondition(index)}>Удалить</button>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteCondition(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
