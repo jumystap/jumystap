@@ -267,9 +267,9 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         <div className='flex mt-4 gap-x-3 items-center'>
                                             <div className='md:text-xl text-lg font-regular'>
                                                 {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                                {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                                {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                                {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'min' && anonce.min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'max' && anonce.max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'diapason' && anonce.min && anonce.max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                                 {anonce.salary_type == 'undefined' && (`Договорная`)}
                                             </div>
                                         </div>
@@ -332,8 +332,8 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
                                         <SiFireship className='text-red-600 text-lg' />
                                         {urgent_announcement.salary_type == 'exact' && urgent_announcement.cost && (`${urgent_announcement.cost.toLocaleString() } ₸ `)}
-                                        {urgent_announcement.salary_type == 'min' && (`от ${urgent_announcement.cost_min.toLocaleString()} ₸ `)}
-                                        {urgent_announcement.salary_type == 'max' && (`до ${urgent_announcement.cost_max.toLocaleString()} ₸ `)}
+                                        {urgent_announcement.salary_type == 'min' && urgent_announcement.cost_min && (`от ${urgent_announcement.cost_min.toLocaleString()} ₸ `)}
+                                        {urgent_announcement.salary_type == 'max' && urgent_announcement.cost_max && (`до ${urgent_announcement.cost_max.toLocaleString()} ₸ `)}
                                         {urgent_announcement.salary_type == 'undefined' && (`Договорная`)}
                                     </div>
                                 </div>
