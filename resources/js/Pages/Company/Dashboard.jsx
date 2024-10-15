@@ -63,8 +63,7 @@ export default function Dashboard({ user, announcements }) {
                             <div>{formatPhoneNumber(user.phone)}</div>
                         </div>
                         <div className='flex mt-5 gap-x-2 font-semibold text-xl'>
-                            <div>{vacancyCount} <span className='text-gray-500 font-light text-base'>вакансии</span></div>
-                            <div>{orderCount} <span className='text-gray-500 font-light text-base'>заказов</span></div>
+                            <div>{vacancyCount + orderCount} <span className='text-gray-500 font-light text-base'>вакансии</span></div>
                         </div>
                         <div className='flex md:flex-row flex-col gap-x-2 gap-y-4 mt-5'>
                             <Link href='/update'
@@ -86,21 +85,27 @@ export default function Dashboard({ user, announcements }) {
                                 {user.announcement.map((anonce, index) => (
                                     <div key={index} className='p-3 border-t border-gray-300 w-full'>
                                         <div className='flex items-center'>
-                                            <div className='text-[8pt] font-bold text-white py-1 px-2 rounded bg-blue-500 '>
-                                                {i18n.language === 'ru' ? anonce.type_ru.toUpperCase() : anonce.type_kz.toUpperCase()}
-                                            </div>
                                             {!anonce.active && (
-                                                <div className='ml-3 text-sm text-gray-500'>
+                                                <div className=' text-sm text-gray-500'>
                                                     На модерации
                                                 </div>
                                             )}
                                             <div className="ml-auto">
                                                 <div className='font-bold text-sm ml-auto'>
-                                                    {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString()} ₸ `)}
-                                                    {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                                    {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                    {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                                    {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                                    {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                    {anonce.salary_type == 'diapason' && anonce.cost_max && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                                     {anonce.salary_type == 'undefined' && (`Договорная`)}
-                                                </div>
+                                                    {anonce.salary_type == 'za_smenu' && (
+                                                        <>
+                                                            {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
+                                                            {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                            {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                            {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                        </>
+                                                    )}
+                                            </div>
                                             </div>
                                         </div>
                                         <div className='mt-3'>
