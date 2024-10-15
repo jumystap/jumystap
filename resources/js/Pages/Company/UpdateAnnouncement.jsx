@@ -339,7 +339,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </span>
                             }
                             name="title"
-                            rules={[{ required: true, message: 'Пожалуйста, введите заголовок' }]}
                         >
                             <Input
                                 type="text"
@@ -351,7 +350,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </Form.Item>
                         <Form.Item
                             label="Укажите отрасль/сферу"
-                            rules={[{ required: true, message: 'Пожалуйста, выберите специализацию' }]}
                             initialValue={defaultValue}
                         >
                             <Cascader
@@ -364,7 +362,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             label='Город'
                             name="city"
-                            rules={[{ required: true, message: ' select a city' }]}
                         >
                             <Select
                                 value={data.city}
@@ -382,7 +379,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             <Form.Item
                                 label='Введите другой город'
                                 name="other_city"
-                                rules={[{ required: true, message: 'Please enter a city' }]}
                             >
                                 <Input
                                     type="text"
@@ -418,7 +414,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             <Form.Item
                                 label='График работы'
                                 name="work_time"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
 
                                 <Select
@@ -435,7 +430,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             <Form.Item
                                 label='Тип занятости'
                                 name="employemnt_type"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
                                     name="employemnt_type"
@@ -459,7 +453,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </span>
                             }
                             name="work_hours"
-                            rules={[{ required: true, message: 'Please select a payment type' }]}
                         >
                              <Input
                                 type="text"
@@ -472,7 +465,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             label="Тип оплаты"
                             name="payment_type"
-                            rules={[{ required: true, message: 'Please select a payment type' }]}
                         >
                             <Select
                                 value={data.payment_type}
@@ -563,7 +555,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             <Form.Item
                                 label='Необходимый опыт работы'
                                 name="experience"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
                                     value={data.work_time}
@@ -673,7 +664,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             label='Описание'
                             name="description"
-                            rules={[{ required: true, message: 'Пожалуйста, введите описание' }]}
                             value={data.description}
                             onChange={handleChange}
                         >

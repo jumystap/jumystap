@@ -248,9 +248,9 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     <SiFireship className='text-red-600 text-lg' />
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                        {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'min' && anonce.cost_min &&(`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && anonce.cost_min && anonce.cost_max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
@@ -287,9 +287,9 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                     <FaStar className='text-blue-500 text-lg'/>
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                        {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && anonce.cost_min && anonce.cost_max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
@@ -327,9 +327,9 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                 <div className='flex md:mt-4 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                        {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'diapason' && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && anonce.cost_min && anonce.cost_max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
@@ -401,7 +401,7 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                                         <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
                                             <SiFireship className='text-red-600 text-lg' />
                                             {urgent.salary_type == 'exact' && urgent.cost && (`${urgent.cost.toLocaleString() } ₸ `)}
-                                            {urgent.salary_type == 'min' && (`от ${urgent.cost_min.toLocaleString()} ₸ `)}
+                                            {urgent.salary_type == 'min' && urgent.cost_min && (`от ${urgent.cost_min.toLocaleString()} ₸ `)}
                                             {urgent.salary_type == 'max' && (`до ${urgent.cost_max.toLocaleString()} ₸ `)}
                                             {urgent.salary_type == 'diapason' && (`от ${urgent.cost_min.toLocaleString()} ₸`)}
                                             {urgent.salary_type == 'undefined' && (`Договорная`)}
