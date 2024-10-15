@@ -178,7 +178,7 @@ class UserController extends Controller
         $employeeProfessionIds = $this->userService->getUserProfessionIds($id);
         $employees = $this->userService->getUsersByProfessionIds($employeeProfessionIds);
 
-        $resumes = UserResume::where('user_id', Auth::id())
+        $resumes = UserResume::where('user_id', $id)
             ->with(['organizations', 'languages'])
             ->get()
             ->map(function ($resume) {
