@@ -344,7 +344,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
-                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / <span className='text-base'> за смену`}
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
                                                 {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
                                                 {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
                                                 {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
