@@ -260,12 +260,20 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     };
 
     const addLocation = () => {
-        setData('location', [...data.location, '']); // Добавляем новое пустое поле в массив location
+        setData((prevData) => ({
+            ...prevData,
+            location: [
+                ...prevData.location,
+                { id: null, announcement_id: prevData.announcement_id || announcement.id, adress: "" }
+            ]
+        }));
+
     };
 
     const handleLocationChange = (index, e) => {
         const updatedLocations = [...data.location];
         updatedLocations[index].adress = e.target.value;
+        updatedLocations[index].id = index;
         setData('location', updatedLocations);
     };
 
