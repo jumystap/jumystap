@@ -193,7 +193,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <div>{announcement.payment_type}</div>
                             </div>
                             <div>
-                                <div className='text-sm text-gray-500'>Время работы</div>
+                                <div className='text-sm text-gray-500'>Рабочи дни и время</div>
                                 <div>{announcement.work_hours}</div>
                             </div>
                             <div>

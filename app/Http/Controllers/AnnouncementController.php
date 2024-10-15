@@ -202,6 +202,7 @@ class AnnouncementController extends Controller
             'work_time' => 'nullable|string|max:255', // Assuming work_time is a string
             'work_hours' => 'nullable',
             'employemnt_type' => 'nullable',
+            'experience' => 'nullable',
             'location' => 'nullable|array',
             'location.*.id' => 'required|integer', // Ensure each location has an id
             'location.*.adress' => 'required|string|max:255', // Ensure each location has an address
