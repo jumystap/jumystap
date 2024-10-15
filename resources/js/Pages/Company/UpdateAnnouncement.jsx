@@ -604,7 +604,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             name={`requirement[${index}].requirement`}
                             >
-                                <Input
+                                <TextArea
                                     key={index}
                                     type="text"
                                     className='text-sm w-full rounded py-1 border border-gray-300'
@@ -630,7 +630,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             name={`responsibility[${index}].responsibility`}
                         >
-                                <Input
+                                <TextArea
                                     key={index}
                                     type="text"
                                     name={`responsibility-${index}`}
@@ -655,7 +655,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
                         {data.condition.map((cond, index) => (
                         <Form.Item name={`condition[${index}].condition`}>
-                                <Input
+                                <TextArea
                                     key={index}
                                     type="text"
                                     name={`condition-${index}`}
