@@ -483,6 +483,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     <Option value="Не требуется">Не требуется</Option>
                                     <Option value="Среднее">Среднее</Option>
                                     <Option value="Высшее">Высшее</Option>
+                                    <Option value="Среднее-специальное">Среднее-специальное</Option>
                                     <Option value="Сертификат Joltap">Сертификат Joltap</Option>
                                 </Select>
                             </Form.Item>
