@@ -419,7 +419,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                         type="text"
                                         name="cost_min"
                                         className='text-sm rounded py-1 mt-[0px] border border-gray-300'
-                                        value={data.cost_min)}
+                                        value={data.cost_min}
                                         onChange={handleSalaryChange} // Change here to handle salary type updates
                                     />
                                 </Form.Item>
