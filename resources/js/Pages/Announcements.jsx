@@ -364,7 +364,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>
-                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Фильтры</div>
                         </div>
                         <div className='flex px-3 flex-col md:flex-col'>
                             <div className='text-gray-500 mt-5'>Специализация</div>
