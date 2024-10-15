@@ -344,10 +344,10 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
-                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
-                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
-                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
-                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / <span className='text-sm'> за смену</span>`}
+                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / <span className='text-base'> за смену`}
+                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
+                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
                                             </>
                                         )}
                                     </div>
@@ -364,7 +364,7 @@ export default function Announcements({ auth, announcements, specializations, er
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>
-                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Фильтры</div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
                         </div>
                         <div className='flex px-3 flex-col md:flex-col'>
                             <div className='text-gray-500 mt-5'>Специализация</div>
@@ -413,4 +413,4 @@ export default function Announcements({ auth, announcements, specializations, er
             </GuestLayout>
         </>
     );
-}Announcements
+}
