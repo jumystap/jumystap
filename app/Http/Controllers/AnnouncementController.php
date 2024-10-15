@@ -206,8 +206,8 @@ class AnnouncementController extends Controller
             'employemnt_type' => 'nullable',
             'experience' => 'nullable',
             'location' => 'nullable|array',
-            'location.*.id' => 'required|integer', // Ensure each location has an id
-            'location.*.adress' => 'required|string|max:255', // Ensure each location has an address
+            'location.*.id' => 'nullable|integer', // Ensure each location has an id
+            'location.*.adress' => 'nullable|string|max:255', // Ensure each location has an address
             'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable|integer', // Assuming this is an integer
             'salary_type' => 'required|string|max:255',
