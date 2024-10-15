@@ -338,9 +338,9 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <div className='flex md:mt-4 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-lg font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                        {anonce.salary_type == 'min' && anonce.min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && annonce.max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'diapason' && anonce.max && anonce.min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                        {anonce.salary_type == 'diapason' && anonce.cost_max && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'undefined' && (`Договорная`)}
                                         {anonce.salary_type == 'za_smenu' && (
                                             <>
