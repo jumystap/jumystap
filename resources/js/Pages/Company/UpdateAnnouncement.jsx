@@ -663,11 +663,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </div>
                         <Form.Item
                             label='Описание'
-                            name="description"
-                            value={data.description}
-                            onChange={handleChange}
+
                         >
-                            <TextArea rows={4} />
+                            <TextArea name="description"
+                            value={data.description}
+                            onChange={handleChange} rows={4} />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={processing}>
