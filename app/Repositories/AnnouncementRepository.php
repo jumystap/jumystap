@@ -17,6 +17,15 @@ class AnnouncementRepository
         ->with('user')
         ->where('active', 1);
 
+        if (!empty($filters['searchKeyword'])) {
+            $keyword = $filters['searchKeyword'];
+
+            $query->where(function($query) use ($keyword) {
+                $query->where('title', 'LIKE', "%{$keyword}%")
+                      ->orWhere('description', 'LIKE', "%{$keyword}%");
+            });
+        }
+
         if (!empty($filters['specialization'])) {
             $query->where('specialization_id', $filters['specialization']);
         }
