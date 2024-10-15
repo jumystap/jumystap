@@ -99,6 +99,8 @@ class AnnouncementController extends Controller
             'work_time' => 'nullable',
             'work_hours' => 'nullable',
             'employemnt_type' => 'nullable',
+            'experience' => 'nullable',
+            'education' => 'nullable',
             'location' => 'nullable|array', // Validate as an array
             'location.*' => 'string|max:255', // Validate each location item
             'city' => 'nullable|string|max:255',
