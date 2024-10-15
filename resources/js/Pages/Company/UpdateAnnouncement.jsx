@@ -336,9 +336,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                      <Form onFinish={handleSubmit} layout="vertical" initialValues={data}>
                         <Form.Item
                             label={
-                                <span>
+                                <span className='font-semibold'>
                                     Загаловок
-                                    <span className="ml-2 text-gray-500">
+                                    <span className="ml-2 font-regular text-gray-500">
                                         (Напишите наименование вакансии с заглавной буквы без дополнительной информации)
                                     </span>
                                 </span>
@@ -354,7 +354,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label="Укажите отрасль/сферу"
+                            label={<span className='font-semibold'>Укажите отрасль/сферу</span>}
                             initialValue={defaultValue}
                         >
                             <Cascader
@@ -365,7 +365,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label='Город'
+                            label={<span className='font-semibold'>Город</span>}
                             name="city"
                         >
                             <Select
@@ -382,7 +382,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
                         {showOtherCityInput && (
                             <Form.Item
-                                label='Введите другой город'
+                                label={<span className='font-semibold'>Введите другой город</span>}
                                 name="other_city"
                             >
                                 <Input
@@ -394,15 +394,20 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 />
                             </Form.Item>
                         )}
+                        <div className='mb-4'>
+                            <span className='font-semibold'>
+                                Укажите адрес рабочего места
+                            </span>
+                        </div>
                         {data.location.map((loc, index) => (
                         <Form.Item
-                            label='Адрес рабочего места:'
                             name={`location[${index}].adress`}
+                            className='mt-[-15px]'
                         >
                                 <input
                                     key={index}
                                     type="text"
-                                    className='text-sm w-full rounded py-1 mt-2 border border-gray-300'
+                                    className='text-sm w-full rounded py-1 mt-1 border border-gray-300'
                                     value={loc.adress}
                                     defaultValue={loc.adress}
                                     onChange={(e) => handleLocationChange(index, e)}
@@ -415,9 +420,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         >
                             + Добавить еще один адрес
                         </div>
-                        <div className='grid grid-cols-2 gap-x-5'>
+                        <div className='grid grid-cols-2 gap-x-5 mt-5'>
                             <Form.Item
-                                label='График работы'
+                                label={<span className='font-semibold'>График работы</span>}
                                 name="work_time"
                             >
 
