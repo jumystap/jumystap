@@ -148,38 +148,34 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     };
 
     const handleSalaryChange = (name, value) => {
-        value = parseInt(value);
-        setData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        value = value ? parseInt(value) : null;
 
-        if (name === 'cost_min' || name === 'cost_max') {
-            const minFilled = !!value; // Use the updated value for checking
-            const maxFilled = !!(name === 'cost_max' ? value : data.cost_max); // Use the value for cost_max if cost_min was updated
+        setData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                [name]: value,
+            };
 
-            if (minFilled && !maxFilled) {
-                setData((prevData) => ({
-                    ...prevData,
-                    salary_type: 'min',
-                }));
-            } else if (!minFilled && maxFilled) {
-                setData((prevData) => ({
-                    ...prevData,
-                    salary_type: 'max',
-                }));
-            } else if (minFilled && maxFilled) {
-                setData((prevData) => ({
-                    ...prevData,
-                    salary_type: 'diapason',
-                }));
+            const cost_min = updatedData.cost_min;
+            const cost_max = updatedData.cost_max;
+            const cost = updatedData.cost;
+
+            if (cost_min && !cost_max) {
+                updatedData.salary_type = 'min';
+                updatedData.cost = '';
+            } else if (!cost_min && cost_max) {
+                updatedData.salary_type = 'max';
+                updatedData.cost = '';
+            } else if (cost_min && cost_max) {
+                updatedData.salary_type = 'diapason';
+            } else if (cost) {
+                updatedData.salary_type = 'exact'; // Reset if both are empty
             } else {
-                setData((prevData) => ({
-                    ...prevData,
-                    salary_type: '',
-                })); // Reset salary_type if both are empty
+                updatedData.salary_type = 'undefined'; // Reset if both are empty
             }
-        }
+
+            return updatedData;
+        });
     };
 
     const [validationErrors, setValidationErrors] = useState({});
