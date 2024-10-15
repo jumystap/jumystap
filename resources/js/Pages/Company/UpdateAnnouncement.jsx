@@ -623,9 +623,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     onChange={(value) => setData('experience', value)}
                                 >
                                     <Option value="Без опыта работы">Без опыта работы</Option>
-                                    <Option value="От 1 года">От 1 года</Option>
-                                    <Option value="От 3 лет">От 3 лет</Option>
-                                    <Option value="От 5 лет">От 5 лет</Option>
+                                    <Option value="От 3 мес. до 6 мес.">От 3 мес. до 6 мес.</Option>
+                                    <Option value="От 6 мес. до 1 года.">От 6 мес. до 1 года.</Option>
+                                    <Option value="От 1 года до 3 лет.">От 1 года до 3 лет.</Option>
+                                    <Option value="От 3 лет до 6 лет.">От 3 лет до 6 лет.</Option>
+                                    <Option value="Более 6 лет">Более 6 лет</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item
