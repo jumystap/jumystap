@@ -195,7 +195,7 @@ class AnnouncementController extends Controller
             'type_kz' => 'required|string|max:255',
             'type_ru' => 'required|string|max:255',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'payment_type' => 'required|string|max:255',
             'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
