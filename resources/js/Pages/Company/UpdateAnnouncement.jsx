@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
+import CurrencyInput from 'react-currency-input-field';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -39,9 +40,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
     const formatNumber = (value) => {
         if (!value) return '';
-        return value // Add spaces every 3 digits
+        return number.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     };
-
 
     const parseNumber = (value) => {
         return value.replace(/\s/g, ''); // Remove spaces for storing as a number
@@ -147,14 +147,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }));
     };
 
-
-
-    const handleSalaryChange = (e) => {
-        const { name, value } = e.target;
-        const parsedValue = parseNumber(value);
+    const handleSalaryChange = (name, value) => {
+        value = parseInt(value);
         setData((prevData) => ({
             ...prevData,
-            [name]: parsedValue,
+            [name]: value,
         }));
 
         if (name === 'cost_min' || name === 'cost_max') {
@@ -479,33 +476,30 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         {!isUndefiendSalary && (
                         <>
                         {isExactSalary ? (
-                            <Form.Item label='Точная Зарплата' name="cost" rules={[{ required: true, message: 'Please enter the exact salary' }]}>
-                                <Input
-                                    type="number"
-                                    className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                            <Form.Item label='Точная Зарплата' rules={[{ required: true, message: 'Please enter the exact salary' }]}>
+                                <CurrencyInput
+                                    className='w-full text-sm rounded py-1 mt-[0px] border border-gray-300'
                                     name="cost"
-                                    value={data.cost}
-                                    onChange={handleChange}
+                                    onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                    defaultValue={data.cost}
                                 />
                             </Form.Item>
                         ) : (
                             <div className='grid grid-cols-2 gap-x-3'>
-                                <Form.Item label='Зарплата От' name="cost_min" rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
-                                    <Input
-                                        type="text"
+                                <Form.Item label='Зарплата От' rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
+                                    <CurrencyInput
                                         name="cost_min"
-                                        value={formatNumber(data.cost_min)}
-                                        onChange={handleSalaryChange}
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                        defaultValue={data.cost_min}
+                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
                                     />
                                 </Form.Item>
-                                <Form.Item label='Зарплата До' name="cost_max" rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
-                                    <Input
-                                        type="number"
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                <Form.Item label='Зарплата До' rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
+                                    <CurrencyInput
+                                        className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
                                         name="cost_max"
-                                        value={data.cost_max}
-                                        onChange={handleSalaryChange}
+                                        defaultValue={data.cost_max}
+                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
                                     />
                                 </Form.Item>
                             </div>

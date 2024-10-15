@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
+import CurrencyInput from 'react-currency-input-field';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -91,14 +92,13 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     });
 
 
-    const handleSalaryChange = (e) => {
-        const { name, value } = e.target;
-        const parsedValue = parseNumber(value);
+    const handleSalaryChange = (name, value) => {
+        value = parseInt(value);
         setData((prevData) => ({
             ...prevData,
-            [name]: parsedValue,
+            [name]: value,
         }));
-        console.log(name, parsedValue);
+
 
         if (name === 'cost_min' || name === 'cost_max') {
             const minFilled = !!value; // Use the updated value for checking
@@ -403,33 +403,30 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             </Select>
                         </Form.Item>
                         {isExactSalary ? (
-                            <Form.Item label='Точная Зарплата' name="cost" rules={[{ required: true, message: 'Please enter the exact salary' }]}>
-                                <Input
-                                    type="number"
+                            <Form.Item label='Точная Зарплата' rules={[{ required: true, message: 'Please enter the exact salary' }]}>
+                                <CurrencyInput
                                     name="cost"
-                                    className='text-sm rounded py-1 mt-[0px] border border-gray-300'
-                                    value={formatNumber(data.cost)}
-                                    onChange={handleChange}
+                                    className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
+                                    onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                    defaultValue={data.cost}
                                 />
                             </Form.Item>
                         ) : (
                             <div className='grid grid-cols-2 gap-x-3'>
-                                <Form.Item label='Зарплата От' name="cost_min" rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
-                                    <Input
-                                        type="text"
+                                <Form.Item label='Зарплата От'  rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
+                                    <CurrencyInput
                                         name="cost_min"
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
-                                        value={data.cost_min}
-                                        onChange={handleSalaryChange} // Change here to handle salary type updates
+                                        className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
+                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                        defaultValue={data.cost_min}
                                     />
                                 </Form.Item>
-                                <Form.Item label='Зарплата До' name="cost_max" rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
-                                    <Input
-                                        type="number"
+                                <Form.Item label='Зарплата До' rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
+                                    <CurrencyInput
                                         name="cost_max"
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300'
-                                        value={data.cost_max}
-                                        onChange={handleSalaryChange} // Change here to handle salary type updates
+                                        className='text-sm w-full rounded py-1 mt-[0px] border border-gray-300'
+                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                        defaultValue={data.cost_max}
                                     />
                                 </Form.Item>
                             </div>

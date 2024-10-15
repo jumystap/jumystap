@@ -267,9 +267,9 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         <div className='flex mt-4 gap-x-3 items-center'>
                                             <div className='md:text-xl text-lg font-regular'>
                                                 {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                                {anonce.salary_type == 'min' && anonce.min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                                {anonce.salary_type == 'max' && anonce.max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                                {anonce.salary_type == 'diapason' && anonce.min && anonce.max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
+                                                {anonce.salary_type == 'diapason' && anonce.cost_min && anonce.cost_max && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                                 {anonce.salary_type == 'undefined' && (`Договорная`)}
                                             </div>
                                         </div>
