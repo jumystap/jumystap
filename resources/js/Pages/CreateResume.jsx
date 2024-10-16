@@ -126,7 +126,7 @@ const CreateUpdateResume = ({ specialization }) => {
                         <div className='font-semibold text-2xl mb-4'>Создать резюме</div>
                         <div className='flex gap-x-5'>
                         {data.photo && <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>}
-                        <Form.Item label="Загрузите вашу фотографию" rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
+                        <Form.Item label="Загрузите вашу фотографию" name='photo' rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
                             <Upload {...uploadProps} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Загрузить фото</Button>
                             </Upload>
@@ -139,6 +139,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                     <>
                                         <Form.Item
                                             label="Наименование организации"
+                                            name='organization.name'
                                             rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
                                         >
                                             <Input
@@ -149,6 +150,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                         </Form.Item>
                                         <Form.Item
                                             label="Должность"
+                                            name='organization.profession'
                                             className='mt-[-17px]'
                                             rules={[{ required: true, message: 'Пожалуйста, укажите должность' }]}
                                         >
@@ -160,6 +162,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                         </Form.Item>
                                         <Form.Item
                                             label="Период работы"
+                                            name='organization.period'
                                             className='mt-[-17px]'
                                             rules={[{ required: true, message: 'Пожалуйста, укажите период работы' }]}
                                         >
@@ -241,6 +244,7 @@ const CreateUpdateResume = ({ specialization }) => {
                         {data.city === 'Астана' && (
                             <Form.Item
                                 label="Укажите ваш район проживания"
+                                name="district"
                                 rules={[{ required: true, message: 'Пожалуйста, укажите район' }]}
                             >
                                 <Select value={data.district} onChange={(value) => handleInputChange('district', value)}>
@@ -255,6 +259,7 @@ const CreateUpdateResume = ({ specialization }) => {
 
                         <Form.Item
                             label="Укажите какими языками вы владеете"
+                            name='languages'
                             rules={[{ required: true, message: 'Пожалуйста, укажите языки' }]}
                         >
                             <Select
@@ -265,10 +270,13 @@ const CreateUpdateResume = ({ specialization }) => {
                                 <Option value="Казахский">Казахский</Option>
                                 <Option value="Русский">Русский</Option>
                                 <Option value="Английский">Английский</Option>
+                                <Option value="Немецкий">Немецкий</Option>
+                                <Option value="Французкий">Французкий</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
                             label="Укажите ваше образование"
+                            name='education'
                             rules={[{ required: true, message: 'Пожалуйста, укажите образование' }]}
                         >
                             <Select value={data.education} onChange={(value) => handleInputChange('education', value)}>
@@ -281,14 +289,22 @@ const CreateUpdateResume = ({ specialization }) => {
 
                         {data.education !== 'Среднее' && (
                             <>
-                                <Form.Item label="Факультет и специализация">
+                                <Form.Item
+                                    name='faculty'
+                                    label="Факультет и специализация"
+                                    rules={[{ required: data.education !== 'Среднее', message: 'Пожалуйста, укажите желаемую сферу работы' }]}
+                                >
                                     <Input
                                         value={data.faculty}
                                         onChange={(e) => handleInputChange('faculty', e.target.value)}
                                         className="text-sm rounded py-1 mt-[0px] border border-gray-300"
                                     />
                                 </Form.Item>
-                                <Form.Item label="Год окончания">
+                                <Form.Item
+                                    name='year'
+                                    rules={[{ required: data.education !== 'Среднее', message: 'Пожалуйста, укажите желаемую сферу работы' }]}
+                                    label="Год окончания"
+                                >
                                     <DatePicker
                                         picker="year"
                                         placeholder='Год окончания'
@@ -301,6 +317,7 @@ const CreateUpdateResume = ({ specialization }) => {
 
                         <Form.Item
                             label="Укажите наличие ИП"
+                            name='ip_status'
                             rules={[{ required: true, message: 'Пожалуйста, укажите статус ИП' }]}
                         >
                             <Select value={data.ip_status} onChange={(value) => handleInputChange('ip_status', value)}>
@@ -311,6 +328,7 @@ const CreateUpdateResume = ({ specialization }) => {
 
                         <Form.Item
                             label="В какой сфере вы желаете работать"
+                            name='desired_field'
                             rules={[{ required: true, message: 'Пожалуйста, укажите желаемую сферу работы' }]}
                         >
                             <Cascader
@@ -319,7 +337,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                 placeholder="В какой сфере вы желаете работать"
                             />
                         </Form.Item>
-                        <Form.Item label="Навыки">
+                        <Form.Item label="Навыки" name='skills'>
                             <div className='flex items-center gap-x-2'>
                             <Input
                                 value={data.newSkill}

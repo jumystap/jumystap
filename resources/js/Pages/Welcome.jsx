@@ -128,7 +128,6 @@ export default function Welcome({ specializations, auth, employees, freelancers,
                     <div className='col-span-5'>
                         <div className='flex border-b md:sticky md:top-0 z-20 bg-white bg-opacity-50 backdrop-blur-md border-gray-200'>
                             <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500'>Вакансии для вас</div>
-                            <div className='cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 text-gray-500 text-sm'>Вакансии дня</div>
                         </div>
                         <Carousel>
                         <div className='block flex bg-gradient-to-r z-10 md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
