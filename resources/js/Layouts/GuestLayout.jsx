@@ -7,6 +7,42 @@ import { HiOutlineHome, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiHome2Line } from "react-icons/ri";
 import { MdOutlineBookmarks, MdOutlineCloud, MdOutlineGroupAdd, MdOutlineLogout, MdOutlineWorkOutline } from "react-icons/md";
 import { IoSchoolOutline } from 'react-icons/io5';
+import { Button, Dropdown, Space } from 'antd';
+import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
+const items = [
+  {
+    key: '1',
+    label: (
+        <Link href='/reviews' className="block py-2 flex items-center">
+            Оставить отзыв
+        </Link>
+    ),
+  },
+  {
+    key: '2',
+    label: (
+        <Link href="/profile" className="block py-2">
+            Профиль
+        </Link>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+        <Link href="/fav" className="block py-2">
+            Избранные
+        </Link>
+    ),
+  },
+  {
+    key: '4',
+    label: (
+        <Link href="/about" className="block py-2">
+            О платформе
+        </Link>
+    ),
+  },
+];
 
 export default function Guest({ children }) {
     const { t, i18n } = useTranslation();
@@ -60,65 +96,48 @@ export default function Guest({ children }) {
                 </Link>
                 <div className='ml-auto flex gap-x-4 items-center'>
                     <div
-                        className="items-center gap-1 px-7 py-2 border rounded-full text-gray-500 border-gray-300 transition-all duration-300 hover:border-blue-500 hover:text-blue-500 cursor-pointer"
+                        className="items-center gap-1 px-5 py-2 text-sm border rounded-full text-gray-500 border-gray-300 transition-all duration-300 hover:border-blue-500 hover:text-blue-500 cursor-pointer"
                         onClick={() => changeLanguage(i18n.language === 'ru' ? 'kz' : 'ru')}
                     >
                         {i18n.language == 'ru' ? 'Рус' : 'Қаз'}
                     </div>
-                    <button className="md:hidden text-2xl ml-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                        <CgMenuRight />
-                    </button>
                 </div>
             </div>
-            <div className={`fixed inset-0 z-40 flex md:hidden transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                <div className="bg-black bg-opacity-0 flex-grow" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="bg-white w-4/5 h-full mt-2 p-4 shadow-lg">
-                    <div className='flex w-full'>
-                    <button className="text-2xl ml-auto mb-4" onClick={() => setIsMobileMenuOpen(false)}>
-                        <CgClose />
-                    </button>
-                    </div>
-                    <Link href='/reviews' className="block py-3 hover:font-semibold transition-all w-full text-left ease-in-out duration-100 flex items-center">
-                        <CgShoppingBag className="mr-2 text-xl" /> {t('feeback', { ns: 'header'})}
+            <div className='fixed bottom-0 left-0 w-full'>
+                <div className="bg-white grid grid-cols-4 w-full py-3 px-3">
+                    <Link
+                        className={`block flex-col text-center ${isActive('/') ? 'text-blue-500' : 'text-gray-500'}`}
+                        href='/'
+                    >
+                        <HiOutlineHome className='text-center text-2xl mx-auto'/>
+                        <div className='text-center text-xs'>Главная</div>
                     </Link>
-                    <Link href="/employees?job-type=vacancy" className="block py-3 hover:font-semibold transition-all duration-200 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <HiOutlineUserGroup className="mr-2 text-xl" /> {t('nav_for_employers', { ns: 'header'})}
+                    <Link
+                        className={`block flex-col text-center ${isActive('/announcements') ? 'text-blue-500' : 'text-gray-500'}`}
+                        href='/announcements'
+                    >
+                        <MdOutlineWorkOutline className='mx-auto text-2xl'/>
+                        <div className='text-center text-xs'>Объявления</div>
                     </Link>
-                    <Link href="/employees?job-type=project" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <MdOutlineWorkOutline className="mr-2 text-xl" /> {t('nav_for_clients', { ns: 'header'})}
+                    <Link
+                        className={`block flex-col text-center ${isActive('/employees') ? 'text-blue-500' : 'text-gray-500'}`}
+                        href='/employees'
+                    >
+                        <HiOutlineUserGroup className='text-2xl mx-auto'/>
+                        <div className='text-center text-xs'>Соискатели</div>
                     </Link>
-                    <Link href="/announcements" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <MdOutlineBookmarks className="mr-2 text-xl" /> {t('nav_for_graduates', { ns: 'header'})}
-                    </Link>
-                    <Link href="/faq" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <IoSchoolOutline className="mr-2 text-xl" /> {t('nav_about_training', { ns: 'header'})}
-                    </Link>
-                    <Link href="/fav" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <MdOutlineBookmarks className="mr-2 text-xl" /> Избранные
-                    </Link>
-                    <Link href="/about" className="block py-3 hover:font-semibold transition-all ease-in-out duration-100 flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-                        <MdOutlineCloud className="mr-2 text-xl" /> О платформе
-                    </Link>
-
-                    {auth.user ? (
-                        <>
-                            <Link href="/profile" className="block py-2 border px-2 text-center mt-2 rounded-lg hover:font-semibold transition-all ease-in-out duration-100" onClick={() => setIsMobileMenuOpen(false)}>
-                                {t('my_profile', { ns: 'header' })}
-                            </Link>
-                            <button onClick={handleLogout} className="block py-3 border-b hover:font-semibold transition-all ease-in-out duration-100 w-full text-left">
-                                {t('logout', { ns: 'header' })}
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link href="/register" className="block border-bm mt-2 hover:font-semibold transition-all ease-in-out duration-100 bg-blue-500 w-full text-center py-2 text-white rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
-                                {t('register', { ns: 'header' })}
-                            </Link>
-                            <Link href="/login" className="block border mt-2 hover:font-semibold transition-all ease-in-out duration-100 border-blue-500 w-full text-center py-2 text-blue-500 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
-                                {t('login', { ns: 'header' })}
-                            </Link>
-                        </>
-                    )}
+                    <Dropdown
+                        menu={{
+                            items,
+                        }}
+                        placement="top"
+                        className={`cursor-pointer block flex-col text-center text-gray-500`}
+                    >
+                        <div>
+                        <HiOutlineDotsCircleHorizontal className='text-2xl mx-auto' />
+                        <div className='text-center text-xs'>Еще</div>
+                        </div>
+                    </Dropdown>
                 </div>
             </div>
             <div>
