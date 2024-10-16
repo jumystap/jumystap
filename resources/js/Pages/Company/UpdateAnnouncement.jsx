@@ -178,6 +178,15 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
     const defaultValue = findCascaderValue(specializations, data.specialization_id);
 
+    const deleteLocation = (index) => {
+        const newLocation = [...data.location]; // Create a shallow copy
+        newLocation.splice(index, 1); // Remove the requirement at the specified index
+        setData((prevData) => ({
+            ...prevData,
+            location: newLocation.length > 0 ? newLocation : [], // Set to empty array if nothing left
+        }));
+    };
+
     const deleteRequirement = (index) => {
         const newRequirements = [...data.requirement]; // Create a shallow copy
         newRequirements.splice(index, 1); // Remove the requirement at the specified index
@@ -467,6 +476,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     defaultValue={loc.adress}
                                     onChange={(e) => handleLocationChange(index, e)}
                                 />
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteLocation(index)}>Удалить</button>
                         </Form.Item>
                         ))}
                         <div

@@ -67,9 +67,14 @@ class UserResumeController extends Controller
         return Inertia::render('Resumes/Show', ['resume' => $resume]);
     }
 
-    public function edit(UserResume $resume)
+    public function edit($id)
     {
-        return Inertia::render('Resumes/Edit', ['resume' => $resume]);
+        $resume = UserResume::where('id', $id)->with('organizations', 'languages')->first();
+        $specialization = SpecializationCategory::with('specialization')->get();
+        return Inertia::render('UpdateResume', [
+            'resume' => $resume,
+            'specialization' => $specialization,
+        ]);
     }
 
     public function update(Request $request, UserResume $resume)
@@ -95,13 +100,11 @@ class UserResumeController extends Controller
 
         $resume->update($data);
 
-        // Update organizations
         $resume->organizations()->delete();
         foreach ($data['organizations'] as $organization) {
             $resume->organizations()->create($organization);
         }
 
-        // Update languages
         $resume->languages()->delete();
         foreach ($data['languages'] as $language) {
             $resume->languages()->create(['language' => $language]);

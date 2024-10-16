@@ -142,14 +142,20 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             ))}
                                                         </div>
                                                     )}
-
-                                                    {/* Delete button for resume */}
+                                                    <div className='mt-4 gap-x-5 flex items-center'>
                                                     <button
                                                         onClick={() => deleteResume(resume.id)}
-                                                        className="mt-4 text-sm text-red-500"
+                                                        className="text-sm text-red-500"
                                                     >
                                                         Удалить резюме
                                                     </button>
+                                                    <Link
+                                                        href={`/update_resume/${resume.id}`}
+                                                        className='text-sm'
+                                                    >
+                                                        Изменить
+                                                    </Link>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
