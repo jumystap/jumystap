@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Form, Input, Select, DatePicker, Button, Upload, Space, Cascader, Avatar} from 'antd';
+import { Form, Input, Select, DatePicker, Tag, Button, Upload, Space, Cascader, Avatar } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -14,8 +14,9 @@ const kazakhstanCities = [
     "Экибастуз", "Рудный", "Жезказган"
 ];
 
-const CreateUpdateResume = ({specialization}) => {
+const CreateUpdateResume = ({ specialization }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
+    const [editMode, setEditMode] = useState([true]); // Initially all organizations are in edit mode
     const { data, setData, post } = useForm({
         organizations: [{ organization: '', position: '', period: '' }],
         city: '',
@@ -28,17 +29,14 @@ const CreateUpdateResume = ({specialization}) => {
         graduation_year: null,
         ip_status: '',
         desired_field: '',
-        skills: ['', '', ''],
+        skills: [],
+        newSkill: '',
     });
-
-    console.log(data)
 
     const handleCityChange = (value) => {
         setData('city', value);
         setShowOtherCityInput(value === 'Другое');
     };
-
-    console.log(specialization)
 
     const cascaderData = specialization.map(category => ({
         value: category.id,
@@ -51,6 +49,7 @@ const CreateUpdateResume = ({specialization}) => {
 
     const addOrganization = () => {
         setData('organizations', [...data.organizations, { organization: '', position: '', period: null }]);
+        setEditMode([...editMode, true]); // Add a new entry to editMode for the new organization
     };
 
     const handlePeriodChange = (index, startDate, endDate) => {
@@ -68,6 +67,7 @@ const CreateUpdateResume = ({specialization}) => {
     const removeOrganization = (index) => {
         const updatedOrganizations = data.organizations.filter((_, i) => i !== index);
         setData('organizations', updatedOrganizations);
+        setEditMode(editMode.filter((_, i) => i !== index)); // Remove the corresponding edit mode state
     };
 
     const handleSubmit = () => {
@@ -87,6 +87,12 @@ const CreateUpdateResume = ({specialization}) => {
         setData('organizations', updatedOrganizations);
     };
 
+    const toggleEditMode = (index) => {
+        const updatedEditMode = [...editMode];
+        updatedEditMode[index] = !updatedEditMode[index];
+        setEditMode(updatedEditMode);
+    };
+
     const uploadProps = {
         beforeUpload: (file) => {
             setData('photo', file);
@@ -94,69 +100,113 @@ const CreateUpdateResume = ({specialization}) => {
         },
     };
 
+    const addSkill = () => {
+        if (data.newSkill.trim()) {
+            if (!data.skills.includes(data.newSkill.trim())) {
+                setData((prevData) => ({
+                    ...prevData,
+                    skills: [...prevData.skills, prevData.newSkill.trim()],
+                    newSkill: ''
+                }));
+            } else {
+                alert("Этот навык уже добавлен"); // Optional: alert the user if the skill already exists
+            }
+        }
+    };
+
+    const removeSkill = (removedSkill) => {
+        setData('skills', data.skills.filter(skill => skill !== removedSkill));
+    };
+
     return (
         <GuestLayout>
             <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="col-span-5 p-5">
                     <Form layout="vertical" onFinish={handleSubmit}>
+                        <div className='font-semibold text-2xl mb-4'>Создать резюме</div>
+                        <div className='flex gap-x-5'>
+                        {data.photo && <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>}
                         <Form.Item label="Загрузите вашу фотографию" rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
                             <Upload {...uploadProps} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Загрузить фото</Button>
                             </Upload>
-                            {data.photo && <Avatar src={URL.createObjectURL(data.photo)} size={64} />}
                         </Form.Item>
-
-                        <h2>Укажите ваш опыт работы</h2>
+                        </div>
+                        <div className='font-semibold text-xl mb-4 mt-2'>Укажите ваш опыт работы</div>
                         {data.organizations.map((organization, index) => (
                             <Space key={index} direction="vertical" style={{ display: 'flex', marginBottom: 5 }}>
-                                <Form.Item
-                                    label="Наименование организации"
-                                    rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
-                                >
-                                    <Input
-                                        value={organization.organization}
-                                        onChange={(e) => handleNestedChange(index, 'organization', e.target.value)}
-                                        className="text-sm rounded py-1 mt-[0px] border border-gray-300"
-                                    />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Должность"
-                                    rules={[{ required: true, message: 'Пожалуйста, укажите должность' }]}
-                                >
-                                    <Cascader
-                                        options={cascaderData}
-                                        onChange={(value) => handleNestedChange(index, 'position', value[1])}
-                                        placeholder="Должность"
-                                    />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Период работы"
-                                    rules={[{ required: true, message: 'Пожалуйста, укажите период работы' }]}
-                                >
-                                    <Space direction="horizontal">
-                                        <DatePicker
-                                            onChange={(date) => handlePeriodChange(index, date, null)}
-                                            placeholder="Начало"
-                                        />
-                                        <DatePicker
-                                            onChange={(date) => handlePeriodChange(index, null, date)}
-                                            placeholder="Конец"
-                                        />
-                                        <div>{organization.period}</div>
-                                    </Space>
-                                </Form.Item>
-                                <Button danger onClick={() => removeOrganization(index)}>
-                                    Удалить место работы
-                                </Button>
+                                {editMode[index] ? (
+                                    <>
+                                        <Form.Item
+                                            label="Наименование организации"
+                                            rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
+                                        >
+                                            <Input
+                                                value={organization.organization}
+                                                onChange={(e) => handleNestedChange(index, 'organization', e.target.value)}
+                                                className="text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Должность"
+                                            className='mt-[-17px]'
+                                            rules={[{ required: true, message: 'Пожалуйста, укажите должность' }]}
+                                        >
+                                            <Cascader
+                                                options={cascaderData}
+                                                onChange={(value) => handleNestedChange(index, 'position', value[1])}
+                                                placeholder="Должность"
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Период работы"
+                                            className='mt-[-17px]'
+                                            rules={[{ required: true, message: 'Пожалуйста, укажите период работы' }]}
+                                        >
+                                            <Space direction="horizontal">
+                                                <DatePicker
+                                                    onChange={(date) => handlePeriodChange(index, date, null)}
+                                                    placeholder="Начало"
+                                                />
+                                                <DatePicker
+                                                    onChange={(date) => handlePeriodChange(index, null, date)}
+                                                    placeholder="Конец"
+                                                />
+                                                <div>{organization.period}</div>
+                                            </Space>
+                                        </Form.Item>
+                                        <div className='flex items-center mt-[-10px] gap-x-2'>
+                                            <Button type="primary" onClick={() => toggleEditMode(index)}>Сохранить</Button>
+                                            <Button danger onClick={() => removeOrganization(index)}>
+                                                Удалить место работы
+                                            </Button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className='border border-gray-200 py-4 mt-2 px-5 rounded-lg'>
+                                        <p><strong>Организация:</strong> {organization.organization}</p>
+                                        <p><strong>Должность:</strong> {organization.position}</p>
+                                        <p><strong>Период работы:</strong> {organization.period}</p>
+                                        <div className='flex mt-4 items-center gap-x-2'>
+                                            <Button type="dashed" onClick={() => toggleEditMode(index)}>Редактировать</Button>
+                                            <Button danger onClick={() => removeOrganization(index)}>
+                                                Удалить место работы
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+
+
                             </Space>
                         ))}
-                        <Button type="dashed" onClick={addOrganization} icon={<PlusOutlined />}>
+                        <Button type="dashed" className='mt-3' onClick={addOrganization} icon={<PlusOutlined />}>
                             Добавить еще место работы
                         </Button>
 
                         <Form.Item
                             label='Город'
                             name="city"
+                            className='mt-4'
                             rules={[{ required: true, message: ' select a city' }]}
                         >
                             <Select
@@ -269,30 +319,46 @@ const CreateUpdateResume = ({specialization}) => {
                                 placeholder="В какой сфере вы желаете работать"
                             />
                         </Form.Item>
-
-                        <Form.Item
-                            label="Укажите ваши ключевые навыки"
-                            rules={[{ required: true, message: 'Пожалуйста, укажите навыки' }]}
-                        >
-                            {data.skills.map((skill, index) => (
-                                <Input
-                                    key={index}
-                                    value={skill}
-                                    onChange={(e) => {
-                                        const updatedSkills = [...data.skills];
-                                        updatedSkills[index] = e.target.value;
-                                        setData('skills', updatedSkills);
-                                    }}
-                                    className="text-sm rounded py-1 mt-2 border border-gray-300"
-                                />
-                            ))}
+                        <Form.Item label="Навыки">
+                            <div className='flex items-center gap-x-2'>
+                            <Input
+                                value={data.newSkill}
+                                onChange={(e) => setData('newSkill', e.target.value)}
+                                className="text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                placeholder="Введите навык и нажмите кнопку"
+                            />
+                            <Button onClick={addSkill} className=''>
+                                Добавить навык
+                            </Button>
+                            </div>
+                            <div className='flex flex-wrap gap-2 mt-2'>
+                                {data.skills.map((skill, index) => (
+                                    <Tag
+                                        key={index}
+                                        closable
+                                        onClose={() => removeSkill(skill)}
+                                        className='rounded-full bg-gray-100 text-gray-500'
+                                    >
+                                        {skill}
+                                    </Tag>
+                                ))}
+                            </div>
                         </Form.Item>
-
                         <Button type="primary" htmlType="submit">
                             Создать резюме
                         </Button>
                     </Form>
                 </div>
+                <div className='md:h-full sticky top-0 bg-[#F9FAFC] rounded-lg w-full hidden md:block md:col-span-2 p-5 md:relative'>
+                        <div className=''>
+                            <div className='text-lg'>Сложности с созданием?</div>
+                            <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                            <div className='mt-10 text-sm'>
+                                <div>+7 707 221 31 31</div>
+                                <div className='ml-auto'>janamumkindik@gmail.com</div>
+                            </div>
+                        </div>
+                    </div>
             </div>
         </GuestLayout>
     );

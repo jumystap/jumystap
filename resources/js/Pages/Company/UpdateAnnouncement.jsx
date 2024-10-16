@@ -138,7 +138,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             requirement: [
                 ...prevData.requirement.slice(0, index + 1),
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, requirement: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, requirement: newText }, // Add a new item with correct structure
                 ...prevData.requirement.slice(index + 1)
             ]
         }));
@@ -149,7 +149,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             responsobility: [
                 ...prevData.responsobility.slice(0, index + 1),
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText }, // Add a new item with correct structure
                 ...prevData.responsobility.slice(index + 1)
             ]
         }));
@@ -160,7 +160,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             condition: [
                 ...prevData.condition.slice(0, index + 1),
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, condition: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, condition: newText }, // Add a new item with correct structure
                 ...prevData.condition.slice(index + 1)
             ]
         }));
