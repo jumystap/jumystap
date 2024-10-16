@@ -141,7 +141,7 @@ export default function Guest({ children }) {
                     </Dropdown>
                 </div>
             </div>
-            <div>
+            <div className='pb-20'>
                 {children}
             </div>
         </div>
