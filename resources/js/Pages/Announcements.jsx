@@ -348,7 +348,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
-                                <div className='mt-5 text-lg text-blue-500 font-bold'>
+                                <div className='mt-5 text-lg font-bold'>
                                     {anonce.title}
                                 </div>
 
@@ -399,7 +399,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         <Link
                                             href='/register'
                                             onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                            className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
                                             <span className='font-bold'>Связаться</span>
                                         </Link>
                                     )}
