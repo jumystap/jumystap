@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Form, Input, Select, DatePicker, Tag, Button, Upload, Space, Cascader, Avatar } from 'antd';
+import { Form, Checkbox, Input, Select, DatePicker, Tag, Button, Upload, Space, Cascader, Avatar } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment/locale/ru'
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import GuestLayout from '@/Layouts/GuestLayout';
 
 const { Option } = Select;
@@ -18,7 +21,7 @@ const CreateUpdateResume = ({ specialization }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]); // Initially all organizations are in edit mode
     const { data, setData, post } = useForm({
-        organizations: [{ organization: '', position: '', period: '' }],
+        organizations: [{ organization: '', position: '', period: '', isCurrent: false }],
         city: '',
         district: '',
         languages: [],
@@ -52,15 +55,36 @@ const CreateUpdateResume = ({ specialization }) => {
         setEditMode([...editMode, true]); // Add a new entry to editMode for the new organization
     };
 
-    const handlePeriodChange = (index, startDate, endDate) => {
+    const updatePeriod = (index) => {
         const updatedOrganizations = [...data.organizations];
+        const { start_date, end_date, isCurrent } = updatedOrganizations[index];
 
-        const start = startDate ? startDate.format('YYYY-MM-DD') : updatedOrganizations[index].period?.split(' - ')[0];
-        const end = endDate ? endDate.format('YYYY-MM-DD') : updatedOrganizations[index].period?.split(' - ')[1];
+        let period;
+        if (isCurrent) {
+            period = `${format(new Date(start_date), 'd MMM yyyy', { locale: ru })} - По настоящее время`;
+        } else {
+            period = `${format(new Date(start_date), 'd MMM yyyy', { locale: ru })} - ${end_date ? format(new Date(end_date), 'd MMM yyyy', { locale: ru }) : ''}`;
+        }
+        updatedOrganizations[index].period = period;
+        setData('organizations', updatedOrganizations);
+    };
 
-        const period = `${start} - ${end}`;
+    const handleDateChange = (index, field, value) => {
+        const updatedOrganizations = [...data.organizations];
+        updatedOrganizations[index][field] = value;
+        updatePeriod(index);
+        setData('organizations', updatedOrganizations);
+    };
 
-        updatedOrganizations[index] = { ...updatedOrganizations[index], period };
+    const handleCheckboxChange = (index) => {
+        const updatedOrganizations = [...data.organizations];
+        updatedOrganizations[index].isCurrent = !updatedOrganizations[index].isCurrent;
+
+        if (updatedOrganizations[index].isCurrent) {
+            updatedOrganizations[index].end_date = ''; // Clear end_date if currently employed
+        }
+
+        updatePeriod(index);
         setData('organizations', updatedOrganizations);
     };
 
@@ -143,6 +167,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                             rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
                                         >
                                             <Input
+                                                defaultValue={organization.organization}
                                                 value={organization.organization}
                                                 onChange={(e) => handleNestedChange(index, 'organization', e.target.value)}
                                                 className="text-sm rounded py-1 mt-[0px] border border-gray-300"
@@ -162,22 +187,38 @@ const CreateUpdateResume = ({ specialization }) => {
                                         </Form.Item>
                                         <Form.Item
                                             label="Период работы"
-                                            name='organization.period'
                                             className='mt-[-17px]'
-                                            rules={[{ required: true, message: 'Пожалуйста, укажите период работы' }]}
+                                            rules={[{ required: true, message: 'Пожалуйста, укажите дату начала работы' }]}
                                         >
-                                            <Space direction="horizontal">
-                                                <DatePicker
-                                                    onChange={(date) => handlePeriodChange(index, date, null)}
-                                                    placeholder="Начало"
-                                                />
-                                                <DatePicker
-                                                    onChange={(date) => handlePeriodChange(index, null, date)}
-                                                    placeholder="Конец"
-                                                />
-                                                <div>{organization.period}</div>
-                                            </Space>
+                                            <div className='flex gap-x-5'>
+                                                <div>
+                                                    <input
+                                                        type="date"
+                                                        value={organization.start_date}
+                                                        onChange={(e) => handleDateChange(index, 'start_date', e.target.value)}
+                                                        className="px-2 py-1 text-sm rounded-lg border border-gray-200 bg-white"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    {!organization.isCurrent && (
+                                                        <input
+                                                            type="date"
+                                                            value={organization.end_date}
+                                                            onChange={(e) => handleDateChange(index, 'end_date', e.target.value)}
+                                                            className="px-2 py-1 text-sm rounded-lg border border-gray-200 bg-white"
+                                                        />
+                                                    )}
+                                                    <Checkbox
+                                                        checked={organization.isCurrent}
+                                                        className='flex'
+                                                        onChange={() => handleCheckboxChange(index)}
+                                                    >
+                                                        По настоящее время
+                                                    </Checkbox>
+                                                </div>
+                                            </div>
                                         </Form.Item>
+
                                         <div className='flex items-center mt-[-10px] gap-x-2'>
                                             <Button type="primary" onClick={() => toggleEditMode(index)}>Сохранить</Button>
                                             <Button danger onClick={() => removeOrganization(index)}>

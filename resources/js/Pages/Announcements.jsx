@@ -14,7 +14,9 @@ import Carousel from '@/Components/Carousel';
 import InfoModal from '@/Components/InfoModal';
 import { Cascader } from 'antd';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
+import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
+import { MdIosShare } from "react-icons/md";
 
 export default function Announcements({ auth, announcements, specializations, errors, cities}) {
     const { t, i18n } = useTranslation();
@@ -53,6 +55,23 @@ export default function Announcements({ auth, announcements, specializations, er
         setData('specialization', value[1]);
     };
 
+    const handleShare = (id) => {
+        const url = `https://jumystap.kz/announcement/${id}`; // Ensure 'announcement' is in scope and has 'id'
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Check out this announcement',
+                url: url,
+            }).then(() => {
+                console.log('Share was successful.');
+            }).catch((error) => {
+                console.error('Sharing failed:', error);
+            });
+        } else {
+            // Fallback for browsers that do not support the Web Share API
+            alert(`Share this link: ${url}`);
+        }
+    };
     const handleMinSalaryChange = (event) => {
         setMinSalary(event.target.value);
         setData('minSalary', event.target.value);
@@ -318,26 +337,24 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <CgArrowsExchangeAltV />
                             </div>
                         </div>
-
-                        <div className='border-b border-gray-200 mt-3'>
-                        </div>
                         {announcements.data.map((anonce, index) => (
-                            <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200`}>
+                            <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
                                 <div className='flex items-center'>
-                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
-                                        <FaLocationDot className='text-sm'/>
+                                    <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-400')} items-center`}>
+                                        <CiLocationOn />
                                         <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
                                     </div>
                                     <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
-                                <div className='md:mt-7 mt-5 text-lg font-bold'>
+                                <div className='mt-5 text-xl text-blue-700 font-bold'>
                                     {anonce.title}
                                 </div>
-                                <div className='flex md:mt-4 mt-2 gap-x-3 items-center'>
+
+                                <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-lg font-regular'>
-                                        {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
+                                        {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'diapason' && anonce.cost_max && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
@@ -352,14 +369,52 @@ export default function Announcements({ auth, announcements, specializations, er
                                         )}
                                     </div>
                                 </div>
-                                <div className='md:mt-4 mt-2 text-sm text-gray-500 font-light'>
+                                <div className='flex gap-x-2 mt-2'>
+                                    <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                                        {anonce.experience}
+                                    </div>
+                                    <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                                        {anonce.work_time}
+                                    </div>
                                 </div>
-                                <div className='flex gap-x-1 items-center mt-4'>
-                                    <MdAccessTime className='text-xl'/>
-                                    <div className='text-sm'>График работы: {anonce.work_time}</div>
+                                <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
+                                    {auth.user ? (
+                                        <>
+                                            <a
+                                                href={`/connect/${auth.user.id}/${anonce.id}`}
+                                                onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center md:w-[400px] w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>Связаться</span>
+                                            </a>
+                                            {auth.user.email === 'admin@example.com' && (
+                                                <a
+                                                    href={`/announcement/update/${anonce.id}`}
+                                                    onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                                    className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                    <span className='font-bold'>Изменить</span>
+                                                </a>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <Link
+                                            href='/register'
+                                            onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                            className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>Связаться</span>
+                                        </Link>
+                                    )}
+                                    <div
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevents click propagation to Link
+                                            handleShare(anonce.id);
+                                        }}
+                                        className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
+                                        <MdIosShare className='text-blue-500 text-xl' />
+                                    </div>
                                 </div>
                             </Link>
                         ))}
+
                         <Pagination links={announcements.links} searchKeyword={data.searchKeyword} />
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
