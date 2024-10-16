@@ -348,12 +348,12 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                     </div>
                                 </div>
-                                <div className='mt-5 text-xl text-blue-700 font-bold'>
+                                <div className='mt-7 text-xl text-blue-500 font-bold'>
                                     {anonce.title}
                                 </div>
 
-                                <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
-                                    <div className='md:text-xl text-lg font-regular'>
+                                <div className='flex md:mt-2 mt-4 gap-x-3 items-center'>
+                                    <div className='md:text-xl text-2xl font-regular'>
                                         {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
                                         {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
@@ -369,7 +369,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         )}
                                     </div>
                                 </div>
-                                <div className='flex gap-x-2 mt-2'>
+                                <div className='flex gap-x-2 mt-5'>
                                     <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
                                         {anonce.experience}
                                     </div>
@@ -377,7 +377,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                         {anonce.work_time}
                                     </div>
                                 </div>
-                                <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
+                                <div className='flex items-center mt-7 gap-x-3 gap-y-2'>
                                     {auth.user ? (
                                         <>
                                             <a
