@@ -383,7 +383,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                             <a
                                                 href={`/connect/${auth.user.id}/${anonce.id}`}
                                                 onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                                className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                                className='text-blue-500 text-center rounded-lg text-sm text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
                                                 <span className='font-bold'>Связаться</span>
                                             </a>
                                             {auth.user.email === 'admin@example.com' && (
