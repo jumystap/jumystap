@@ -101,6 +101,7 @@ export default function Guest({ children }) {
                     >
                         {i18n.language == 'ru' ? 'Рус' : 'Қаз'}
                     </div>
+
                 </div>
             </div>
             <div className='fixed bottom-0 left-0 w-full'>
@@ -109,21 +110,21 @@ export default function Guest({ children }) {
                         className={`block flex-col text-center ${isActive('/') ? 'text-blue-500' : 'text-gray-500'}`}
                         href='/'
                     >
-                        <HiOutlineHome className='text-center text-3xl mx-auto'/>
+                        <HiOutlineHome className='text-center text-2xl mx-auto'/>
                         <div className='text-center text-xs'>Главная</div>
                     </Link>
                     <Link
                         className={`block flex-col text-center ${isActive('/announcements') ? 'text-blue-500' : 'text-gray-500'}`}
                         href='/announcements'
                     >
-                        <MdOutlineWorkOutline className='mx-auto text-3xl'/>
+                        <MdOutlineWorkOutline className='mx-auto text-2xl'/>
                         <div className='text-center text-xs'>Объявления</div>
                     </Link>
                     <Link
                         className={`block flex-col text-center ${isActive('/employees') ? 'text-blue-500' : 'text-gray-500'}`}
                         href='/employees'
                     >
-                        <HiOutlineUserGroup className='text-3xl mx-auto'/>
+                        <HiOutlineUserGroup className='text-2xl mx-auto'/>
                         <div className='text-center text-xs'>Соискатели</div>
                     </Link>
                     <Dropdown
@@ -134,7 +135,7 @@ export default function Guest({ children }) {
                         className={`cursor-pointer block flex-col text-center text-gray-500`}
                     >
                         <div>
-                        <HiOutlineDotsCircleHorizontal className='text-3xl mx-auto' />
+                        <HiOutlineDotsCircleHorizontal className='text-2xl mx-auto' />
                         <div className='text-center text-xs'>Еще</div>
                         </div>
                     </Dropdown>
