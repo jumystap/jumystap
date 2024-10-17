@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\UserResume;
 use App\Models\SpecializationCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserResumeController extends Controller
@@ -45,7 +47,7 @@ class UserResumeController extends Controller
         $data['user_id'] = Auth::id();
 
         if ($request->hasFile('photo_path')) {
-            $data['photo_path'] = $request->file('photo_path')->store('photos');
+            $data['photo_path'] = $request->file('photo_path')->store('resume', 'public');
         }
 
         $resume = UserResume::create($data);
@@ -61,11 +63,31 @@ class UserResumeController extends Controller
         return redirect('/profile');
     }
 
-    public function show(UserResume $resume)
+    public function show($id)
     {
-        $resume->load('organizations', 'languages');
-        return Inertia::render('Resumes/Show', ['resume' => $resume]);
+        $resume = UserResume::where('id', $id)
+            ->with(['organizations', 'languages'])
+            ->first();
+
+        $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
+
+        $resume->organizations = $resume->organizations->map(function ($organization) {
+            $organization->position_name = $this->getSpecializationName($organization->position);
+            return $organization;
+        });
+
+        $user = User::find($resume->user_id);
+        return Inertia::render('Resume', [
+            'resume' => $resume,
+            'user' => $user,
+        ]);
     }
+
+    private function getSpecializationName($id)
+    {
+        return DB::table('specializations')->where('id', $id)->value('name_ru');
+    }
+
 
     public function edit($id)
     {

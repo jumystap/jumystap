@@ -112,7 +112,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     {resumes.length > 0 && (
                                         <div className="grid grid-cols-1 gap-4 mt-5">
                                             {resumes.map((resume, index) => (
-                                                <div className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                                <Link href={`/resume/${resume.id}`} className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
                                                     <div className='flex'>
                                                         <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                                             <FaLocationDot className='text-sm'/>
@@ -156,7 +156,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                         Изменить
                                                     </Link>
                                                     </div>
-                                                </div>
+                                                </Link>
                                             ))}
                                         </div>
                                     )}

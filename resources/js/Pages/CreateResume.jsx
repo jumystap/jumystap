@@ -25,7 +25,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
         city: '',
         district: '',
         languages: [],
-        photo: null,
+        photo_path: null,
         education: '',
         faculty: '',
         specialization: '',
@@ -119,7 +119,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
 
     const uploadProps = {
         beforeUpload: (file) => {
-            setData('photo', file);
+            setData('photo_path', file);
             return false;
         },
     };
@@ -171,7 +171,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <div className='font-semibold text-2xl mb-4'>Создать резюме</div>
                         <div className='flex gap-x-5'>
-                        {data.photo && <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>}
+                        {data.photo_path && <img src={URL.createObjectURL(data.photo_path)} className='w-[200px] h-[250px] object-cover'/>}
                         <Form.Item label="Загрузите вашу фотографию" name='photo' rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
                             <Upload {...uploadProps} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Загрузить фото</Button>
