@@ -155,7 +155,7 @@ class HomeController extends Controller
                 Announcement::inRandomOrder()
                     ->where("active", 1)
                     ->where("id", "!=", 74)
-                    ->take(2)
+                    ->take(1)
             )
             ->get();
         $top_announcements = Announcement::where("id", 74)
@@ -164,7 +164,7 @@ class HomeController extends Controller
                 Announcement::inRandomOrder()
                     ->where("active", 1)
                     ->where("id", "!=", 74)
-                    ->take(2)
+                    ->take(1)
             )
             ->get();
         $work_professions = Profession::where("type", "work")
