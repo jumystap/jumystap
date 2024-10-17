@@ -17,11 +17,11 @@ const kazakhstanCities = [
     "Экибастуз", "Рудный", "Жезказган"
 ];
 
-const CreateUpdateResume = ({ specialization }) => {
+const CreateUpdateResume = ({ announcement, specialization }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]); // Initially all organizations are in edit mode
     const { data, setData, post } = useForm({
-        organizations: [{ organization: '', position: '', period: '', isCurrent: false }],
+        organizations: [{ organization: '', position: '', period: '', isCurrent: false, start_date: '', end_date: '' }],
         city: '',
         district: '',
         languages: [],
@@ -124,6 +124,28 @@ const CreateUpdateResume = ({ specialization }) => {
         },
     };
 
+    const findCascaderValue = (specialization, specialization_id) => {
+        for (let category of specialization) {
+            const specialization = category.specialization.find(spec => spec.id === specialization_id);
+            if (specialization) {
+                return [category.id, specialization.id]; // Return the category id and specialization id as a path
+            }
+        }
+        return []; // Return empty if not found
+    };
+
+    const findSpecializationName = (specialization, specialization_id) => {
+        for (let category of specialization) {
+            const specialization = category.specialization.find(spec => spec.id === specialization_id);
+            if (specialization) {
+                return specialization.name_ru// Return the category id and specialization id as a path
+            }
+        }
+        return ''; // Return empty if not found
+    };
+
+    const defaultValue = findCascaderValue(specialization, data.specialization_id);
+
     const addSkill = () => {
         if (data.newSkill.trim()) {
             if (!data.skills.includes(data.newSkill.trim())) {
@@ -181,6 +203,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                         >
                                             <Cascader
                                                 options={cascaderData}
+                                                defaultValue={defaultValue}
                                                 onChange={(value) => handleNestedChange(index, 'position', value[1])}
                                                 placeholder="Должность"
                                             />
@@ -194,6 +217,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                                 <div>
                                                     <input
                                                         type="date"
+                                                        defaultValue={organization.start_date}
                                                         value={organization.start_date}
                                                         onChange={(e) => handleDateChange(index, 'start_date', e.target.value)}
                                                         className="px-2 py-1 text-sm rounded-lg border border-gray-200 bg-white"
@@ -203,6 +227,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                                     {!organization.isCurrent && (
                                                         <input
                                                             type="date"
+                                                            defaultValue={organization.end_date}
                                                             value={organization.end_date}
                                                             onChange={(e) => handleDateChange(index, 'end_date', e.target.value)}
                                                             className="px-2 py-1 text-sm rounded-lg border border-gray-200 bg-white"
@@ -229,7 +254,7 @@ const CreateUpdateResume = ({ specialization }) => {
                                 ) : (
                                     <div className='border border-gray-200 py-4 mt-2 px-5 rounded-lg'>
                                         <p><strong>Организация:</strong> {organization.organization}</p>
-                                        <p><strong>Должность:</strong> {organization.position}</p>
+                                        <p><strong>Должность:</strong> {findSpecializationName(specialization, organization.position)}</p>
                                         <p><strong>Период работы:</strong> {organization.period}</p>
                                         <div className='flex mt-4 items-center gap-x-2'>
                                             <Button type="dashed" onClick={() => toggleEditMode(index)}>Редактировать</Button>
