@@ -52,7 +52,7 @@ class UserResumeController extends Controller
 
         $resume = UserResume::create($data);
 
-        if(!empty($data['organizations'])){
+        if($data['organizations']){
             foreach ($data['organizations'] as $organization) {
                 $resume->organizations()->create($organization);
             }
