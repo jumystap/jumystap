@@ -110,14 +110,14 @@ export default function Guest({ children }) {
                         className={`block flex-col text-center ${isActive('/') ? 'text-blue-500' : 'text-gray-500'}`}
                         href='/'
                     >
-                        <HiOutlineHome className='text-center text-2xl mx-auto'/>
+                        <HiOutlineHome className='text-center text-[27px] mx-auto'/>
                         <div className='text-center text-xs'>Главная</div>
                     </Link>
                     <Link
                         className={`block flex-col text-center ${isActive('/announcements') ? 'text-blue-500' : 'text-gray-500'}`}
                         href='/announcements'
                     >
-                        <MdOutlineWorkOutline className='mx-auto text-2xl'/>
+                        <MdOutlineWorkOutline className='mx-auto text-3xl'/>
                         <div className='text-center text-xs'>Объявления</div>
                     </Link>
                     <Link
