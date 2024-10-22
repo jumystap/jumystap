@@ -207,4 +207,9 @@ class HomeController extends Controller
     {
         return Inertia::render("Terms");
     }
+
+    public function chat(): mixed
+    {
+        return Inertia::render("Chat");
+    }
 }

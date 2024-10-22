@@ -489,14 +489,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             </Form.Item>
                         </div>
                         {/* Критерии/Требования */}
-                        <Form.Item label={
+                        <Form.Item
+                            label={
                                 <span>
                                     Критерии/Требования
                                     <span className="ml-2 text-gray-500">
                                         (например: черты характера, навыки, аккредитации и тд.)
                                     </span>
                                 </span>
-                            } name="requirement">
+                            }
+                            name="requirement"
+                            rules={[{ required: true, message: 'Заполните Критерии и Требования' }]}
+                        >
                             {data.requirement.map((req, index) => (
                                 <Input
                                     key={index}
@@ -520,7 +524,10 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                         (какие рабочие задачи сотрудник будет выполнять)
                                     </span>
                                 </span>
-                            } name="responsibility">
+                            }
+                            name="responsibility"
+                            rules={[{ required: true, message: 'Заполните обязанности работника' }]}
+                            >
                             {data.responsobility.map((resp, index) => (
                                 <Input
                                     key={index}
@@ -544,7 +551,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                         (например:питание, развозка, и тд.)
                                     </span>
                                 </span>
-                            }name="condition">
+                            }name="condition"
+                            rules={[{ required: true, message: 'Заполните условия труда' }]}
+                            >
                             {data.condition.map((cond, index) => (
                                 <Input
                                     key={index}

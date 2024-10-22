@@ -64,5 +64,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/delete_resume/{id}', [UserResumeController::class, 'destroy'])->name('delete_resume');
 });
 
+Route::get('/chat', [HomeController::class, 'chat']);
 
 require __DIR__.'/admin.php';
