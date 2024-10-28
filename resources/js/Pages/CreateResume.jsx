@@ -338,6 +338,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                 <Option value="Английский">Английский</Option>
                                 <Option value="Немецкий">Немецкий</Option>
                                 <Option value="Французкий">Французкий</Option>
+                                <Option value="Китайский">Китайский</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
