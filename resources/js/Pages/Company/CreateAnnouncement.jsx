@@ -91,6 +91,29 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         cost_max: null,
     });
 
+    const deleteRequirement = (index) => {
+        const newRequirements = [...data.requirement];
+        newRequirements.splice(index, 1);
+        setData({ ...data, requirement: newRequirements });
+    };
+
+    const deleteResponsibility = (index) => {
+        const newResponsibilities = [...data.responsobility];
+        newResponsibilities.splice(index, 1);
+        setData({ ...data, responsobility: newResponsibilities });
+    };
+
+    const deleteCondition = (index) => {
+        const newConditions = [...data.condition];
+        newConditions.splice(index, 1);
+        setData({ ...data, condition: newConditions });
+    };
+
+    const deleteLocation = (index) => {
+        const newLocation = [...data.location];
+        newLocation.splice(index, 1);
+        setData({ ...data, location: newLocation });
+    };
 
     const handleSalaryChange = (name, value) => {
         value = value ? parseInt(value) : null;
@@ -311,14 +334,22 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             rules={[{ required: true, message: 'Please enter an address' }]}
                         >
                             {data.location.map((loc, index) => (
-                                <Input
-                                    key={index}
-                                    type="text"
-                                    name={`location-${index}`}
-                                    className='text-sm rounded py-1 mt-2 border border-gray-300'
-                                    value={loc}
-                                    onChange={(e) => handleLocationChange(index, e)}
-                                />
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        key={index}
+                                        type="text"
+                                        name={`location-${index}`}
+                                        className='text-sm rounded py-1 mt-2 border border-gray-300'
+                                        value={loc}
+                                        onChange={(e) => handleLocationChange(index, e)}
+                                    />
+                                    <button
+                                        className="text-red-500 mt-3"
+                                        onClick={() => deleteLocation(index)}
+                                    >
+                                        Удалить
+                                    </button>
+                                </div>
                             ))}
                         </Form.Item>
                         <div
@@ -502,14 +533,21 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             rules={[{ required: true, message: 'Заполните Критерии и Требования' }]}
                         >
                             {data.requirement.map((req, index) => (
-                                <Input
-                                    key={index}
-                                    type="text"
-                                    name={`requirement-${index}`}
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={req}
-                                    onChange={(e) => handleRequirementChange(index, e)}
-                                />
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        type="text"
+                                        name={`requirement-${index}`}
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={req}
+                                        onChange={(e) => handleRequirementChange(index, e)}
+                                    />
+                                    <button
+                                        className="text-red-500 mt-3"
+                                        onClick={() => deleteRequirement(index)}
+                                    >
+                                        Удалить
+                                    </button>
+                                </div>
                             ))}
                         </Form.Item>
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
@@ -529,14 +567,21 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             rules={[{ required: true, message: 'Заполните обязанности работника' }]}
                             >
                             {data.responsobility.map((resp, index) => (
-                                <Input
-                                    key={index}
-                                    type="text"
-                                    name={`responsibility-${index}`}
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={resp}
-                                    onChange={(e) => handleResponsibilityChange(index, e)}
-                                />
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        type="text"
+                                        name={`responsibility-${index}`}
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={resp}
+                                        onChange={(e) => handleResponsibilityChange(index, e)}
+                                    />
+                                    <button
+                                        className="text-red-500 mt-3"
+                                        onClick={() => deleteResponsibility(index)}
+                                    >
+                                        Удалить
+                                    </button>
+                                </div>
                             ))}
                         </Form.Item>
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
@@ -555,14 +600,21 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             rules={[{ required: true, message: 'Заполните условия труда' }]}
                             >
                             {data.condition.map((cond, index) => (
-                                <Input
-                                    key={index}
-                                    type="text"
-                                    name={`condition-${index}`}
-                                    className='text-sm rounded py-1 mt-3 border border-gray-300'
-                                    value={cond}
-                                    onChange={(e) => handleConditionChange(index, e)}
-                                />
+                               <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                        type="text"
+                                        name={`condition-${index}`}
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={cond}
+                                        onChange={(e) => handleConditionChange(index, e)}
+                                    />
+                                    <button
+                                        className="text-red-500 mt-3"
+                                        onClick={() => deleteCondition(index)}
+                                    >
+                                        Удалить
+                                    </button>
+                                </div>
                             ))}
                         </Form.Item>
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>

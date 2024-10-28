@@ -1,6 +1,6 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Head } from "@inertiajs/react";
 import { SiFireship } from "react-icons/si";
 import { FaStar } from "react-icons/fa";
@@ -15,10 +15,49 @@ import { MdIosShare } from "react-icons/md";
 
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation();
+    const [ws, setWs] = useState(null);
     const { post, delete: destroy } = useForm();
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
+    const userId = null
+    if(auth.user) {
+        const userId = auth.user.id
+    }
     const toggleShowFullText = () => setShowFullText(!showFullText);
+        useEffect(() => {
+        const socket = new WebSocket(`ws://localhost:8080/api/v1/ws?user_id=${userId}`);
+
+        socket.onopen = () => {
+            console.log('WebSocket is open now.');
+        };
+
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+        };
+
+        socket.onclose = () => {
+            console.log('WebSocket is closed now.');
+        };
+
+        setWs(socket);
+
+        return () => {
+            socket.close();
+        };
+    }, []);
+
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+        if (ws) {
+            const message = {
+                sender_id: userId, // Include the sender ID
+                receiver_id: announcement.user.id,
+                content: auth.user.name,
+            };
+            ws.send(JSON.stringify(message));
+            window.location.href = "/chat";
+        }
+    };
 
     const maxLength = 90;
     const isLongText = announcement.user.description.length > maxLength;

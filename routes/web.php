@@ -61,9 +61,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/update_resume/{id}', [UserResumeController::class, 'edit']);
     Route::post('/update_resume/{id}', [UserResumeController::class, 'update']);
     Route::get('/resume/{id}', [UserResumeController::class, 'show']);
+    Route::get('/chat', [HomeController::class, 'chat']);
     Route::delete('/delete_resume/{id}', [UserResumeController::class, 'destroy'])->name('delete_resume');
 });
 
-Route::get('/chat', [HomeController::class, 'chat']);
 
 require __DIR__.'/admin.php';

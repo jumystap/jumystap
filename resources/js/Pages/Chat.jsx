@@ -1,14 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const Chat = ({ auth }) => {
     const [ws, setWs] = useState(null);
     const [messages, setMessages] = useState([]);
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
-    const [partnerName, setPartnerName] = useState(''); // Store partner's name
+    const [partnerName, setPartnerName] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const userId = auth.user.id; // Logged-in user's ID
+    const messagesEndRef = useRef(null); // Reference to the end of the message list
+    const audioRef = useRef(null); // Reference to the audio element
+
+    // Play notification sound
+    const playSound = () => {
+        if (audioRef.current) {
+            audioRef.current.play();
+        }
+    };
+
+    // Request browser notification permission
+    const requestNotificationPermission = async () => {
+        if (Notification.permission !== 'granted') {
+            await Notification.requestPermission();
+        }
+    };
+
+    // Show browser notification
+    const showNotification = (message) => {
+        if (Notification.permission === 'granted' && document.visibilityState !== 'visible') {
+            new Notification('Новое сообщение | Jumystap', {
+                body: `${partnerName}\n${message.content}`,
+                icon: '/icon.png', // You can add an icon in your public folder
+            });
+        }
+    };
 
     // Connect to WebSocket
     useEffect(() => {
@@ -21,6 +49,12 @@ const Chat = ({ auth }) => {
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
             setMessages((prevMessages) => [...prevMessages, message]);
+
+            // Play sound and show notification for new messages
+            if (message.sender_id !== userId) {
+                playSound();
+                showNotification(message);
+            }
         };
 
         socket.onclose = () => {
@@ -29,23 +63,31 @@ const Chat = ({ auth }) => {
 
         setWs(socket);
 
+        // Request permission for notifications when the component mounts
+        requestNotificationPermission();
+
         return () => {
             socket.close();
         };
-    }, []);
+    }, [userId]);
 
-    // Fetch chats when component mounts
     useEffect(() => {
         const fetchChats = async () => {
             const response = await fetch(`http://localhost:8080/api/v1/chats?user_id=${userId}`);
             const data = await response.json();
             setChats(data);
+
+            if (data.length > 0) {
+                const latestChat = data.reduce((prev, current) => {
+                    return new Date(prev.created_at) > new Date(current.created_at) ? prev : current;
+                });
+                setSelectedChat(latestChat.partner_id);
+            }
         };
 
         fetchChats();
-    }, []);
+    }, [userId]);
 
-    // Fetch messages when a chat is selected
     useEffect(() => {
         const fetchMessages = async () => {
             if (selectedChat) {
@@ -53,28 +95,42 @@ const Chat = ({ auth }) => {
                 const data = await response.json();
                 setMessages(data);
 
-                // Find partner name from the selected chat
-                const selectedChatInfo = chats.find(chat => chat.partner_id === selectedChat);
-                if (selectedChatInfo) {
-                    setPartnerName(selectedChatInfo.partner_name);
+                if (chats) {
+                    const selectedChatInfo = chats.find(chat => chat.partner_id === selectedChat);
+                    if (selectedChatInfo) {
+                        setPartnerName(selectedChatInfo.partner_name);
+                    }
                 }
+
+                scrollToBottom();
             }
         };
 
         fetchMessages();
-    }, [selectedChat]);
+    }, [selectedChat, chats, userId]);
+
+    // Scroll to the bottom of the message list
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     // Send a new message
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (ws && newMessage && selectedChat) {
             const message = {
-                sender_id: userId, // Include the sender ID
+                sender_id: userId,
                 receiver_id: selectedChat,
                 content: newMessage,
+                created_at: new Date().toISOString() // Ensure the message has a timestamp
             };
             ws.send(JSON.stringify(message));
             setNewMessage(''); // Clear the input field
+
+            // Scroll to the bottom after sending the message
+            scrollToBottom();
         }
     };
 
@@ -82,8 +138,6 @@ const Chat = ({ auth }) => {
         <div>
             <GuestLayout>
                 <div className="flex h-screen">
-
-
                     <div className="w-2/3 flex flex-col p-4">
                         {selectedChat ? (
                             <>
@@ -91,37 +145,43 @@ const Chat = ({ auth }) => {
                                     <h2 className="text-lg font-semibold mb-4">{partnerName}</h2>
                                     <div className="flex-grow h-[700px] overflow-y-auto bg-gray-50 p-4 rounded-lg border">
                                         <ul className="space-y-4">
-                                            {messages.map(msg => (
+                                            {messages.map((msg) => (
                                                 <li
                                                     key={msg.id}
                                                     className={`flex ${
-                                                        msg.sender_id === userId ? 'justify-end' : 'justify-start'
+                                                        msg.sender_id === userId
+                                                            ? 'justify-end'
+                                                            : 'justify-start'
                                                     }`}
                                                 >
                                                     <div>
-                                                    <div
-                                                        className={`max-w-xs px-4 py-2 rounded-lg shadow-md ${
-                                                            msg.sender_id === userId
-                                                                ? 'bg-blue-500 text-white'
-                                                                : 'bg-gray-100'
-                                                        }`}
-                                                    >
-                                                        {msg.sender_id === userId ? (
-                                                            <div>
-                                                            <div className='text-xs text-right'>Вы</div>
-                                                            <p>{msg.content}</p>
-                                                            </div>
-                                                        ) : (
-                                                            <div>
-                                                            <div className='text-xs text-left'>{partnerName}</div>
-                                                            <p>{msg.content}</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className='text-xs text-gray-500 mt-2'>Отправлено {msg.created_at}</div>
+                                                        <div
+                                                            className={`max-w-xs px-4 py-2 rounded-lg shadow-md ${
+                                                                msg.sender_id === userId
+                                                                    ? 'bg-blue-500 text-white'
+                                                                    : 'bg-gray-100'
+                                                            }`}
+                                                        >
+                                                            {msg.sender_id === userId ? (
+                                                                <div>
+                                                                    <div className="text-xs text-right">Вы</div>
+                                                                    <p>{msg.content}</p>
+                                                                </div>
+                                                            ) : (
+                                                                <div>
+                                                                    <div className="text-xs text-left">{partnerName}</div>
+                                                                    <p>{msg.content}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500 mt-2">
+                                                            {`Отправлено`}
+                                                        </div>
                                                     </div>
                                                 </li>
                                             ))}
+                                            {/* Scroll to the bottom reference */}
+                                            <div ref={messagesEndRef} />
                                         </ul>
                                     </div>
                                 </div>
@@ -151,22 +211,29 @@ const Chat = ({ auth }) => {
                     <div className="w-1/3 bg-gray-100 p-4 overflow-y-auto border-r">
                         <h2 className="text-lg font-semibold mb-4">Чаты</h2>
                         <ul className="space-y-2">
-                            {chats.map(chat => (
-                                <li
-                                    key={chat.partner_id}
-                                    onClick={() => setSelectedChat(chat.partner_id)}
-                                    className={`p-3 rounded-lg cursor-pointer bg-white shadow-md hover:bg-blue-100 transition ${
-                                        selectedChat === chat.partner_id ? 'bg-blue-100' : ''
-                                    }`}
-                                >
-                                    <p className="font-medium">{chat.partner_name}</p>
-                                    <p className="text-sm text-gray-600 truncate">{chat.last_message}</p>
-                                </li>
-                            ))}
+                            {chats && chats.length > 0 && (
+                                <>
+                                    {chats.map((chat) => (
+                                        <li
+                                            key={chat.partner_id}
+                                            onClick={() => setSelectedChat(chat.partner_id)}
+                                            className={`p-3 rounded-lg cursor-pointer bg-white shadow-md hover:bg-blue-100 transition ${
+                                                selectedChat === chat.partner_id ? 'bg-blue-100' : ''
+                                            }`}
+                                        >
+                                            <p className="font-medium">{chat.partner_name}</p>
+                                            <p className="text-sm text-gray-600 truncate">{chat.last_message}</p>
+                                        </li>
+                                    ))}
+                                </>
+                            )}
                         </ul>
                     </div>
                 </div>
             </GuestLayout>
+
+            {/* Audio element for notification sound */}
+            <audio ref={audioRef} src="/notification-sound.mp3" preload="auto" />
         </div>
     );
 };
