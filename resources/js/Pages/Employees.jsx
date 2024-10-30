@@ -178,8 +178,10 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             <h2 className="font-bold text-gray-900">
                                                 {employee.name}
                                             </h2>
-                                            {employee.is_graduate && (
+                                            {employee.is_graduate ? (
                                                 <RiVerifiedBadgeFill className="text-xl text-blue-500" />
+                                            ):(
+                                                <div></div>
                                             )}
                                         </div>
                                         
