@@ -236,7 +236,7 @@ export default function Guest({ children }) {
                 >
                   <img
                     src={`/storage/${auth.user.image_url}`}
-                    className="w-[50px] h-[50px] rounded-full object-contain"
+                    className="w-[50px] h-[50px] rounded-full object-cover"
                   />
                   <div className="">
                     <div className="font-bold">{auth.user.name}</div>
