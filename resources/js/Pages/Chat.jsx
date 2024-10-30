@@ -40,7 +40,7 @@ const Chat = ({ auth }) => {
     };
 
     useEffect(() => {
-        const socket = new WebSocket(`ws://api.jumystap.kz/api/v1/ws?user_id=${userId}`);
+        const socket = new WebSocket(`wss://api.jumystap.kz/api/v1/ws?user_id=${userId}`);
 
         socket.onopen = () => {
             console.log('WebSocket is open now.');
@@ -73,7 +73,7 @@ const Chat = ({ auth }) => {
 
     useEffect(() => {
         const fetchChats = async () => {
-            const response = await fetch(`http://localhost:8080/api/v1/chats?user_id=${userId}`);
+            const response = await fetch(`https://jumystap.kz/api/v1/chats?user_id=${userId}`);
             const data = await response.json();
             setChats(data);
 
@@ -91,7 +91,7 @@ const Chat = ({ auth }) => {
     useEffect(() => {
         const fetchMessages = async () => {
             if (selectedChat) {
-                const response = await fetch(`http://localhost:8080/api/v1/messages?sender_id=${userId}&receiver_id=${selectedChat}`);
+                const response = await fetch(`https://api.jumystap.kz/api/v1/messages?sender_id=${userId}&receiver_id=${selectedChat}`);
                 const data = await response.json();
                 setMessages(data);
 
