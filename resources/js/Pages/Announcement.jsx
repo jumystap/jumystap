@@ -49,24 +49,31 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     }, []);
 
     const handleSendMessage = (e) => {
-        e.preventDefault();
-        if (ws) {
-            const message = {
-                sender_id: auth.user.id,
-                receiver_id: announcement.user.id,
-                content: `/user/${auth.user.id}`,
-                created_at: new Date().toISOString() // Ensure the message has a timestamp
-            };
+    e.preventDefault();
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        const message = {
+            sender_id: auth.user.id,
+            receiver_id: announcement.user.id,
+            content: `/user/${auth.user.id}`,
+            created_at: new Date().toISOString()
+        };
+        try {
             ws.send(JSON.stringify(message));
             notification.success({
                 message: 'Успешно!',
-                description: 'Вы успешно отправили отклик.', // Message to show
-                placement: 'topRight', // Optional placement
-                duration: 3 // Duration in seconds (default is 4.5)
+                description: 'Вы успешно отправили отклик.',
+                placement: 'topRight',
+                duration: 3
             });
-            setIsResponse(true)
+            setIsResponse(true);
+        } catch (error) {
+            console.error("WebSocket send error:", error);
         }
-    };
+    } else {
+        console.error("WebSocket is not open. Ready state:", ws.readyState);
+    }
+};
+
 
     const maxLength = 90;
     const isLongText = announcement.user.description.length > maxLength;
