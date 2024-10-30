@@ -129,7 +129,9 @@ const UpdateResume = ({ resume, specialization }) => {
                     <Form layout="vertical" onFinish={handleSubmit}>
                         <div className='font-semibold text-2xl mb-4'>Редактировать резюме</div>
                         <div className='flex gap-x-5'>
-                        {data.photo && <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>}
+                        {data.photo && data.photo instanceof File && (
+    <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>
+)}
                         <Form.Item label="Загрузите вашу фотографию" name='photo'>
                             <Upload {...uploadProps} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Загрузить фото</Button>
