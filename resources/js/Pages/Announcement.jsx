@@ -27,7 +27,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     }
     const toggleShowFullText = () => setShowFullText(!showFullText);
         useEffect(() => {
-        const socket = new WebSocket(`ws://api.jumystap.kz/api/v1/ws?user_id=${auth?.user?.id}`);
+        const socket = new WebSocket(`wss://api.jumystap.kz/api/v1/ws?user_id=${auth?.user?.id}`);
 
         socket.onopen = () => {
             console.log('WebSocket is open now.');
