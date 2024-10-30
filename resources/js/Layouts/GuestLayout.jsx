@@ -26,7 +26,7 @@ const items = [
     key: "1",
     label: (
       <Link href="/reviews" className="block py-2 flex items-center">
-        Отзывы
+        Оставить отзыв
       </Link>
     ),
   },
