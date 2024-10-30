@@ -125,8 +125,8 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             onChange={handleFilterChange}
                             options={[
                                 { value: 'all', label: t('any_job_default', { ns: 'employees' }) },
-                                { value: 'vacancy', label: t('search_job', { ns: 'employees' }) },
-                                { value: 'project', label: t('search_project', { ns: 'employees' }) }
+                                { value: 'Ищет работу', label: t('search_job', { ns: 'employees' }) },
+                                { value: 'Ищет заказы', label: t('search_project', { ns: 'employees' }) }
                             ]}
                         />
                         <FilterSelect
