@@ -25,6 +25,19 @@ export default function Profile({ auth, user, announcements, employees, professi
     // Create form instance using useForm from Inertia
     const { delete: deleteResumeForm } = useForm();
 
+    const deleteResume = (resumeId) => {
+        if (confirm("Вы уверены, что хотите удалить это резюме?")) {
+            deleteResumeForm(
+                route("delete_resume", resumeId), // Backend route to handle delete
+                {
+                    onSuccess: () => {
+                        setResumeList((prevList) => prevList.filter((resume) => resume.id !== resumeId)); // Update state
+                    },
+                }
+            );
+        }
+    };
+
     useEffect(() => {
         const professionWithEmptyCertificate = userProfessions.find(prof => !prof.certificate_number);
         if (professionWithEmptyCertificate) {
@@ -44,13 +57,6 @@ export default function Profile({ auth, user, announcements, employees, professi
 
     const prevImage = () => {
         setCurrentImageIndex((currentImageIndex - 1 + user.portfolio.length) % user.portfolio.length);
-    };
-
-    // Function to delete resume
-    const deleteResume = (resumeId) => {
-        if (confirm("Вы уверены, что хотите удалить это резюме?")) {
-            deleteResumeForm(route('delete_resume', resumeId)); // Submit the delete request using useForm
-        }
     };
 
     return (

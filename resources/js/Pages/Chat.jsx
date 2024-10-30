@@ -14,33 +14,33 @@ const Chat = ({ auth }) => {
     const messagesEndRef = useRef(null); // Reference to the end of the message list
     const audioRef = useRef(null); // Reference to the audio element
 
-    // Play notification sound
     const playSound = () => {
         if (audioRef.current) {
             audioRef.current.play();
         }
     };
 
-    // Request browser notification permission
     const requestNotificationPermission = async () => {
         if (Notification.permission !== 'granted') {
             await Notification.requestPermission();
         }
     };
 
-    // Show browser notification
     const showNotification = (message) => {
+        const notificationContent = message.content.startsWith('/')
+            ? 'Вы успешно получили отклик' // Specific message for links
+            : message.content; // Actual message content if not a link
+
         if (Notification.permission === 'granted' && document.visibilityState !== 'visible') {
             new Notification('Новое сообщение | Jumystap', {
-                body: `${partnerName}\n${message.content}`,
-                icon: '/icon.png', // You can add an icon in your public folder
+                body: `${partnerName}\n${notificationContent}`,
+                icon: '/icon.png',
             });
         }
     };
 
-    // Connect to WebSocket
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8080/api/v1/ws?user_id=${userId}`);
+        const socket = new WebSocket(`ws://api.jumystap.kz/api/v1/ws?user_id=${userId}`);
 
         socket.onopen = () => {
             console.log('WebSocket is open now.');
@@ -145,42 +145,58 @@ const Chat = ({ auth }) => {
                                     <h2 className="text-lg font-semibold mb-4">{partnerName}</h2>
                                     <div className="flex-grow h-[700px] overflow-y-auto bg-gray-50 p-4 rounded-lg border">
                                         <ul className="space-y-4">
-                                            {messages.map((msg) => (
-                                                <li
-                                                    key={msg.id}
-                                                    className={`flex ${
-                                                        msg.sender_id === userId
-                                                            ? 'justify-end'
-                                                            : 'justify-start'
-                                                    }`}
-                                                >
-                                                    <div>
-                                                        <div
-                                                            className={`max-w-xs px-4 py-2 rounded-lg shadow-md ${
-                                                                msg.sender_id === userId
-                                                                    ? 'bg-blue-500 text-white'
-                                                                    : 'bg-gray-100'
-                                                            }`}
-                                                        >
-                                                            {msg.sender_id === userId ? (
-                                                                <div>
-                                                                    <div className="text-xs text-right">Вы</div>
-                                                                    <p>{msg.content}</p>
-                                                                </div>
-                                                            ) : (
-                                                                <div>
-                                                                    <div className="text-xs text-left">{partnerName}</div>
-                                                                    <p>{msg.content}</p>
-                                                                </div>
-                                                            )}
+                                            {messages.map((msg) => {
+                                                const isLink = msg.content.startsWith('/'); // Check if the message is a link
+                                                return (
+                                                    <li
+                                                        key={msg.id}
+                                                        className={`flex ${
+                                                            msg.sender_id === userId ? 'justify-end' : 'justify-start'
+                                                        }`}
+                                                    >
+                                                        <div>
+                                                            <div
+                                                                className={`max-w-xs px-4 py-2 rounded-lg shadow-md ${
+                                                                    msg.sender_id === userId
+                                                                        ? 'bg-blue-500 text-white'
+                                                                        : 'bg-gray-100'
+                                                                }`}
+                                                            >
+                                                                {msg.sender_id === userId ? (
+                                                                    <div>
+                                                                        <div className="text-xs text-right">Вы</div>
+                                                                        {isLink ? (
+                                                                            <a
+                                                                                href={msg.content}
+                                                                                className="text-white underline hover:text-blue-300"
+                                                                            >
+                                                                               Вы отправили резюме
+                                                                            </a>
+                                                                        ) : (
+                                                                            <p>{msg.content}</p>
+                                                                        )}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div>
+                                                                        <div className="text-xs text-left">{partnerName}</div>
+                                                                        {isLink ? (
+                                                                            <a
+                                                                                href={msg.content}
+                                                                                className="text-blue-700 underline hover:text-blue-500"
+                                                                            >
+                                                                                Резюме соискателя
+                                                                            </a>
+                                                                        ) : (
+                                                                            <p>{msg.content}</p>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500 mt-2">Отправлено</div>
                                                         </div>
-                                                        <div className="text-xs text-gray-500 mt-2">
-                                                            {`Отправлено`}
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                            {/* Scroll to the bottom reference */}
+                                                    </li>
+                                                );
+                                            })}
                                             <div ref={messagesEndRef} />
                                         </ul>
                                     </div>
