@@ -195,5 +195,3 @@ export default function User({ auth, user, employees, userProfessions, resumes }
         </GuestLayout>
     );
 }
-
-export default User;
