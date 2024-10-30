@@ -73,7 +73,7 @@ const Chat = ({ auth }) => {
 
     useEffect(() => {
         const fetchChats = async () => {
-            const response = await fetch(`https://jumystap.kz/api/v1/chats?user_id=${userId}`);
+            const response = await fetch(`https://api.jumystap.kz/api/v1/chats?user_id=${userId}`);
             const data = await response.json();
             setChats(data);
 
