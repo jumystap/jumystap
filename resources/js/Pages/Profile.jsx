@@ -150,7 +150,10 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                     )}
                                                     <div className='mt-4 gap-x-5 flex items-center'>
                                                     <button
-                                                        onClick={() => deleteResume(resume.id)}
+                                                        onClick={(e) => 
+                                                            e.stopPropagation(); 
+                                                            deleteResume(resume.id)
+                                                        }
                                                         className="text-sm text-red-500"
                                                     >
                                                         Удалить резюме
