@@ -185,7 +185,7 @@ export default function Reviews({ reviews }) {
                     )}
                 </div>
             </div>
-            <div className="px-5 fixed left-0 bottom-5 w-full md:hidden">
+            <div className="px-5 fixed left-0 bottom-20 w-full md:hidden">
                 <button onClick={() => setIsModalOpen(true)} className="text-center bg-blue-500 w-full font-semibold text-white shadow-lg shadow-blue-500/50 rounded-full py-2">
                     Оставить отзыв
                 </button>
