@@ -22,17 +22,14 @@ class UserRepository
     }
 
     if (!empty($filters['profession'])) {
-        $query->whereHas('professions', function($q) use ($filters) {
-            $q->where('name_ru', $filters['profession'])
-              ->orWhere('name_kz', $filters['profession']);
-        });
+        
     }
 
     if (!empty($filters['jobType'])) {
         if ($filters['jobType'] === 'vacancy') {
-            $query->where('looking_for_job', true);
+            $query->where('work_status', true);
         } elseif ($filters['jobType'] === 'project') {
-            $query->where('looking_for_project', true);
+            $query->where('work_status', true);
         }
     }
 
