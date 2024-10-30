@@ -11,11 +11,13 @@ import { MdOutlineRemoveRedEye, MdOutlineWorkOutline, MdAccessTime } from "react
 import { useInternalMessage } from "antd/es/message/useMessage";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
+import { notification } from 'antd';
 
 
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation();
     const [ws, setWs] = useState(null);
+    const [isResponse, setIsResponse] = useState(false)
     const { post, delete: destroy } = useForm();
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
@@ -25,7 +27,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     }
     const toggleShowFullText = () => setShowFullText(!showFullText);
         useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8080/api/v1/ws?user_id=${userId}`);
+        const socket = new WebSocket(`ws://api.jumystap.kz/api/v1/ws?user_id=${auth?.user?.id}`);
 
         socket.onopen = () => {
             console.log('WebSocket is open now.');
@@ -50,12 +52,19 @@ export default function Announcement({ auth, announcement, more_announcement, ur
         e.preventDefault();
         if (ws) {
             const message = {
-                sender_id: userId, // Include the sender ID
+                sender_id: auth.user.id,
                 receiver_id: announcement.user.id,
-                content: auth.user.name,
+                content: `/user/${auth.user.id}`,
+                created_at: new Date().toISOString() // Ensure the message has a timestamp
             };
             ws.send(JSON.stringify(message));
-            window.location.href = "/chat";
+            notification.success({
+                message: 'Успешно!',
+                description: 'Вы успешно отправили отклик.', // Message to show
+                placement: 'topRight', // Optional placement
+                duration: 3 // Duration in seconds (default is 4.5)
+            });
+            setIsResponse(true)
         }
     };
 
@@ -151,10 +160,17 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
                                     <>
-                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
-                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>Связаться</span>
-                                        </a>
+                                        {!isResponse ? (
+                                            <a href="#" onClick={handleSendMessage}
+                                               className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>Связаться</span>
+                                            </a>
+                                        ):(
+                                            <Link href="/chat"
+                                               className='text-center border-2 border-blue-500 text-blue-500 rounded-lg text-center items-center w-full block py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>Перейти в чат</span>
+                                            </Link>
+                                        )}
                                         {auth.user.email === 'admin@example.com' && (
                                             <a href={`/announcement/update/${announcement.id}`}
                                                 className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
