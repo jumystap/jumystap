@@ -7,21 +7,52 @@ use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
-    public function getUsersByRoleName($roleName, $perPage)
-    {
-        $users = User::whereHas('role', function($query) use ($roleName) {
-            $query->where('name', $roleName);
-        })
-        ->with('role')
-        ->paginate($perPage);
+    public function getUsersByRoleName($roleName, $perPage, $filters = [])
+{
+    $query = User::whereHas('role', function($query) use ($roleName) {
+        $query->where('name', $roleName);
+    })->with('role');
 
-        $users->transform(function ($user) {
-            $user->professions = $this->getUserWithProfessions($user->id);
-            return $user;
+    // Apply filters
+    if (!empty($filters['search'])) {
+        $query->where(function($q) use ($filters) {
+            $q->where('name', 'like', '%' . $filters['search'] . '%')
+              ->orWhere('email', 'like', '%' . $filters['search'] . '%');
         });
-
-        return $users;
     }
+
+    if (!empty($filters['profession'])) {
+        $query->whereHas('professions', function($q) use ($filters) {
+            $q->where('name_ru', $filters['profession'])
+              ->orWhere('name_kz', $filters['profession']);
+        });
+    }
+
+    if (!empty($filters['jobType'])) {
+        if ($filters['jobType'] === 'vacancy') {
+            $query->where('looking_for_job', true);
+        } elseif ($filters['jobType'] === 'project') {
+            $query->where('looking_for_project', true);
+        }
+    }
+
+    if (!empty($filters['graduateStatus'])) {
+        if ($filters['graduateStatus'] === 'graduate') {
+            $query->where('is_graduate', true);
+        } elseif ($filters['graduateStatus'] === 'non-graduate') {
+            $query->where('is_graduate', false);
+        }
+    }
+
+    $users = $query->paginate($perPage)->withQueryString();
+    
+    $users->transform(function ($user) {
+        $user->professions = $this->getUserWithProfessions($user->id);
+        return $user;
+    });
+
+    return $users;
+}
 
     public function getUserWithProfessions($userId)
     {
