@@ -21,10 +21,11 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function getEmployees()
-    {
-        return $this->userRepository->getUsersByRoleName('employee', 10);
-    }
+    public function getEmployees($filters = [])
+{
+    return $this->userRepository->getUsersByRoleName('employee', 10, $filters);
+}
+
 
     public function storeUser(array $validatedData)
     {
