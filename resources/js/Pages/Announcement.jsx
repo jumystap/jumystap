@@ -167,17 +167,10 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
                                     <>
-                                        {!isResponse ? (
-                                            <a href="#" onClick={handleSendMessage}
-                                               className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>Связаться</span>
-                                            </a>
-                                        ):(
-                                            <Link href="/chat"
-                                               className='text-center border-2 border-blue-500 text-blue-500 rounded-lg text-center items-center w-full block py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>Перейти в чат</span>
-                                            </Link>
-                                        )}
+                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
+                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>Связаться</span>
+                                        </a>
                                         {auth.user.email === 'admin@example.com' && (
                                             <a href={`/announcement/update/${announcement.id}`}
                                                 className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
