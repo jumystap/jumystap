@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import emails from 'emailjs-com';
+// import emails from 'emailjs-com';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
 
 export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
@@ -43,23 +43,42 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
             message: selectedProfessions.join(', '),
         };
 
-        emails.send('service_gemcvsd', 'template_3p0vezb', templateParams, '2aHWUXyiS63MSOUf3')
-            .then((response) => {
-                console.log('SUCCESS!', response.status, response.text);
-                onSubmit(templateParams);
-                setLoading(false);
-                setName('');
-                setPhone('');
-                setSelectedProfessions([]);
-                onClose();
-                notification.success({
-                    message: 'Успех',
-                    description: 'Ваша заявка успешно отправлена!',
-                });
-            }, (error) => {
-                console.log('FAILED...', error);
-                setLoading(false);
+        try {
+            const combined = name + '\n' + phone + '\n' + selectedProfessions.join(', ');
+            const response = fetch(`https://api.telegram.org/bot7731242219:AAGjMzLGlp9KZJiUa-zrAzZZLFYzhGJiYVQ/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
+            console.log('SUCCESS!', response);
+            onSubmit(templateParams);
+            setLoading(false);
+            setName('');
+            setPhone('');
+            setSelectedProfessions([]);
+            onClose();
+            notification.success({
+                message: 'Успех',
+                description: 'Ваша заявка успешно отправлена!',
             });
+        } catch (error) {
+            console.log('FAILED...', error);
+            setLoading(false);
+        }
+
+        // emails.send('service_gemcvsd', 'template_3p0vezb', templateParams, '2aHWUXyiS63MSOUf3')
+        //     .then((response) => {
+        //         console.log('SUCCESS!', response.status, response.text);
+        //         onSubmit(templateParams);
+        //         setLoading(false);
+        //         setName('');
+        //         setPhone('');
+        //         setSelectedProfessions([]);
+        //         onClose();
+        //         notification.success({
+        //             message: 'Успех',
+        //             description: 'Ваша заявка успешно отправлена!',
+        //         });
+        //     }, (error) => {
+        //         console.log('FAILED...', error);
+        //         setLoading(false);
+        //     });
     };
 
     return (
