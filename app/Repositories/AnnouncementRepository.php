@@ -27,7 +27,13 @@ class AnnouncementRepository
         }
 
         if (!empty($filters['specialization'])) {
-            $query->where('specialization_id', $filters['specialization']);
+            if (str_contains($filters['specialization'], '_')) {
+                $specializationCategoryId = str_replace('_', '', $filters['specialization']);
+                $specializationIds = Specialization::where('category_id', $specializationCategoryId)->get()->pluck('id')->toArray();
+                $query->whereIn('specialization_id', $specializationIds);
+            }else{
+                $query->where('specialization_id', $filters['specialization']);
+            }
         }
 
         // Filter by city

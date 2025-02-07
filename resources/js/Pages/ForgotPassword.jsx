@@ -69,7 +69,7 @@ export default function ForgotPassword() {
                 <div className="mx-auto my-auto w-full max-w-md p-5">
                     {step == 1 && (
                         <>
-                            <div className="font-bold text-4xl text-center">{t('register_title', { ns: 'register' })}</div>
+                            <div className="font-bold text-4xl text-center">{t('recovery_account_title', { ns: 'register' })}</div>
                             <form onSubmit={handlePhoneSubmit}>
                                 <div className="mb-4 mt-8">
                                     <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="phone">

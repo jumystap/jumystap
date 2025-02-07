@@ -43,7 +43,15 @@ class AnnouncementController extends Controller
         ];
 
         $announcements = $this->announcementService->getAllActiveAnnouncements($filters);
-        $specializations = SpecializationCategory::with('specialization')->get();
+        $specializations = SpecializationCategory::with('specialization')->get()->toArray();
+        foreach ($specializations as &$category) {
+                $category['specialization'][] = [
+                    "id" => "_" . $category['id'],
+                    "category_id" => $category['id'],
+                    "name_ru" => "Все",
+                    "name_kz" => "Все"
+                ];
+        }
         $cities = Announcement::pluck('city')->unique()->filter();
 
         return Inertia::render('Announcements', [

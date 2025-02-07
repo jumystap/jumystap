@@ -250,7 +250,7 @@ export default function Registration({ errors, professions }) {
                         )}
                         {step === 2 && (
                             <div className='w-[350px]'>
-                                <div className="mb-10 font-semibold text-xl text-center">Потвердите номер телефона</div>
+                                <div className="mb-10 font-semibold text-xl text-center">Подтвердите номер телефона</div>
                                 <InputMask
                                   mask="+7 999 999 99 99"
                                   value={data.phone}
@@ -259,6 +259,7 @@ export default function Registration({ errors, professions }) {
                                 >
                                   {(inputProps) => <Input {...inputProps} type="tel" className="block w-full mt-1 border-gray-300 rounded-lg" placeholder="Введите ваш телефон" />}
                                 </InputMask>
+                                <small className='text-blue-500 text-sm mt-2'>Введите номер который есть Whatsapp</small>
                                 {errors.phone && <p className='text-red-500 text-sm mt-2'>{errors.phone.message}</p>}
                                 {phoneCode ? (
                                     <>
