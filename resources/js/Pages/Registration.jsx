@@ -259,7 +259,7 @@ export default function Registration({ errors, professions }) {
                                 >
                                   {(inputProps) => <Input {...inputProps} type="tel" className="block w-full mt-1 border-gray-300 rounded-lg" placeholder="Введите ваш телефон" />}
                                 </InputMask>
-                                <small className='text-blue-500 text-sm mt-2'>Введите номер который есть Whatsapp</small>
+                                <small className='text-blue-500 text-sm mt-2'>Введите номер на котором есть WhatsApp</small>
                                 {errors.phone && <p className='text-red-500 text-sm mt-2'>{errors.phone.message}</p>}
                                 {phoneCode ? (
                                     <>
