@@ -220,8 +220,8 @@ export default function Welcome({
                     <div>
                         <div className="font-bold text-lg md:text-xl">
                             {i18n.language == "ru"
-                                ? `Пройди бесплатное обучение`
-                                : `Пройди бесплатное обучение `}
+                                ? `Пройди платное обучение`
+                                : `Пройди платное обучение `}
                         </div>
                         <div className="font-light md:mt-3">
                             {i18n.language == "ru"
@@ -237,12 +237,6 @@ export default function Welcome({
                                     : "Оставить заявку"}
                             </a>
                         </div>
-                    </div>
-                    <div className="ml-auto pt-2">
-                        <img
-                            src="/images/joltap.png"
-                            className="md:w-[200px] w-[120px]"
-                        />
                     </div>
                 </div>
             </Carousel>
