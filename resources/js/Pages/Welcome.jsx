@@ -216,6 +216,33 @@ export default function Welcome({
                   </Link>
                 )}
               </div>
+                <div className="block flex bg-gradient-to-r z-10 md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div>
+                        <div className="font-bold text-lg md:text-xl">
+                            {i18n.language == "ru"
+                                ? `Пройди бесплатное обучение`
+                                : `Пройди бесплатное обучение `}
+                        </div>
+                        <div className="font-light md:mt-3">
+                            {i18n.language == "ru"
+                                ? `по курсу "Основы заработка на Youtube"`
+                                : `по курсу "Основы заработка на Youtube"`}
+                        </div>
+                        <div className="flex gap-x-5 mt-3 items-center">
+                            <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
+                                className="px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black"
+                            >
+                                {i18n.language == "ru" ? "Подробнее" : "Толығырақ"}
+                            </a>
+                        </div>
+                    </div>
+                    <div className="ml-auto pt-2">
+                        <img
+                            src="/images/joltap.png"
+                            className="md:w-[200px] w-[120px]"
+                        />
+                    </div>
+                </div>
             </Carousel>
             <div className="flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
               <div

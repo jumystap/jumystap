@@ -16,9 +16,9 @@ export default function Employees({ auth, employees, professions, filters = {} }
     });
 
     const updateSearch = debounce((value) => {
-        router.get('/employees', { 
-            ...filterValues, 
-            search: value 
+        router.get('/employees', {
+            ...filterValues,
+            search: value
         }, {
             preserveState: true,
             preserveScroll: true,
@@ -38,7 +38,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
             ...prev,
             [name]: value
         }));
-        
+
         router.get('/employees', {
             ...filterValues,
             [name]: value,
@@ -91,7 +91,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
             <Head title="Биржа фрилансеров в Астане | Поиск работы и услуг фрилансеров">
                 <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
             </Head>
-            
+
             <div className='grid grid-cols-1 md:grid-cols-7 gap-6'>
                 <div className='col-span-5'>
                     {/* Banner Section */}
@@ -101,13 +101,13 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                 {t('for_everyone', { ns: 'index' })}
                             </h1>
                             <div className='flex flex-col md:flex-row gap-4'>
-                                <Link 
+                                <Link
                                     href="/create_announcement"
                                     className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
                                 >
                                     {t('post_ad', { ns: 'carousel' })}
                                 </Link>
-                                <Link 
+                                <Link
                                     href="/employees"
                                     className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
                                 >
@@ -156,8 +156,8 @@ export default function Employees({ auth, employees, professions, filters = {} }
                     {/* Employee List */}
                     <div className="space-y-4 mt-6">
                         {employees.data.map((employee, index) => (
-                            <Link 
-                                href={`/user/${employee.id}`} 
+                            <Link
+                                href={`/user/${employee.id}`}
                                 key={index}
                                 className="block bg-white hover:bg-gray-50 rounded-lg shadow-sm transition-all duration-200"
                             >
@@ -172,7 +172,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             {toDoubleString(employee.rating)}
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex-grow">
                                         <div className="flex items-center gap-2">
                                             <h2 className="font-bold text-gray-900">
@@ -184,31 +184,31 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                                 <div></div>
                                             )}
                                         </div>
-                                        
+
                                         <div className="text-gray-500">
                                             @{employee.email.split('@')[0]}
                                         </div>
-                                        
+
                                         {employee.professions.length > 0 && (
                                             <div className="mt-2 text-sm text-gray-600">
                                                 {employee.professions.map((profession, index) => (
                                                     <div key={index}>
-                                                        {i18n.language === 'ru' ? 
-                                                            profession.profession_name : 
+                                                        {i18n.language === 'ru' ?
+                                                            profession.profession_name :
                                                             profession.profession_name_kz
                                                         }
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
-                                        
+
                                         <div className="mt-3">
                                             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
                                                 {employee.status}
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="hidden md:block">
                                         <button className="px-6 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors duration-200">
                                             Подробнее
@@ -217,7 +217,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                 </div>
                             </Link>
                         ))}
-                        
+
                         <div className="mt-6">
                             <Pagination links={employees.links} />
                         </div>
