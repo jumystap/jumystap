@@ -232,7 +232,9 @@ export default function Welcome({
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
                                 className="px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black"
                             >
-                                {i18n.language == "ru" ? "Подробнее" : "Толығырақ"}
+                                {i18n.language == "ru"
+                                    ? "Оставить заявку"
+                                    : "Оставить заявку"}
                             </a>
                         </div>
                     </div>
