@@ -164,7 +164,7 @@ export default function Welcome({
                                 ? `Пройди платное обучение`
                                 : `Пройди платное обучение `}
                         </div>
-                        <div className="font-light md:mt-3">
+                        <div className="font-bold md:mt-3">
                             {i18n.language == "ru"
                                 ? `по курсу "Основы заработка на Youtube"`
                                 : `по курсу "Основы заработка на Youtube"`}
