@@ -164,10 +164,10 @@ export default function Welcome({
                                 ? `ЗАПИШИСЬ НА КУРС`
                                 : `ЗАПИШИСЬ НА КУРС `}
                         </div>
-                        <div className="font-bold md:mt-3">
+                        <div className="font-bold text-lg md:mt-1">
                             "ОСНОВЫ ЗАРАБОТКА НА YOUTUBE"
                         </div>
-                        <div className="font-bold md:mt-3">
+                        <div className="font-bold text-lg md:mt-1">
                             от SKILLSTAP
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
