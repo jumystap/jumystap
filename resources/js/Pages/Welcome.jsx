@@ -161,11 +161,14 @@ export default function Welcome({
                     <div>
                         <div className="font-bold text-lg md:text-xl">
                             {i18n.language == "ru"
-                                ? `Пройди платное обучение`
-                                : `Пройди платное обучение `}
+                                ? `ЗАПИШИСЬ НА КУРС`
+                                : `ЗАПИШИСЬ НА КУРС `}
                         </div>
-                        <div className="font-light md:mt-3">
-                            по курсу <b className="font-bold">"Основы заработка на Youtube"</b>
+                        <div className="font-bold md:mt-3">
+                            "ОСНОВЫ ЗАРАБОТКА НА YOUTUBE"
+                        </div>
+                        <div className="font-bold md:mt-3">
+                            от SKILLSTAP
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
@@ -175,6 +178,7 @@ export default function Welcome({
                                     ? "Оставить заявку"
                                     : "Оставить заявку"}
                             </a>
+                            <p>OFFLINE ОБУЧЕНИЕ   ПЛАТНО</p>
                         </div>
                     </div>
                 </div>
