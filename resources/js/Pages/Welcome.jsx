@@ -164,10 +164,8 @@ export default function Welcome({
                                 ? `Пройди платное обучение`
                                 : `Пройди платное обучение `}
                         </div>
-                        <div className="font-bold md:mt-3">
-                            {i18n.language == "ru"
-                                ? `по курсу "Основы заработка на Youtube"`
-                                : `по курсу "Основы заработка на Youtube"`}
+                        <div className="font-light md:mt-3">
+                            по курсу <b>"Основы заработка на Youtube"</b>
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
