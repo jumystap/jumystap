@@ -168,7 +168,7 @@ export default function Welcome({
                             "ОСНОВЫ ЗАРАБОТКА НА YOUTUBE"
                         </div>
                         <div className="font-bold text-lg md:mt-1">
-                            от SKILLSTAP
+                            <i>от SKILLSTAP</i>
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
@@ -178,7 +178,7 @@ export default function Welcome({
                                     ? "Оставить заявку"
                                     : "Оставить заявку"}
                             </a>
-                            <p>OFFLINE ОБУЧЕНИЕ   ПЛАТНО</p>
+                            <p>OFFLINE ОБУЧЕНИЕ &nbsp;&nbsp;&nbsp; ПЛАТНО</p>
                         </div>
                     </div>
                 </div>
