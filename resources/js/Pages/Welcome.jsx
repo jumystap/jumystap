@@ -165,7 +165,7 @@ export default function Welcome({
                                 : `Пройди платное обучение `}
                         </div>
                         <div className="font-light md:mt-3">
-                            по курсу <div className="font-bold">"Основы заработка на Youtube"</div>
+                            по курсу <b className="font-bold">"Основы заработка на Youtube"</b>
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
