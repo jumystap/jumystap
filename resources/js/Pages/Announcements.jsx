@@ -113,7 +113,7 @@ export default function Announcements({ auth, announcements, specializations, er
     }, []);
 
     const handleSearch = () => {
-        get('/announcements', {preserveScroll: true});
+        get('/announcements', {preserveScroll: true, preserveState: true });
     };
 
     const kz = {
