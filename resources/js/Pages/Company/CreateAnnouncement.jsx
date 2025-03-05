@@ -82,7 +82,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         location: [''],
         condition: [''],
         requirement: [''],
-        responsobility: [''],
+        responsibility: [''],
         city: '',
         active: true,
         specialization_id: null,
@@ -98,9 +98,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     };
 
     const deleteResponsibility = (index) => {
-        const newResponsibilities = [...data.responsobility];
+        const newResponsibilities = [...data.responsibility];
         newResponsibilities.splice(index, 1);
-        setData({ ...data, responsobility: newResponsibilities });
+        setData({ ...data, responsibility: newResponsibilities });
     };
 
     const deleteCondition = (index) => {
@@ -154,7 +154,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         setData('requirement', [...data.requirement, '']);
     };
     const addResponsibility = () => {
-        setData('responsobility', [...data.responsobility, '']);
+        setData('responsibility', [...data.responsibility, '']);
     };
     const addCondition = () => {
         setData('condition', [...data.condition, '']);
@@ -168,9 +168,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     };
 
     const handleResponsibilityChange = (index, e) => {
-        const updatedResponsibilities = [...data.responsobility];
+        const updatedResponsibilities = [...data.responsibility];
         updatedResponsibilities[index] = e.target.value;
-        setData('responsobility', updatedResponsibilities);
+        setData('responsibility', updatedResponsibilities);
     };
 
     const handleConditionChange = (index, e) => {
@@ -402,6 +402,8 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             }
                             name="work_hours"
                             rules={[{ required: true, message: 'Please select a payment type' }]}
+                            help={errors.work_hours || validationErrors.work_hours}
+                            validateStatus={errors.work_hours || validationErrors.work_hours ? 'error' : ''}
                         >
                              <Input
                                 type="text"
@@ -529,33 +531,41 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     </span>
                                 </span>
                             }
-                            name="requirement"
-                            rules={[{ required: true, message: 'Заполните Критерии и Требования' }]}
                         >
                             {data.requirement.map((req, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                    <Input
-                                        type="text"
-                                        name={`requirement-${index}`}
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={req}
-                                        onChange={(e) => handleRequirementChange(index, e)}
-                                    />
-                                    <button
-                                        className="text-red-500 mt-3"
-                                        onClick={() => deleteRequirement(index)}
-                                    >
-                                        Удалить
-                                    </button>
-                                </div>
+                                <Form.Item
+                                    key={index}
+                                    name={['requirement', index]} // Теперь это массив полей
+                                    rules={[{ required: true, message: 'Заполните Критерии и Требования' }]}
+                                    help={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`]}
+                                    validateStatus={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`] ? 'error' : ''}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="text"
+                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                            value={req}
+                                            onChange={(e) => handleRequirementChange(index, e)}
+                                        />
+                                        <button
+                                            className="text-red-500 mt-3"
+                                            type="button"
+                                            onClick={() => deleteRequirement(index)}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </Form.Item>
                             ))}
                         </Form.Item>
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
+
+                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addRequirement}>
                             + Добавить
                         </div>
 
                         {/* Обязанности */}
-                        <Form.Item label={
+                        <Form.Item
+                            label={
                                 <span>
                                     Обязанности работника
                                     <span className="ml-2 text-gray-500">
@@ -563,63 +573,82 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     </span>
                                 </span>
                             }
-                            name="responsibility"
-                            rules={[{ required: true, message: 'Заполните обязанности работника' }]}
-                            >
-                            {data.responsobility.map((resp, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                    <Input
-                                        type="text"
-                                        name={`responsibility-${index}`}
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={resp}
-                                        onChange={(e) => handleResponsibilityChange(index, e)}
-                                    />
-                                    <button
-                                        className="text-red-500 mt-3"
-                                        onClick={() => deleteResponsibility(index)}
-                                    >
-                                        Удалить
-                                    </button>
-                                </div>
+                        >
+                            {data.responsibility.map((resp, index) => (
+                                <Form.Item
+                                    key={index}
+                                    name={['responsibility', index]} // Имя соответствует Laravel-валидации
+                                    rules={[{ required: true, message: 'Заполните обязанности работника' }]}
+                                    help={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`]}
+                                    validateStatus={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`] ? 'error' : ''}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="text"
+                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                            value={resp}
+                                            onChange={(e) => handleResponsibilityChange(index, e)}
+                                        />
+                                        <button
+                                            className="text-red-500 mt-3"
+                                            type="button"
+                                            onClick={() => deleteResponsibility(index)}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </Form.Item>
                             ))}
                         </Form.Item>
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
+
+                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addResponsibility}>
                             + Добавить
                         </div>
 
+
                         {/* Условия труда */}
-                        <Form.Item  label={
+                        {/* Условия труда */}
+                        <Form.Item
+                            label={
                                 <span>
                                     Условия труда
                                     <span className="ml-2 text-gray-500">
-                                        (например:питание, развозка, и тд.)
+                                        (например: питание, развозка, и тд.)
                                     </span>
                                 </span>
-                            }name="condition"
-                            rules={[{ required: true, message: 'Заполните условия труда' }]}
-                            >
+                            }
+                        >
                             {data.condition.map((cond, index) => (
-                               <div key={index} className="flex items-center gap-2">
-                                    <Input
-                                        type="text"
-                                        name={`condition-${index}`}
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={cond}
-                                        onChange={(e) => handleConditionChange(index, e)}
-                                    />
-                                    <button
-                                        className="text-red-500 mt-3"
-                                        onClick={() => deleteCondition(index)}
-                                    >
-                                        Удалить
-                                    </button>
-                                </div>
+                                <Form.Item
+                                    key={index}
+                                    name={['condition', index]} // Используем массив для корректной валидации
+                                    rules={[{ required: true, message: 'Заполните условия труда' }]}
+                                    help={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`]}
+                                    validateStatus={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`] ? 'error' : ''}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="text"
+                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                            value={cond}
+                                            onChange={(e) => handleConditionChange(index, e)}
+                                        />
+                                        <button
+                                            className="text-red-500 mt-3"
+                                            type="button"
+                                            onClick={() => deleteCondition(index)}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </Form.Item>
                             ))}
                         </Form.Item>
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
+
+                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addCondition}>
                             + Добавить
                         </div>
+
                         <Form.Item
                             label={
                                 <span>

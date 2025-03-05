@@ -105,7 +105,7 @@ class AnnouncementController extends Controller
             'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable',
-            'work_hours' => 'nullable',
+            'work_hours' => 'nullable|max:255',
             'employemnt_type' => 'nullable',
             'experience' => 'nullable',
             'education' => 'nullable',
@@ -116,12 +116,12 @@ class AnnouncementController extends Controller
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
-            'responsobility' => 'nullable|array', // Validate as an array
-            'responsobility.*' => 'string|max:255', // Validate each responsibility item
+            'responsibility' => 'nullable|array', // Validate as an array
+            'responsibility.*' => 'string|max:2000', // Validate each responsibility item
             'requirement' => 'nullable|array', // Validate as an array
-            'requirement.*' => 'string|max:255', // Validate each requirement item
+            'requirement.*' => 'string|max:2000', // Validate each requirement item
             'condition' => 'nullable|array', // Validate as an array
-            'condition.*' => 'string|max:255', // Validate each requirement item
+            'condition.*' => 'string|max:2000', // Validate each requirement item
         ]);
 
         $user = Auth::user();
@@ -142,8 +142,8 @@ class AnnouncementController extends Controller
                 }
             }
 
-            if (!empty($validated['responsobility'])) {
-                foreach ($validated['responsobility'] as $responsibility) {
+            if (!empty($validated['responsibility'])) {
+                foreach ($validated['responsibility'] as $responsibility) {
                     AnnouncementResponsibility::create([
                         'announcement_id' => $announcement->id,
                         'responsibility' => $responsibility,
@@ -210,7 +210,7 @@ class AnnouncementController extends Controller
             'cost' => 'nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable|string|max:255', // Assuming work_time is a string
-            'work_hours' => 'nullable',
+            'work_hours' => 'nullable|max:255',
             'employemnt_type' => 'nullable',
             'experience' => 'nullable',
             'location' => 'nullable|array',
@@ -221,15 +221,15 @@ class AnnouncementController extends Controller
             'salary_type' => 'required|string|max:255',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
-            'responsobility' => 'nullable|array',
-            'responsobility.*.id' => 'required|integer', // Ensure each responsibility has an id
-            'responsobility.*.responsibility' => 'required|string|max:255', // Ensure each responsibility has a description
+            'responsibility' => 'nullable|array',
+            'responsibility.*.id' => 'required|integer', // Ensure each responsibility has an id
+            'responsibility.*.responsibility' => 'required|string|max:2000', // Ensure each responsibility has a description
             'requirement' => 'nullable|array',
             'requirement.*.id' => 'required|integer', // Ensure each requirement has an id
-            'requirement.*.requirement' => 'required|string|max:255', // Ensure each requirement has a description
+            'requirement.*.requirement' => 'required|string|max:2000', // Ensure each requirement has a description
             'condition' => 'nullable|array',
             'condition.*.id' => 'required|integer', // Ensure each condition has an id
-            'condition.*.condition' => 'required|string|max:255', // Ensure each condition has a description
+            'condition.*.condition' => 'required|string|max:2000', // Ensure each condition has a description
         ]);
 
         Log::info('Validation passed', ['validated_data' => $validated]);
@@ -263,9 +263,9 @@ class AnnouncementController extends Controller
                     }
                 }
 
-                if (!empty($validated['responsobility'])) {
-                    Log::info('Saving new responsibilities', ['responsibilities' => $validated['responsobility']]);
-                    foreach ($validated['responsobility'] as $responsibility) {
+                if (!empty($validated['responsibility'])) {
+                    Log::info('Saving new responsibilities', ['responsibilities' => $validated['responsibility']]);
+                    foreach ($validated['responsibility'] as $responsibility) {
                         AnnouncementResponsibility::create([
                             'announcement_id' => $id,
                             'responsibility' => $responsibility['responsibility'], // Access 'responsibility' as a string

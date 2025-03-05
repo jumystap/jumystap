@@ -101,7 +101,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         location: announcement.address || [''],
         condition: announcement.conditions || [''],
         requirement:  announcement.requirements || [''],
-        responsobility: announcement.responsibilities || [''],
+        responsibility: announcement.responsibilities || [''],
         city: announcement.city || '',
         active: announcement.active || true,
         specialization_id: announcement.specialization_id || null,
@@ -124,7 +124,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             newResponsibilityRef.current.selectionStart = 0; // Move cursor to the beginning
             newResponsibilityRef.current.selectionEnd = 0;
         }
-    }, [data.responsobility.length]);
+    }, [data.responsibility.length]);
     useEffect(() => {
         if (newConditionRef.current) {
             newConditionRef.current.focus(); // Move focus to the new TextArea
@@ -147,10 +147,10 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const addResponsibilityAtIndex = (index, newText) => {
         setData((prevData) => ({
             ...prevData,
-            responsobility: [
-                ...prevData.responsobility.slice(0, index + 1),
+            responsibility: [
+                ...prevData.responsibility.slice(0, index + 1),
                 { id: index, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText }, // Add a new item with correct structure
-                ...prevData.responsobility.slice(index + 1)
+                ...prevData.responsibility.slice(index + 1)
             ]
         }));
     };
@@ -197,11 +197,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     };
 
     const deleteResponsibility = (index) => {
-        const newResponsibilities = [...data.responsobility]; // Create a shallow copy
+        const newResponsibilities = [...data.responsibility]; // Create a shallow copy
         newResponsibilities.splice(index, 1); // Remove the responsibility at the specified index
         setData((prevData) => ({
             ...prevData,
-            responsobility: newResponsibilities.length > 0 ? newResponsibilities : [], // Set to empty array if nothing left
+            responsibility: newResponsibilities.length > 0 ? newResponsibilities : [], // Set to empty array if nothing left
         }));
     };
 
@@ -265,8 +265,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     const addResponsibility = () => {
         setData((prevData) => ({
             ...prevData,
-            responsobility: [
-                ...prevData.responsobility,
+            responsibility: [
+                ...prevData.responsibility,
                 { id: null, announcement_id: prevData.announcement_id || announcement.id, responsibility: "" }
             ]
         }));
@@ -293,10 +293,10 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
     };
 
     const handleResponsibilityChange = (index, e) => {
-        const updatedResponsibilities = [...data.responsobility];
+        const updatedResponsibilities = [...data.responsibility];
         updatedResponsibilities[index].responsibility = e.target.value;
         updatedResponsibilities[index].id = index;
-        setData('responsobility', updatedResponsibilities);
+        setData('responsibility', updatedResponsibilities);
     };
 
     const handleConditionChange = (index, e) => {
@@ -408,6 +408,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </span>
                             }
                             name="title"
+                            validateStatus={errors.title ? 'error' : ''}
+                            help={errors.title}
                         >
                             <Input
                                 type="text"
@@ -528,6 +530,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </span>
                             }
                             name="work_hours"
+                            validateStatus={errors.work_hours ? 'error' : ''}
+                            help={errors.work_hours}
                         >
                              <Input
                                 type="text"
@@ -560,6 +564,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     name="cost"
                                     onValueChange={(name, value) => handleSalaryChange(value, name)}
                                     defaultValue={data.cost}
+                                    validateStatus={errors.cost ? 'error' : ''}
+                                    help={errors.cost}
                                 />
                             </Form.Item>
                         ) : (
@@ -570,6 +576,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         defaultValue={data.cost_min}
                                         onValueChange={(name, value) => handleSalaryChange(value, name)}
                                         className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
+                                        validateStatus={errors.cost_min ? 'error' : ''}
+                                        help={errors.cost_min}
                                     />
                                 </Form.Item>
                                 <Form.Item label='Зарплата До' rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
@@ -578,6 +586,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         name="cost_max"
                                         defaultValue={data.cost_max}
                                         onValueChange={(name, value) => handleSalaryChange(value, name)}
+                                        validateStatus={errors.cost_max ? 'error' : ''}
+                                        help={errors.cost_max}
                                     />
                                 </Form.Item>
                             </div>
@@ -670,6 +680,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             name={`requirement[${index}].requirement`}
                             className='mt-[-10px]'
+                            validateStatus={errors?.[`requirement.${index}.requirement`] ? 'error' : ''}
+                            help={errors?.[`requirement.${index}.requirement`] || null}
                             >
                                 <TextArea
                                     ref={index === data.requirement.length - 1 ? newRequirementRef : null}
@@ -711,13 +723,15 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 (какие рабочие задачи сотрудник будет выполнять)
                             </span>
                         </div>
-                        {data.responsobility.map((resp, index) => (
+                        {data.responsibility.map((resp, index) => (
                         <Form.Item
                             name={`responsibility[${index}].responsibility`}
                             className='mt-[-10px]'
+                            validateStatus={errors?.[`responsibility.${index}.responsibility`] ? 'error' : ''}
+                            help={errors?.[`responsibility.${index}.responsibility`] || null}
                         >
                                 <TextArea
-                                    ref={index === data.responsobility.length - 1 ? newResponsibilityRef : null}
+                                    ref={index === data.responsibility.length - 1 ? newResponsibilityRef : null}
                                     key={index}
                                     type="text"
                                     name={`responsibility-${index}`}
@@ -758,7 +772,12 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </span>
                         </div>
                         {data.condition.map((cond, index) => (
-                        <Form.Item name={`condition[${index}].condition`} className='mt-[-10px]'>
+                        <Form.Item
+                            name={`condition[${index}].condition`}
+                            className='mt-[-10px]'
+                            validateStatus={errors?.[`condition.${index}.condition`] ? 'error' : ''}
+                            help={errors?.[`condition.${index}.condition`] || null}
+                        >
                                 <TextArea
                                     ref={index === data.condition.length - 1 ? newConditionRef : null}
                                     key={index}
