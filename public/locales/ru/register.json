@@ -17,6 +17,7 @@
     "name_label": "Имя Фамилия",
     "email_label": "Электронная почта",
     "password_label": "Пароль",
+    "password_confirmation_label": "Подтверждение пароля",
     "avatar_label": "Загрузите ватар",
     "additional_info_title": "Дополнительная информация",
     "ipStatus1": "Имеется ли у вас ИП?",

@@ -178,9 +178,10 @@ class UserService
             }
             $validatedData['image_url'] = $this->storeAvatar($validatedData['avatar']);
         }
-
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = Hash::make($validatedData['password']);
+        }else{
+            unset($validatedData['password']);
         }
 
         $this->userRepository->updateUser($user, $validatedData);

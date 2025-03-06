@@ -19,6 +19,8 @@ const UpdateUser = ({ user }) => {
         avatar: null,
         description: user.description || '',
         is_graduate: user.is_graduate,
+        password: '',
+        password_confirmation: ''
     });
 
     const [avatarPreview, setAvatarPreview] = useState(user.image_url ? `/storage/${user.image_url}` : null);
@@ -196,6 +198,34 @@ const UpdateUser = ({ user }) => {
                                 {errors.description && <div className="text-red-500 text-sm">{errors.description}</div>}
                             </div>
                         )}
+
+                        <div className="mb-2">
+                            <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="password">
+                                {t('password_label', { ns: 'register' })}
+                            </label>
+                            <Input.Password
+                                id="password"
+                                name="password"
+                                value={data.password}
+                                onChange={handleChange}
+                                className="w-full"
+                            />
+                            {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
+                        </div>
+
+                        <div className="mb-2">
+                            <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="password_confirmation">
+                                {t('password_confirmation_label', { ns: 'register' })}
+                            </label>
+                            <Input.Password
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                value={data.password_confirmation}
+                                onChange={handleChange}
+                                className="w-full"
+                            />
+                            {errors.password_confirmation && <div className="text-red-500 text-sm">{errors.password_confirmation}</div>}
+                        </div>
                         <div className="flex items-center justify-between col-span-1 md:col-span-2">
                             <button
                                 type="submit"

@@ -12,7 +12,7 @@ import { useInternalMessage } from "antd/es/message/useMessage";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import { notification } from 'antd';
-
+import ShareButtons from "@/Components/ShareButtons";
 
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation();
@@ -306,10 +306,12 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 </>
                             )}
                             </div>
-                            <script src="https://yastatic.net/share2/share.js"></script>
-                            <div className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений>
-                                <div className="ya-share2" data-curtain data-services="telegram,whatsapp"></div>
-                            </div>
+
+                            <p className="px-5 mt-5 py-2 border-gray-200 font-bold flex items-center gap-2">
+                                Поделиться:
+                                <ShareButtons />
+                            </p>
+
                             <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
                             {more_announcement.length > 0 ? (
                             <div className='grid grid-cols-1 md:grid-cols-1'>

@@ -27,10 +27,10 @@ class UserController extends Controller
     public function index(Request $request): mixed
 {
     $filters = $request->only(['search', 'profession', 'jobType', 'graduateStatus']);
-    
+
     $employees = $this->userService->getEmployees($filters);
     $professions = $this->userService->getAllProfessions();
-    
+
     return Inertia::render('Employees', [
         'employees' => $employees,
         'professions' => $professions,
@@ -143,7 +143,8 @@ class UserController extends Controller
             'phone' => 'required|string',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
-            'password' => 'nullable|string',
+            'password' => 'nullable|string|min:8|confirmed',
+            'password_confirmation' => "nullable",
             'avatar' => 'nullable|file|max:2048',
             'ipStatus1' => 'nullable|string',
             'ipStatus2' => 'nullable|string',
@@ -161,14 +162,12 @@ class UserController extends Controller
 
             $this->userService->updateUser($user, $validated);
 
-            return redirect('/profile');
+            return redirect('/profile')->with('success', 'Профиль успешно обновлен');
         } catch (\Exception $e) {
             Log::error('Error updating user', ['exception' => $e]);
             return redirect()
                 ->back()
-                ->withErrors([
-                    'error' => 'An error occurred while updating the user'
-                ])
+                ->withErrors(['error' => 'Произошла ошибка при обновлении профиля'])
                 ->withInput();
         }
     }
