@@ -124,21 +124,21 @@ export default function Guest({ children }) {
               href="/"
             >
               <HiOutlineHome className="text-center text-2xl mx-auto" />
-              <div className="text-center text-xs">Главная</div>
+              <div className="text-center text-xs">{t("home", { ns: "header" })}</div>
             </Link>
             <Link
               className={`block flex-col text-center ${isActive("/announcements") ? "text-blue-500" : "text-gray-500"}`}
               href="/announcements"
             >
               <MdOutlineWorkOutline className="mx-auto text-2xl" />
-              <div className="text-center text-xs">Объявления</div>
+              <div className="text-center text-xs">{t("announcements", { ns: "header" })}</div>
             </Link>
             <Link
               className={`block flex-col text-center ${isActive("/employees") ? "text-blue-500" : "text-gray-500"}`}
               href="/employees"
             >
               <HiOutlineUserGroup className="text-2xl mx-auto" />
-              <div className="text-center text-xs">Соискатели</div>
+              <div className="text-center text-xs">{t("employees", { ns: "header" })}</div>
             </Link>
             <Dropdown
               menu={{
@@ -170,7 +170,7 @@ export default function Guest({ children }) {
               href="/"
             >
               <HiOutlineHome className="text-2xl" />
-              Главная
+                {t("home", { ns: "header" })}
             </Link>
             <Link
               className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/employees") ? "text-black" : "text-gray-500"}`}
@@ -184,27 +184,27 @@ export default function Guest({ children }) {
               href="/announcements"
             >
               <MdOutlineWorkOutline className="text-2xl" />
-              Вакансии
+                {t("announcements", { ns: "header" })}
             </Link>
             <Link
               className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/about") ? "text-black" : "text-gray-500"}`}
               href="/about"
             >
-              <MdOutlineCloud className="text-2xl" />О платформе
+              <MdOutlineCloud className="text-2xl" />{t("about", { ns: "header" })}
             </Link>
             <Link
               className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/faq") ? "text-black" : "text-gray-500"}`}
               href="/faq"
             >
               <IoSchoolOutline className="text-2xl" />
-              Об обучении
+                {t("about_education", { ns: "header" })}
             </Link>
             <Link
               className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/fav") ? "text-black" : "text-gray-500"}`}
               href="/fav"
             >
               <MdOutlineBookmarks className="text-2xl" />
-              Избранные
+                {t("favorites", { ns: "header" })}
             </Link>
             {!auth.user ? (
               <>
@@ -218,7 +218,7 @@ export default function Guest({ children }) {
                   className="text-center hover:bg-blue-500 hover:text-white transition-all duration-300 block w-full mt-3 text-blue-500 font-bold py-1 text-lg border-[3px] border-blue-500 rounded-full"
                   href="/login"
                 >
-                  Войти
+                    {t("login", { ns: "header" })}
                 </Link>
               </>
             ) : (
@@ -228,7 +228,7 @@ export default function Guest({ children }) {
                       className="text-center hover:bg-blue-500 hover:text-white transition-all duration-300 block w-full mt-3 text-blue-500 font-bold py-1 text-lg border-[3px] border-blue-500 rounded-full"
                       href="/create_announcement"
                   >
-                      Создать объявление
+                      {t("create_announcement", { ns: "header" })}
                   </Link>
               ) : null}
                 <Link
