@@ -469,6 +469,8 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             name={`location[${index}].adress`}
                             className='mt-[-15px]'
+                            validateStatus={errors?.[`location.${index}.adress`] ? 'error' : ''}
+                            help={errors?.[`location.${index}.adress`] || null}
                         >
                                 <input
                                     key={index}

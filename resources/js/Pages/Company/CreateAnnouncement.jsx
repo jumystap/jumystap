@@ -328,30 +328,34 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        <Form.Item
-                            label='Адрес рабочего места:'
-                            name="location"
-                            rules={[{ required: true, message: 'Please enter an address' }]}
-                        >
+                        <Form.Item label="Адрес рабочего места:">
                             {data.location.map((loc, index) => (
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        key={index}
-                                        type="text"
-                                        name={`location-${index}`}
-                                        className='text-sm rounded py-1 mt-2 border border-gray-300'
-                                        value={loc}
-                                        onChange={(e) => handleLocationChange(index, e)}
-                                    />
-                                    <button
-                                        className="text-red-500 mt-3"
-                                        onClick={() => deleteLocation(index)}
-                                    >
-                                        Удалить
-                                    </button>
-                                </div>
+                                <Form.Item
+                                    key={index}
+                                    name={['location', index]} // Имя соответствует Laravel-валидации
+                                    rules={[{ required: true, message: 'Введите адрес рабочего места' }]}
+                                    help={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`]}
+                                    validateStatus={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`] ? 'error' : ''}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="text"
+                                            className="text-sm rounded py-1 mt-2 border border-gray-300 flex-1"
+                                            value={loc}
+                                            onChange={(e) => handleLocationChange(index, e)}
+                                        />
+                                        <button
+                                            className="text-red-500 mt-3"
+                                            type="button"
+                                            onClick={() => deleteLocation(index)}
+                                        >
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </Form.Item>
                             ))}
                         </Form.Item>
+
                         <div
                             className='text-blue-500 mt-[-15px] mb-2'
                             onClick={addLocation}

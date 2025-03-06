@@ -179,7 +179,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         )}
                                     </>
                                 ) : (
-                                    <Link href='/register'
+                                    <Link href='/login'
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg text-center items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>Связаться</span>
                                     </Link>
@@ -306,7 +306,10 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 </>
                             )}
                             </div>
-
+                            <script src="https://yastatic.net/share2/share.js"></script>
+                            <div className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений>
+                                <div className="ya-share2" data-curtain data-services="telegram,whatsapp"></div>
+                            </div>
                             <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">Больше объявлений</Link>
                             {more_announcement.length > 0 ? (
                             <div className='grid grid-cols-1 md:grid-cols-1'>
