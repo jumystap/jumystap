@@ -8,48 +8,50 @@ use Illuminate\Support\Facades\DB;
 class UserRepository
 {
     public function getUsersByRoleName($roleName, $perPage, $filters = [])
-{
-    $query = User::whereHas('role', function($query) use ($roleName) {
-        $query->where('name', $roleName);
-    })->with('role');
+    {
+        $query = User::whereHas('role', function($query) use ($roleName) {
+            $query->where('name', $roleName);
+        })->with('role');
 
-    // Apply filters
-    if (!empty($filters['search'])) {
-        $query->where(function($q) use ($filters) {
-            $q->where('name', 'like', '%' . $filters['search'] . '%')
-              ->orWhere('email', 'like', '%' . $filters['search'] . '%');
+        // Apply filters
+        if (!empty($filters['search'])) {
+            $query->where(function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('email', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        if (!empty($filters['profession'])) {
+            $query->whereHas('professions', function($q) use ($filters) {
+                $q->where('profession_id', $filters['profession']);
+            });
+        }
+
+        if (!empty($filters['jobType'])) {
+            if ($filters['jobType'] === 'vacancy') {
+                $query->where('work_status', 'Ищет работу');
+            } elseif ($filters['jobType'] === 'project') {
+                $query->where('work_status', 'Ищет заказы');
+            }
+        }
+
+        if (!empty($filters['graduateStatus'])) {
+            if ($filters['graduateStatus'] === 'graduate') {
+                $query->where('is_graduate', true);
+            } elseif ($filters['graduateStatus'] === 'non-graduate') {
+                $query->where('is_graduate', false);
+            }
+        }
+
+        $users = $query->paginate($perPage)->withQueryString();
+
+        $users->transform(function ($user) {
+            $user->professions = $this->getUserWithProfessions($user->id);
+            return $user;
         });
+
+        return $users;
     }
-
-    if (!empty($filters['profession'])) {
-        
-    }
-
-    if (!empty($filters['jobType'])) {
-        if ($filters['jobType'] === 'vacancy') {
-            $query->where('work_status', true);
-        } elseif ($filters['jobType'] === 'project') {
-            $query->where('work_status', true);
-        }
-    }
-
-    if (!empty($filters['graduateStatus'])) {
-        if ($filters['graduateStatus'] === 'graduate') {
-            $query->where('is_graduate', true);
-        } elseif ($filters['graduateStatus'] === 'non-graduate') {
-            $query->where('is_graduate', false);
-        }
-    }
-
-    $users = $query->paginate($perPage)->withQueryString();
-    
-    $users->transform(function ($user) {
-        $user->professions = $this->getUserWithProfessions($user->id);
-        return $user;
-    });
-
-    return $users;
-}
 
     public function getUserWithProfessions($userId)
     {

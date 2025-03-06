@@ -109,6 +109,11 @@ class User extends Authenticatable
         return $this->belongsTo(Profession::class);
     }
 
+    public function professions()
+    {
+        return $this->belongsToMany(Profession::class, 'user_professions', 'user_id', 'profession_id');
+    }
+
     public function portfolio()
     {
         return $this->hasMany(Portfolio::class);

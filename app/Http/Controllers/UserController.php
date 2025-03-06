@@ -25,18 +25,18 @@ class UserController extends Controller
     }
 
     public function index(Request $request): mixed
-{
-    $filters = $request->only(['search', 'profession', 'jobType', 'graduateStatus']);
+    {
+        $filters = $request->only(['search', 'profession', 'jobType', 'graduateStatus']);
 
-    $employees = $this->userService->getEmployees($filters);
-    $professions = $this->userService->getAllProfessions();
+        $employees = $this->userService->getEmployees($filters);
+        $professions = $this->userService->getAllProfessions();
 
-    return Inertia::render('Employees', [
-        'employees' => $employees,
-        'professions' => $professions,
-        'filters' => $filters
-    ]);
-}
+        return Inertia::render('Employees', [
+            'employees' => $employees,
+            'professions' => $professions,
+            'filters' => $filters
+        ]);
+    }
 
     public function login(): mixed
     {

@@ -1,10 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import Pagination from '@/Components/Pagination.jsx';
 import { RiVerifiedBadgeFill, RiSearch2Line } from "react-icons/ri";
-import debounce from 'lodash/debounce';
+
+// Мемоизация компонента FilterSelect для предотвращения лишних рендеров
+const FilterSelect = memo(({ name, options, value, onChange }) => (
+    <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="block w-full px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+    >
+        {options.map((option, index) => (
+            <option key={index} value={option.value}>
+                {option.label}
+            </option>
+        ))}
+    </select>
+));
+
+// Мемоизация компонента FilterSection
+const FilterSection = memo(({ children, className = "", searchTerm, onSearchChange, onSearch }) => (
+    <div className={`space-y-4 ${className}`}>
+        <div className="relative">
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={onSearchChange}
+                placeholder="Поиск по имени"
+                className="w-full pl-4 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            />
+            <button
+                onClick={onSearch}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
+            >
+                <RiSearch2Line className="text-xl" />
+            </button>
+        </div>
+        {children}
+    </div>
+));
 
 export default function Employees({ auth, employees, professions, filters = {} }) {
     const { t, i18n } = useTranslation();
@@ -15,24 +52,23 @@ export default function Employees({ auth, employees, professions, filters = {} }
         graduateStatus: filters.graduateStatus || 'all',
     });
 
-    const updateSearch = debounce((value) => {
+    // Используем useCallback для мемоизации обработчиков
+    const handleSearch = useCallback(() => {
         router.get('/employees', {
             ...filterValues,
-            search: value
+            search: searchTerm
         }, {
             preserveState: true,
             preserveScroll: true,
             replace: true
         });
-    }, 300);
+    }, [filterValues, searchTerm]);
 
-    const handleSearchChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-        updateSearch(value);
-    };
+    const handleSearchChange = useCallback((e) => {
+        setSearchTerm(e.target.value);
+    }, []);
 
-    const handleFilterChange = (e) => {
+    const handleFilterChange = useCallback((e) => {
         const { name, value } = e.target;
         setFilterValues(prev => ({
             ...prev,
@@ -48,43 +84,12 @@ export default function Employees({ auth, employees, professions, filters = {} }
             preserveScroll: true,
             replace: true
         });
-    };
+    }, [filterValues, searchTerm]);
 
-    function toDoubleString(value) {
+    const toDoubleString = useCallback((value) => {
         const number = parseFloat(value);
         return isNaN(number) ? '0.0' : number.toFixed(1);
-    }
-
-    const FilterSelect = ({ name, options, value, onChange }) => (
-        <select
-            name={name}
-            value={value}
-            onChange={onChange}
-            className="block w-full px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-        >
-            {options.map((option, index) => (
-                <option key={index} value={option.value}>
-                    {option.label}
-                </option>
-            ))}
-        </select>
-    );
-
-    const FilterSection = ({ children, className = "" }) => (
-        <div className={`space-y-4 ${className}`}>
-            <div className="relative">
-                <RiSearch2Line className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    placeholder="Поиск по имени"
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                />
-            </div>
-            {children}
-        </div>
-    );
+    }, []);
 
     return (
         <GuestLayout>
@@ -94,7 +99,6 @@ export default function Employees({ auth, employees, professions, filters = {} }
 
             <div className='grid grid-cols-1 md:grid-cols-7 gap-6'>
                 <div className='col-span-5'>
-                    {/* Banner Section */}
                     <div className='m-5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-xl shadow-lg'>
                         <div className='p-8'>
                             <h1 className='text-2xl font-bold text-white mb-4 text-center md:text-left'>
@@ -117,8 +121,12 @@ export default function Employees({ auth, employees, professions, filters = {} }
                         </div>
                     </div>
 
-                    {/* Mobile Filters */}
-                    <FilterSection className="md:hidden px-5">
+                    <FilterSection
+                        className="md:hidden px-5"
+                        searchTerm={searchTerm}
+                        onSearchChange={handleSearchChange}
+                        onSearch={handleSearch}
+                    >
                         <FilterSelect
                             name="jobType"
                             value={filterValues.jobType}
@@ -136,7 +144,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             options={[
                                 { value: '', label: t('any_work_default', { ns: 'employees' }) },
                                 ...professions.map(prof => ({
-                                    value: prof.name_ru,
+                                    value: prof.id,
                                     label: i18n.language === 'ru' ? prof.name_ru : prof.name_kz
                                 }))
                             ]}
@@ -153,7 +161,6 @@ export default function Employees({ auth, employees, professions, filters = {} }
                         />
                     </FilterSection>
 
-                    {/* Employee List */}
                     <div className="space-y-4 mt-6">
                         {employees.data.map((employee, index) => (
                             <Link
@@ -178,10 +185,8 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             <h2 className="font-bold text-gray-900">
                                                 {employee.name}
                                             </h2>
-                                            {employee.is_graduate ? (
+                                            {employee.is_graduate && (
                                                 <RiVerifiedBadgeFill className="text-xl text-blue-500" />
-                                            ):(
-                                                <div></div>
                                             )}
                                         </div>
 
@@ -224,10 +229,13 @@ export default function Employees({ auth, employees, professions, filters = {} }
                     </div>
                 </div>
 
-                {/* Desktop Filters Sidebar */}
                 <div className='col-span-2 hidden md:block'>
                     <div className="sticky top-5 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                        <FilterSection>
+                        <FilterSection
+                            searchTerm={searchTerm}
+                            onSearchChange={handleSearchChange}
+                            onSearch={handleSearch}
+                        >
                             <FilterSelect
                                 name="jobType"
                                 value={filterValues.jobType}
@@ -245,7 +253,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                 options={[
                                     { value: '', label: t('any_work_default', { ns: 'employees' }) },
                                     ...professions.map(prof => ({
-                                        value: prof.name_ru,
+                                        value: prof.id,
                                         label: i18n.language === 'ru' ? prof.name_ru : prof.name_kz
                                     }))
                                 ]}
