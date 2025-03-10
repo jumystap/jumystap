@@ -334,18 +334,18 @@ class AnnouncementController extends Controller
         if ($admin) {
             Log::info('Admin selected for notification.', ['admin_id' => $admin->id, 'admin_name' => $admin->name]);
 
-            $message = "Новое объявление ожидает одобрения:\n";
-            $message .= "Название компании: " . $user->name . "\n";
-            $message .= "Описание компании: " . $user->description . "\n";
-            $message .= "Заголовок: " . $announcement->title . "\n";
-            $message .= "График: " . $announcement->work_time . "\n";
-            $message .= "Город: " . $announcement->city . "\n";
-            $message .= "Адрес: " . $announcement->location . "\n";
-            $message .= "Описание: " . $announcement->description . "\n";
-            $message .= "Тип оплаты: " . $announcement->payment_type . "\n";
-            $message .= "Тип зарплаты: " . $announcement->salary_type . "\n";
-            $message .= "Зарплата: " . $announcement->cost . $announcement->cost_min . $announcement->cost_max . "\n";
-            $message .= "Номер телефона: " . Auth::user()->phone. "\n";
+            $message = "<b>Новое объявление ожидает одобрения</b>\n";
+            $message .= "<i>Название компании:</i> " . $user->name . "\n";
+            $message .= "<i>Описание компании:</i> " . $user->description . "\n";
+            $message .= "<i>Заголовок:</i> " . $announcement->title . "\n";
+            $message .= "<i>График:</i> " . $announcement->work_time . "\n";
+            $message .= "<i>Город:</i> " . $announcement->city . "\n";
+            $message .= "<i>Адрес:</i> " . $announcement->location . "\n";
+            $message .= "<i>Описание:</i> " . $announcement->description . "\n";
+            $message .= "<i>Тип оплаты:</i> " . $announcement->payment_type . "\n";
+            $message .= "<i>Тип зарплаты:</i> " . $announcement->salary_type . "\n";
+            $message .= "<i>Зарплата:</i> " . $announcement->cost . $announcement->cost_min . $announcement->cost_max . "\n";
+            $message .= "<i>Номер телефона:</i> " . Auth::user()->phone. "\n";
             $message .= "https://jumystap.kz/announcement/" . $announcement->id . "\n";
 
             try {

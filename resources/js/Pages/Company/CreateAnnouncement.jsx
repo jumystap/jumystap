@@ -226,7 +226,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         const url = isEdit ? `/announcements/${announcement.id}` : '/create_announcement';
         submitAction(url, {
             ...data,
-            onSuccess: () => message.success('Announcement saved successfully'),
+            onSuccess: () => message.success(t('successfully_saved', { ns : 'createAnnouncement'})),
             onError: (err) => {
                 message.error(t('failed_to_save', { ns: 'createAnnouncement' }));
                 console.error('Failed to save announcement:', err);
