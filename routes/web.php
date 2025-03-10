@@ -12,6 +12,7 @@ use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserResumeController;
 use Illuminate\Support\Facades\Route;
+use DefStudio\Telegraph\Facades\Telegraph;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/terms', [HomeController::class, 'terms']);
@@ -65,5 +66,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/delete_resume/{id}', [UserResumeController::class, 'destroy'])->name('delete_resume');
 });
 
+
+Route::post('/telegram/webhook', function () {
+    Telegraph::handleWebhook();
+    return response()->json(['status' => 'success']);
+});
 
 require __DIR__.'/admin.php';
