@@ -10,7 +10,7 @@ import { ru } from 'date-fns/locale';
 
 export default function Dashboard({ user, announcements }) {
     const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
-    const { t, i18n } = useTranslation();
+    const { t, i18n } = useTranslation('dashboard');
 
     const openCreateAnnouncementModal = () => {
         setSelectedAnnouncement(null);
@@ -63,22 +63,22 @@ export default function Dashboard({ user, announcements }) {
                             <div>{formatPhoneNumber(user.phone)}</div>
                         </div>
                         <div className='flex mt-5 gap-x-2 font-semibold text-xl'>
-                            <div>{vacancyCount + orderCount} <span className='text-gray-500 font-light text-base'>вакансии</span></div>
+                            <div>{vacancyCount + orderCount} <span className='text-gray-500 font-light text-base'>{t('vacancies', { ns: 'dashboard' })}</span></div>
                         </div>
                         <div className='flex md:flex-row flex-col gap-x-2 gap-y-4 mt-5'>
                             <Link href='/update'
                                 className='text-black border border-gray-300 rounded-lg text-center items-center inline-block py-2 px-10 cursor-pointer'
                             >
-                                <span className='text-light text-sm'>Редактировать</span>
+                                <span className='text-light text-sm'>{t('update', { ns: 'dashboard' })}</span>
                             </Link>
                             <Link href="/create_announcement"
                                 className='inline-block text-white rounded-lg text-center bg-blue-500 py-2 px-10 cursor-pointer'
                             >
-                                <span className='font-light text-sm'>Создать объявление</span>
+                                <span className='font-light text-sm'>{t('create_announcement', { ns: 'dashboard' })}</span>
                             </Link>
                         </div>
                     </div>
-                    <div className='p-3 font-semibold'>Ваши объявления</div>
+                    <div className='p-3 font-semibold'>{t('your_announcements', { ns: 'dashboard' })}</div>
                     <div className='rounded-lg '>
                         {user.announcement.length > 0 ? (
                             <div className='grid md:grid-cols-1 grid-cols-1'>
@@ -87,7 +87,7 @@ export default function Dashboard({ user, announcements }) {
                                         <div className='flex items-center'>
                                             {!anonce.active && (
                                                 <div className=' text-sm text-gray-500'>
-                                                    На модерации
+                                                    {t('on_moderation', { ns: 'dashboard' })}
                                                 </div>
                                             )}
                                             <div className="ml-auto">
@@ -116,21 +116,21 @@ export default function Dashboard({ user, announcements }) {
                                             {anonce.city}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {`Размещено ${formatDistanceToNow(new Date(anonce.created_at), { locale: ru, addSuffix: true })}`}
+                                            {t('posted', { ns: 'dashboard' })} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: ru, addSuffix: true })}`}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {anonce.visit_count} просмотров
+                                            {anonce.visit_count} {t('views', { ns: 'dashboard' })}
                                         </div>
                                         <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
-                                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>Посмотреть</Link>
-                                            <Link className='block w-full text-center py-2 text-gray-500 font-light text-sm' href={`/announcement/update/${anonce.id}`}>Изменить</Link>
+                                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
+                                            <Link className='block w-full text-center py-2 text-gray-500 font-light text-sm' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className='flex md:h-[200px] h-full'>
-                                <div className='my-auto mx-auto text-gray-400 md:text-2xl text-lg font-bold'>У вас пока нет объявлений</div>
+                                <div className='my-auto mx-auto text-gray-400 md:text-2xl text-lg font-bold'>{t('dont_have_any_ads', { ns: 'dashboard' })}</div>
                             </div>
                         )}
                     </div>

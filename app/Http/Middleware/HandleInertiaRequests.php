@@ -36,6 +36,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => fn () => Auth::check() ? [
                     'id' => Auth::id(),
                     'name' => Auth::user()->name,
+                    'email' => Auth::user()->email,
                     'role' => Auth::user()->role ?? null, // убедись, что роль загружается
                 ] : null,
             ],

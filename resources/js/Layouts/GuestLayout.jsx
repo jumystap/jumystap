@@ -12,11 +12,12 @@ import { useTranslation } from "react-i18next";
 import { HiOutlineHome, HiOutlineUserGroup } from "react-icons/hi2";
 import { RiHome2Line } from "react-icons/ri";
 import {
-  MdOutlineBookmarks,
-  MdOutlineCloud,
-  MdOutlineGroupAdd,
-  MdOutlineLogout,
-  MdOutlineWorkOutline,
+    MdLanguage,
+    MdOutlineBookmarks,
+    MdOutlineCloud,
+    MdOutlineGroupAdd,
+    MdOutlineLogout,
+    MdOutlineWorkOutline,
 } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
 import { Button, Dropdown, Space } from "antd";
@@ -206,6 +207,16 @@ export default function Guest({ children }) {
               <MdOutlineBookmarks className="text-2xl" />
                 {t("favorites", { ns: "header" })}
             </Link>
+              <Button
+                  className="flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 text-gray-500 w-full"
+                  onClick={() =>
+                      changeLanguage(i18n.language === "ru" ? "kz" : "ru")
+                  }
+              >
+                  <MdLanguage className="text-2xl" />
+                  {i18n.language == "ru" ? "Смена языка" : "Тілді өзгерту"}
+              </Button>
+
             {!auth.user ? (
               <>
                 <Link

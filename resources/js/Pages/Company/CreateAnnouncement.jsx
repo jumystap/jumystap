@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
+import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 
@@ -10,7 +10,7 @@ const { Option } = Select;
 const { Title } = Typography;
 
 const forbiddenWords = [
-     "abuse"
+    "abuse"
 ];
 
 const phoneRegex = /(\b8\d{10}\b|\+7\d{10}\b|\+7 \(\d{3}\) \d{3} \d{2} \d{2}\b)/;
@@ -25,36 +25,26 @@ const kazakhstanCities = [
 const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const { t } = useTranslation();
     const isEdit = announcement !== null;
-    const [salaryType, setSalaryType] = useState('');
     const [isExactSalary, setIsExactSalary] = useState(false);
 
     const handleSalaryTypeChange = (e) => {
-        if (e.target.checked) {
-            setData('salary_type', 'za_smenu');
-        } else {
-            setData('salary_type', '');
-        }
-    };
-
-    const formatNumber = (value) => {
-        if (!value) return '';
-        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    };
-
-    const parseNumber = (value) => {
-        return value.replace(/\s/g, '');
+        setData(prevData => ({
+            ...prevData,
+            salary_type: e.target.checked ? 'za_smenu' : 'undefined'
+        }));
     };
 
     const handleExactSalaryChange = (e) => {
-        setIsExactSalary(e.target.checked);
-        if (e.target.checked) {
-            setData('cost_min', null);
-            setData('cost_max', null);
-            setSalaryType('exact')
-        } else {
-            setData('cost', null);
-            setSalaryType('')
-        }
+        const isChecked = e.target.checked;
+        setIsExactSalary(isChecked);
+
+        setData(prevData => ({
+            ...prevData,
+            cost_min: isChecked ? null : prevData.cost_min,
+            cost_max: isChecked ? null : prevData.cost_max,
+            cost: isChecked ? '' : null,
+            salary_type: isChecked ? 'exact' : 'undefined'
+        }));
     };
 
     const cascaderData = specializations.map(category => ({
@@ -86,7 +76,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         city: '',
         active: true,
         specialization_id: null,
-        salary_type: '',
+        salary_type: 'undefined',
         cost_min: null,
         cost_max: null,
     });
@@ -115,29 +105,25 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         setData({ ...data, location: newLocation });
     };
 
-    const handleSalaryChange = (name, value) => {
-        value = value ? parseInt(value) : null;
+    const handleSalaryChange = (value, name) => {
+        const parsedValue = value ? parseInt(value) : null;
 
         setData((prevData) => {
             const updatedData = {
                 ...prevData,
-                [name]: value,
+                [name]: parsedValue,
             };
 
-            const cost_min = updatedData.cost_min;
-            const cost_max = updatedData.cost_max;
-            const cost = updatedData.cost;
+            const { cost_min, cost_max, cost } = updatedData;
 
-            if (cost_min && !cost_max) {
+            if (isExactSalary) {
+                updatedData.salary_type = 'exact';
+            } else if (cost_min && !cost_max) {
                 updatedData.salary_type = 'min';
-                updatedData.cost = '';
             } else if (!cost_min && cost_max) {
                 updatedData.salary_type = 'max';
-                updatedData.cost = '';
             } else if (cost_min && cost_max) {
                 updatedData.salary_type = 'diapason';
-            } else if (cost) {
-                updatedData.salary_type = 'exact'; // Reset if both are empty
             } else {
                 updatedData.salary_type = 'undefined'; // Reset if both are empty
             }
@@ -160,7 +146,6 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         setData('condition', [...data.condition, '']);
     };
 
-    // Функции для обновления значений в массивах
     const handleRequirementChange = (index, e) => {
         const updatedRequirements = [...data.requirement];
         updatedRequirements[index] = e.target.value;
@@ -197,7 +182,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     };
 
     const addLocation = () => {
-        setData('location', [...data.location, '']); // Добавляем новое пустое поле в массив location
+        setData('location', [...data.location, '']);
     };
 
     const handleLocationChange = (index, e) => {
@@ -239,20 +224,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
 
         const submitAction = isEdit ? put : post;
         const url = isEdit ? `/announcements/${announcement.id}` : '/create_announcement';
-
-        try {
-            submitAction(url, data, {
-                onSuccess: () => {
-                    message.success('Announcement saved successfully');
-                },
-                onError: (errors) => {
-                    message.error('Failed to save announcement');
-                    console.error('Failed to save announcement:', errors);
-                }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        submitAction(url, {
+            ...data,
+            onSuccess: () => message.success('Announcement saved successfully'),
+            onError: (err) => {
+                message.error(t('failed_to_save', { ns: 'createAnnouncement' }));
+                console.error('Failed to save announcement:', err);
+            }
+        });
     };
 
     return (
@@ -268,12 +247,12 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 <span>
                                     {t('title', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (Напишите наименование вакансии с заглавной буквы без дополнительной информации)
+                                        {t('title_recommendation', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
                             name="title"
-                            rules={[{ required: true, message: 'Пожалуйста, введите заголовок' }]}
+                            rules={[{ required: true, message: t('please_fill_title', { ns: 'createAnnouncement' }) }]}
                             help={errors.title || validationErrors.title}
                             validateStatus={errors.title || validationErrors.title ? 'error' : ''}
                         >
@@ -286,20 +265,20 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label="Специализация"
+                            label={t('specialization', { ns: 'createAnnouncement' })}
                             name="specialization_id"
-                            rules={[{ required: true, message: 'Пожалуйста, выберите специализацию' }]}
+                            rules={[{ required: true, message: t('please_select_specialization', { ns: 'createAnnouncement' }) }]}
                         >
                             <Cascader
                                 options={cascaderData}
                                 onChange={(value) => setData('specialization_id', value[1])}
-                                placeholder="Выберите специализацию"
+                                placeholder={t('select_specialization', { ns: 'createAnnouncement' })}
                             />
                         </Form.Item>
                         <Form.Item
-                            label='Город'
+                            label={t('city', { ns: 'createAnnouncement' })}
                             name="city"
-                            rules={[{ required: true, message: ' select a city' }]}
+                            rules={[{ required: true, message: t('select_city', { ns: 'createAnnouncement' }) }]}
                         >
                             <Select
                                 value={data.city}
@@ -315,9 +294,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
 
                         {showOtherCityInput && (
                             <Form.Item
-                                label='Введите другой город'
+                                label={t('enter_another_city', { ns: 'createAnnouncement' })}
                                 name="city"
-                                rules={[{ required: true, message: 'Please enter a city' }]}
+                                rules={[{ required: true, message: t('please_enter_city', { ns: 'createAnnouncement' })}]}
                             >
                                 <Input
                                     type="text"
@@ -328,12 +307,12 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        <Form.Item label="Адрес рабочего места:">
+                        <Form.Item label={t('location', { ns: 'createAnnouncement' })}>
                             {data.location.map((loc, index) => (
                                 <Form.Item
                                     key={index}
-                                    name={['location', index]} // Имя соответствует Laravel-валидации
-                                    rules={[{ required: true, message: 'Введите адрес рабочего места' }]}
+                                    name={['location', index]}
+                                    rules={[{ required: true, message: t('enter_location', { ns: 'createAnnouncement' }) }]}
                                     help={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`]}
                                     validateStatus={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`] ? 'error' : ''}
                                 >
@@ -349,7 +328,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             type="button"
                                             onClick={() => deleteLocation(index)}
                                         >
-                                            Удалить
+                                            {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
                                     </div>
                                 </Form.Item>
@@ -360,13 +339,13 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             className='text-blue-500 mt-[-15px] mb-2'
                             onClick={addLocation}
                         >
-                            + Добавить еще один адрес
+                            {t('add_another_address', { ns: 'createAnnouncement' })}
                         </div>
                         <div className='grid grid-cols-2 gap-x-5'>
                             <Form.Item
-                                label='График работы'
+                                label={t('work_time', { ns: 'createAnnouncement' })}
                                 name="work_time"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
+                                rules={[{ required: true, message: t('please_select_work_time', { ns: 'createAnnouncement' }) }]}
                             >
                                 <Select
                                     value={data.work_time}
@@ -380,12 +359,12 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label='Тип занятости'
+                                label={t('employemnt_type', { ns: 'createAnnouncement' })}
                                 name="employemnt_type"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
+                                rules={[{ required: true, message: t('please_select_employemnt_type', { ns: 'createAnnouncement' }) }]}
                             >
                                 <Select
-                                    value={data.work_time}
+                                    value={data.employemnt_type}
                                     onChange={(value) => setData('employemnt_type', value)}
                                 >
                                     <Option value="Полная занятость">Полная занятость</Option>
@@ -398,18 +377,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         <Form.Item
                             label={
                                 <span>
-                                    Заполните рабочее время и дни
+                                    {t('fill_working_hours_and_days', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (например: 5/2 с 10:00 до 19:00)
+                                        {t('working_hours_example', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
                             name="work_hours"
-                            rules={[{ required: true, message: 'Please select a payment type' }]}
+                            rules={[{ required: true, message: t('please_select_work_hours', { ns: 'createAnnouncement' }) }]}
                             help={errors.work_hours || validationErrors.work_hours}
                             validateStatus={errors.work_hours || validationErrors.work_hours ? 'error' : ''}
                         >
-                             <Input
+                            <Input
                                 type="text"
                                 className='text-sm rounded py-1 mt-[0px] border border-gray-300'
                                 name="work_hours"
@@ -420,7 +399,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         <Form.Item
                             label={t('paymentType', { ns: 'createAnnouncement' })}
                             name="payment_type"
-                            rules={[{ required: true, message: 'Please select a payment type' }]}
+                            rules={[{ required: true, message: t('please_select_paymentType', { ns: 'createAnnouncement' }) }]}
                             help={errors.payment_type || validationErrors.payment_type}
                             validateStatus={errors.payment_type || validationErrors.payment_type ? 'error' : ''}
                         >
@@ -435,30 +414,38 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             </Select>
                         </Form.Item>
                         {isExactSalary ? (
-                            <Form.Item label='Точная Зарплата' rules={[{ required: true, message: 'Please enter the exact salary' }]}>
+                            <Form.Item
+                                label={t('cost', { ns: 'createAnnouncement' })}
+                                rules={[{ required: true, message: t('please_enter_exact_salary', { ns: 'createAnnouncement' }) }]}
+                                help={errors.cost || validationErrors.cost}
+                                validateStatus={errors.cost || validationErrors.cost ? 'error' : ''}
+                            >
                                 <CurrencyInput
                                     name="cost"
                                     className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
-                                    onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                    defaultValue={data.cost}
+                                    onValueChange={(value) => handleSalaryChange(value, 'cost')}
+                                    value={data.cost}
                                 />
                             </Form.Item>
                         ) : (
                             <div className='grid grid-cols-2 gap-x-3'>
-                                <Form.Item label='Зарплата От'  rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
+                                <Form.Item
+                                    label={t('cost_min', { ns: 'createAnnouncement' })}
+                                    rules={[{ required: !data.cost_max, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}>
                                     <CurrencyInput
                                         name="cost_min"
                                         className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
-                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                        defaultValue={data.cost_min}
+                                        onValueChange={(value) => handleSalaryChange(value, 'cost_min')}
+                                        value={data.cost_min}
                                     />
                                 </Form.Item>
-                                <Form.Item label='Зарплата До' rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
+                                <Form.Item label={t('cost_max', { ns: 'createAnnouncement' })}
+                                           rules={[{ required: !data.cost_min, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}>
                                     <CurrencyInput
                                         name="cost_max"
                                         className='text-sm w-full rounded py-1 mt-[0px] border border-gray-300'
-                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                        defaultValue={data.cost_max}
+                                        onValueChange={(value) => handleSalaryChange(value, 'cost_max')}
+                                        value={data.cost_max}
                                     />
                                 </Form.Item>
                             </div>
@@ -473,7 +460,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 checked={isExactSalary}
                                 onChange={handleExactSalaryChange}
                             />
-                            <label htmlFor='exact_salary'>Точная зарплата</label>
+                            <label htmlFor='exact_salary'>{t('cost', { ns: 'createAnnouncement' })}</label>
                         </div>
 
                         <div className='flex items-center gap-x-2 mt-2 mb-2'>
@@ -485,19 +472,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 checked={data.salary_type === 'za_smenu'}
                                 onChange={handleSalaryTypeChange}
                             />
-                            <label htmlFor='za_smenu'>За смену</label>
+                            <label htmlFor='za_smenu'>{t('per_shift', { ns: 'createAnnouncement' })}</label>
                         </div>
 
                         <div className='grid mt-4 grid-cols-2 gap-x-5'>
                             <Form.Item
-                                label='Необходимый опыт работы'
+                                label={t('experience', { ns: 'createAnnouncement' })}
                                 name="experience"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
+                                rules={[{ required: true, message: t('please_select_experience', { ns: 'createAnnouncement' }) }]}
                             >
                                 <Select
-                                    value={data.work_time}
+                                    value={data.experience}
                                     onChange={(value) => setData('experience', value)}
-                                    rules={[{ required: true, message: 'Please select a payment type' }]}
                                 >
                                     <Option value="Без опыта работы">Без опыта работы</Option>
                                     <Option value="От 3 мес. до 6 мес.">От 3 мес. до 6 мес.</Option>
@@ -508,14 +494,13 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label='Необходимое образование'
+                                label={t('education', { ns: 'createAnnouncement' })}
                                 name="education"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
+                                rules={[{ required: true, message: t('please_select_education', { ns: 'createAnnouncement' }) }]}
                             >
                                 <Select
-                                    value={data.work_time}
+                                    value={data.education}
                                     onChange={(value) => setData('education', value)}
-                                    rules={[{ required: true, message: 'Please select a payment type' }]}
                                 >
                                     <Option value="Не требуется">Не требуется</Option>
                                     <Option value="Среднее">Среднее</Option>
@@ -529,9 +514,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         <Form.Item
                             label={
                                 <span>
-                                    Критерии/Требования
+                                    {t('requirement', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (например: черты характера, навыки, аккредитации и тд.)
+                                        {t('requirement_example', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
@@ -539,8 +524,8 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             {data.requirement.map((req, index) => (
                                 <Form.Item
                                     key={index}
-                                    name={['requirement', index]} // Теперь это массив полей
-                                    rules={[{ required: true, message: 'Заполните Критерии и Требования' }]}
+                                    name={['requirement', index]}
+                                    rules={[{ required: true, message: t('fill_requirement', { ns: 'createAnnouncement' })}]}
                                     help={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`]}
                                     validateStatus={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`] ? 'error' : ''}
                                 >
@@ -556,7 +541,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             type="button"
                                             onClick={() => deleteRequirement(index)}
                                         >
-                                            Удалить
+                                            {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
                                     </div>
                                 </Form.Item>
@@ -564,16 +549,16 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         </Form.Item>
 
                         <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addRequirement}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
 
                         {/* Обязанности */}
                         <Form.Item
                             label={
                                 <span>
-                                    Обязанности работника
+                                    {t('responsibility', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (какие рабочие задачи сотрудник будет выполнять)
+                                        {t('responsibility_example', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
@@ -581,8 +566,8 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             {data.responsibility.map((resp, index) => (
                                 <Form.Item
                                     key={index}
-                                    name={['responsibility', index]} // Имя соответствует Laravel-валидации
-                                    rules={[{ required: true, message: 'Заполните обязанности работника' }]}
+                                    name={['responsibility', index]}
+                                    rules={[{ required: true, message: t('fill_responsibility', { ns: 'createAnnouncement' }) }]}
                                     help={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`]}
                                     validateStatus={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`] ? 'error' : ''}
                                 >
@@ -598,7 +583,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             type="button"
                                             onClick={() => deleteResponsibility(index)}
                                         >
-                                            Удалить
+                                            {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
                                     </div>
                                 </Form.Item>
@@ -606,18 +591,16 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         </Form.Item>
 
                         <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addResponsibility}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
 
-
-                        {/* Условия труда */}
                         {/* Условия труда */}
                         <Form.Item
                             label={
                                 <span>
-                                    Условия труда
+                                    {t('condition', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (например: питание, развозка, и тд.)
+                                        {t('condition_example', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
@@ -625,8 +608,8 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             {data.condition.map((cond, index) => (
                                 <Form.Item
                                     key={index}
-                                    name={['condition', index]} // Используем массив для корректной валидации
-                                    rules={[{ required: true, message: 'Заполните условия труда' }]}
+                                    name={['condition', index]}
+                                    rules={[{ required: true, message: t('fill_condition', { ns: 'createAnnouncement' }) }]}
                                     help={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`]}
                                     validateStatus={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`] ? 'error' : ''}
                                 >
@@ -642,7 +625,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             type="button"
                                             onClick={() => deleteCondition(index)}
                                         >
-                                            Удалить
+                                            {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
                                     </div>
                                 </Form.Item>
@@ -650,13 +633,13 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         </Form.Item>
 
                         <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addCondition}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
 
                         <Form.Item
                             label={
                                 <span>
-                                    Заполните дополнительную информацию, если присутствует
+                                    {t('additional_info', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
                                     </span>
                                 </span>

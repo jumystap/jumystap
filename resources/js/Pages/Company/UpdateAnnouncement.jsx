@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message, Cascader} from 'antd';
+import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 
@@ -10,7 +10,7 @@ const { Option } = Select;
 const { Title } = Typography;
 
 const forbiddenWords = [
-     "abuse"
+    "abuse"
 ];
 
 const phoneRegex = /(\b8\d{10}\b|\+7\d{10}\b|\+7 \(\d{3}\) \d{3} \d{2} \d{2}\b)/;
@@ -25,65 +25,12 @@ const kazakhstanCities = [
 const UpdateAnnouncement = ({ announcement, specializations }) => {
     const { t } = useTranslation();
     const isEdit = true;
-    const [salaryType, setSalaryType] = useState('');
-    const [isExactSalary, setIsExactSalary] = useState(false);
-    const [isUndefiendSalary, setIsUndefiendSalary] = useState(false);
-    console.log(announcement)
+    const [salaryType, setSalaryType] = useState(announcement.salary_type || '');
+    const [isExactSalary, setIsExactSalary] = useState(announcement.salary_type === 'exact');
+    const [isUndefinedSalary, setIsUndefinedSalary] = useState(announcement.salary_type === 'undefined');
     const newRequirementRef = useRef(null);
     const newResponsibilityRef = useRef(null);
     const newConditionRef = useRef(null);
-
-    const handleSalaryTypeChange = (e) => {
-        if (e.target.checked) {
-            setData('salary_type', 'za_smenu');
-        } else {
-            setData('salary_type', '');
-        }
-    };
-
-    const formatNumber = (value) => {
-        if (!value) return '';
-        return number.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    };
-
-    const parseNumber = (value) => {
-        return value.replace(/\s/g, ''); // Remove spaces for storing as a number
-    };
-
-    const handleExactSalaryChange = (e) => {
-        setIsExactSalary(e.target.checked);
-        if (e.target.checked) {
-            setData('cost_min', null);
-            setData('cost_max', null);
-            setSalaryType('exact')
-            setData('salary_type', 'exact');
-        } else {
-            setData('cost', null);
-            setSalaryType('')
-        }
-    };
-    const handleUndefiendSalaryChange = (e) => {
-        setIsUndefiendSalary(e.target.checked);
-        if (e.target.checked) {
-            setData('cost_min', null);
-            setData('cost_max', null);
-            setSalaryType('undefiend');
-            setData('salary_type', 'undefined');
-        } else {
-            setSalaryType('')
-        }
-    };
-
-    const cascaderData = specializations.map(category => ({
-        value: category.id,
-        label: category.name_ru,
-        children: category.specialization.map(spec => ({
-            value: spec.id,
-            label: spec.name_ru
-        }))
-    }));
-
-    // Find the path based on the specialization_id
 
     const { data, setData, post, put, processing, errors } = useForm({
         type_kz: 'Тапсырыс',
@@ -100,7 +47,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         start_time: announcement.start_time || '',
         location: announcement.address || [''],
         condition: announcement.conditions || [''],
-        requirement:  announcement.requirements || [''],
+        requirement: announcement.requirements || [''],
         responsibility: announcement.responsibilities || [''],
         city: announcement.city || '',
         active: announcement.active || true,
@@ -110,25 +57,123 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         cost_max: announcement.cost_max || null,
     });
 
+    const handleSalaryTypeChange = (e) => {
+        const isChecked = e.target.checked;
+        setSalaryType(isChecked ? 'za_smenu' : '');
+        setData('salary_type', isChecked ? 'za_smenu' : '');
+    };
+
+    const handleExactSalaryChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsExactSalary(isChecked);
+        setIsUndefinedSalary(false);
+
+        if (isChecked) {
+            setData({
+                ...data,
+                salary_type: 'exact',
+                cost_min: null,
+                cost_max: null
+            });
+            setSalaryType('exact');
+        } else if (!isUndefinedSalary) {
+            setData({
+                ...data,
+                salary_type: data.cost_min || data.cost_max ? 'diapason' : ''
+            });
+            setSalaryType(data.cost_min || data.cost_max ? 'diapazon' : '');
+        }
+    };
+
+    const handleUndefinedSalaryChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsUndefinedSalary(isChecked);
+        setIsExactSalary(false);
+
+        if (isChecked) {
+            setData({
+                ...data,
+                salary_type: 'undefined',
+                cost: null,
+                cost_min: null,
+                cost_max: null
+            });
+            setSalaryType('undefined');
+        } else {
+            setData({
+                ...data,
+                salary_type: data.cost ? 'exact' : (data.cost_min || data.cost_max ? 'diapason' : '')
+            });
+            setSalaryType(data.cost ? 'exact' : (data.cost_min || data.cost_max ? 'diapazon' : ''));
+        }
+    };
+
+    const handleSalaryChange = (value, name) => {
+        const parsedValue = value ? parseInt(value.replace(/\D/g, '')) : null;
+
+        setData(prevData => {
+            const updatedData = {
+                ...prevData,
+                [name]: parsedValue,
+            };
+
+            if (isUndefinedSalary) {
+                updatedData.salary_type = 'undefined';
+            } else if (isExactSalary) {
+                updatedData.salary_type = 'exact';
+            } else {
+                const hasMin = !!updatedData.cost_min;
+                const hasMax = !!updatedData.cost_max;
+
+                if (hasMin && hasMax) {
+                    updatedData.salary_type = 'diapason';
+                } else if (hasMin) {
+                    updatedData.salary_type = 'min';
+                } else if (hasMax) {
+                    updatedData.salary_type = 'max';
+                } else {
+                    updatedData.salary_type = '';
+                }
+            }
+
+            if (name === 'za_smenu') {
+                updatedData.salary_type = 'za_smenu';
+            }
+
+            setSalaryType(updatedData.salary_type);
+            return updatedData;
+        });
+    };
+
+    const cascaderData = specializations.map(category => ({
+        value: category.id,
+        label: category.name_ru,
+        children: category.specialization.map(spec => ({
+            value: spec.id,
+            label: spec.name_ru
+        }))
+    }));
+
     useEffect(() => {
         if (newRequirementRef.current) {
-            newRequirementRef.current.focus(); // Move focus to the new TextArea
-            newRequirementRef.current.selectionStart = 0; // Move cursor to the beginning
+            newRequirementRef.current.focus();
+            newRequirementRef.current.selectionStart = 0;
             newRequirementRef.current.selectionEnd = 0;
         }
     }, [data.requirement.length]);
 
     useEffect(() => {
         if (newResponsibilityRef.current) {
-            newResponsibilityRef.current.focus(); // Move focus to the new TextArea
-            newResponsibilityRef.current.selectionStart = 0; // Move cursor to the beginning
+            newResponsibilityRef.current.focus();
+            newResponsibilityRef.current.selectionStart = 0;
             newResponsibilityRef.current.selectionEnd = 0;
         }
     }, [data.responsibility.length]);
+
     useEffect(() => {
         if (newConditionRef.current) {
-            newConditionRef.current.focus(); // Move focus to the new TextArea
-            newConditionRef.current.selectionStart = 0; // Move cursor to the beginning
+            newConditionRef.current.focus();
+            newConditionRef.current.selectionStart = 0;
             newConditionRef.current.selectionEnd = 0;
         }
     }, [data.condition.length]);
@@ -138,7 +183,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             requirement: [
                 ...prevData.requirement.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, requirement: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, requirement: newText },
                 ...prevData.requirement.slice(index + 1)
             ]
         }));
@@ -149,7 +194,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             responsibility: [
                 ...prevData.responsibility.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText },
                 ...prevData.responsibility.slice(index + 1)
             ]
         }));
@@ -160,7 +205,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             ...prevData,
             condition: [
                 ...prevData.condition.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, condition: newText }, // Add a new item with correct structure
+                { id: index, announcement_id: prevData.announcement_id || announcement.id, condition: newText },
                 ...prevData.condition.slice(index + 1)
             ]
         }));
@@ -170,87 +215,53 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         for (let category of specializations) {
             const specialization = category.specialization.find(spec => spec.id === specialization_id);
             if (specialization) {
-                return [category.id, specialization.id]; // Return the category id and specialization id as a path
+                return [category.id, specialization.id];
             }
         }
-        return []; // Return empty if not found
+        return [];
     };
 
     const defaultValue = findCascaderValue(specializations, data.specialization_id);
 
     const deleteLocation = (index) => {
-        const newLocation = [...data.location]; // Create a shallow copy
-        newLocation.splice(index, 1); // Remove the requirement at the specified index
+        const newLocation = [...data.location];
+        newLocation.splice(index, 1);
         setData((prevData) => ({
             ...prevData,
-            location: newLocation.length > 0 ? newLocation : [], // Set to empty array if nothing left
+            location: newLocation.length > 0 ? newLocation : []
         }));
     };
 
     const deleteRequirement = (index) => {
-        const newRequirements = [...data.requirement]; // Create a shallow copy
-        newRequirements.splice(index, 1); // Remove the requirement at the specified index
+        const newRequirements = [...data.requirement];
+        newRequirements.splice(index, 1);
         setData((prevData) => ({
             ...prevData,
-            requirement: newRequirements.length > 0 ? newRequirements : [], // Set to empty array if nothing left
+            requirement: newRequirements.length > 0 ? newRequirements : []
         }));
     };
 
     const deleteResponsibility = (index) => {
-        const newResponsibilities = [...data.responsibility]; // Create a shallow copy
-        newResponsibilities.splice(index, 1); // Remove the responsibility at the specified index
+        const newResponsibilities = [...data.responsibility];
+        newResponsibilities.splice(index, 1);
         setData((prevData) => ({
             ...prevData,
-            responsibility: newResponsibilities.length > 0 ? newResponsibilities : [], // Set to empty array if nothing left
+            responsibility: newResponsibilities.length > 0 ? newResponsibilities : []
         }));
     };
 
-    // Function to delete a condition
     const deleteCondition = (index) => {
-        const newConditions = [...data.condition]; // Create a shallow copy
-        newConditions.splice(index, 1); // Remove the condition at the specified index
+        const newConditions = [...data.condition];
+        newConditions.splice(index, 1);
         setData((prevData) => ({
             ...prevData,
-            condition: newConditions.length > 0 ? newConditions : [], // Set to empty array if nothing left
+            condition: newConditions.length > 0 ? newConditions : []
         }));
-    };
-
-    const handleSalaryChange = (name, value) => {
-        value = value ? parseInt(value) : null;
-
-        setData((prevData) => {
-            const updatedData = {
-                ...prevData,
-                [name]: value,
-            };
-
-            const cost_min = updatedData.cost_min;
-            const cost_max = updatedData.cost_max;
-            const cost = updatedData.cost;
-
-            if (cost_min && !cost_max) {
-                updatedData.salary_type = 'min';
-                updatedData.cost = '';
-            } else if (!cost_min && cost_max) {
-                updatedData.salary_type = 'max';
-                updatedData.cost = '';
-            } else if (cost_min && cost_max) {
-                updatedData.salary_type = 'diapason';
-            } else if (cost) {
-                updatedData.salary_type = 'exact'; // Reset if both are empty
-            } else {
-                updatedData.salary_type = 'undefined'; // Reset if both are empty
-            }
-
-            return updatedData;
-        });
     };
 
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
 
-    console.log(data)
-    // Function to add a new requirement
     const addRequirement = () => {
         setData((prevData) => ({
             ...prevData,
@@ -261,7 +272,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }));
     };
 
-    // Function to add a new responsibility
     const addResponsibility = () => {
         setData((prevData) => ({
             ...prevData,
@@ -272,7 +282,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }));
     };
 
-    // Function to add a new condition
     const addCondition = () => {
         setData((prevData) => ({
             ...prevData,
@@ -283,8 +292,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         }));
     };
 
-
-    // Функции для обновления значений в массивах
     const handleRequirementChange = (index, e) => {
         const updatedRequirements = [...data.requirement];
         updatedRequirements[index].requirement = e.target.value;
@@ -331,7 +338,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                 { id: null, announcement_id: prevData.announcement_id || announcement.id, adress: "" }
             ]
         }));
-
     };
 
     const handleLocationChange = (index, e) => {
@@ -372,9 +378,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
             return;
         }
 
-        const submitAction = put;
         const url = `/announcements/${announcement.id}`;
-
         try {
             put(url, data, {
                 onSuccess: () => {
@@ -397,13 +401,13 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                     <Title level={3} className="">
                         {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
                     </Title>
-                     <Form onFinish={handleSubmit} layout="vertical" initialValues={data}>
+                    <Form onFinish={handleSubmit} layout="vertical" initialValues={data}>
                         <Form.Item
                             label={
-                                <span className='font-semibold'>
-                                    Загаловок
+                                <span>
+                                    {t('title', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 font-regular text-gray-500">
-                                        (Напишите наименование вакансии с заглавной буквы без дополнительной информации)
+                                        {t('title_recommendation', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
@@ -420,18 +424,18 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label={<span className='font-semibold'>Укажите отрасль/сферу</span>}
+                            label={t('specialization', { ns: 'createAnnouncement' })}
                             initialValue={defaultValue}
                         >
                             <Cascader
                                 options={cascaderData}
-                                placeholder="Выберите специализацию"
+                                placeholder={t('select_specialization', { ns: 'createAnnouncement' })}
                                 defaultValue={defaultValue}
                                 onChange={(value) => setData('specialization_id', value[1])}
                             />
                         </Form.Item>
                         <Form.Item
-                            label={<span className='font-semibold'>Город</span>}
+                            label={t('city', { ns: 'createAnnouncement' })}
                             name="city"
                         >
                             <Select
@@ -448,7 +452,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 
                         {showOtherCityInput && (
                             <Form.Item
-                                label={<span className='font-semibold'>Введите другой город</span>}
+                                label={t('enter_another_city', { ns: 'createAnnouncement' })}
                                 name="other_city"
                             >
                                 <Input
@@ -461,40 +465,36 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             </Form.Item>
                         )}
                         <div className='mb-4'>
-                            <span className='font-semibold'>
-                                Укажите адрес рабочего места
-                            </span>
+                            {t('location', { ns: 'createAnnouncement' })}
                         </div>
                         {data.location.map((loc, index) => (
-                        <Form.Item
-                            name={`location[${index}].adress`}
-                            className='mt-[-15px]'
-                            validateStatus={errors?.[`location.${index}.adress`] ? 'error' : ''}
-                            help={errors?.[`location.${index}.adress`] || null}
-                        >
+                            <Form.Item
+                                name={`location[${index}].adress`}
+                                className='mt-[-15px]'
+                                validateStatus={errors?.[`location.${index}.adress`] ? 'error' : ''}
+                                help={errors?.[`location.${index}.adress`] || null}
+                            >
                                 <input
                                     key={index}
                                     type="text"
                                     className='text-sm w-full rounded py-1 mt-1 border border-gray-300'
                                     value={loc.adress}
-                                    defaultValue={loc.adress}
                                     onChange={(e) => handleLocationChange(index, e)}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteLocation(index)}>Удалить</button>
-                        </Form.Item>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                            </Form.Item>
                         ))}
                         <div
                             className='text-blue-500 mt-[-15px] mb-2'
                             onClick={addLocation}
                         >
-                            + Добавить еще один адрес
+                            {t('add_another_address', { ns: 'createAnnouncement' })}
                         </div>
                         <div className='grid grid-cols-2 gap-x-5 mt-5'>
                             <Form.Item
-                                label={<span className='font-semibold'>График работы</span>}
+                                label={t('work_time', { ns: 'createAnnouncement' })}
                                 name="work_time"
                             >
-
                                 <Select
                                     value={data.work_time}
                                     onChange={(value) => setData('work_time', value)}
@@ -507,7 +507,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label='Тип занятости'
+                                label={t('employemnt_type', { ns: 'createAnnouncement' })}
                                 name="employemnt_type"
                             >
                                 <Select
@@ -525,9 +525,9 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         <Form.Item
                             label={
                                 <span>
-                                    Заполните рабочее время и дни
+                                    {t('fill_working_hours_and_days', { ns: 'createAnnouncement' })}
                                     <span className="ml-2 text-gray-500">
-                                        (например: 5/2 с 10:00 до 19:00)
+                                        {t('working_hours_example', { ns: 'createAnnouncement' })}
                                     </span>
                                 </span>
                             }
@@ -535,7 +535,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             validateStatus={errors.work_hours ? 'error' : ''}
                             help={errors.work_hours}
                         >
-                             <Input
+                            <Input
                                 type="text"
                                 className='text-sm rounded py-1 mt-[0px] border border-gray-300'
                                 name="work_hours"
@@ -544,7 +544,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
-                            label="Тип оплаты"
+                            label={t('paymentType', { ns: 'createAnnouncement' })}
                             name="payment_type"
                         >
                             <Select
@@ -557,91 +557,98 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 <Option value="Сдельная оплата">Сдельная оплата</Option>
                             </Select>
                         </Form.Item>
-                        {!isUndefiendSalary && (
-                        <>
-                        {isExactSalary ? (
-                            <Form.Item label='Точная Зарплата' rules={[{ required: true, message: 'Please enter the exact salary' }]}>
-                                <CurrencyInput
-                                    className='w-full text-sm rounded py-1 mt-[0px] border border-gray-300'
-                                    name="cost"
-                                    onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                    defaultValue={data.cost}
-                                    validateStatus={errors.cost ? 'error' : ''}
-                                    help={errors.cost}
-                                />
-                            </Form.Item>
-                        ) : (
-                            <div className='grid grid-cols-2 gap-x-3'>
-                                <Form.Item label='Зарплата От' rules={[{ required: !data.cost_max, message: 'Please enter either min or max salary' }]}>
-                                    <CurrencyInput
-                                        name="cost_min"
-                                        defaultValue={data.cost_min}
-                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                        className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
-                                        validateStatus={errors.cost_min ? 'error' : ''}
-                                        help={errors.cost_min}
-                                    />
-                                </Form.Item>
-                                <Form.Item label='Зарплата До' rules={[{ required: !data.cost_min, message: 'Please enter either min or max salary' }]}>
-                                    <CurrencyInput
-                                        className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
-                                        name="cost_max"
-                                        defaultValue={data.cost_max}
-                                        onValueChange={(name, value) => handleSalaryChange(value, name)}
-                                        validateStatus={errors.cost_max ? 'error' : ''}
-                                        help={errors.cost_max}
-                                    />
-                                </Form.Item>
-                            </div>
-                        )}
-                        </>
+                        {!isUndefinedSalary && (
+                            <>
+                                {isExactSalary ? (
+                                    <Form.Item
+                                        label={t('cost', { ns: 'createAnnouncement' })}
+                                        rules={[{ required: true, message: 'Please enter the exact salary' }]}
+                                    >
+                                        <CurrencyInput
+                                            className='w-full text-sm rounded py-1 mt-[0px] border border-gray-300'
+                                            name="cost"
+                                            value={data.cost}
+                                            onValueChange={(value) => handleSalaryChange(value, 'cost')}
+                                            validateStatus={errors.cost ? 'error' : ''}
+                                            help={errors.cost}
+                                        />
+                                    </Form.Item>
+                                ) : (
+                                    <div className='grid grid-cols-2 gap-x-3'>
+                                        <Form.Item
+                                            label={t('cost_min', { ns: 'createAnnouncement' })}
+                                            rules={[{ required: !data.cost_max && !isExactSalary && !isUndefinedSalary, message: 'Please enter either min or max salary' }]}
+                                        >
+                                            <CurrencyInput
+                                                name="cost_min"
+                                                value={data.cost_min}
+                                                onValueChange={(value) => handleSalaryChange(value, 'cost_min')}
+                                                className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
+                                                validateStatus={errors.cost_min ? 'error' : ''}
+                                                help={errors.cost_min}
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label={t('cost_max', { ns: 'createAnnouncement' })}
+                                            rules={[{ required: !data.cost_min && !isExactSalary && !isUndefinedSalary, message: 'Please enter either min or max salary' }]}
+                                        >
+                                            <CurrencyInput
+                                                className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
+                                                name="cost_max"
+                                                value={data.cost_max}
+                                                onValueChange={(value) => handleSalaryChange(value, 'cost_max')}
+                                                validateStatus={errors.cost_max ? 'error' : ''}
+                                                help={errors.cost_max}
+                                            />
+                                        </Form.Item>
+                                    </div>
+                                )}
+                            </>
                         )}
                         <div className='flex items-center gap-x-2 mt-[-15px]'>
                             <input
                                 type='checkbox'
-                                name='undefiend'
-                                id='undefiend'
+                                name='undefined'
+                                id='undefined'
                                 className='rounded border-gray-400'
-                                checked={isUndefiendSalary}
-                                onChange={handleUndefiendSalaryChange}
+                                checked={isUndefinedSalary}
+                                onChange={handleUndefinedSalaryChange}
                             />
-                            <label htmlFor='undefiend'>Договорная зарплата</label>
+                            <label htmlFor='undefined'>{t('undefined_cost', { ns: 'createAnnouncement' })}</label>
                         </div>
-                        {!isUndefiendSalary && (
-                        <>
-                        <div className='flex items-center gap-x-2 mt-2'>
-                            <input
-                                type='checkbox'
-                                name='exact_salary'
-                                id='exact_salary'
-                                className='rounded border-gray-400'
-                                checked={isExactSalary}
-                                onChange={handleExactSalaryChange}
-                            />
-                            <label htmlFor='exact_salary'>Точная зарплата</label>
-                        </div>
-
-                        <div className='flex items-center gap-x-2 mt-2 mb-2'>
-                            <input
-                                type='checkbox'
-                                name='za_smenu'
-                                id='za_smenu'
-                                className='rounded border-gray-400'
-                                checked={data.salary_type === 'za_smenu'}
-                                onChange={handleSalaryTypeChange}
-                            />
-                            <label htmlFor='za_smenu'>За смену</label>
-                        </div>
-                        </>
+                        {!isUndefinedSalary && (
+                            <>
+                                <div className='flex items-center gap-x-2 mt-2'>
+                                    <input
+                                        type='checkbox'
+                                        name='exact_salary'
+                                        id='exact_salary'
+                                        className='rounded border-gray-400'
+                                        checked={isExactSalary}
+                                        onChange={handleExactSalaryChange}
+                                    />
+                                    <label htmlFor='exact_salary'>{t('cost', { ns: 'createAnnouncement' })}</label>
+                                </div>
+                                <div className='flex items-center gap-x-2 mt-2 mb-2'>
+                                    <input
+                                        type='checkbox'
+                                        name='za_smenu'
+                                        id='za_smenu'
+                                        className='rounded border-gray-400'
+                                        checked={salaryType === 'za_smenu'}
+                                        onChange={handleSalaryTypeChange}
+                                    />
+                                    <label htmlFor='za_smenu'>{t('per_shift', { ns: 'createAnnouncement' })}</label>
+                                </div>
+                            </>
                         )}
-
                         <div className='grid mt-4 grid-cols-2 gap-x-5'>
                             <Form.Item
-                                label='Необходимый опыт работы'
+                                label={t('experience', { ns: 'createAnnouncement' })}
                                 name="experience"
                             >
                                 <Select
-                                    value={data.work_time}
+                                    value={data.experience}
                                     onChange={(value) => setData('experience', value)}
                                 >
                                     <Option value="Без опыта работы">Без опыта работы</Option>
@@ -653,12 +660,11 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label='Образование'
+                                label={t('education', { ns: 'createAnnouncement' })}
                                 name="education"
-                                rules={[{ required: true, message: 'Please select a payment type' }]}
                             >
                                 <Select
-                                    value={data.work_time}
+                                    value={data.education}
                                     onChange={(value) => setData('education', value)}
                                 >
                                     <Option value="Необязательно">Необязательно</Option>
@@ -669,28 +675,26 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 </Select>
                             </Form.Item>
                         </div>
-                          {/* Критерии/Требования */}
-                        <div className='font-semibold mb-4'>
-                                <span>
-                                    Критерии/Требования
-                                    <span className="font-regular ml-2 mb-4 text-gray-500">
-                                        (например: черты характера, навыки, аккредитации и тд.)
-                                    </span>
+                        <div className='mb-4'>
+                            <span>
+                                {t('requirement', { ns: 'createAnnouncement' })}
+                                <span className="font-regular ml-2 mb-4 text-gray-500">
+                                    {t('requirement_example', { ns: 'createAnnouncement' })}
                                 </span>
+                            </span>
                         </div>
                         {data.requirement.map((req, index) => (
-                        <Form.Item
-                            name={`requirement[${index}].requirement`}
-                            className='mt-[-10px]'
-                            validateStatus={errors?.[`requirement.${index}.requirement`] ? 'error' : ''}
-                            help={errors?.[`requirement.${index}.requirement`] || null}
+                            <Form.Item
+                                name={`requirement[${index}].requirement`}
+                                className='mt-[-10px]'
+                                validateStatus={errors?.[`requirement.${index}.requirement`] ? 'error' : ''}
+                                help={errors?.[`requirement.${index}.requirement`] || null}
                             >
                                 <TextArea
                                     ref={index === data.requirement.length - 1 ? newRequirementRef : null}
                                     key={index}
                                     type="text"
                                     className='text-sm w-full rounded py-1 border border-gray-300'
-                                    defaultValue={req.requirement}
                                     value={req.requirement}
                                     onChange={(e) => handleRequirementChange(index, e)}
                                     onKeyDown={(e) => {
@@ -711,27 +715,25 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteRequirement(index)}>Удалить</button>
-                        </Form.Item>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteRequirement(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                            </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
-
-                        {/* Обязанности */}
-                        <div className='mb-4 font-semibold'>
-                            Обязанности работника
+                        <div className='mb-4'>
+                            {t('responsibility', { ns: 'createAnnouncement' })}
                             <span className="font-regular ml-2 text-gray-500">
-                                (какие рабочие задачи сотрудник будет выполнять)
+                                {t('responsibility_example', { ns: 'createAnnouncement' })}
                             </span>
                         </div>
                         {data.responsibility.map((resp, index) => (
-                        <Form.Item
-                            name={`responsibility[${index}].responsibility`}
-                            className='mt-[-10px]'
-                            validateStatus={errors?.[`responsibility.${index}.responsibility`] ? 'error' : ''}
-                            help={errors?.[`responsibility.${index}.responsibility`] || null}
-                        >
+                            <Form.Item
+                                name={`responsibility[${index}].responsibility`}
+                                className='mt-[-10px]'
+                                validateStatus={errors?.[`responsibility.${index}.responsibility`] ? 'error' : ''}
+                                help={errors?.[`responsibility.${index}.responsibility`] || null}
+                            >
                                 <TextArea
                                     ref={index === data.responsibility.length - 1 ? newResponsibilityRef : null}
                                     key={index}
@@ -739,7 +741,6 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                     name={`responsibility-${index}`}
                                     className='text-sm rounded py-1 border border-gray-300'
                                     value={resp.responsibility}
-                                    defaultValue={resp.responsibility}
                                     onChange={(e) => handleResponsibilityChange(index, e)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -759,39 +760,36 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteResponsibility(index)}>Удалить</button>
-                        </Form.Item>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteResponsibility(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                            </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
-
-                        {/* Условия труда */}
-                        <div className='mb-4 font-semibold'>
-                            Условия труда
+                        <div className='mb-4'>
+                            {t('condition', { ns: 'createAnnouncement' })}
                             <span className="ml-2 font-regular text-gray-500">
-                                (например:питание, развозка, и тд.)
+                                {t('condition_example', { ns: 'createAnnouncement' })}
                             </span>
                         </div>
                         {data.condition.map((cond, index) => (
-                        <Form.Item
-                            name={`condition[${index}].condition`}
-                            className='mt-[-10px]'
-                            validateStatus={errors?.[`condition.${index}.condition`] ? 'error' : ''}
-                            help={errors?.[`condition.${index}.condition`] || null}
-                        >
+                            <Form.Item
+                                name={`condition[${index}].condition`}
+                                className='mt-[-10px]'
+                                validateStatus={errors?.[`condition.${index}.condition`] ? 'error' : ''}
+                                help={errors?.[`condition.${index}.condition`] || null}
+                            >
                                 <TextArea
                                     ref={index === data.condition.length - 1 ? newConditionRef : null}
                                     key={index}
                                     type="text"
                                     name={`condition-${index}`}
                                     className='text-sm rounded py-1 border border-gray-300'
-                                    defaultValue={cond.condition}
                                     value={cond.condition}
                                     onChange={(e) => handleConditionChange(index, e)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();  // Prevent default "Enter" behavior (line break)
+                                            e.preventDefault();
                                             const textarea = e.target;
                                             const cursorPosition = textarea.selectionStart;
                                             const currentText = textarea.value;
@@ -807,19 +805,21 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteCondition(index)}>Удалить</button>
-                        </Form.Item>
+                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteCondition(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                            </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
-                            + Добавить
+                            {t('add', { ns: 'createAnnouncement' })}
                         </div>
                         <Form.Item
-                            label='Описание'
-
+                            label={t('additional_info', { ns: 'createAnnouncement' })}
                         >
-                            <TextArea name="description"
-                            value={data.description}
-                            onChange={handleChange} rows={4} />
+                            <TextArea
+                                name="description"
+                                value={data.description}
+                                onChange={handleChange}
+                                rows={4}
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={processing}>
@@ -834,4 +834,3 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
 };
 
 export default UpdateAnnouncement;
-

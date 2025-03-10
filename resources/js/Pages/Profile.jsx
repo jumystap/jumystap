@@ -15,7 +15,7 @@ const formatCreatedAt = (createdAt) => {
 };
 
 export default function Profile({ auth, user, announcements, employees, professions, userProfessions, resumes }) {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation('profile');
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
     const [missingCertificateProfession, setMissingCertificateProfession] = useState(null);
@@ -101,19 +101,19 @@ export default function Profile({ auth, user, announcements, employees, professi
                                             href='/update'
                                             className='text-center mt-2 block bg-blue-500 px-5 py-2 text-white rounded-lg'
                                         >
-                                            Изменить
+                                            {t('edit', { ns: 'profile' })}
                                         </Link>
                                         <Link
                                             href='/update_certificate'
                                             className='text-center mt-2 block border-2 text-blue-500 border-blue-500 px-5 py-2 rounded-lg'
                                         >
-                                            Обновить сертификат
+                                            {t('update_certificate', { ns: 'profile' })}
                                         </Link>
                                     </div>
                                 </div>
                                 <div className='px-5 mt-5'>
                                     <Link href='/create_resume' className='block px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
-                                        Создать резюме
+                                        {t('create_resume', { ns: 'profile' })}
                                     </Link>
                                     {resumes.length > 0 && (
                                         <div className="grid grid-cols-1 gap-4 mt-5">
@@ -125,13 +125,13 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             <div className='text-[10pt] md:text-sm'>{resume.city}</div>
                                                         </div>
                                                         <div className='text-gray-500 text-sm ml-auto'>
-                                                            Размещено {formatCreatedAt(resume.created_at)}
+                                                            {t('posted', { ns: 'profile' })} {formatCreatedAt(resume.created_at)}
                                                         </div>
                                                     </div>
                                                     <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>
                                                     {resume.organizations.length > 0 && (
                                                         <div className='mt-2'>
-                                                            <div className='text-sm text-gray-500'>Опыт работы:</div>
+                                                            <div className='text-sm text-gray-500'>{t('experience', { ns: 'profile' })}:</div>
                                                             <ul className="">
                                                                 {resume.organizations.map(org => (
                                                                     <li key={org.id}>- {org.organization} - {org.position_name}</li>
@@ -151,18 +151,18 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                     <div className='mt-4 gap-x-5 flex items-center'>
                                                     <button
                                                         onClick={(e) => {
-                                                            e.stopPropagation(); 
+                                                            e.stopPropagation();
                                                             deleteResume(resume.id);
                                                         }}
                                                         className="text-sm text-red-500"
                                                     >
-                                                        Удалить резюме
+                                                        {t('delete_resume', { ns: 'profile' })}
                                                     </button>
                                                     <Link
                                                         href={`/update_resume/${resume.id}`}
                                                         className='text-sm'
                                                     >
-                                                        Изменить
+                                                        {t('edit', { ns: 'profile' })}
                                                     </Link>
                                                     </div>
                                                 </a>
@@ -215,7 +215,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                             className="absolute top-0 right-0 bg-red-500 text-white py-2 px-4 rounded"
                             onClick={() => setIsImageModalOpen(false)}
                         >
-                            Закрыть
+                            {t('close', { ns: 'profile' })}
                         </button>
                     </div>
                 </div>

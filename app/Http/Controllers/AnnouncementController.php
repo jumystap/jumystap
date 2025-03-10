@@ -102,7 +102,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable',
             'payment_type' => 'required|string|max:255',
-            'cost' => 'nullable|numeric',
+            'cost' => 'required_if:salary_type,exact|nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable',
             'work_hours' => 'nullable|max:255',
@@ -186,7 +186,7 @@ class AnnouncementController extends Controller
         $industries = Industry::all();
         $specializations = SpecializationCategory::with('specialization')->get();
 
-        if(Auth::user()->id == $announcement->user_id || Auth::user()->email == 'admin@example.com'){
+        if(Auth::user() && (Auth::user()->id == $announcement->user_id || Auth::user()->email == 'admin@example.com')){
             return Inertia::render('Company/UpdateAnnouncement', [
                 'announcement' => $announcement,
                 'industries' => $industries,
@@ -207,7 +207,7 @@ class AnnouncementController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'payment_type' => 'required|string|max:255',
-            'cost' => 'nullable|numeric',
+            'cost' => 'required_if:salary_type,exact|nullable|numeric',
             'active' => 'required|boolean',
             'work_time' => 'nullable|string|max:255', // Assuming work_time is a string
             'work_hours' => 'nullable|max:255',
