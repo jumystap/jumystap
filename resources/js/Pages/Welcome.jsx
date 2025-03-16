@@ -153,32 +153,28 @@ export default function Welcome({
           <div className="col-span-5">
             <div className="flex border-b md:sticky md:top-0 z-20 bg-white bg-opacity-50 backdrop-blur-md border-gray-200">
               <div className="cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500">
-                Вакансии для вас
+                  {t("vacancy_for_you", { ns: "index" })}
               </div>
             </div>
             <Carousel>
                 <div className="block flex bg-gradient-to-r z-10 md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div>
                         <div className="font-bold text-lg md:text-xl">
-                            {i18n.language == "ru"
-                                ? `ЗАПИШИСЬ НА КУРС`
-                                : `ЗАПИШИСЬ НА КУРС `}
+                            {t("sign_up_for_the_course", { ns: "index" })}
                         </div>
                         <div className="font-bold text-lg md:mt-1">
-                            "ОСНОВЫ ЗАРАБОТКА НА YOUTUBE"
+                            {t("basics_of_earning_on_youtube", { ns: "index" })}
                         </div>
                         <div className="font-bold text-lg md:mt-1">
-                            <i>от SkillsTap</i>
+                            <i>{t("from_skillstap", { ns: "index" })}</i>
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
                             <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
                                 className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black"
                             >
-                                {i18n.language == "ru"
-                                    ? "Оставить заявку"
-                                    : "Оставить заявку"}
+                                {t("submit_an_application", { ns: "index" })}
                             </a>
-                            <p>OFFLINE ОБУЧЕНИЕ &nbsp;&nbsp;&nbsp; ПЛАТНО</p>
+                            <p>{t("offline_training", { ns: "index" })} &nbsp;&nbsp;&nbsp; {t("paid", { ns: "index" })}</p>
                         </div>
                     </div>
                 </div>
@@ -191,18 +187,18 @@ export default function Welcome({
                 <div className="w-[300px] px-3 bg-[url('/images/image1.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="flex-wrap flex gap-1">
                     <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      Идет запись
+                        {t("enrollment_in_progress", { ns: "index" })}
                     </div>
                     <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      Новый
+                        {t("new", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                    Пункт замены масла и шиномонтаж
+                      {t("oil_change_and_tire_service", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mb-2 mt-2 text-sm font-light text-gray-500">
-                  Освойте навыки по замене масел и автошин с нуля!
+                    {t("learn_oil_and_tire_replacement", { ns: "index" })}
                 </div>
               </div>
               <div
@@ -212,16 +208,15 @@ export default function Welcome({
                 <div className="w-[300px] px-3 bg-[url('/images/image2.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="flex-wrap flex gap-1">
                     <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      Идет запись
+                      {t("enrollment_in_progress", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                    Основы изготовления корпусной мебели
+                      {t("basics_of_cabinet_furniture_manufacturing", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mt-2 text-sm font-light text-gray-500 mb-2">
-                  Практические навыки — для тех, кто хочет начать карьеру в
-                  мебельном деле.
+                    {t("practical_skills_for_furniture_career", { ns: "index" })}
                 </div>
               </div>
               <div
@@ -231,15 +226,15 @@ export default function Welcome({
                 <div className="w-[300px] px-3 bg-[url('/images/image3.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="flex-wrap flex gap-1">
                     <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      Идет запись
+                      {t("enrollment_in_progress", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                    Мастерская по ремонту обуви
+                      {t("shoe_repair_workshop", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mb-2 mt-2 text-sm font-light text-gray-500">
-                  Научитесь ремонту обуви и изготовлению ключей с нуля!
+                    {t("learn_shoe_repair_and_key_making", { ns: "index" })}
                 </div>
               </div>
               <div
@@ -249,16 +244,16 @@ export default function Welcome({
                 <div className="w-[300px] px-3 bg-[url('/images/image4.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="flex-wrap flex gap-1">
                     <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      Идет запись
+                      {t("enrollment_in_progress", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
                     <br />
-                    Электрогазосварщик
+                      {t("electric_gas_welder", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mt-2 text-sm font-light text-gray-500">
-                  Идеально для тех, кто хочет начать карьеру в промышленности
+                    {t("ideal_for_industry_career", { ns: "index" })}
                 </div>
               </div>
             </div>
@@ -272,7 +267,7 @@ export default function Welcome({
                 <div className="flex items-center">
                   <div className="flex gap-x-1 text-blue-400 items-center">
                     <div className="text-white bg-red-600 font-bold text-xs py-1 px-2 rounded">
-                      СРОЧНО
+                        {t("urgent", { ns: "index" })}
                     </div>
                   </div>
                   <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">
@@ -287,42 +282,51 @@ export default function Welcome({
                 <div className="flex md:mt-4 mt-2  gap-x-1 items-center">
                   <SiFireship className="text-red-600 text-lg" />
                   <div className="md:text-xl text-lg font-regular">
-                    {anonce.salary_type == "exact" &&
-                      anonce.cost &&
-                      `${anonce.cost.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "min" &&
-                      anonce.cost_min &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "diapason" &&
-                      anonce.cost_min &&
-                      anonce.cost_max &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "max" &&
-                      anonce.cost_max &&
-                      `до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "undefined" && `Договорная`}
-                    {anonce.salary_type == "za_smenu" && (
-                      <>
-                        {anonce.cost &&
-                          `${anonce.cost.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          !anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
-                        {!anonce.cost_min &&
+                      {anonce.salary_type === "exact" &&
+                          anonce.cost &&
+                          `${anonce.cost.toLocaleString()} ₸ `}
+                      {anonce?.salary_type === "min" && anonce.cost_min &&
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                      }
+                      {anonce.salary_type === "max" && anonce.cost_max &&
+                          `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "diapason" &&
+                          anonce.cost_min &&
                           anonce.cost_max &&
-                          `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                      </>
-                    )}
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                              anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                      {anonce.salary_type === "za_smenu" && (
+                          <>
+                              {anonce.cost &&
+                                  `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                              }
+                              {anonce.cost_min &&
+                                  !anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                              }
+                              {!anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                              }
+                              {anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                              }
+                          </>
+                      )}
                   </div>
                 </div>
                 <div className="md:mt-4 mt-2 text-sm text-gray-500 font-light"></div>
                 <div className="flex gap-x-1 items-center mt-4">
                   <MdAccessTime className="text-xl" />
                   <div className="text-sm">
-                    График работы: {anonce.work_time}
+                    {t("working_hours", { ns: "index" })}: {anonce.work_time}
                   </div>
                 </div>
               </Link>
@@ -336,7 +340,7 @@ export default function Welcome({
                 <div className="flex">
                   <div className="flex gap-x-1 text-blue-400 items-center">
                     <div className="text-white bg-blue-500 font-bold text-xs py-1 px-3 rounded">
-                      ТОП
+                        {t("top", { ns: "index" })}
                     </div>
                   </div>
                   <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
@@ -351,41 +355,50 @@ export default function Welcome({
                 <div className="flex md:mt-4 mt-2 gap-x-1 items-center">
                   <FaStar className="text-blue-500 text-lg" />
                   <div className="md:text-xl text-lg font-regular">
-                    {anonce.salary_type == "exact" &&
-                      anonce.cost &&
-                      `${anonce.cost.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "min" &&
-                      anonce.cost_min &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "max" &&
-                      anonce.cost_max &&
-                      `до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "diapason" &&
-                      anonce.cost_min &&
-                      anonce.cost_max &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "undefined" && `Договорная`}
-                    {anonce.salary_type == "za_smenu" && (
-                      <>
-                        {anonce.cost &&
-                          `${anonce.cost.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          !anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
-                        {!anonce.cost_min &&
+                      {anonce.salary_type === "exact" &&
+                          anonce.cost &&
+                          `${anonce.cost.toLocaleString()} ₸ `}
+                      {anonce?.salary_type === "min" && anonce.cost_min &&
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                      }
+                      {anonce.salary_type === "max" && anonce.cost_max &&
+                          `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "diapason" &&
+                          anonce.cost_min &&
                           anonce.cost_max &&
-                          `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                      </>
-                    )}
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                              anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                      {anonce.salary_type === "za_smenu" && (
+                          <>
+                              {anonce.cost &&
+                                  `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                              }
+                              {anonce.cost_min &&
+                                  !anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                              }
+                              {!anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                              }
+                              {anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                              }
+                          </>
+                      )}
                   </div>
                 </div>
                 <div className="flex gap-x-1 items-center mt-4">
                   <MdAccessTime className="text-xl" />
                   <div className="text-sm">
-                    График работы: {anonce.work_time}
+                    {t("working_hours", { ns: "index" })}: {anonce.work_time}
                   </div>
                 </div>
               </Link>
@@ -398,7 +411,7 @@ export default function Welcome({
               >
                 <div className="flex items-center">
                   <div
-                    className={`flex gap-x-1 ${anonce.city == "Астана" ? "text-blue-400" : "text-gray-500"} items-center`}
+                    className={`flex gap-x-1 ${anonce.city === "Астана" ? "text-blue-400" : "text-gray-500"} items-center`}
                   >
                     <FaLocationDot className="text-sm" />
                     <div className="text-[10pt] md:text-sm">{anonce.city}</div>
@@ -414,42 +427,51 @@ export default function Welcome({
                 </div>
                 <div className="flex md:mt-4 mt-2 gap-x-3 items-center">
                   <div className="md:text-xl text-lg font-regular">
-                    {anonce.salary_type == "exact" &&
-                      anonce.cost &&
-                      `${anonce.cost.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "min" &&
-                      anonce.cost_min &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "max" &&
-                      anonce.cost_max &&
-                      `до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "diapason" &&
-                      anonce.cost_min &&
-                      anonce.cost_max &&
-                      `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `}
-                    {anonce.salary_type == "undefined" && `Договорная`}
-                    {anonce.salary_type == "za_smenu" && (
-                      <>
-                        {anonce.cost &&
-                          `${anonce.cost.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          !anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
-                        {!anonce.cost_min &&
+                      {anonce.salary_type === "exact" &&
+                          anonce.cost &&
+                          `${anonce.cost.toLocaleString()} ₸ `}
+                      {anonce?.salary_type === "min" && anonce.cost_min &&
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                      }
+                      {anonce.salary_type === "max" && anonce.cost_max &&
+                          `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "diapason" &&
+                          anonce.cost_min &&
                           anonce.cost_max &&
-                          `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                        {anonce.cost_min &&
-                          anonce.cost_max &&
-                          `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                      </>
-                    )}
+                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                              anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                      }
+                      {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                      {anonce.salary_type === "za_smenu" && (
+                          <>
+                              {anonce.cost &&
+                                  `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                              }
+                              {anonce.cost_min &&
+                                  !anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                              }
+                              {!anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                              }
+                              {anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                      t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                              }
+                          </>
+                      )}
                   </div>
                 </div>
                 <div className="md:mt-4 mt-2 text-sm text-gray-500 font-light"></div>
                 <div className="flex gap-x-1 items-center mt-4">
                   <MdAccessTime className="text-xl" />
                   <div className="text-sm">
-                    График работы: {anonce.work_time}
+                    {t("working_hours", { ns: "index" })}: {anonce.work_time}
                   </div>
                 </div>
               </Link>
@@ -477,7 +499,7 @@ export default function Welcome({
                       alt=""
                     />
                     <div>
-                      {i18n.language == "ru" ? work.name_ru : work.name_kz}
+                      {i18n.language === "ru" ? work.name_ru : work.name_kz}
                     </div>
                   </Link>
                 ))}
@@ -515,7 +537,7 @@ export default function Welcome({
           <div className="col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0">
             <div>
               <div className="font-bold p-3 text-sm border-b border-gray-200">
-                Вам могут понравиться
+                  {t("you_might_like", { ns: "index" })}
               </div>
               {urgent_announcements.map((urgent, key) => (
                 <Link
@@ -529,17 +551,22 @@ export default function Welcome({
                     </div>
                     <div className="flex items-center font-bold gap-x-2 text-sm ml-auto">
                       <SiFireship className="text-red-600 text-lg" />
-                      {urgent.salary_type == "exact" &&
-                        urgent.cost &&
-                        `${urgent.cost.toLocaleString()} ₸ `}
-                      {urgent.salary_type == "min" &&
-                        urgent.cost_min &&
-                        `от ${urgent.cost_min.toLocaleString()} ₸ `}
-                      {urgent.salary_type == "max" &&
-                        `до ${urgent.cost_max.toLocaleString()} ₸ `}
-                      {urgent.salary_type == "diapason" &&
-                        `от ${urgent.cost_min.toLocaleString()} ₸`}
-                      {urgent.salary_type == "undefined" && `Договорная`}
+                        {urgent.salary_type === "exact" &&
+                            urgent.cost &&
+                            `${urgent.cost.toLocaleString()} ₸ `}
+                        {urgent?.salary_type === "min" && urgent.cost_min &&
+                            `${i18n?.language === "ru" ? "от " + urgent.cost_min.toLocaleString() + " ₸" : urgent.cost_min.toLocaleString() + " ₸ бастап"}`
+                        }
+                        {urgent.salary_type === "max" && anonce.cost_max &&
+                            `${i18n?.language === "ru" ? "до " + urgent.cost_max.toLocaleString() + " ₸" : urgent.cost_max.toLocaleString() + " ₸ дейін"}`
+                        }
+                        {urgent.salary_type === "diapason" &&
+                            urgent.cost_min &&
+                            urgent.cost_max &&
+                            `${i18n?.language === "ru" ? "от " + urgent.cost_min.toLocaleString() + " ₸" :
+                                urgent.cost_min.toLocaleString() + " ₸ бастап"}`
+                        }
+                        {urgent.salary_type === "undefined" && t("negotiable", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-3 text-[11pt] max-w-[400px]">
@@ -550,9 +577,9 @@ export default function Welcome({
                     {urgent.city}
                   </div>
                   <div className="text-sm font-light text-gray-500">
-                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
+                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
                     {`${formatDistanceToNow(new Date(urgent.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language == "kz" && ""}
+                    {i18n.language === "kz" && ""}
                   </div>
                 </Link>
               ))}
@@ -568,16 +595,22 @@ export default function Welcome({
                     </div>
                     <div className="flex gap-x-2 items-center font-bold text-sm ml-auto">
                       <FaStar className="text-blue-500 text-lg" />
-                      {top.salary_type == "exact" &&
-                        top.cost &&
-                        `${top.cost.toLocaleString()} ₸ `}
-                      {top.salary_type == "min" &&
-                        `от ${top.cost_min.toLocaleString()} ₸ `}
-                      {top.salary_type == "max" &&
-                        `до ${top.cost_max.toLocaleString()} ₸ `}
-                      {top.salary_type == "diapason" &&
-                        `от ${top.cost_min.toLocaleString()} ₸`}
-                      {top.salary_type == "undefined" && `Договорная`}
+                        {top.salary_type === "exact" &&
+                            top.cost &&
+                            `${top.cost.toLocaleString()} ₸ `}
+                        {top?.salary_type === "min" && top.cost_min &&
+                            `${i18n?.language === "ru" ? "от " + top.cost_min.toLocaleString() + " ₸" : top.cost_min.toLocaleString() + " ₸ бастап"}`
+                        }
+                        {top.salary_type === "max" && anonce.cost_max &&
+                            `${i18n?.language === "ru" ? "до " + top.cost_max.toLocaleString() + " ₸" : top.cost_max.toLocaleString() + " ₸ дейін"}`
+                        }
+                        {top.salary_type === "diapason" &&
+                            top.cost_min &&
+                            top.cost_max &&
+                            `${i18n?.language === "ru" ? "от " + top.cost_min.toLocaleString() + " ₸" :
+                                top.cost_min.toLocaleString() + " ₸ бастап"}`
+                        }
+                        {top.salary_type === "undefined" && t("negotiable", { ns: "index" })}
                     </div>
                   </div>
                   <div className="mt-3 text-[11pt] max-w-[400px]">
@@ -588,9 +621,9 @@ export default function Welcome({
                     {top.city}
                   </div>
                   <div className="text-sm font-light text-gray-500">
-                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
+                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
                     {`${formatDistanceToNow(new Date(top.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language == "kz" && ""}
+                    {i18n.language === "kz" && ""}
                   </div>
                 </Link>
               ))}

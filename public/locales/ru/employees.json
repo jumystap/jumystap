@@ -11,6 +11,8 @@
     "any_graduate": "Все",
     "any_graduate_default": "Соискатели",
     "graduate": "С сертификатом JOLTAP",
-    "non_graduate": "Без сертификата JOLTAP"
+    "non_graduate": "Без сертификата JOLTAP",
+    "detail": "Подробнее",
+    "search_by_name": "Поиск по имени"
 }
 

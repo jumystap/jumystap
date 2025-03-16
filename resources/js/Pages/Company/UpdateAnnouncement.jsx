@@ -823,7 +823,7 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={processing}>
-                                Изменить
+                                {t('edit', { ns: 'createAnnouncement' })}
                             </Button>
                         </Form.Item>
                     </Form>

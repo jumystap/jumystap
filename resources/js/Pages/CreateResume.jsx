@@ -7,6 +7,7 @@ import 'moment/locale/ru'
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import GuestLayout from '@/Layouts/GuestLayout';
+import {useTranslation} from "react-i18next";
 
 const { Option } = Select;
 
@@ -18,6 +19,7 @@ const kazakhstanCities = [
 ];
 
 const CreateUpdateResume = ({ announcement, specialization }) => {
+    const { t, i18n } = useTranslation('createResume');
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]); // Initially all organizations are in edit mode
     const { data, setData, post } = useForm({
@@ -43,10 +45,10 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
 
     const cascaderData = specialization.map(category => ({
         value: category.id,
-        label: category.name_ru,
+        label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
         children: category.specialization.map(spec => ({
             value: spec.id,
-            label: spec.name_ru
+            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
         }))
     }));
 
@@ -169,24 +171,24 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
             <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="col-span-5 p-5">
                     <Form layout="vertical" onFinish={handleSubmit}>
-                        <div className='font-semibold text-2xl mb-4'>Создать резюме</div>
+                        <div className='font-semibold text-2xl mb-4'>{t('create_resume')}</div>
                         <div className='flex gap-x-5'>
                         {data.photo_path && <img src={URL.createObjectURL(data.photo_path)} className='w-[200px] h-[250px] object-cover'/>}
-                        <Form.Item label="Загрузите вашу фотографию" name='photo' rules={[{ required: true, message: 'Пожалуйста, загрузите фотографию' }]}>
+                        <Form.Item label={t('upload_your_photo')} name='photo' rules={[{ required: true, message: t('please_upload_photo') }]}>
                             <Upload {...uploadProps} showUploadList={false}>
-                                <Button icon={<UploadOutlined />}>Загрузить фото</Button>
+                                <Button icon={<UploadOutlined />}>{t('upload_photo')}</Button>
                             </Upload>
                         </Form.Item>
                         </div>
-                        <div className='font-semibold text-xl mb-4 mt-2'>Укажите ваш опыт работы</div>
+                        <div className='font-semibold text-xl mb-4 mt-2'>{t('specify_work_experience')}</div>
                         {data.organizations.map((organization, index) => (
                             <Space key={index} direction="vertical" style={{ display: 'flex', marginBottom: 5 }}>
                                 {editMode[index] ? (
                                     <>
                                         <Form.Item
-                                            label="Наименование организации"
+                                            label={t('organization_name')}
                                             name='organization.name'
-                                            rules={[{ required: true, message: 'Пожалуйста, укажите наименование организации' }]}
+                                            rules={[{ required: true, message: t('please_specify_organization_name') }]}
                                         >
                                             <Input
                                                 defaultValue={organization.organization}
@@ -196,22 +198,22 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Должность"
+                                            label={t('position')}
                                             name='organization.profession'
                                             className='mt-[-17px]'
-                                            rules={[{ required: true, message: 'Пожалуйста, укажите должность' }]}
+                                            rules={[{ required: true, message: t('please_specify_position') }]}
                                         >
                                             <Cascader
                                                 options={cascaderData}
                                                 defaultValue={defaultValue}
                                                 onChange={(value) => handleNestedChange(index, 'position', value[1])}
-                                                placeholder="Должность"
+                                                placeholder={t('position')}
                                             />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Период работы"
+                                            label={t('work_period')}
                                             className='mt-[-17px]'
-                                            rules={[{ required: true, message: 'Пожалуйста, укажите дату начала работы' }]}
+                                            rules={[{ required: true, message: t('please_specify_start_date') }]}
                                         >
                                             <div className='flex gap-x-5'>
                                                 <div>
@@ -238,28 +240,28 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                                         className='flex'
                                                         onChange={() => handleCheckboxChange(index)}
                                                     >
-                                                        По настоящее время
+                                                        {t('until_present')}
                                                     </Checkbox>
                                                 </div>
                                             </div>
                                         </Form.Item>
 
                                         <div className='flex items-center mt-[-10px] gap-x-2'>
-                                            <Button type="primary" onClick={() => toggleEditMode(index)}>Сохранить</Button>
+                                            <Button type="primary" onClick={() => toggleEditMode(index)}>{t('save')}</Button>
                                             <Button danger onClick={() => removeOrganization(index)}>
-                                                Удалить место работы
+                                                {t('delete_workplace')}
                                             </Button>
                                         </div>
                                     </>
                                 ) : (
                                     <div className='border border-gray-200 py-4 mt-2 px-5 rounded-lg'>
-                                        <p><strong>Организация:</strong> {organization.organization}</p>
-                                        <p><strong>Должность:</strong> {findSpecializationName(specialization, organization.position)}</p>
-                                        <p><strong>Период работы:</strong> {organization.period}</p>
+                                        <p><strong>{t('organization')}:</strong> {organization.organization}</p>
+                                        <p><strong>{t('position')}:</strong> {findSpecializationName(specialization, organization.position)}</p>
+                                        <p><strong>{t('work_period')}:</strong> {organization.period}</p>
                                         <div className='flex mt-4 items-center gap-x-2'>
                                             <Button type="dashed" onClick={() => toggleEditMode(index)}>Редактировать</Button>
                                             <Button danger onClick={() => removeOrganization(index)}>
-                                                Удалить место работы
+                                                {t('delete_workplace')}
                                             </Button>
                                         </div>
                                     </div>
@@ -269,14 +271,14 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                             </Space>
                         ))}
                         <Button type="dashed" className='mt-3' onClick={addOrganization} icon={<PlusOutlined />}>
-                            Добавить еще место работы
+                            {t('add_more_workplaces')}
                         </Button>
 
                         <Form.Item
-                            label='Город'
+                            label={t('city')}
                             name="city"
                             className='mt-4'
-                            rules={[{ required: true, message: ' select a city' }]}
+                            rules={[{ required: true, message: t('select_a_city') }]}
                         >
                             <Select
                                 value={data.city}
@@ -285,16 +287,16 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                 {kazakhstanCities.map((city) => (
                                     <Option key={city} value={city}>{city}</Option>
                                 ))}
-                                <Option value="Дистанционное">Дистанционное</Option>
-                                <Option value="Другое">Другое</Option>
+                                <Option value="Дистанционное">{t('remote')}</Option>
+                                <Option value="Другое">{t('other')}</Option>
                             </Select>
                         </Form.Item>
 
                         {showOtherCityInput && (
                             <Form.Item
-                                label='Введите другой город'
+                                label={t('enter_other_city')}
                                 name="city"
-                                rules={[{ required: true, message: 'Please enter a city' }]}
+                                rules={[{ required: true, message: t('please_enter_city') }]}
                             >
                                 <Input
                                     type="text"
@@ -309,9 +311,9 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
 
                         {data.city === 'Астана' && (
                             <Form.Item
-                                label="Укажите ваш район проживания"
+                                label={t('specify_residence_area')}
                                 name="district"
-                                rules={[{ required: true, message: 'Пожалуйста, укажите район' }]}
+                                rules={[{ required: true, message: t('please_specify_residence_area') }]}
                             >
                                 <Select value={data.district} onChange={(value) => handleInputChange('district', value)}>
                                     <Option value="Есиль">Есиль</Option>
@@ -324,33 +326,33 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                         )}
 
                         <Form.Item
-                            label="Укажите какими языками вы владеете"
+                            label={t('specify_languages')}
                             name='languages'
-                            rules={[{ required: true, message: 'Пожалуйста, укажите языки' }]}
+                            rules={[{ required: true, message: t('please_specify_languages') }]}
                         >
                             <Select
                                 mode="multiple"
                                 value={data.languages}
                                 onChange={(value) => handleInputChange('languages', value)}
                             >
-                                <Option value="Казахский">Казахский</Option>
-                                <Option value="Русский">Русский</Option>
-                                <Option value="Английский">Английский</Option>
-                                <Option value="Немецкий">Немецкий</Option>
-                                <Option value="Французкий">Французкий</Option>
-                                <Option value="Китайский">Китайский</Option>
+                                <Option value="Казахский">{t('kazakh')}</Option>
+                                <Option value="Русский">{t('russian')}</Option>
+                                <Option value="Английский">{t('english')}</Option>
+                                <Option value="Немецкий">{t('german')}</Option>
+                                <Option value="Французкий">{t('french')}</Option>
+                                <Option value="Китайский">{t('chinese')}</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
-                            label="Укажите ваше образование"
+                            label={t('specify_education')}
                             name='education'
-                            rules={[{ required: true, message: 'Пожалуйста, укажите образование' }]}
+                            rules={[{ required: true, message: t('please_specify_education') }]}
                         >
                             <Select value={data.education} onChange={(value) => handleInputChange('education', value)}>
-                                <Option value="Среднее">Среднее</Option>
-                                <Option value="Среднее специальное">Среднее специальное</Option>
-                                <Option value="Неоконченное высшее">Неоконченное высшее</Option>
-                                <Option value="Высшее">Высшее</Option>
+                                <Option value="Среднее">{t('secondary')}</Option>
+                                <Option value="Среднее специальное">{t('secondary_special')}</Option>
+                                <Option value="Неоконченное высшее">{t('incomplete_higher')}</Option>
+                                <Option value="Высшее">{t('higher')}</Option>
                             </Select>
                         </Form.Item>
 
@@ -358,8 +360,8 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                             <>
                                 <Form.Item
                                     name='faculty'
-                                    label="Факультет и специализация"
-                                    rules={[{ required: data.education !== 'Среднее', message: 'Пожалуйста, укажите желаемую сферу работы' }]}
+                                    label={t('faculty_and_specialization')}
+                                    rules={[{ required: data.education !== 'Среднее', message: t('please_specify_desired_work_field') }]}
                                 >
                                     <Input
                                         value={data.faculty}
@@ -369,12 +371,12 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                 </Form.Item>
                                 <Form.Item
                                     name='year'
-                                    rules={[{ required: data.education !== 'Среднее', message: 'Пожалуйста, укажите желаемую сферу работы' }]}
-                                    label="Год окончания"
+                                    rules={[{ required: data.education !== 'Среднее', message: t('please_specify_graduation_year') }]}
+                                    label={t('graduation_year')}
                                 >
                                     <DatePicker
                                         picker="year"
-                                        placeholder='Год окончания'
+                                        placeholder={t('graduation_year')}
                                         value={data.graduation_year ? moment(data.graduation_year) : null}
                                         onChange={(date) => handleInputChange('graduation_year', date ? date.format('YYYY') : null)}
                                     />
@@ -383,37 +385,37 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                         )}
 
                         <Form.Item
-                            label="Укажите наличие ИП"
+                            label={t('specify_ip_status')}
                             name='ip_status'
-                            rules={[{ required: true, message: 'Пожалуйста, укажите статус ИП' }]}
+                            rules={[{ required: true, message: t('please_specify_ip_status') }]}
                         >
                             <Select value={data.ip_status} onChange={(value) => handleInputChange('ip_status', value)}>
-                                <Option value="Присутствует">Присутствует</Option>
-                                <Option value="Отсутствует">Отсутствует</Option>
+                                <Option value="Присутствует">{t('present')}</Option>
+                                <Option value="Отсутствует">{t('absent')}</Option>
                             </Select>
                         </Form.Item>
 
                         <Form.Item
-                            label="В какой сфере вы желаете работать"
+                            label={t('desired_work_field')}
                             name='desired_field'
-                            rules={[{ required: true, message: 'Пожалуйста, укажите желаемую сферу работы' }]}
+                            rules={[{ required: true, message: t('please_specify_desired_work_field') }]}
                         >
                             <Cascader
                                 options={cascaderData}
                                 onChange={(value) => setData('desired_field', value[1])}
-                                placeholder="В какой сфере вы желаете работать"
+                                placeholder={t('desired_work_field')}
                             />
                         </Form.Item>
-                        <Form.Item label="Навыки" name='skills'>
+                        <Form.Item label={t('skills')} name='skills'>
                             <div className='flex items-center gap-x-2'>
                             <Input
                                 value={data.newSkill}
                                 onChange={(e) => setData('newSkill', e.target.value)}
                                 className="text-sm rounded py-1 mt-[0px] border border-gray-300"
-                                placeholder="Введите навык и нажмите кнопку"
+                                placeholder={t('enter_skill_and_press_button')}
                             />
                             <Button onClick={addSkill} className=''>
-                                Добавить навык
+                                {t('add_skill')}
                             </Button>
                             </div>
                             <div className='flex flex-wrap gap-2 mt-2'>
@@ -430,14 +432,16 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                             </div>
                         </Form.Item>
                         <Button type="primary" htmlType="submit">
-                            Создать резюме
+                            {t('create_resume')}
                         </Button>
                     </Form>
                 </div>
                 <div className='md:h-full sticky top-0 bg-[#F9FAFC] rounded-lg w-full hidden md:block md:col-span-2 p-5 md:relative'>
                         <div className=''>
-                            <div className='text-lg'>Сложности с созданием?</div>
-                            <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                            <div className='text-lg'>{t('troubles_with_creation')}</div>
+                            <div className='text-sm font-light text-gray-500'>
+                                {t('contact_for_help')}
+                            </div>
                             <div className='mt-10 text-sm'>
                                 <div>+7 707 221 31 31</div>
                                 <div className='ml-auto'>janamumkindik@gmail.com</div>

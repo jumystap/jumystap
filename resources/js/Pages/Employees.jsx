@@ -22,26 +22,31 @@ const FilterSelect = memo(({ name, options, value, onChange }) => (
 ));
 
 // Мемоизация компонента FilterSection
-const FilterSection = memo(({ children, className = "", searchTerm, onSearchChange, onSearch }) => (
-    <div className={`space-y-4 ${className}`}>
-        <div className="relative">
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={onSearchChange}
-                placeholder="Поиск по имени"
-                className="w-full pl-4 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            />
-            <button
-                onClick={onSearch}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
-            >
-                <RiSearch2Line className="text-xl" />
-            </button>
+const FilterSection = memo(({ children, className = "", searchTerm, onSearchChange, onSearch }) => {
+    const { t } = useTranslation("employees"); // Загружаем namespace "employees"
+
+    return (
+        <div className={`space-y-4 ${className}`}>
+            <div className="relative">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={onSearchChange}
+                    placeholder={t("search_by_name")}
+                    className="w-full pl-4 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                />
+                <button
+                    onClick={onSearch}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
+                >
+                    <RiSearch2Line className="text-xl" />
+                </button>
+            </div>
+            {children}
         </div>
-        {children}
-    </div>
-));
+    );
+});
+
 
 export default function Employees({ auth, employees, professions, filters = {} }) {
     const { t, i18n } = useTranslation();
@@ -216,7 +221,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
 
                                     <div className="hidden md:block">
                                         <button className="px-6 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors duration-200">
-                                            Подробнее
+                                            { t('detail', { ns: 'employees' })}
                                         </button>
                                     </div>
                                 </div>

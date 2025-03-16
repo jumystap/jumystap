@@ -6,6 +6,9 @@
     "register_prompt": "Нет аккаунта?",
     "register_prompt_span": "Зарегистрируйтесь",
     "forgot_password": "Забыли пароль?",
-    "forgot_password_span": "Восстановите аккаунт"
+    "forgot_password_span": "Восстановите аккаунт",
+    "authorization_error": "Ошибка авторизации",
+    "login_issues": "Сложности со входом?",
+    "if_you_experience_difficulties_you_can_contact_us_using_these_details": "При возникновении трудностей вы можете обратиться по этим контактным данным"
 }
-  
+

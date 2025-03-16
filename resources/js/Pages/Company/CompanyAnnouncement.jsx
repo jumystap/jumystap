@@ -15,6 +15,7 @@ export default function CompanyAnnouncement({
     peakViewingTimes,
     respondedUsers
 }) {
+    const { t, i18n } = useTranslation('companyAnnouncement');
     const [isMobile, setIsMobile] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -37,11 +38,11 @@ export default function CompanyAnnouncement({
     const handleDelete = () => {
         destroy(`/announcements/${announcement.id}`, {
             onSuccess: () => {
-                message.success('Объявление удалено.');
+                message.success(t('ad_deleted'));
                 setIsModalVisible(false);
             },
             onError: () => {
-                message.error('Ошибка при удалении объявления.');
+                message.error(t('ad_deletion_error'));
             },
         });
     };
@@ -49,10 +50,10 @@ export default function CompanyAnnouncement({
     const handleRateUser = (userId, rating) => {
         get(route('rate.user', { employee_id:userId, rating: rating }), {
             onSuccess: () => {
-                message.success('Пользователь оценен.');
+                message.success(t('user_rated'));
             },
             onError: () => {
-                message.error('Ошибка при оценке пользователя.');
+                message.error(t('user_rating_error'));
             },
         });
     };
@@ -64,51 +65,51 @@ export default function CompanyAnnouncement({
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12} md={8}>
                         <Card>
-                            <Statistic title="Общее количество просмотров" value={totalViews} />
+                            <Statistic title={t('total_views')} value={totalViews} />
                         </Card>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
                         <Card>
-                            <Statistic title="Общее количество откликов" value={totalResponses} />
+                            <Statistic title={t('total_responses')} value={totalResponses} />
                         </Card>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
                         <Card>
-                            <Statistic title="Уникальные посетители" value={uniqueVisitors} />
+                            <Statistic title={t('unique_visitors')} value={uniqueVisitors} />
                         </Card>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
                         <Card>
-                            <Statistic title="Повторные посетители" value={repeatedVisitors} />
+                            <Statistic title={t('returning_visitors')} value={repeatedVisitors} />
                         </Card>
                     </Col>
                     <Col xs={24} sm={12} md={8}>
                         <Card>
-                            <Statistic title="Процент откликов" value={responseRate.toFixed(2)} suffix="%" />
+                            <Statistic title={t('response_rate')} value={responseRate.toFixed(2)} suffix="%" />
                         </Card>
                     </Col>
                 </Row>
 
                 <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
                     <Col xs={24} md={12}>
-                        <Card title="Просмотры по времени">
+                        <Card title={t('views_by_time')}>
                             <List
                                 dataSource={Object.entries(viewsOverTime)}
                                 renderItem={([date, count]) => (
                                     <List.Item>
-                                        {date}: {count} просмотров
+                                        {date}: {count} {t('views')}
                                     </List.Item>
                                 )}
                             />
                         </Card>
                     </Col>
                     <Col xs={24} md={12}>
-                        <Card title="Пиковое время просмотра">
+                        <Card title={t('peak_viewing_time')}>
                             <List
                                 dataSource={Object.entries(peakViewingTimes)}
                                 renderItem={([hour, count]) => (
                                     <List.Item>
-                                        {hour}:00 - {count} просмотров
+                                        {hour}:00 - {count} {t('views')}
                                     </List.Item>
                                 )}
                             />
@@ -118,7 +119,7 @@ export default function CompanyAnnouncement({
 
                 <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
                     <Col xs={24}>
-                        <Card title="Пользователи, которые откликнулись">
+                        <Card title={t('users_who_responded')}>
                             <List
                                 dataSource={respondedUsers}
                                 renderItem={(user) => (
@@ -141,19 +142,19 @@ export default function CompanyAnnouncement({
 
                 <div style={{ marginTop: '20px', textAlign: 'right' }}>
                     <Button type="primary" danger onClick={showDeleteModal} loading={processing}>
-                        Удалить объявление
+                        {t('delete_ad')}
                     </Button>
                 </div>
 
                 <Modal
-                    title="Подтвердите удаление"
+                    title={t('confirm_deletion')}
                     visible={isModalVisible}
                     onOk={handleDelete}
                     onCancel={() => setIsModalVisible(false)}
-                    okText="Удалить"
-                    cancelText="Отмена"
+                    okText={t('delete')}
+                    cancelText={t('cancel')}
                 >
-                    Вы уверены, что хотите удалить это объявление?
+                    {t('delete_ad_confirmation')}
                 </Modal>
             </div>
         </Guest>

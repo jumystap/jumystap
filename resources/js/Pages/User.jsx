@@ -14,7 +14,7 @@ const formatCreatedAt = (createdAt) => {
 };
 
 export default function User({ auth, user, employees, userProfessions, resumes }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation("profile");
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -51,7 +51,7 @@ export default function User({ auth, user, employees, userProfessions, resumes }
                                             </div>
                                         )}
                                     </div>
-                                    
+
                                     <div className="flex-grow">
                                         <h1 className="text-2xl font-bold text-gray-900 mb-1">
                                             {user.name}
@@ -65,21 +65,21 @@ export default function User({ auth, user, employees, userProfessions, resumes }
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="md:ml-auto">
                                         {auth.user == null ? (
                                             <Link
-                                                href="/register"
+                                                href="/loginƒ"
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
-                                                Связаться
+                                                {t("contact", { ns: "profile" })}
                                             </Link>
                                         ) : (
                                             <a
                                                 href={`https://wa.me/${user.phone}?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A`}
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
-                                                Связаться
+                                                {t("contact", { ns: "profile" })}
                                             </a>
                                         )}
                                     </div>

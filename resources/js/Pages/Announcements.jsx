@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { CgClose} from "react-icons/cg";
@@ -160,10 +160,10 @@ export default function Announcements({ auth, announcements, specializations, er
 
     const cascaderOptions = specializations.map(category => ({
         value: category.id,
-        label: category.name_ru,
+        label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
         children: category.specialization.map(spec => ({
             value: spec.id,
-            label: spec.name_ru
+            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
         }))
     }));
 
@@ -199,7 +199,7 @@ export default function Announcements({ auth, announcements, specializations, er
                 {isFilterOpen && (
                     <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
                         <div className='flex w-full items-center'>
-                            <div className='text-xl font-bold'>Фильтры</div>
+                            <div className='text-xl font-bold'>{t('filters', { ns: 'announcements' })}</div>
                             <CgClose
                                 onClick={() => setIsFilterOpen(false)}
                                 className='ml-auto text-2xl inline-block cursor-pointer'
@@ -209,25 +209,25 @@ export default function Announcements({ auth, announcements, specializations, er
                             type="text"
                             value={data.searchKeyword}
                             onChange={handleSearchKeywordChange}
-                            placeholder={t('search_placeholder', { ns: 'announcements' })}
+                            placeholder={t('search', { ns: 'announcements' })}
                             className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
 
-                        <div className='text-gray-500 mt-5'>Специализация</div>
+                        <div className='text-gray-500 mt-5'>{t('specialization', { ns: 'announcements' })}</div>
                         <Cascader
                             options={cascaderOptions}
-                            placeholder="Выберите специализацию"
+                            placeholder={t('select_specialization', { ns: 'announcements' })}
                             onChange={handleSpecializationChange}
                             className="block mt-2 w-full text-base"
                         />
 
-                        <div className='text-gray-500 mt-5'>Регион</div>
+                        <div className='text-gray-500 mt-5'>{t('region', { ns: 'announcements' })}</div>
                         <select
                             value={city}
                             onChange={handleCityChange}
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
-                            <option value="">Выберите город</option>
+                            <option value="">{t('select_city', { ns: 'announcements' })}</option>
                             {cityArray.map(city => (
                                 <option key={city.id} value={city.name}>
                                   {city.name}
@@ -239,18 +239,18 @@ export default function Announcements({ auth, announcements, specializations, er
                             type="number"
                             value={minSalary}
                             onChange={handleMinSalaryChange}
-                            placeholder='Уровень дохода от'
+                            placeholder={t('income_level_from', { ns: 'announcements' })}
                             className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
 
                         <div className='mt-5 flex items-center'>
-                            <div>Указан доход</div>
+                            <div>{t('specified_income', { ns: 'announcements' })}</div>
                             <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
                         </div>
 
                         <div className='bottom-10'>
                             <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
-                                Применить
+                                {t('apply', { ns: 'announcements' })}
                             </div>
                         </div>
                     </div>
@@ -261,25 +261,21 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                             <div>
                                 <div className='font-bold text-lg md:text-xl'>
-                                    {i18n.language == 'ru' ?
-                                        (`Пройди бесплатное обучение`)
-                                    :
-                                        (`Пройди бесплатное обучение `)
-                                    }
+                                    {t('get_free_training', { ns: 'announcements' })}
                                 </div>
-                                <div className='font-light md:mt-3'>{i18n.language == 'ru' ? ('по рабочим профессиям') : ('по рабочим профессиям')}</div>
+                                <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'announcements' })}</div>
                                 <div className='flex gap-x-5 mt-3 items-center'>
                                     <div
                                         onClick={() => setIsOpen(true)}
                                         className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
                                     >
-                                        {i18n.language == 'ru' ? ('Оставить заявку'):('Оставить заявку')}
+                                        {t('submit_an_application', { ns: 'announcements' })}
                                     </div>
                                     <a
                                         href='https://www.instagram.com/joltap.kz'
                                         className='block text-white text-sm font-light md:text-sm'
                                     >
-                                        {i18n.language == 'ru' ? ('Подробнее'):('Толығырақ')}
+                                        {t('detail', { ns: 'announcements' })}
                                     </a>
                                 </div>
                             </div>
@@ -290,21 +286,21 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div
                         className='mx-3 md:mx-5 md:px-10 px-4 py-7 bg-gradient-to-r from-blue-500 to-blue-800  mt-2 rounded-lg'
                         >
-                            <div className='font-semibold text-lg md:text-xl text-white'>Подбери вакансии для себя!</div>
-                            <div className='font-light mt-2 text-white'>Заполни анкету и найди подходящие вакансии</div>
+                            <div className='font-semibold text-lg md:text-xl text-white'>{t('find_jobs_for_yourself', { ns: 'announcements' })}</div>
+                            <div className='font-light mt-2 text-white'>{t('fill_out_the_form_and_find_suitable_jobs', { ns: 'announcements' })}</div>
                             {auth.user ? (
                                 <div
                                     className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
                                     onClick={() => setIsInfoOpen(true)}
                                 >
-                                    Заполнить
+                                    {t('fill_out', { ns: 'announcements' })}
                                 </div>
                             ):(
                                 <Link
                                     className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
                                     href='/login'
                                 >
-                                    Заполнить
+                                    {t('fill_out', { ns: 'announcements' })}
                                 </Link>
                             )}
                         </div>
@@ -315,14 +311,14 @@ export default function Announcements({ auth, announcements, specializations, er
                                 type="text"
                                 value={data.searchKeyword}
                                 onChange={handleSearchKeywordChange}
-                                placeholder={t('search_placeholder', { ns: 'announcements' })}
+                                placeholder={t('search', { ns: 'announcements' })}
                                 className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                             />
                             <button
                                 className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
                                 onClick={handleSearch}
                             >
-                                Найти
+                                {t('search', { ns: 'announcements' })}
                             </button>
                             <button
                                 className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
@@ -354,17 +350,42 @@ export default function Announcements({ auth, announcements, specializations, er
 
                                 <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-xl font-regular'>
-                                        {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'diapason' && anonce.cost_max && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'undefined' && (`Договорная`)}
-                                        {anonce.salary_type == 'za_smenu' && (
+                                        {anonce.salary_type === "exact" &&
+                                            anonce.cost &&
+                                            `${anonce.cost.toLocaleString()} ₸ `}
+                                        {anonce?.salary_type === "min" && anonce.cost_min &&
+                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                        }
+                                        {anonce.salary_type === "max" && anonce.cost_max &&
+                                            `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        }
+                                        {anonce.salary_type === "diapason" &&
+                                            anonce.cost_min &&
+                                            anonce.cost_max &&
+                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                                                anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        }
+                                        {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                        {anonce.salary_type === "za_smenu" && (
                                             <>
-                                                {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
-                                                {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
-                                                {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                                                {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                {anonce.cost &&
+                                                    `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                }
+                                                {anonce.cost_min &&
+                                                    !anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                }
+                                                {!anonce.cost_min &&
+                                                    anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                }
+                                                {anonce.cost_min &&
+                                                    anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                }
                                             </>
                                         )}
                                     </div>
@@ -384,14 +405,14 @@ export default function Announcements({ auth, announcements, specializations, er
                                                 href={`/connect/${auth.user.id}/${anonce.id}`}
                                                 onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
                                                 className='text-blue-500 text-center rounded-lg text-sm text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>Связаться</span>
+                                                <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
                                             </a>
                                             {auth.user.email === 'admin@example.com' && (
                                                 <a
                                                     href={`/announcement/update/${anonce.id}`}
                                                     onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
                                                     className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                    <span className='font-bold'>Изменить</span>
+                                                    <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
                                                 </a>
                                             )}
                                         </>
@@ -400,7 +421,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                             href='/login'
                                             onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
                                             className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>Связаться</span>
+                                            <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
                                         </Link>
                                     )}
                                     <div
@@ -419,24 +440,24 @@ export default function Announcements({ auth, announcements, specializations, er
                     </div>
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
                         <div>
-                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Фильтры</div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>{t('filters', { ns: 'announcements' })}</div>
                         </div>
                         <div className='flex px-3 flex-col md:flex-col'>
-                            <div className='text-gray-500 mt-5'>Специализация</div>
+                            <div className='text-gray-500 mt-5'>{t('specialization', { ns: 'announcements' })}</div>
                             <Cascader
                                 options={cascaderOptions}
-                                placeholder="Выберите специализацию"
+                                placeholder={t('select_specialization', { ns: 'announcements' })}
                                 onChange={handleSpecializationChange}
                                 className="block mt-2 w-full text-base"
                             />
 
-                            <div className='text-gray-500 mt-5'>Регион</div>
+                            <div className='text-gray-500 mt-5'>{t('region', { ns: 'announcements' })}</div>
                             <select
                                 value={city}
                                 onChange={handleCityChange}
                                 className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
-                                <option value="">Выберите город</option>
+                                <option value="">{t('select_city', { ns: 'announcements' })}</option>
                                 {cityArray.map(city => (
                                     <option key={city.id} value={city.name}>
                                       {city.name}
@@ -448,18 +469,18 @@ export default function Announcements({ auth, announcements, specializations, er
                                 type="number"
                                 value={minSalary}
                                 onChange={handleMinSalaryChange}
-                                placeholder='Уровень дохода от'
+                                placeholder={t('income_level_from', { ns: 'announcements' })}
                                 className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                             />
 
                             <div className='mt-5 flex items-center'>
-                                <div>Указан доход</div>
+                                <div>{t('specified_income', { ns: 'announcements' })}</div>
                                 <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
                             </div>
 
                             <div className='bottom-10'>
                                 <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
-                                    Применить
+                                    {t('apply', { ns: 'announcements' })}
                                 </div>
                             </div>
                         </div>

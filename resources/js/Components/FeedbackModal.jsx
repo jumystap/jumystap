@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
 
 export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
-    const { t } = useTranslation();
+    const { t } = useTranslation('header');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [loading, setLoading] = useState(false);
@@ -12,12 +12,12 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     const [error, setError] = useState('');
 
     const professions = [
-        'Основы изготовления корпусной мебели',
-        'Бариста',
-        'Электрогазосварщик',
-        'Мастерская по ремонту обуви',
-        'Продавец-кассир',
-        'Пункт замены масла и шиномонтаж'
+        t('furniture_making_basics'),
+        t('barista'),
+        t('electric_gas_welder'),
+        t('shoe_repair_workshop'),
+        t('cashier_seller'),
+        t('oil_change_tire_service'),
     ];
 
     if (!isOpen) return null;
@@ -84,7 +84,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     return (
         <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
-                <div className="mb-4">Отправить заявку</div>
+                <div className="mb-4">{t('submit_application', { ns: 'header' })}</div>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <input
                         type="text"
@@ -97,14 +97,14 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                     <input
                         type="tel"
                         className="w-full p-2 border border-gray-300 rounded-lg"
-                        placeholder="Ваш номер телефона"
+                        placeholder={t('your_phone_number', { ns: 'header' })}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
                     />
 
                     <div>
-                        <div className='mb-2 text-gray-500'>Выберите желаемые навыки:</div>
+                        <div className='mb-2 text-gray-500'>{t('select_desired_skills', { ns: 'header' })}:</div>
                         <ConfigProvider
                             theme={{
                                 token: {
@@ -124,7 +124,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                     </div>
 
                     <Checkbox className='mt-5' required>
-                        Я подтверждаю, что проживаю в городе Астана
+                        {t('confirm_astana_residence', { ns: 'header' })}
                     </Checkbox>
 
                     <div className="flex justify-end mt-4">

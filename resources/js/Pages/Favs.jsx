@@ -141,7 +141,7 @@ export default function Favs({ auth, announcements, errors }) {
                                 type="text"
                                 value={searchKeyword}
                                 onChange={handleSearchKeywordChange}
-                                placeholder={t('search_placeholder', { ns: 'announcements' })}
+                                placeholder={t('search', { ns: 'announcements' })}
                                 className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
                             />
                         </div>

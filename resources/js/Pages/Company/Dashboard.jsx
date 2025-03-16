@@ -1,6 +1,6 @@
 import { Inertia } from '@inertiajs/inertia';
 import { Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoMailOpenOutline } from "react-icons/io5";
 import { LuPhone } from "react-icons/lu";
@@ -42,6 +42,48 @@ export default function Dashboard({ user, announcements }) {
 
     const vacancyCount = user.announcement.filter(anonce => anonce.type_ru === 'Вакансия').length;
     const orderCount = user.announcement.filter(anonce => anonce.type_ru === 'Заказ').length;
+
+    const kz = {
+        ...ru,
+        formatDistance: (token, count, options) => {
+            const formatDistanceLocale = {
+                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
+                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
+                halfAMinute: 'жарты минут',
+                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
+                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
+                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
+                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
+                xDays: { one: 'Бір күн', other: '{{count}} күн' },
+                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
+                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
+                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
+                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
+                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
+                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
+                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
+                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
+            };
+
+            const result = formatDistanceLocale[token];
+
+            if (typeof result === 'string') {
+                return result;
+            }
+
+            const form = count === 1 ? result.one : result.other.replace('{{count}}', count);
+
+            if (options?.addSuffix) {
+                if (options?.comparison > 0) {
+                    return form + ' кейін';
+                } else {
+                    return form + ' бұрын';
+                }
+            }
+
+            return form;
+        }
+    };
 
     return (
         <>
@@ -92,17 +134,42 @@ export default function Dashboard({ user, announcements }) {
                                             )}
                                             <div className="ml-auto">
                                                 <div className='font-bold text-sm ml-auto'>
-                                                    {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                                    {anonce.salary_type == 'min' && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                                    {anonce.salary_type == 'max' && anonce.cost_max && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                                    {anonce.salary_type == 'diapason' && anonce.cost_max && anonce.cost_min && (`от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                                    {anonce.salary_type == 'undefined' && (`Договорная`)}
-                                                    {anonce.salary_type == 'za_smenu' && (
+                                                    {anonce.salary_type === "exact" &&
+                                                        anonce.cost &&
+                                                        `${anonce.cost.toLocaleString()} ₸ `}
+                                                    {anonce?.salary_type === "min" && anonce.cost_min &&
+                                                        `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                    }
+                                                    {anonce.salary_type === "max" && anonce.cost_max &&
+                                                        `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                    }
+                                                    {anonce.salary_type === "diapason" &&
+                                                        anonce.cost_min &&
+                                                        anonce.cost_max &&
+                                                        `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                                                            anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                    }
+                                                    {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                                    {anonce.salary_type === "za_smenu" && (
                                                         <>
-                                                            {anonce.cost && `${anonce.cost.toLocaleString()} ₸ / за смену`}
-                                                            {anonce.cost_min && !anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ / за смену`}
-                                                            {!anonce.cost_min && anonce.cost_max && `до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
-                                                            {anonce.cost_min && anonce.cost_max && `от ${anonce.cost_min.toLocaleString()} ₸ до ${anonce.cost_max.toLocaleString()} ₸ / за смену`}
+                                                            {anonce.cost &&
+                                                                `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                            }
+                                                            {anonce.cost_min &&
+                                                                !anonce.cost_max &&
+                                                                `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                            }
+                                                            {!anonce.cost_min &&
+                                                                anonce.cost_max &&
+                                                                `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                            }
+                                                            {anonce.cost_min &&
+                                                                anonce.cost_max &&
+                                                                `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                            }
                                                         </>
                                                     )}
                                             </div>
@@ -116,7 +183,7 @@ export default function Dashboard({ user, announcements }) {
                                             {anonce.city}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {t('posted', { ns: 'dashboard' })} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: ru, addSuffix: true })}`}
+                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
                                             {anonce.visit_count} {t('views', { ns: 'dashboard' })}

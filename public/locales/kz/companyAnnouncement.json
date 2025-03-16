@@ -1,0 +1,20 @@
+{
+    "ad_deleted": "Хабарландыру жойылды.",
+    "ad_deletion_error": "Хабарландыруды жою қатесі.",
+    "user_rated": "Пайдаланушы бағаланды.",
+    "user_rating_error": "Пайдаланушыны бағалау қатесі.",
+    "total_views": "Жалпы қаралым саны",
+    "total_responses": "Жалпы жауаптар саны",
+    "unique_visitors": "Бірегей келушілер",
+    "returning_visitors": "Қайта келген келушілер",
+    "response_rate": "Жауап беру пайызы",
+    "views_by_time": "Уақыт бойынша қаралымдар",
+    "views": "қаралым",
+    "peak_viewing_time": "Қаралымның ең көп уақыты",
+    "users_who_responded": "Жауап берген пайдаланушылар",
+    "delete_ad": "Хабарландыруды жою",
+    "delete": "Жою",
+    "cancel": "Болдырмау",
+    "confirm_deletion": "Жоюды растаңыз",
+    "delete_ad_confirmation": "Бұл хабарландыруды жоюға сенімдісіз бе?"
+}

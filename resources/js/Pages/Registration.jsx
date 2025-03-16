@@ -9,7 +9,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import InputMask from 'react-input-mask';
 
 export default function Registration({ errors, professions }) {
-    const { t, i18n } = useTranslation();
+    const { t, i18n } = useTranslation('register');
     const { props } = usePage();
     const backendErrors = props.errors;
 
@@ -83,8 +83,8 @@ export default function Registration({ errors, professions }) {
             setStep(3);
         } else {
             notification.error({
-                message: 'Верификация не прошла',
-                description: 'Введённый вами код подтверждения неверен. Пожалуйста, попробуйте снова.',
+                message: t('verification_failed'),
+                description: t('invalid_verification_code'),
             });
         }
     };
@@ -98,15 +98,15 @@ export default function Registration({ errors, professions }) {
         e.preventDefault();
         if (data.role === 'employee' && !isValidCyrillicName(data.name)) {
             notification.error({
-                message: 'Ошибка в имени',
-                description: 'Имя и фамилия должны быть на кириллице и разделены пробелом.',
+                message: t('name_error'),
+                description: t('name_must_be_cyrillic'),
             });
             return;
         }
         if (!data.name || !data.email) {
             notification.error({
-                message: 'Ошибка',
-                description: 'Все поля обязательны для заполнения.',
+                message: t('error'),
+                description: t('all_fields_required'),
             });
             return;
         }
@@ -123,8 +123,8 @@ export default function Registration({ errors, professions }) {
 
         if (data.role !== 'employee' && !data.description.trim()) {
             notification.error({
-                message: 'Ошибка',
-                description: 'Описание компании обязательно для заполнения.',
+                message: t('error'),
+                description: t('company_description_required'),
             });
             return;
         }
@@ -150,7 +150,7 @@ export default function Registration({ errors, professions }) {
         if (Object.keys(backendErrors).length > 0) {
             Object.values(backendErrors).forEach((error) => {
                 notification.error({
-                    message: 'Ошибка регистрации',
+                    message: t('registration_error'),
                     description: error,
                 });
             });
@@ -167,14 +167,14 @@ export default function Registration({ errors, professions }) {
                                 <div className="font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
                                 <div className="mb-4 mt-8">
                                     <div className="">
-                                        <div className='text-sm font-light text-gray-500'>Зарегестрироваться как соискатель</div>
+                                        <div className='text-sm font-light text-gray-500'>{t('register_as_applicant')}</div>
                                         <button
                                             onClick={() => handleRoleSubmit('employee')}
                                             className="w-full mt-3 border-gray-300 block text-gray-400 border-2 hover:bg-blue-500 transition-all duration-100 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                                         >
                                             {t('job_seeker_option', { ns: 'register' })}
                                         </button>
-                                        <div className='mt-10 text-sm font-light text-gray-500'>Зарегестрироваться как работодатель</div>
+                                        <div className='mt-10 text-sm font-light text-gray-500'>{t('register_as_employer')}</div>
                                         <button
                                             onClick={() => handleRoleSubmit('employer')}
                                             className="w-full block border-gray-300 mt-3 text-gray-400 border-2 hover:bg-blue-500 transition-all duration-100 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
@@ -187,55 +187,57 @@ export default function Registration({ errors, professions }) {
                                         >
                                             {t('freelancer_option', { ns: 'register' })}
                                         </button>
-                                        <a href='/terms' className='mt-10 block'>Продолжая вы принимаете <span className='text-blue-500'>Пользовательское соглашение</span></a>
+                                        <a href='/terms' className='mt-10 block'>{t('by_continuing_you_accept')} <span className='text-blue-500'>{t('user_agreement')}</span></a>
                                     </div>
                                 </div>
                             </>
                         )}
                         {step === 1 && (
                             <>
-                                <div className="mb-10 font-semibold text-xl text-center">Введите основную информацию</div>
+                                <div className="mb-10 font-semibold text-xl text-center">
+                                    {t('enter_main_information')}
+                                </div>
                                 <div className='text-sm font-semibold'>
-                                    {data.role === 'employee' ? 'Имя и Фамилия' : 'Название компании'}
+                                    {data.role === 'employee' ? t('full_name') : t('company_name')}
                                 </div>
                                 <input
                                     type='text'
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     className='w-[350px] mt-1 block border-gray-300 rounded-lg'
-                                    placeholder={data.role === 'employee' ? 'Введите ваше имя и фамилию' : 'Введите название компании'}
+                                    placeholder={data.role === 'employee' ? t('enter_your_full_name') : t('enter_company_name')}
                                 />
                                 {errors.name && <p className='text-red-500 text-sm mt-2'>{errors.name}</p>}
-                                <div className='mt-5 text-sm font-semibold'>Электронная почта</div>
+                                <div className='mt-5 text-sm font-semibold'>{t('email')}</div>
                                 <input
                                     type='email'
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     className='w-[350px] mt-1 block border-gray-300 rounded-lg'
-                                    placeholder='Введите вашу электронную почту'
+                                    placeholder={t('email')}
                                 />
                                 {errors.email && <p className='text-red-500 text-sm mt-2'>{errors.email}</p>}
                                 {data.role == 'employee' && (
                                     <div className='flex w-[350px] gap-x-5'>
                                         <div className='w-[50%]'>
-                                            <div className='mt-5 text-sm font-semibold'>Дата рождения</div>
+                                            <div className='mt-5 text-sm font-semibold'>{t('birth_date')}</div>
                                             <input
                                                 type='date'
                                                 value={data.date_of_birth}
                                                 onChange={(e) => setData('date_of_birth', e.target.value)}
                                                 className='w-full mt-1 border-gray-300 rounded-lg'
-                                                placeholder='Выберите дату рождения'
+                                                placeholder={t('select_birth_date')}
                                             />
                                         </div>
                                         <div className='w-[50%]'>
-                                            <div className='mt-5 text-sm font-semibold'>Пол</div>
+                                            <div className='mt-5 text-sm font-semibold'>{t('sex')}</div>
                                             <select
                                                 value={data.gender}
                                                 onChange={(e) => setData('gender', e.target.value)}
                                                 className='w-full mt-1 block border-gray-300 rounded-lg'
                                             >
-                                                <option value='м'>Мужской</option>
-                                                <option value='ж'>Женский</option>
+                                                <option value='м'>{t('male')}</option>
+                                                <option value='ж'>{t('female')}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -244,13 +246,13 @@ export default function Registration({ errors, professions }) {
                                     className='py-2 font-bold w-full block text-white rounded-lg bg-blue-500 mt-5'
                                     onClick={handleBasicInfoSubmit}
                                 >
-                                    Далее
+                                    {t('next')}
                                 </button>
                             </>
                         )}
                         {step === 2 && (
                             <div className='w-[350px]'>
-                                <div className="mb-10 font-semibold text-xl text-center">Подтвердите номер телефона</div>
+                                <div className="mb-10 font-semibold text-xl text-center">{t('confirm_phone_number')}</div>
                                 <InputMask
                                   mask="+7 999 999 99 99"
                                   value={data.phone}
@@ -259,7 +261,7 @@ export default function Registration({ errors, professions }) {
                                 >
                                   {(inputProps) => <Input {...inputProps} type="tel" className="block w-full mt-1 border-gray-300 rounded-lg" placeholder="Введите ваш телефон" />}
                                 </InputMask>
-                                <small className='text-blue-500 text-sm mt-2'>Введите номер на котором есть WhatsApp</small>
+                                <small className='text-blue-500 text-sm mt-2'>{t('enter_whatsapp_number')}</small>
                                 {errors.phone && <p className='text-red-500 text-sm mt-2'>{errors.phone.message}</p>}
                                 {phoneCode ? (
                                     <>
@@ -268,13 +270,13 @@ export default function Registration({ errors, professions }) {
                                             value={data.verificationCode}
                                             onChange={(e) => setData('verificationCode', e.target.value)}
                                             className='block mt-3 border-gray-300 w-full rounded-lg'
-                                            placeholder='Введите код потверждения'
+                                            placeholder={t('enter_confirmation_code')}
                                         />
                                         <button
                                             className='py-2 font-bold w-full inline-block text-white rounded-lg bg-blue-500 mt-5'
                                             onClick={handleVerificationSubmit}
                                         >
-                                            Подтвердить
+                                            {t('confirm')}
                                         </button>
                                     </>
                                 ) : (
@@ -285,7 +287,7 @@ export default function Registration({ errors, professions }) {
                                         {loading ? (
                                             <Spin indicator={<LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />} />
                                         ) : (
-                                            'Отправить код'
+                                            t('send_code')
                                         )}
                                     </button>
                                 )}
@@ -293,30 +295,30 @@ export default function Registration({ errors, professions }) {
                         )}
                         {step === 3 && (
                             <div className='w-[350px]'>
-                                <div className='mt-5 text-sm font-semibold'>Придумайте пароль</div>
+                                <div className='mt-5 text-sm font-semibold'>{t('create_password')}</div>
                                 <input
                                     type='password'
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                     className='block mt-1 border-gray-300 w-full rounded-lg'
-                                    placeholder='Введите пароль'
+                                    placeholder={t('enter_password')}
                                 />
-                                <div className='mt-5 text-sm font-semibold'>Повторите пароль</div>
+                                <div className='mt-5 text-sm font-semibold'>{t('repeat_password')}</div>
                                 <input
                                     type='password'
                                     value={data.password_confirm}
                                     onChange={(e) => setData('password_confirm', e.target.value)}
                                     className='block mt-1 border-gray-300 w-full rounded-lg'
-                                    placeholder='Повторите пароль'
+                                    placeholder={t('repeat_password')}
                                 />
                                 {data.role != 'employee' && (
                                     <>
-                                        <div className='mt-5 text-sm font-semibold'>Описание компании</div>
+                                        <div className='mt-5 text-sm font-semibold'>{t('company_description')}</div>
                                         <textarea
                                             value={data.description}
                                             onChange={(e) => setData('description', e.target.value)}
                                             className='w-full h-[150px] mt-1 border-gray-300 rounded-lg capitalize'
-                                            placeholder='Введите описание компании'
+                                            placeholder={t('enter_company_description')}
                                         />
                                     </>
                                 )}
@@ -324,7 +326,7 @@ export default function Registration({ errors, professions }) {
                                     onClick={handleRegistrationSubmit}
                                     className='register bg-blue-500 text-white rounded-lg mt-5 py-2 text-center w-full'
                                 >
-                                    Создать аккаунт
+                                    {t('create_account')}
                                 </button>
                             </div>
                         )}
@@ -338,12 +340,17 @@ export default function Registration({ errors, professions }) {
                     </div>
                 </div>
                 <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative md:block hidden'>
-                    {['Тип пользователя', 'Основная информация', 'Контактные данные', 'Дополнительная информация'].map((label, i) => (
+                    {[
+                        t('user_type_label'),
+                        t('upload_avatar_title'),
+                        t('contact_info'),
+                        t('additional_info_title'),
+                    ].map((label, i) => (
                         <div key={i} className='flex items-center gap-x-3 mt-7'>
                             <FaRegCheckCircle className={`text-2xl ${step === i ? 'text-blue-500' : 'text-gray-300'}`} />
                             <div>
                                 <div className={`font-semibold ${step === i ? '' : 'text-gray-500'}`}>{label}</div>
-                                <div className='text-sm text-gray-500'>Шаг {i + 1}</div>
+                                <div className='text-sm text-gray-500'>{t('step')} {i + 1}</div>
                             </div>
                         </div>
                     ))}

@@ -26,7 +26,7 @@ export default function Login({ errors }) {
         if (Object.keys(backendErrors).length > 0) {
             Object.values(backendErrors).forEach((error) => {
                 notification.error({
-                    message: 'Ошибка авторизации',
+                    message: t('authorization_error', { ns: 'login' }),
                     description: error,
                 });
             });
@@ -89,8 +89,12 @@ export default function Login({ errors }) {
                     </div>
                     <div className='md:h-full bg-[#F9FAFC] rounded-lg w-full md:col-span-2 p-5 md:relative'>
                         <div className='md:absolute md:bottom-5 md:pr-10'>
-                            <div className='text-lg'>Сложности со входом?</div>
-                            <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                            <div className='text-lg'>
+                                {t('login_issues', { ns: 'login' })}
+                            </div>
+                            <div className='text-sm font-light text-gray-500'>
+                                {t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'login' })}
+                            </div>
                             <div className='mt-10 text-sm'>
                                 <div>+7 707 221 31 31</div>
                                 <div className='ml-auto'>janamumkindik@gmail.com</div>

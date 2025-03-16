@@ -667,7 +667,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 onClick={() => window.location.href = '/profile'}
                                 className="w-full md:w-auto mt-2 md:mt-0 md:ml-2"
                             >
-                                Назад
+                                {t('back', { ns: 'createAnnouncement' })}
                             </Button>
                         </Form.Item>
                     </Form>

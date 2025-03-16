@@ -161,8 +161,10 @@ export default function FAQ() {
                 </div>
                 <div className='h-screen sticky md:block hidden top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
                     <div className='pr-10'>
-                        <div className='text-lg'>Сложности со входом?</div>
-                        <div className='text-sm font-light text-gray-500'>При возникновении трудностей вы можете обратиться по этим контактным данным</div>
+                        <div className='text-lg'>{t('login_issues', { ns: 'faq' })}</div>
+                        <div className='text-sm font-light text-gray-500'>
+                            {t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
+                        </div>
                         <div className='mt-10 text-sm'>
                             <div>+7 707 221 31 31</div>
                             <div className='mt-3'>janamumkindik@gmail.com</div>
