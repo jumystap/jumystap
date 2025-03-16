@@ -6,5 +6,11 @@
     "posted": "Размещено",
     "close": "Закрыть",
     "experience": "Опыт работы",
-    "contact": "Связаться"
+    "no_work_experience" : "Нет опыта работы",
+    "contact": "Связаться",
+    "confirm_delete_resume": "Вы уверены, что хотите удалить это резюме?",
+    "work_experience": "Опыт работы",
+    "contact_information": "Контактная информация",
+    "key_skills": "Ключевые навыки",
+    "until_now" : "По настоящее время"
 }

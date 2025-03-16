@@ -1,8 +1,11 @@
 import React from 'react';
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Calendar, MapPin, Briefcase, Code } from 'lucide-react';
+import {useTranslation} from "react-i18next";
 
 export default function Resume({ user, resume }) {
+    const { t, i18n } = useTranslation('profile');
+
     // Calculate total experience from organizations
     const calculateTotalExperience = () => {
         return resume.organizations.length > 0 ? "2 года 10 месяцев" : "Нет опыта работы";
@@ -23,7 +26,7 @@ export default function Resume({ user, resume }) {
                                 />
                                 <div className="absolute -bottom-2 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
                             </div>
-                            
+
                             <div className="flex-1">
                                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{user.name}</h1>
                                 <div className="flex flex-col gap-2 text-gray-600">
@@ -49,7 +52,7 @@ export default function Resume({ user, resume }) {
                             <div className="bg-white rounded-xl shadow-sm p-8">
                                 <div className="flex items-center gap-3 mb-6">
                                     <Briefcase className="w-6 h-6 text-blue-600" />
-                                    <h2 className="text-xl font-semibold text-gray-900">Опыт работы</h2>
+                                    <h2 className="text-xl font-semibold text-gray-900">{t('experience')}</h2>
                                     <span className="text-sm text-gray-500">({calculateTotalExperience()})</span>
                                 </div>
 
@@ -68,7 +71,7 @@ export default function Resume({ user, resume }) {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-gray-500">Нет опыта работы</div>
+                                    <div className="text-gray-500">{t('no_work_experience')}</div>
                                 )}
                             </div>
 
@@ -76,7 +79,7 @@ export default function Resume({ user, resume }) {
                             <div className="bg-white rounded-xl shadow-sm p-8">
                                 <div className="flex items-center gap-3 mb-6">
                                     <Code className="w-6 h-6 text-blue-600" />
-                                    <h2 className="text-xl font-semibold text-gray-900">Ключевые навыки</h2>
+                                    <h2 className="text-xl font-semibold text-gray-900">{t('key_skills')}</h2>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {resume.skills.map((skill, index) => (
@@ -94,7 +97,7 @@ export default function Resume({ user, resume }) {
                         {/* Sidebar */}
                         <div className="space-y-6">
                             <div className="bg-white rounded-xl shadow-sm p-6">
-                                <h2 className="font-semibold text-gray-900 mb-4">Контактная информация</h2>
+                                <h2 className="font-semibold text-gray-900 mb-4">{t('contact_information')}</h2>
                                 <div className="space-y-3 text-sm text-gray-600">
                                     <div className="flex items-center gap-2">
                                         <MapPin className="w-4 h-4" />

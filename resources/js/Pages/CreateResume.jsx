@@ -63,7 +63,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
 
         let period;
         if (isCurrent) {
-            period = `${format(new Date(start_date), 'd MMM yyyy', { locale: ru })} - По настоящее время`;
+            period = `${format(new Date(start_date), 'd MMM yyyy', { locale: ru })} - ` + t('until_now');
         } else {
             period = `${format(new Date(start_date), 'd MMM yyyy', { locale: ru })} - ${end_date ? format(new Date(end_date), 'd MMM yyyy', { locale: ru }) : ''}`;
         }

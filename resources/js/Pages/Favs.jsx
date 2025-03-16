@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { Link } from '@inertiajs/react';
@@ -8,7 +8,7 @@ import { ru } from 'date-fns/locale';
 import { MdAccessTime } from 'react-icons/md';
 
 export default function Favs({ auth, announcements, errors }) {
-    const { t, i18n } = useTranslation();
+    const { t, i18n } = useTranslation('announcements');
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -141,14 +141,14 @@ export default function Favs({ auth, announcements, errors }) {
                                 type="text"
                                 value={searchKeyword}
                                 onChange={handleSearchKeywordChange}
-                                placeholder={t('search', { ns: 'announcements' })}
+                                placeholder={t('search')}
                                 className='block border-y w-full border-[0px] text-xl border-gray-300 text-gray-500 px-5 p-2'
                             />
                         </div>
                         {announcements.length == 0 && (
                             <div className='flex flex-col w-full py-10'>
-                                <div className='text-center text-gray-500'>У вас нет избранных вакансии</div>
-                                <Link href='/announcements' className='mx-auto mt-3 px-7 text-center inline-block py-2 bg-blue-500 text-white rounded-lg'>Добавить</Link>
+                                <div className='text-center text-gray-500'>{t('no_favorite_jobs')}</div>
+                                <Link href='/announcements' className='mx-auto mt-3 px-7 text-center inline-block py-2 bg-blue-500 text-white rounded-lg'>{t('add')}</Link>
                             </div>
                         )}
                         {filteredAnnouncements.map((anonce, index) => (
@@ -167,13 +167,52 @@ export default function Favs({ auth, announcements, errors }) {
                                 </div>
                                 <div className='flex mt-4 gap-x-3 items-center'>
                                     <div className='text-xl font-regular'>
-                                        {anonce.salary_type == 'exact' && anonce.cost && (`${anonce.cost.toLocaleString() } ₸ `)}
-                                        {anonce.salary_type == 'min' && (`от ${anonce.cost_min.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'max' && (`до ${anonce.cost_max.toLocaleString()} ₸ `)}
-                                        {anonce.salary_type == 'undefined' && (`Договорная`)}
+                                        {anonce.salary_type === "exact" &&
+                                            anonce.cost &&
+                                            `${anonce.cost.toLocaleString()} ₸ `}
+                                        {anonce?.salary_type === "min" && anonce.cost_min &&
+                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                        }
+                                        {anonce.salary_type === "max" && anonce.cost_max &&
+                                            `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        }
+                                        {anonce.salary_type === "diapason" &&
+                                            anonce.cost_min &&
+                                            anonce.cost_max &&
+                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                                                anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        }
+                                        {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                        {anonce.salary_type === "za_smenu" && (
+                                            <>
+                                                {anonce.cost &&
+                                                    `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                }
+                                                {anonce.cost_min &&
+                                                    !anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                }
+                                                {!anonce.cost_min &&
+                                                    anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                }
+                                                {anonce.cost_min &&
+                                                    anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                        t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                }
+                                            </>
+                                        )}
                                     </div>
-                                    <div className='bg-gray-200 py-1 px-2 text-gray-500 rounded-lg'>
-                                        Опыт 1-3 года
+                                    <div className='flex gap-x-2 mt-2'>
+                                        <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                                            {anonce.experience}
+                                        </div>
+                                        <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                                            {anonce.work_time}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='mt-4 text-sm text-gray-500 font-light'>
@@ -181,14 +220,14 @@ export default function Favs({ auth, announcements, errors }) {
                                 </div>
                                 <div className='flex gap-x-1 items-center mt-4'>
                                     <MdAccessTime className='text-xl'/>
-                                    <div className='text-sm'>График работы: {anonce.work_time}</div>
+                                    <div className='text-sm'>{t('work_schedule')}: {anonce.work_time}</div>
                                 </div>
                             </Link>
                         ))}
                     </div>
                     <div className='col-span-2 md:block hidden border-l border-gray-200 h-screen sticky top-0'>
                         <div>
-                            <div className='font-bold p-3 text-sm border-b border-gray-200'>Вам могут понравится</div>
+                            <div className='font-bold p-3 text-sm border-b border-gray-200'>{t('you_may_like')}</div>
                         </div>
                         <div className='flex flex-col md:flex-col'>
                             <select
@@ -198,7 +237,7 @@ export default function Favs({ auth, announcements, errors }) {
                                 className={`block border-b py-4 border-[0px] w-full md:w-auto ${announcementType === 'all' ? 'border-gray-300 text-gray-500' : 'font-bold border-blue-500'}`}
                             >
                                 <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
-                                <option value="vacancy">Вакансия</option>
+                                <option value="vacancy">{t('job')}</option>
                                 <option value="project">{t('project', { ns: 'announcements' })}</option>
                             </select>
 

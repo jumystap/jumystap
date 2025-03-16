@@ -15,7 +15,7 @@ const formatCreatedAt = (createdAt) => {
 };
 
 export default function Profile({ auth, user, announcements, employees, professions, userProfessions, resumes }) {
-    const { t } = useTranslation('profile');
+    const { t, i18n } = useTranslation('profile');
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
     const [missingCertificateProfession, setMissingCertificateProfession] = useState(null);
@@ -26,7 +26,7 @@ export default function Profile({ auth, user, announcements, employees, professi
     const { delete: deleteResumeForm } = useForm();
 
     const deleteResume = (resumeId) => {
-        if (confirm("Вы уверены, что хотите удалить это резюме?")) {
+        if (confirm(t('confirm_delete_resume',  { ns: 'profile' }))) {
             deleteResumeForm(
                 route("delete_resume", resumeId), // Backend route to handle delete
                 {
@@ -58,6 +58,49 @@ export default function Profile({ auth, user, announcements, employees, professi
     const prevImage = () => {
         setCurrentImageIndex((currentImageIndex - 1 + user.portfolio.length) % user.portfolio.length);
     };
+
+    const kz = {
+        ...ru,
+        formatDistance: (token, count, options) => {
+            const formatDistanceLocale = {
+                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
+                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
+                halfAMinute: 'жарты минут',
+                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
+                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
+                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
+                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
+                xDays: { one: 'Бір күн', other: '{{count}} күн' },
+                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
+                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
+                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
+                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
+                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
+                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
+                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
+                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
+            };
+
+            const result = formatDistanceLocale[token];
+
+            if (typeof result === 'string') {
+                return result;
+            }
+
+            const form = count === 1 ? result.one : result.other.replace('{{count}}', count);
+
+            if (options?.addSuffix) {
+                if (options?.comparison > 0) {
+                    return form + ' кейін';
+                } else {
+                    return form + ' бұрын';
+                }
+            }
+
+            return form;
+        }
+    };
+
 
     return (
         <>
@@ -125,7 +168,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             <div className='text-[10pt] md:text-sm'>{resume.city}</div>
                                                         </div>
                                                         <div className='text-gray-500 text-sm ml-auto'>
-                                                            {t('posted', { ns: 'profile' })} {formatCreatedAt(resume.created_at)}
+                                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
                                                         </div>
                                                     </div>
                                                     <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>

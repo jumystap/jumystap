@@ -6,5 +6,11 @@
     "posted": "Жарияланды",
     "close": "Жабу",
     "experience": "Тәжірибе",
-    "contact": "Байланысу"
+    "no_work_experience" : "Жұмыс тәжірибесі жоқ",
+    "contact": "Байланысу",
+    "confirm_delete_resume": "Бұл түйіндемені жойғыңыз келетініне сенімдісіз бе?",
+    "work_experience": "Жұмыс тәжірибесі",
+    "contact_information": "Байланыс ақпараты",
+    "key_skills": "Негізгі дағдылар",
+    "until_now": "Қазіргі уақытқа дейін"
 }
