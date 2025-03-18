@@ -111,9 +111,11 @@ export default function Profile({ auth, user, announcements, employees, professi
                             <div className='col-span-5'>
                                 <div className='flex md:flex-row flex-col gap-x-3 p-10 bg-white border-b border-gray-200'>
                                     <img
-                                        src={`/storage/${user.image_url}`}
+                                        src={user.image_url ? `/storage/${user.image_url}` : '/images/default-avatar.png'}
+                                        onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
                                         className='w-[70px] h-[70px] rounded-full object-cover'
                                     />
+
                                     <div>
                                         <div
                                             className='font-bold text-lg flex items-center gap-2'

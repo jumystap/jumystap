@@ -246,11 +246,12 @@ export default function Guest({ children }) {
                   href="/profile"
                   className="flex gap-x-3 py-3 mt-5 hover:px-3 items-center transition-all duration-300 hover:bg-gray-100 rounded-full"
                 >
-                  <img
-                    src={`/storage/${auth.user.image_url}`}
-                    className="w-[50px] h-[50px] rounded-full object-cover"
-                  />
-                  <div className="">
+                    <img
+                        src={auth.user.image_url ? `/storage/${auth.user.image_url}` : '/images/default-avatar.png'}
+                        onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
+                        className="w-[50px] h-[50px] rounded-full object-cover"
+                    />
+                    <div className="">
                     <div className="font-bold">{auth.user.name}</div>
                     <div className="text-sm text-gray-500">
                       {auth.user.email}
