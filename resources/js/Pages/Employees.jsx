@@ -176,7 +176,8 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                 <div className="p-6 flex items-start gap-4">
                                     <div className="flex flex-col items-center">
                                         <img
-                                            src={`/storage/${employee.image_url}`}
+                                            src={employee.image_url ? `/storage/${employee.image_url}` : '/images/default-avatar.png'}
+                                            onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
                                             alt=""
                                             className="w-14 h-14 object-cover rounded-full ring-2 ring-gray-100"
                                         />
