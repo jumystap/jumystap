@@ -22,7 +22,8 @@ export default function Announcements({ auth, announcements, specializations, er
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
     const [searchCity, setSearchCity] = useState('');
-    const [specialization, setSpecialization] = useState('');
+    // Change specialization to an array to match Cascader's expected value format
+    const [specialization, setSpecialization] = useState(['']); // Default to "All Specializations"
     const [city, setCity] = useState('');
     const [minSalary, setMinSalary] = useState('');
     const [isSalary, setIsSalary] = useState(false);
@@ -51,8 +52,8 @@ export default function Announcements({ auth, announcements, specializations, er
     };
 
     const handleSpecializationChange = (value) => {
-        setSpecialization(value);
-        setData('specialization', value[1]);
+        setSpecialization(value); // Value will be an array, e.g., [''], or ['category_id', 'spec_id']
+        setData('specialization', value.length > 1 ? value[1] : ''); // Use second value if it exists, else empty string
     };
 
     const handleShare = (id) => {
@@ -115,6 +116,29 @@ export default function Announcements({ auth, announcements, specializations, er
     const handleSearch = () => {
         get('/announcements', {preserveScroll: true, preserveState: true });
     };
+    const resetSearch = () => {
+        setData({
+            searchKeyword: '',
+            specialization: '',
+            city: '',
+            minSalary: '',
+            isSalary: false,
+        });
+
+        setAnnouncementType('all');
+        setSearchCity('');
+        setSpecialization(['']); // Reset to "All Specializations"
+        setCity('');
+        setMinSalary('');
+        setIsSalary(false);
+        setPublicTime('');
+        setSelectedSpecialization([]);
+
+        get('/announcements', {
+            preserveScroll: true,
+            preserveState: true
+        });
+    };
 
     const kz = {
         ...ru,
@@ -158,14 +182,20 @@ export default function Announcements({ auth, announcements, specializations, er
         }
     };
 
-    const cascaderOptions = specializations.map(category => ({
-        value: category.id,
-        label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
-        children: category.specialization.map(spec => ({
-            value: spec.id,
-            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
+    const cascaderOptions = [
+        {
+            value: '',
+            label: t('all_specializations', { ns: 'announcements' }), // Default option
+        },
+        ...specializations.map(category => ({
+            value: category.id,
+            label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
+            children: category.specialization.map(spec => ({
+                value: spec.id,
+                label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
+            }))
         }))
-    }));
+    ];
 
 
     const handleFeedbackSubmit = (feedback) => {
@@ -218,6 +248,7 @@ export default function Announcements({ auth, announcements, specializations, er
                             options={cascaderOptions}
                             placeholder={t('select_specialization', { ns: 'announcements' })}
                             onChange={handleSpecializationChange}
+                            value={specialization} // Use array value directly
                             className="block mt-2 w-full text-base"
                         />
 
@@ -448,6 +479,7 @@ export default function Announcements({ auth, announcements, specializations, er
                                 options={cascaderOptions}
                                 placeholder={t('select_specialization', { ns: 'announcements' })}
                                 onChange={handleSpecializationChange}
+                                value={specialization} // Use array value directly
                                 className="block mt-2 w-full text-base"
                             />
 
@@ -481,6 +513,11 @@ export default function Announcements({ auth, announcements, specializations, er
                             <div className='bottom-10'>
                                 <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
                                     {t('apply', { ns: 'announcements' })}
+                                </div>
+                            </div>
+                            <div className="mt-2">
+                                <div onClick={resetSearch} className='text-blue-500 rounded-lg text-center items-center  w-full block border-2 border-blue-500 py-2 px-5 md:px-10 cursor-pointer'>
+                                    {t('reset', { ns: 'announcements' })}
                                 </div>
                             </div>
                         </div>

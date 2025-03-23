@@ -49,7 +49,7 @@ class AnnouncementController extends Controller
                     "id" => "_" . $category['id'],
                     "category_id" => $category['id'],
                     "name_ru" => "Все",
-                    "name_kz" => "Все"
+                    "name_kz" => "Барлығы"
                 ];
         }
         $cities = Announcement::pluck('city')->unique()->filter();

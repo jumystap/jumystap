@@ -6,6 +6,7 @@
     "all_cities": "Все города",
     "search": "Поиск...",
     "filters": "Фильтры",
+    "all_specializations": "Все специализации",
     "specialization": "Специализация",
     "select_specialization": "Выберите специализацию",
     "region": "Регион",
@@ -54,5 +55,5 @@
     "you_may_like": "Вам могут понравиться",
     "job": "Вакансия",
     "add": "Добавить",
-    "test2": "test2"
+    "reset": "Сбросить"
 }

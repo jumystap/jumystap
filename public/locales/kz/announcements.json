@@ -6,6 +6,7 @@
     "all_cities": "Барлық қалалар",
     "search": "Іздеу",
     "filters": "Іздеу",
+    "all_specializations": "Барлық мамандықтар",
     "specialization": "Мамандық",
     "select_specialization": "Мамандықты таңдау",
     "region": "Аймақ",
@@ -54,5 +55,5 @@
     "you_may_like": "Сізге ұнауы мүмкін",
     "job": "Жұмыс орны",
     "add": "Қосу",
-    "test2": "test2"
+    "reset": "Қалпына келтіру"
 }
