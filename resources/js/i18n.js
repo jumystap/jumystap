@@ -18,7 +18,9 @@ i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
     },
-    debug: true
+    debug: false,
+    cache: false,
+    react: { useSuspense: false },
   });
 
 // Log the initial language to help with debugging
