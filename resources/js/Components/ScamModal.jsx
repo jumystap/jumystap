@@ -85,7 +85,7 @@ export default function ScamModal({ isOpen, onClose }) {
                     />
 
                     <div>
-                        <div className='mb-2 text-gray-500'>{t('complaint_reason', { ns: 'header' })}:</div>
+                        <div className='mb-2 text-gray-500'>{t('select_complaint_reason', { ns: 'header' })}:</div>
                         <ConfigProvider
                             theme={{
                                 token: {
