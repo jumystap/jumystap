@@ -31,7 +31,7 @@
     "submit_application": "Отправить заявку",
     "your_name": "Ваше имя",
     "your_phone_number": "Ваш номер телефона",
-    "select_desired_skills": "Выберите желаемые навыки:",
+    "select_desired_skills": "Выберите желаемые навыки",
     "cancel": "Отмена",
     "send": "Отправить",
     "furniture_making_basics" : "Основы изготовления корпусной мебели",
@@ -40,5 +40,18 @@
     "shoe_repair_workshop" : "Мастерская по ремонту обуви",
     "cashier_seller" : "Продавец-кассир",
     "oil_change_tire_service" : "Пункт замены масла и шиномонтаж",
-    "confirm_astana_residence": "Я подтверждаю, что проживаю в городе Астана"
+    "confirm_astana_residence": "Я подтверждаю, что проживаю в городе Астана",
+    "success": "Успех",
+    "your_application_has_been_successfully_submitted": "Ваша заявка успешно отправлена!",
+    "please_select_at_least_one_skill": "Пожалуйста, выберите хотя бы один навык.",
+    "your_complaint_has_been_successfully_submitted": "Ваша жалоба успешно отправлена!",
+    "please_select_at_least_one_complaint": "Пожалуйста, выберите хотя бы одну жалобу.",
+    "send_complaint": "Отправить жалобу",
+    "select_complaint_reason": "Выберите причину жалобы",
+    "prohibited_substances": "запрещенные вещества",
+    "scammers": "мошенники",
+    "intimate_services": "интимные услуги",
+    "other_custom_option": "другое (свой вариант)",
+    "custom_option": "свой вариант",
+    "reason_required": "Пожалуйста, заполните свой вариант жалобы."
 }

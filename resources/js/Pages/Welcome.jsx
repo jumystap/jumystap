@@ -10,6 +10,7 @@ import { ru } from "date-fns/locale";
 import { MdAccessTime } from "react-icons/md";
 import Pagination from "@/Components/Pagination";
 import FeedbackModal from "@/Components/FeedbackModal";
+import ScamModal from "@/Components/ScamModal";
 import Carousel from "@/Components/Carousel";
 import InfoModal from "@/Components/InfoModal";
 
@@ -27,6 +28,7 @@ export default function Welcome({
 }) {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isScamOpen, setIsScamOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   console.log(announcements);
 
@@ -137,6 +139,10 @@ export default function Welcome({
         onClose={() => setIsOpen(false)}
         onSubmit={handleFeedbackSubmit}
       />
+     <ScamModal
+        isOpen={isScamOpen}
+        onClose={() => setIsScamOpen(false)}
+     />
       <InfoModal
         isOpen={isInfoOpen}
         onClose={() => setIsInfoOpen(false)}
@@ -178,6 +184,41 @@ export default function Welcome({
                         </div>
                     </div>
                 </div>
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="font-bold text-lg md:text-xl">
+                                {t("beware_of_scammers", { ns: "index" })}
+                            </p>
+                            <p className="text-lg md:mt-1">
+                                {t("scam_report", { ns: "index" })}
+                            </p>
+                        </div>
+
+                        <div className="hidden md:block ml-auto pt-2">
+                            <img src="/images/scam.png" className="md:w-[200px] w-[120px]" alt="scam" />
+                        </div>
+                    </div>
+
+                    <div className="flex gap-x-5 mt-3 items-center">
+                        <a
+                            href="https://api.whatsapp.com/send?phone=+77072213131&amp;text=Здравствуйте"
+                            target="_blank"
+                            className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-150 hover:text-white"
+                        >
+                            {t("write_whatsapp", { ns: "index" })}
+                        </a>
+
+                        <buttoon
+                            onClick={() => setIsScamOpen(true)}
+                            target="_blank"
+                            className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-red-500 hover:bg-red-500 hover:text-white transition-all duration-150"
+                        >
+                            {t("write_site", { ns: "index" })}
+                        </buttoon>
+                    </div>
+                </div>
+
             </Carousel>
             <div className="flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
               <div

@@ -40,5 +40,18 @@
     "shoe_repair_workshop" : "Аяқ жөндеу шеберханасы",
     "cashier_seller" : "Сатушы-кассир",
     "oil_change_tire_service" : "Май және шина ауыстыру пункті",
-    "confirm_astana_residence": "Астанада тұратынымды растаймын"
+    "confirm_astana_residence": "Астанада тұратынымды растаймын",
+    "success": "Сәттілік",
+    "your_application_has_been_successfully_submitted": "Сіздің өтініміңіз сәтті жіберілді!",
+    "please_select_at_least_one_skill": "Кемінде бір дағдыны таңдаңыз.",
+    "your_complaint_has_been_successfully_submitted": "Сіздің шағымыңыз сәтті жіберілді!",
+    "please_select_at_least_one_complaint": "Кем дегенде бір шағымды таңдаңыз.",
+    "send_complaint": "Шағым жіберу",
+    "select_complaint_reason": "Шағымның себебін таңдаңыз",
+    "prohibited_substances": "тыйым салынған заттар",
+    "scammers": "алаяқтар",
+    "intimate_services": "жыныстық қызметтер",
+    "other_custom_option": "басқа (өз нұсқаңыз)",
+    "custom_option": "өз нұсқаңыз",
+    "reason_required": "Өз нұсқаңызды толтырыңыз."
 }
