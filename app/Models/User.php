@@ -5,13 +5,23 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Profession\Profession;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            // Soft delete all related announcements
+            $user->announcement()->delete();
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -127,5 +137,32 @@ class User extends Authenticatable
     public function response()
     {
         return $this->belongsTo(Response::class, 'employee_id');
+    }
+
+    public static function search(array $attributes): Builder
+    {
+        $query = static::query();
+
+        if (array_key_exists('name', $attributes) && strlen($attributes['name'])) {
+            $query->where('name', 'LIKE', '%' . $attributes['name'] . '%');
+        }
+
+        if (array_key_exists('phone', $attributes) && strlen($attributes['phone'])) {
+            $query->where('phone', 'LIKE', '%' . $attributes['phone'] . '%');
+        }
+
+        if (array_key_exists('email', $attributes) && strlen($attributes['email'])) {
+            $query->where('email', 'LIKE', '%' . $attributes['email'] . '%');
+        }
+
+        if (array_key_exists('role_id', $attributes) && strlen($attributes['role_id'])) {
+            if($attributes['role_id'] == 'null'){
+                $query->where('role_id', 0);
+            }else{
+                $query->where('role_id', $attributes['role_id']);
+            }
+        }
+
+        return $query;
     }
 }
