@@ -1,3 +1,13 @@
+@php
+    $count = $users->count();
+    $page = request('page') ?? 1;
+    $perPage = $users->perPage();
+    $total = $users->total();
+    $from = ($perPage * ($page - 1)) + 1;
+    $to = $from + $count - 1;
+@endphp
+<small class="float-right">Отображено {{ $count }} элементов с {{ $from }} по {{ $to }} из {{ $users->total() }}.</small>
+
 <table class="table table-bordered">
     <thead>
     <tr>
