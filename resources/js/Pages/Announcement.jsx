@@ -334,7 +334,10 @@ export default function Announcement({ auth, announcement, more_announcement, ur
 
                             <p className="px-5 mt-5 py-2 border-gray-200 font-bold flex items-center gap-2">
                                 {t('share')}:
-                                <ShareButtons />
+                                <ShareButtons
+                                    title = {announcement.title}
+                                    description = {`Зарплата от ${announcement.cost ?? announcement.cost_min} тенге`}
+                                />
                             </p>
 
                             <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">{t('more_ads')}</Link>
@@ -403,7 +406,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 ))}
                             </div>
                             ) : (
-                                <div className='text-center'>123123</div>
+                                <div className='text-center'></div>
                             )}
                         </div>
                     </div>
