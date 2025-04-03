@@ -335,8 +335,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <p className="px-5 mt-5 py-2 border-gray-200 font-bold flex items-center gap-2">
                                 {t('share')}:
                                 <ShareButtons
-                                    title = {announcement.title}
-                                    description = {`Зарплата от ${announcement.cost ?? announcement.cost_min} тенге`}
+                                    title = {`${announcement.title}. Зарплата от ${announcement.cost ?? announcement.cost_min} тенге`}
                                 />
                             </p>
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const ShareButtons = ({title, description}) => {
+const ShareButtons = ({title}) => {
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://yastatic.net/share2/share.js";
@@ -15,7 +15,6 @@ const ShareButtons = ({title, description}) => {
             data-size="s"
             data-services="telegram,whatsapp"
             data-title={title}
-            data-description={description}
         ></div>
     );
 };
