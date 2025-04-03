@@ -23,7 +23,12 @@
     @foreach($users as $user)
         <tr id="{{ $user->id }}" data-index="{{ $loop->index }}">
             <td>{{ $user->id }}</td>
-            <td>{{ $user->name }}</td>
+            <td>
+                {{ $user->name }}
+                @if($user->is_blocked)
+                    <span class="badge badge-danger">Заблокирован</span>
+                @endif
+            </td>
             <td>{{ $user->email }}</td>
             <td>{{ $user->phone }}</td>
             <td>{{ $user->role->name_ru ?? '' }}

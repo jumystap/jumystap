@@ -59,6 +59,21 @@
         <span class="invalid-feedback">{{ $message }}</span>
         @enderror
     </div>
+
+    <div class="form-group">
+        <label for="is_blocked">{{ __('Заблокирован') }}</label>
+        @if (isset($user) && $user->is_blocked === 1)
+            <input type="checkbox" name="is_blocked" checked="">
+        @else
+            <input type="checkbox" name="is_blocked" {{ old('is_blocked') ? 'checked' : '' }} >
+        @endif
+
+        @if($errors->has('is_blocked'))
+            <div class="invalid-feedback">
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
+    </div>
 </div>
 <div class="card-footer">
     <button type="submit" class="btn btn-success font-weight-bold float-right">

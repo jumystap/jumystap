@@ -54,12 +54,23 @@ class UserController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            return redirect('/profile');
+            $user = Auth::user();
+            if($user->is_blocked){
+                Auth::logout();
+                return redirect()
+                    ->back()
+                    ->withErrors([
+                        'error' => __('messages.errors.account_is_blocked')
+                    ])
+                    ->withInput();
+            }else{
+                return redirect('/profile');
+            }
         } else {
             return redirect()
                 ->back()
                 ->withErrors([
-                    'error' => 'Неверный логин или пароль. Пожалуйста, попробуйте снова'
+                    'error' => __('messages.errors.incorrect_login_or_password')
                 ])
                 ->withInput();
         }

@@ -117,6 +117,7 @@ class UserController extends Controller
             $input             = $request->all();
             $input['password'] = Hash::make($input['password']);
         }
+        $input['is_blocked'] = $request->has('is_blocked') ? 1 : 0;
         $updated = $user->update($input);
 
         throw_unless($updated, new BadRequestException(__('Ошибка при редактировании Пользователя')));

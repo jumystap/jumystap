@@ -49,6 +49,7 @@ class User extends Authenticatable
         'rating_count',
         'source',
         'is_graduate',
+        'is_blocked'
     ];
 
     /**
