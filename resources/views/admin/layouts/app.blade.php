@@ -55,7 +55,8 @@
 <script src="{{ asset('admin/assets/js/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('admin/assets/js/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-
+<script src="{{ asset('admin/assets/js/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ asset('admin/assets/js/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('admin/assets/js/adminlte.min.js') }}"></script>
 @include('admin.partials.flash-message')

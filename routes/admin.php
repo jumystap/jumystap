@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 //Route::get('/admin/login', [AdminController::class, 'login']);
 //Route::post('/admin/login', [AdminController::class, 'auth'])->name('admin.login');
-Route::post('/certificates', [CertificateController::class, 'store']);
+//Route::post('/certificates', [CertificateController::class, 'store']);
 
 Route::prefix('admin')->middleware(AdminMiddleware::class)->group(function () {
     Route::get('/', [AdminController::class, 'employers'])->name('admin.dashboard');
@@ -33,4 +33,5 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::get('/index', [HomeController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
     Route::resource('announcements', AnnouncementController::class);
+    Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
 });
