@@ -64,12 +64,12 @@ class UserController extends Controller
      * @return RedirectResponse
      * @throws Throwable
      */
-    public function store(UserStoreRequest $request)
+    public function store(UserStoreRequest $request): RedirectResponse
     {
-        $input             = $request->all();
+        $input             = $request->validated();
         $input['password'] = Hash::make($input['password']);
 
-        $user = User::create($input);
+        $user = User::query()->create($input);
 
         throw_unless($user, new BadRequestException(__('Ошибка при создании Пользователя')));
 
@@ -109,12 +109,12 @@ class UserController extends Controller
      * @return Application|RedirectResponse|Redirector
      * @throws Throwable
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, User $user): Application|Redirector|RedirectResponse
     {
         if ($request->isNotFilled('password')) {
-            $input = $request->only('name', 'email');
+            $input = $request->only('name', 'email', 'description');
         } else {
-            $input             = $request->all();
+            $input             = $request->validated();
             $input['password'] = Hash::make($input['password']);
         }
         $input['is_blocked'] = $request->has('is_blocked') ? 1 : 0;

@@ -20,25 +20,36 @@
         @enderror
     </div>
     <div class="form-group">
-        <label for="role">{{ __('Роль') }}</label>
-        <select name="role" id="role"
-                class="form-control @error('role') is-invalid @enderror">
+        <label for="role_id">{{ __('Роль') }}</label>
+        <select name="role_id" id="role_id"
+                class="form-control @error('role_id') is-invalid @enderror" disabled>
             <option value>{{ __('Выберите') }}</option>
 
-            @foreach ($roles as $value)
+            @foreach ($roles as $role)
                 <option
-                    value="{{ $value->id }}"
-                    @if(old('role') == $value->id || isset($user) && $user->role->id == $value->id) selected="selected" @endif
+                    value="{{ $role->id }}"
+                    @if(old('role_id') == $role->id || isset($user) && $user->role->id == $role->id) selected="selected" @endif
                 >
-                    {{ $value->name_ru }}
+                    {{ $role->name_ru }}
                 </option>
             @endforeach
         </select>
 
-        @error('role')
+        @error('role_id')
         <span class="invalid-feedback">{{ $message }}</span>
         @enderror
     </div>
+    @if(in_array($user->role->id, [\App\Enums\Roles::EMPLOYER->value, \App\Enums\Roles::CUSTOMER->value]))
+        <div class="form-group">
+            <label for="description">{{ __('Описание') }}</label>
+            <textarea name="description" id="description" rows="4"
+                      class="form-control @error('description') is-invalid @enderror">{!! old('description', $user->description ?? null) !!}</textarea>
+
+            @error('description')
+            <span class="invalid-feedback">{{ $message }}</span>
+            @enderror
+        </div>
+    @endif
     <div class="form-group">
         <label for="name">{{ __('Пароль') }}</label>
         <input name="password" id="password" type="password"

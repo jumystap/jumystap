@@ -31,7 +31,6 @@
                     <!-- Default box -->
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('admin.users.create') }}" class="btn btn-info">+ Добавить</a>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('admin.users.index') }}" method="get">
