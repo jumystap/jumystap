@@ -30,7 +30,17 @@ export default function Welcome({
   const [isOpen, setIsOpen] = useState(false);
   const [isScamOpen, setIsScamOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  console.log(announcements);
+    const handleButtonClick = (e, link, parameter_id) => {
+        e.preventDefault();
+        axios
+            .post("/analytics/click", { parameter_id: parameter_id })
+            .then((response) => {
+                window.open(link, '_blank');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
 
   const kz = {
     ...ru,
@@ -175,11 +185,11 @@ export default function Welcome({
                             <i>{t("from_skillstap", { ns: "index" })}</i>
                         </div>
                         <div className="flex gap-x-5 mt-3 items-center">
-                            <a href="https://forms.gle/Mb2h6yuWh93YqgEXA" target="_blank"
+                            <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
                                 className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black"
                             >
                                 {t("submit_an_application", { ns: "index" })}
-                            </a>
+                            </button>
                             <p>{t("offline_training", { ns: "index" })} &nbsp;&nbsp;&nbsp; {t("paid", { ns: "index" })}</p>
                         </div>
                     </div>
@@ -209,13 +219,12 @@ export default function Welcome({
                             {t("write_whatsapp", { ns: "index" })}
                         </a>
 
-                        <buttoon
+                        <button
                             onClick={() => setIsScamOpen(true)}
-                            target="_blank"
                             className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-red-500 hover:bg-red-500 hover:text-white transition-all duration-150"
                         >
                             {t("write_site", { ns: "index" })}
-                        </buttoon>
+                        </button>
                     </div>
                 </div>
 

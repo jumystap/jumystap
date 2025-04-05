@@ -28,6 +28,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.analytics.clicks') }}" class="nav-link {{ request()->routeIs('admin.analytics.clicks.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-box"></i>
+                        <p>Аналитика по кликам</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link" target="_blank">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Перейти на сайт</p>

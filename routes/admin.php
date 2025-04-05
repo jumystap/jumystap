@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\HomeController;
@@ -34,4 +35,7 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::resource('users', UserController::class);
     Route::resource('announcements', AnnouncementController::class);
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
+    Route::prefix('analytics')->name('analytics.')->group(function (){
+        Route::get('clicks', [AnalyticController::class, 'clicks'])->name('clicks');
+    });
 });

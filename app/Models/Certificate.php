@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,7 +44,7 @@ class Certificate extends Model
         }
 
         if (array_key_exists('end_date', $attributes) && $attributes['end_date']) {
-            $query->where('created_at', '<=', now()->parse($attributes['end_date'])->format('Y-m-d'));
+            $query->where('created_at', '<=', Carbon::parse($attributes['end_date'])->endOfDay()->toDateTimeString());
         }
 
         return $query;

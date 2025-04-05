@@ -9,7 +9,6 @@ use App\Models\AnnouncementRequirement;
 use App\Models\AnnouncementResponsibility;
 use App\Models\Industry;
 use App\Models\Response;
-use App\Models\Specialization;
 use App\Models\SpecializationCategory;
 use App\Models\TelegramAdmin;
 use App\Models\User;

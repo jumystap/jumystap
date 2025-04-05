@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
@@ -33,6 +34,10 @@ Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->nam
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
 Route::post('/restore_password', [AuthController::class, 'restorePassword']);
+
+Route::prefix('analytics')->name('analytics.')->group(function (){
+    Route::post('click', [AnalyticController::class, 'create'])->name('click.create');
+});
 
 Route::prefix('portfolio')->middleware('auth')->group(function() {
     Route::post('/', [PortfolioController::class, 'store'])->name('portfolio.store');
