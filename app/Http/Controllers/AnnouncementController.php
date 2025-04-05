@@ -38,6 +38,7 @@ class AnnouncementController extends Controller
             'city' => $request->input('city'),
             'minSalary' => $request->input('minSalary'),
             'isSalary' => $request->input('isSalary'),
+            'noExperience' => $request->input('noExperience'),
             'publicTime' => $request->input('publicTime'),
         ];
 

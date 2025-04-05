@@ -27,6 +27,7 @@ export default function Announcements({ auth, announcements, specializations, er
     const [city, setCity] = useState('');
     const [minSalary, setMinSalary] = useState('');
     const [isSalary, setIsSalary] = useState(false);
+    const [noExperience, setNoExperience] = useState(false);
     const [publicTime, setPublicTime] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [selectedSpecialization, setSelectedSpecialization] = useState([]);
@@ -43,6 +44,7 @@ export default function Announcements({ auth, announcements, specializations, er
         city: '',
         minSalary: '',
         isSalary: false,
+        noExperience: false,
     });
 
     console.log(announcements)
@@ -83,6 +85,11 @@ export default function Announcements({ auth, announcements, specializations, er
         setData('isSalary', checked);
     };
 
+    const handleNoExperienceChange = (checked) => {
+        setNoExperience(checked);
+        setData('noExperience', checked);
+    };
+
     const handlePublicTimeChange = (value) => {
         setPublicTime(value);
         setData('publicTime', value);
@@ -96,6 +103,7 @@ export default function Announcements({ auth, announcements, specializations, er
         const params = new URLSearchParams(window.location.search);
         const searchKeyword = params.get('searchKeyword');
         const isSalary = params.get('isSalary');
+        const noExperience = params.get('noExperience');
         const city = params.get('city');
         const minSalary = params.get('minSalary');
         const specialization = params.get('specialization');
@@ -103,6 +111,7 @@ export default function Announcements({ auth, announcements, specializations, er
         if (searchKeyword) {
             setData('searchKeyword', searchKeyword);
             setData('isSalary', isSalary);
+            setData('noExperience', noExperience);
             setIsSalary(isSalary);
             setData('city', city);
             setCity(city);
@@ -123,6 +132,7 @@ export default function Announcements({ auth, announcements, specializations, er
             city: '',
             minSalary: '',
             isSalary: false,
+            noExperience: false,
         });
 
         setAnnouncementType('all');
@@ -131,6 +141,7 @@ export default function Announcements({ auth, announcements, specializations, er
         setCity('');
         setMinSalary('');
         setIsSalary(false);
+        setNoExperience(false);
         setPublicTime('');
         setSelectedSpecialization([]);
 
@@ -277,6 +288,11 @@ export default function Announcements({ auth, announcements, specializations, er
                         <div className='mt-5 flex items-center'>
                             <div>{t('specified_income', { ns: 'announcements' })}</div>
                             <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
+                        </div>
+
+                        <div className='mt-5 flex items-center'>
+                            <div>{t('no_experience', { ns: 'announcements' })}</div>
+                            <Switch className='ml-auto' checked={noExperience} onChange={handleNoExperienceChange} />
                         </div>
 
                         <div className='bottom-10'>
@@ -508,6 +524,11 @@ export default function Announcements({ auth, announcements, specializations, er
                             <div className='mt-5 flex items-center'>
                                 <div>{t('specified_income', { ns: 'announcements' })}</div>
                                 <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
+                            </div>
+
+                            <div className='mt-5 flex items-center'>
+                                <div>{t('no_experience', { ns: 'announcements' })}</div>
+                                <Switch className='ml-auto' checked={noExperience} onChange={handleNoExperienceChange} />
                             </div>
 
                             <div className='bottom-10'>

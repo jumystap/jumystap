@@ -53,6 +53,12 @@ class AnnouncementRepository
             }
         }
 
+        if (!empty($filters['noExperience'])) {
+            if($filters['noExperience'] == 'true'){
+                $query->where('experience', 'Без опыта работы');
+            }
+        }
+
         // Filter by publication time
         if (!empty($filters['publicTime'])) {
             $query->where('created_at', '>=', $filters['publicTime']);
