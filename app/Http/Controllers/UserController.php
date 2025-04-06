@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\Announcement;
 use App\Models\Visit;
 use App\Models\UserResume;
@@ -185,7 +186,16 @@ class UserController extends Controller
 
     public function show($id): mixed
     {
+        $contactShow = false;
         $user = $this->userService->getUserWithProfessionsAndPortfolio($id);
+
+        if($user->role_id != Roles::GRADUATE->value){
+            return Inertia::render('NotFound');
+        }
+        if($user->status === 'В активном поиске' || count($user->response) > 0){
+            $contactShow = true;
+        }
+
         $userProfessions = $this->userService->getUserProfessions($id);
 
         $employeeProfessionIds = $this->userService->getUserProfessionIds($id);
@@ -207,6 +217,7 @@ class UserController extends Controller
 
         return Inertia::render('User', [
             'user' => $user,
+            'contactShow' => $contactShow,
             'employees' => $employees,
             'userProfessions' => $userProfessions,
             'resumes' => $resumes,

@@ -25,6 +25,8 @@ class Announcement extends Model
         'description',
         'payment_type',
         'cost',
+        'is_top',
+        'is_urgent',
         'active',
         'payment_status',
         'payed_until',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Models\Announcement;
 use App\Models\AnnouncementAdress;
 use App\Models\AnnouncementCondition;
@@ -185,9 +186,11 @@ class AnnouncementController extends Controller
         $announcement = $this->announcementService->getAnnouncement($id);
         $industries = Industry::all();
         $specializations = SpecializationCategory::with('specialization')->get();
+        $user = Auth::user();
 
-        if(Auth::user() && (Auth::user()->id == $announcement->user_id || Auth::user()->email == 'admin@example.com')){
+        if($user && ($user->id == $announcement->user_id || $user->email == 'admin@example.com')){
             return Inertia::render('Company/UpdateAnnouncement', [
+                'isAdmin' => $user->role_id === Roles::ADMIN->value,
                 'announcement' => $announcement,
                 'industries' => $industries,
                 'specializations' => $specializations
@@ -230,6 +233,8 @@ class AnnouncementController extends Controller
             'condition' => 'nullable|array',
             'condition.*.id' => 'required|integer', // Ensure each condition has an id
             'condition.*.condition' => 'required|string|max:2000', // Ensure each condition has a description
+            'is_top' => "nullable|boolean",
+            'is_urgent' => "nullable|boolean",
         ]);
 
         Log::info('Validation passed', ['validated_data' => $validated]);

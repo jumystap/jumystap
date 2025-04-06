@@ -22,10 +22,12 @@ const kazakhstanCities = [
     "Экибастуз", "Рудный", "Жезказган"
 ];
 
-const UpdateAnnouncement = ({ announcement, specializations }) => {
+const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const { t } = useTranslation();
     const isEdit = true;
     const [salaryType, setSalaryType] = useState(announcement.salary_type || '');
+    const [isTop, setIsTop] = useState(announcement.is_top);
+    const [isUrgent, setIsUrgent] = useState(announcement.is_urgent);
     const [isExactSalary, setIsExactSalary] = useState(announcement.salary_type === 'exact');
     const [isUndefinedSalary, setIsUndefinedSalary] = useState(announcement.salary_type === 'undefined');
     const newRequirementRef = useRef(null);
@@ -55,12 +57,26 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
         salary_type: announcement.salary_type || '',
         cost_min: announcement.cost_min || null,
         cost_max: announcement.cost_max || null,
+        is_top: announcement.is_top || false,
+        is_urgent: announcement.is_urgent || false,
     });
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
         setSalaryType(isChecked ? 'za_smenu' : '');
         setData('salary_type', isChecked ? 'za_smenu' : '');
+    };
+
+    const handleIsTopChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsTop(!!isChecked);
+        setData('is_top', !!isChecked);
+    };
+
+    const handleIsUrgentChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsUrgent(!!isChecked);
+        setData('is_urgent', !!isChecked);
     };
 
     const handleExactSalaryChange = (e) => {
@@ -821,6 +837,37 @@ const UpdateAnnouncement = ({ announcement, specializations }) => {
                                 rows={4}
                             />
                         </Form.Item>
+                        {
+                            isAdmin ?
+                                <div className='flex items-center gap-x-2 mt-2 mb-2'>
+                                    <input
+                                        type='checkbox'
+                                        name='is_top'
+                                        id='is_top'
+                                        className='rounded border-gray-400'
+                                        checked={isTop == 1}
+                                        onChange={handleIsTopChange}
+                                    />
+                                    <label htmlFor='is_top'>{t('is_top', { ns: 'createAnnouncement' })}</label>
+                                </div>
+                                : ''
+                        }
+                        {
+                            isAdmin ?
+                                <div className='flex items-center gap-x-2 mt-2 mb-2'>
+                                    <input
+                                        type='checkbox'
+                                        name='is_urgent'
+                                        id='is_urgent'
+                                        className='rounded border-gray-400'
+                                        checked={isUrgent == 1}
+                                        onChange={handleIsUrgentChange}
+                                    />
+                                    <label htmlFor='is_urgent'>{t('is_urgent', { ns: 'createAnnouncement' })}</label>
+                                </div>
+                            : ''
+                        }
+
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={processing}>
                                 {t('edit', { ns: 'createAnnouncement' })}

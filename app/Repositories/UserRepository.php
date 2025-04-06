@@ -95,7 +95,7 @@ class UserRepository
 
     public function findUserById($id)
     {
-        return User::with(['profession', 'portfolio'])->find($id);
+        return User::with(['profession', 'portfolio'])->findOrFail($id);
     }
 
     public function findUsersByProfessionIds($professionIds, $limit = 6)

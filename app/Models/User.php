@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Profession\Profession;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -71,7 +72,7 @@ class User extends Authenticatable
     {
         return [
             'phone_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
@@ -86,7 +87,7 @@ class User extends Authenticatable
         $role = Role::where('name', $roleName)->first();
 
         return $role ? self::where('role_id', $role->id)
-                     : self::query()->whereRaw('1 = 0');
+            : self::query()->whereRaw('1 = 0');
     }
 
     /**
@@ -100,8 +101,8 @@ class User extends Authenticatable
         $role = Role::where('name', 'employee')->first();
 
         return $role ? self::where('work_status', $workStatus)
-                            ->where('role_id', $role->id)
-                     : self::query()->whereRaw('1 = 0');
+            ->where('role_id', $role->id)
+            : self::query()->whereRaw('1 = 0');
     }
 
     /**
@@ -135,9 +136,9 @@ class User extends Authenticatable
         return $this->hasMany(Announcement::class);
     }
 
-    public function response()
+    public function response(): HasMany
     {
-        return $this->belongsTo(Response::class, 'employee_id');
+        return $this->hasMany(Response::class, 'employee_id', 'id');
     }
 
     public static function search(array $attributes): Builder
@@ -157,9 +158,9 @@ class User extends Authenticatable
         }
 
         if (array_key_exists('role_id', $attributes) && strlen($attributes['role_id'])) {
-            if($attributes['role_id'] == 'null'){
+            if ($attributes['role_id'] == 'null') {
                 $query->where('role_id', 0);
-            }else{
+            } else {
                 $query->where('role_id', $attributes['role_id']);
             }
         }

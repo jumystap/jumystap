@@ -13,7 +13,7 @@ const formatCreatedAt = (createdAt) => {
     return formatDistanceToNow(date, { locale: ru, addSuffix: true });
 };
 
-export default function User({ auth, user, employees, userProfessions, resumes }) {
+export default function User({ auth, user, contactShow, employees, userProfessions, resumes }) {
     const { t } = useTranslation("profile");
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -69,18 +69,19 @@ export default function User({ auth, user, employees, userProfessions, resumes }
                                     <div className="md:ml-auto">
                                         {auth.user == null ? (
                                             <Link
-                                                href="/loginƒ"
+                                                href="/login"
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
                                                 {t("contact", { ns: "profile" })}
                                             </Link>
                                         ) : (
+                                            contactShow === true ?
                                             <a
                                                 href={`https://wa.me/${user.phone}?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A`}
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
                                                 {t("contact", { ns: "profile" })}
-                                            </a>
+                                            </a> : ''
                                         )}
                                     </div>
                                 </div>

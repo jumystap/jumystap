@@ -1,4 +1,5 @@
 @php
+    use App\Enums\Roles;
     $count = $users->count();
     $page = request('page') ?? 1;
     $perPage = $users->perPage();
@@ -16,6 +17,7 @@
         <th>Email</th>
         <th>Телефон</th>
         <th>Роль</th>
+        <th>Статус</th>
         <th style="width: 15%;">Действия</th>
     </tr>
     </thead>
@@ -32,8 +34,21 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->phone }}</td>
             <td>{{ $user->role->name_ru ?? '' }}
-                @if(in_array($user->role->id, [1, 3]))
+                @if(in_array($user->role->id, [Roles::EMPLOYER->value, Roles::CUSTOMER->value]))
                     ({{ count($user->announcement) }})
+                @endif
+            </td>
+            <td>
+                @if($user->role_id === Roles::GRADUATE->value)
+                    @if($user->status === 'В активном поиске')
+                        <span class="badge badge-primary">{{ $user->status }}</span>
+                    @else
+                        <span class="badge badge-light">{{ $user->status }}</span>
+                    @endif
+
+                    @if($responses = count($user->response))
+                        <span class="badge badge-warning">Откликов: {{ $responses }}</span>
+                    @endif
                 @endif
             </td>
             <td>

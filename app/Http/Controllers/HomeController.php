@@ -148,23 +148,16 @@ class HomeController extends Controller
         }
 
         // Other data remains unchanged
-        $urgent_announcements = Announcement::where("id", 74)
+        $urgent_announcements = Announcement::query()
             ->where("active", 1) // Ensure it's active
-            ->union(
-                Announcement::inRandomOrder()
-                    ->where("active", 1)
-                    ->where("id", "!=", 74)
-                    ->take(1)
-            )
+            ->where('is_urgent', 1)
+            ->take(2)
             ->get();
-        $top_announcements = Announcement::where("id", 74)
+        $top_announcements = Announcement::query()
             ->where("active", 1) // Ensure it's active
-            ->union(
-                Announcement::inRandomOrder()
-                    ->where("active", 1)
-                    ->where("id", "!=", 74)
-                    ->take(1)
-            )
+            ->where("is_top", 1)
+            ->whereNotIn('id', collect($urgent_announcements)->pluck('id'))
+            ->take(2)
             ->get();
         $work_professions = Profession::where("type", "work")
             ->with("group")
