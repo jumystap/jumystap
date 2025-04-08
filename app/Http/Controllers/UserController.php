@@ -6,6 +6,7 @@ use App\Enums\Roles;
 use App\Models\Announcement;
 use App\Models\Visit;
 use App\Models\UserResume;
+use App\Services\AnnouncementService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,12 @@ use App\Models\User;
 class UserController extends Controller
 {
     protected $userService;
+    protected $announcementService;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, AnnouncementService $announcementService)
     {
         $this->userService = $userService;
+        $this->announcementService = $announcementService;
     }
 
     public function index(Request $request): mixed
@@ -259,6 +262,18 @@ class UserController extends Controller
             'professions' => $professions,
             'userProfessions' => $userProfessions,
             'resumes' => $resumes,
+        ]);
+    }
+
+    public function responses(): mixed
+    {
+        $user = Auth::user()->load(['portfolio']);
+        $userProfessions = $this->userService->getUserProfessions($user->id);
+        $announcements = $this->announcementService->getAllActiveAnnouncementsByIds($user->response->pluck('announcement_id')->toArray());
+        return Inertia::render('UserResponses', [
+            'user' => $user,
+            'announcements' => $announcements,
+            'userProfessions' => $userProfessions,
         ]);
     }
 

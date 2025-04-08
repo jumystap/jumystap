@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Announcement;
 use App\Repositories\AnnouncementRepository;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AnnouncementService
 {
@@ -17,6 +18,11 @@ class AnnouncementService
     public function getAllActiveAnnouncements(array $filters = null)
     {
         return $this->announcementRepository->getAllActiveAnnouncements($filters);
+    }
+
+    public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
+    {
+        return $this->announcementRepository->getAllActiveAnnouncementsByIds($ids);
     }
 
     public function getAnnouncement($id): ?Announcement

@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use App\Models\Specialization;
 use App\Models\Favorite;
 use App\Models\Response;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -66,6 +67,16 @@ class AnnouncementRepository
 
         return $query->paginate(10);
     }
+
+    public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
+    {
+        return Announcement::query()->orderBy('created_at', 'desc')
+            ->with('user')
+            ->where('active', 1)
+            ->whereIn('id', $ids)
+            ->paginate(10);
+    }
+
 
     public function getAnnouncementById($id): ?Announcement
     {

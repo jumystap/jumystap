@@ -13,9 +13,9 @@ const UpdateUser = ({ user }) => {
         email: user.email || '',
         date_of_birth: user.date_of_birth || '',
         phone: user.phone || '',
-        ipStatus1: user.ip == 'Есть ИП' ? 'yes' : 'no',
-        ipStatus2: user.status == 'В активном поиске' ? 'yes' : 'no',
-        ipStatus3: user.work_status == 'Ищет работу' ? 'yes' : 'no',
+        ipStatus1: user.ip === 'Есть ИП' ? 'yes' : 'no',
+        ipStatus2: user.status === 'В активном поиске' ? 'yes' : 'no',
+        ipStatus3: user.work_status === 'Ищет работу' ? 'yes' : 'no',
         avatar: null,
         description: user.description || '',
         is_graduate: user.is_graduate,
@@ -28,6 +28,8 @@ const UpdateUser = ({ user }) => {
     useEffect(() => {
         if (user.image_url) {
             setAvatarPreview(`/storage/${user.image_url}`);
+        }else{
+            setAvatarPreview('/images/default-avatar.png');
         }
     }, [user.image_url]);
 

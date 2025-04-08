@@ -157,8 +157,11 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     </div>
                                 </div>
                                 <div className='px-5 mt-5'>
-                                    <Link href='/create_resume' className='block px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
+                                    <Link href='/create_resume' className='px-7 py-2 mr-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
                                         {t('create_resume', { ns: 'profile' })}
+                                    </Link>
+                                    <Link href='/my-responses' className='px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
+                                        {t('my_responses', { ns: 'profile' })}
                                     </Link>
                                     {resumes.length > 0 && (
                                         <div className="grid grid-cols-1 gap-4 mt-5">
