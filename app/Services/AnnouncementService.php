@@ -20,9 +20,9 @@ class AnnouncementService
         return $this->announcementRepository->getAllActiveAnnouncements($filters);
     }
 
-    public function getAllActiveAnnouncementsWithout(int $id)
+    public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)
     {
-        return $this->announcementRepository->getAllActiveAnnouncementsWithout($id);
+        return $this->announcementRepository->getAllActiveAnnouncementsWithout($id, $specializationId);
     }
 
     public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
