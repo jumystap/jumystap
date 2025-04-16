@@ -72,7 +72,6 @@ class AnnouncementRepository
     {
         $query = Announcement::orderBy('created_at', 'desc')
             ->with('user')
-            ->with('user')
             ->whereNotIn('id', $id)
             ->where('active', 1);
 
