@@ -68,6 +68,17 @@ class AnnouncementRepository
         return $query->paginate(10);
     }
 
+    public function getAllActiveAnnouncementsWithout(int $id)
+    {
+        $query = Announcement::orderBy('created_at', 'desc')
+            ->with('user')
+            ->with('user')
+            ->where('id', '!=', $id)
+            ->where('active', 1);
+
+        return $query->paginate(10);
+    }
+
     public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
     {
         return Announcement::query()->orderBy('created_at', 'desc')
