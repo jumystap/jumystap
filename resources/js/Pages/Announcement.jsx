@@ -347,53 +347,53 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             {more_announcement.length > 0 ? (
                             <div className='grid grid-cols-1 md:grid-cols-1'>
                                 {more_announcement.map((anonce, index) => (
-                                    <Link href={`/announcement/${announcement.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
+                                    <Link href={`/announcement/${anonce.id}`} key={index} className='block px-5 py-5 border-b hover:bg-gray-100 transition-all duration-150 border-gray-200'>
                                         <div className='flex'>
                                             <div className='flex gap-x-1 text-blue-400 items-center'>
                                                 <FaLocationDot className='text-sm'/>
-                                                <div className='text-sm'>{announcement.city}</div>
+                                                <div className='text-sm'>{anonce.city}</div>
                                             </div>
                                         </div>
                                         <div className='mt-7 text-lg font-bold'>
-                                            {announcement.title}
+                                            {anonce.title}
                                         </div>
                                         <div className='flex mt-4 gap-x-3 items-center'>
                                             <div className='md:text-xl text-lg font-regular'>
-                                                {announcement.salary_type === "exact" &&
-                                                    announcement.cost &&
-                                                    `${announcement.cost.toLocaleString()} ₸ `}
-                                                {announcement?.salary_type === "min" && announcement.cost_min &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸" : announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                {anonce.salary_type === "exact" &&
+                                                    anonce.cost &&
+                                                    `${anonce.cost.toLocaleString()} ₸ `}
+                                                {anonce?.salary_type === "min" && anonce.cost_min &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
                                                 }
-                                                {announcement.salary_type === "max" && announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸" : announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                {anonce.salary_type === "max" && anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
                                                 }
-                                                {announcement.salary_type === "diapason" &&
-                                                    announcement.cost_min &&
-                                                    announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸" :
-                                                        announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                {anonce.salary_type === "diapason" &&
+                                                    anonce.cost_min &&
+                                                    anonce.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                                                        anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
                                                 }
-                                                {announcement.salary_type === "undefined" && t("negotiable", { ns: "index" })}
-                                                {announcement.salary_type === "za_smenu" && (
+                                                {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                                {anonce.salary_type === "za_smenu" && (
                                                     <>
-                                                        {announcement.cost &&
-                                                            `${announcement.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                        {anonce.cost &&
+                                                            `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
                                                         }
-                                                        {announcement.cost_min &&
-                                                            !announcement.cost_max &&
-                                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                                t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                        {anonce.cost_min &&
+                                                            !anonce.cost_max &&
+                                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                                t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
                                                         }
-                                                        {!announcement.cost_min &&
-                                                            announcement.cost_max &&
-                                                            `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                                t("per_shift", { ns: "index" }) + " " + announcement.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                        {!anonce.cost_min &&
+                                                            anonce.cost_max &&
+                                                            `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                                t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
                                                         }
-                                                        {announcement.cost_min &&
-                                                            announcement.cost_max &&
-                                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
-                                                                t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                        {anonce.cost_min &&
+                                                            anonce.cost_max &&
+                                                            `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                                t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
                                                         }
                                                     </>
                                                 )}
@@ -403,7 +403,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         </div>
                                         <div className='flex gap-x-1 items-center mt-4'>
                                             <MdAccessTime className='text-xl'/>
-                                            <div className='text-sm'>{t('work_schedule')}: {announcement.work_time}</div>
+                                            <div className='text-sm'>{t('work_schedule')}: {anonce.work_time}</div>
                                         </div>
                                     </Link>
                                 ))}
