@@ -72,7 +72,7 @@ class AnnouncementRepository
     {
         $query = Announcement::orderBy('created_at', 'desc')
             ->with('user')
-            ->whereNotIn('announcements.id', $id)
+            ->whereNotIn('id', $id)
             ->where('active', 1);
 
         return $query->paginate(10);
