@@ -65,6 +65,7 @@
     "register_as_employer": "Зарегистрироваться как работодатель",
     "by_continuing_you_accept": "Продолжая, вы принимаете",
     "user_agreement": "Пользовательское соглашение",
+    "verification_code_send_error": "Ошибка при отправке кода!",
     "verification_failed": "Верификация не прошла",
     "invalid_verification_code": "Введённый вами код подтверждения неверен. Пожалуйста, попробуйте снова.",
     "name_error": "Ошибка в имени",

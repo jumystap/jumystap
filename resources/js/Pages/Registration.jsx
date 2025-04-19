@@ -14,7 +14,6 @@ export default function Registration({ errors, professions }) {
     const backendErrors = props.errors;
 
     const [step, setStep] = useState(0);
-    const [verificationCode, setVerificationCode] = useState(null);
     const [source, setSource] = useState(localStorage.getItem('source'));
     const [phoneCode, setPhoneCode] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -33,8 +32,6 @@ export default function Registration({ errors, professions }) {
         description: ' ',
         source: source,
     });
-    const login = 'janamumkindik@gmail.com';
-    const password = '%Jana2023Mumkindik05';
     const phones = data.phone;
 
     const handleRoleSubmit = (role) => {
@@ -45,20 +42,15 @@ export default function Registration({ errors, professions }) {
     const handlePhoneSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
-        const message = `JOLTAP Ваш код: ${newVerificationCode}`;
-        setVerificationCode(newVerificationCode);
 
         const payload = new URLSearchParams({
-            login: login,
-            psw: password,
-            phones: phones,
-            mes: message,
-            sender_id: '839907'
+            channel: 1,
+            receiver: phones,
+            type: 'register',
         });
 
         try {
-            const response = await fetch('https://smsc.kz/sys/send.php', {
+            const response = await fetch('/api/send-verification-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -66,25 +58,46 @@ export default function Registration({ errors, professions }) {
                 body: payload
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            const result = await response.json();
+
+            if (result.success === false) {
+                notification.error({
+                    message: t('verification_code_send_error'),
+                    description: result.message,
+                });
+            }else{
+                setPhoneCode(true);
             }
-            setPhoneCode(true);
         } catch (error) {
             console.error('Error sending SMS:', error);
-            setPhoneCode(true);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleVerificationSubmit = () => {
-        if (data.verificationCode == verificationCode) {
+    const handleVerificationSubmit = async () => {
+        const payload = new URLSearchParams({
+            channel: 1,
+            receiver: phones,
+            code: data.verificationCode,
+            type: 'register',
+        });
+
+        const response = await fetch('/api/verify-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: payload
+        });
+
+        const result = await response.json();
+        if (result.success === true) {
             setStep(3);
         } else {
             notification.error({
                 message: t('verification_failed'),
-                description: t('invalid_verification_code'),
+                description: result.message,
             });
         }
     };

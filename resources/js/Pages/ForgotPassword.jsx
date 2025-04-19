@@ -4,6 +4,7 @@ import { useForm } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
+import {notification} from "antd";
 
 export default function ForgotPassword() {
     const { data, setData, post, processing, reset } = useForm({
@@ -14,42 +15,67 @@ export default function ForgotPassword() {
 
     const { t, i18n } = useTranslation();
     const [step, setStep] = useState(1);
-    const [verificationCode, setVerificationCode] = useState(null);
-    const login = 'janamumkindik@gmail.com';
-    const password = '%Jana2023Mumkindik05';
     const phone = data.phone;
 
     const handlePhoneSubmit = async (e) => {
         e.preventDefault();
-        const newVerificationCode = Math.floor(100000 + Math.random() * 900000);
-        const message = `JOLTAP Ваш код: ${newVerificationCode}`;
-        setVerificationCode(newVerificationCode);
 
         const payload = new URLSearchParams({
-            login: login,
-            psw: password,
-            phones: phone,
-            mes: message,
-            sender_id: '839907'
+            channel: 1,
+            receiver: phone,
+            type: 'forgot',
         });
 
         try {
-            await fetch(`https://smsc.kz/sys/send.php?login=${login}&psw=${password}&phones=${phone}&mes=${encodeURIComponent(message)}`);
-            setStep(2);
+            const response = await fetch('/api/send-verification-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: payload
+            });
+
+            const result = await response.json();
+
+            if (result.success === false) {
+                notification.error({
+                    message: t('verification_code_send_error', { ns: 'register' }),
+                    description: result.message,
+                });
+            }else{
+                setStep(2);
+            }
+
         } catch (error) {
             console.error('Error sending SMS:', error);
             setStep(2);
         }
     };
 
-    const handleVerificationSubmit = (e) => {
+    const handleVerificationSubmit = async (e) => {
         e.preventDefault();
-        if (data.verificationCode == verificationCode) {
+        const payload = new URLSearchParams({
+            channel: 1,
+            receiver: phone,
+            code: data.verificationCode,
+            type: 'forgot',
+        });
+
+        const response = await fetch('/api/verify-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: payload
+        });
+
+        const result = await response.json();
+        if (result.success === true) {
             setStep(3);
         } else {
             notification.error({
-                message: 'Верификация не прошла',
-                description: 'Введённый вами код подтверждения неверен. Пожалуйста, попробуйте снова.',
+                message: t('verification_failed', { ns: 'register' }),
+                description: result.message,
             });
         }
     };

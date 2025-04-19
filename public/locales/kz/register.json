@@ -65,6 +65,7 @@
     "register_as_employer": "Жұмыс беруші ретінде тіркелу",
     "by_continuing_you_accept": "Жалғастыру арқылы сіз қабылдайсыз",
     "user_agreement": "Пайдаланушы келісімі",
+    "verification_code_send_error": "Кодты жіберу кезінде қате пайда болды!",
     "verification_failed": "Тексеру сәтсіз аяқталды",
     "invalid_verification_code": "Код дұрыс емес. Қайтадан көріңіз.",
     "name_error": "Аты-жөнінде қате",

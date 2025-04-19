@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Notification\Channels\SmsChannel;
+use App\Services\Notification\Channels\SmscChannel;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(SmsChannel::class, SmscChannel::class);
     }
 
     /**
