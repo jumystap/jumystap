@@ -37,13 +37,13 @@ export default function ForgotPassword() {
 
             const result = await response.json();
 
-            if (result.success === false) {
+            if (result.success === true) {
+                setStep(2);
+            }else{
                 notification.error({
                     message: t('verification_code_send_error', { ns: 'register' }),
                     description: result.message,
                 });
-            }else{
-                setStep(2);
             }
 
         } catch (error) {

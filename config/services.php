@@ -39,5 +39,9 @@ return [
         'base_uri' => env('SMSC_URI'),
         'login'    => env('SMSC_LOGIN'),
         'password' => env('SMSC_PSW'),
-    ]
+    ],
+
+    'bitrix'=> [
+        'uri' => env('BITRIX_URI', 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/')
+    ],
 ];

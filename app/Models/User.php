@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Profession\Profession;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -121,7 +122,7 @@ class User extends Authenticatable
         return $this->belongsTo(Profession::class);
     }
 
-    public function professions()
+    public function professions(): BelongsToMany
     {
         return $this->belongsToMany(Profession::class, 'user_professions', 'user_id', 'profession_id');
     }
@@ -163,6 +164,10 @@ class User extends Authenticatable
             } else {
                 $query->where('role_id', $attributes['role_id']);
             }
+        }
+
+        if (array_key_exists('is_graduate', $attributes) && $attributes['is_graduate'] == 'on') {
+            $query->where('users.is_graduate', true);
         }
 
         return $query;

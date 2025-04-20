@@ -31,7 +31,6 @@
                     <!-- Default box -->
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('admin.certificates.create') }}" class="btn btn-info">+ Добавить</a>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('admin.certificates.index') }}" method="get">
@@ -49,6 +48,11 @@
                                                 @endforeach
                                             @endif
                                         </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="name">{{ __('ФИО') }}</label>
+                                        <input type="text" id="name" class="form-control" name="search[name]"
+                                               value="@if(isset($search['name'])){{ $search['name'] }}@endif">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="phone">{{ __('Телефон') }}</label>

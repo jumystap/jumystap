@@ -57,7 +57,7 @@ class UserRepository
     {
         return DB::table('user_professions')
             ->join('professions', 'user_professions.profession_id', '=', 'professions.id')
-            ->select('professions.id as profession_id', 'professions.name_ru as profession_name', 'professions.name_kz as profession_name_kz', 'user_professions.certificate_number')
+            ->select('professions.id as profession_id', 'professions.name_ru as profession_name', 'professions.name_kz as profession_name_kz', 'user_professions.certificate_number', 'user_professions.certificate_link')
             ->where('user_professions.user_id', $userId)
             ->get();
     }

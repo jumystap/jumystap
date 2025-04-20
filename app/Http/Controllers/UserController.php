@@ -121,22 +121,6 @@ class UserController extends Controller
         }
     }
 
-    public function updateCertificate(): mixed
-    {
-        $user = User::where('id', Auth::id())->first();
-        $validatedData = ['phone' => $user->phone];
-
-        if($this->userService->getCertificates($validatedData, $user)){
-            $user->update(['is_graduate' => 1]);
-            return redirect('/profile');
-        } else {
-            $user->update(['is_graduate' => 0]);
-            return redirect('/profile');
-        }
-
-        return 0;
-    }
-
     public function edit(): mixed
     {
         $user = Auth::user()->load('role');

@@ -6,7 +6,8 @@ import { formatDistanceToNow } from 'date-fns'; // Import format function
 import { ru } from 'date-fns/locale';
 import {CiLocationOn} from "react-icons/ci";
 import {MdIosShare} from "react-icons/md";
-import Pagination from "@/Components/Pagination.jsx"; // Import Russian locale
+import Pagination from "@/Components/Pagination.jsx";
+import React from "react"; // Import Russian locale
 
 export default function Profile({ auth, user, userProfessions, announcements}) {
     const { t, i18n } = useTranslation('profile');
@@ -83,7 +84,13 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
                                             <>
                                                 {userProfessions.map((profession, index) => (
                                                     <div className='mt-1' key={index}>
-                                                        {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                        <a
+                                                            href={profession.certificate_link}
+                                                            target="_blank"
+                                                            className="underline"
+                                                        >
+                                                            {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                        </a>
                                                     </div>
                                                 ))}
                                             </>
@@ -98,12 +105,6 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
                                             className='text-center mt-2 block bg-blue-500 px-5 py-2 text-white rounded-lg'
                                         >
                                             {t('edit', { ns: 'profile' })}
-                                        </Link>
-                                        <Link
-                                            href='/update_certificate'
-                                            className='text-center mt-2 block border-2 text-blue-500 border-blue-500 px-5 py-2 rounded-lg'
-                                        >
-                                            {t('update_certificate', { ns: 'profile' })}
                                         </Link>
                                     </div>
                                 </div>

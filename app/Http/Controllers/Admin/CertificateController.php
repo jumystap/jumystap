@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Certificate\CertificateStoreRequest;
-use App\Models\Certificate;
 use App\Models\Profession\Profession;
+use App\Models\UserProfession;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CertificateController extends Controller
 {
@@ -17,35 +15,20 @@ class CertificateController extends Controller
 
         if (!$search) {
             $search = [
-                'profession_id' => null,
-                'phone'         => null,
-                'start_date'    => null,
-                'end_date'      => null,
+                'profession_id'      => null,
+                'phone'              => null,
+                'name'               => null,
+                'certificate_number' => null,
+                'start_date'         => null,
+                'end_date'           => null,
+                'is_graduate'        => null,
             ];
         }
 
         return view('admin.certificates.index')
-            ->with('certificates', Certificate::search($search)->latest()->paginate(100)->appends(request()->query()))
+            ->with('certificates', UserProfession::search($search)->orderBy('user_professions.id', 'DESC')->paginate(100)->appends(request()->query()))
             ->with('professions', Profession::all())
             ->with('search', $search);
     }
-
-    public function create()
-    {
-        return view('admin.certificates.create')
-            ->with('professions', Profession::all());
-    }
-
-    public function store(CertificateStoreRequest $request)
-    {
-        $certificate = Certificate::create($request->validated());
-
-        throw_unless($certificate, new BadRequestException(__('Ошибка при создании Сертификата')));
-
-        session()->flash('success', __('Сертификат успешно создан'));
-
-        return redirect()->route('admin.certificates.index');
-    }
-
 }
 

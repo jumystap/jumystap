@@ -27,6 +27,19 @@
             <td>{{ $user->id }}</td>
             <td>
                 {{ $user->name }}
+                @if($user->role_id === Roles::GRADUATE->value)
+                    @if($user->is_graduate)
+                        <span class="badge badge-success">✓</span>
+                    @endif
+                    @php
+                        $countProfessions = count($user->professions);
+                    @endphp
+                    @if($countProfessions)
+                        <span class="badge badge-success">Сертификатов: {{ $countProfessions }}</span>
+                    @else
+                        <span class="badge badge-danger">Сертификатов: 0</span>
+                    @endif
+                @endif
                 @if($user->is_blocked)
                     <span class="badge badge-danger">Заблокирован</span>
                 @endif

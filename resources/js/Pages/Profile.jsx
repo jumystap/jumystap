@@ -132,7 +132,13 @@ export default function Profile({ auth, user, announcements, employees, professi
                                             <>
                                                 {userProfessions.map((profession, index) => (
                                                     <div className='mt-1' key={index}>
-                                                        {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                        <a
+                                                            href={profession.certificate_link}
+                                                            target="_blank"
+                                                            className="underline"
+                                                        >
+                                                            {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                        </a>
                                                     </div>
                                                 ))}
                                             </>
@@ -147,12 +153,6 @@ export default function Profile({ auth, user, announcements, employees, professi
                                             className='text-center mt-2 block bg-blue-500 px-5 py-2 text-white rounded-lg'
                                         >
                                             {t('edit', { ns: 'profile' })}
-                                        </Link>
-                                        <Link
-                                            href='/update_certificate'
-                                            className='text-center mt-2 block border-2 text-blue-500 border-blue-500 px-5 py-2 rounded-lg'
-                                        >
-                                            {t('update_certificate', { ns: 'profile' })}
                                         </Link>
                                     </div>
                                 </div>

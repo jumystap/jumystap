@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Announcement;
 use App\Models\Profession\Profession;
+use App\Models\User;
+use App\Models\UserProfession;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,135 +24,92 @@ class UserService
     }
 
     public function getEmployees($filters = [])
-{
-    return $this->userRepository->getUsersByRoleName('employee', 10, $filters);
-}
+    {
+        return $this->userRepository->getUsersByRoleName('employee', 10, $filters);
+    }
 
 
     public function storeUser(array $validatedData)
     {
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['role_id'] = DB::table('roles')
+        $validatedData['role_id']  = DB::table('roles')
             ->where('name', $validatedData['role'])
             ->first()
             ->id;
 
         $user = $this->userRepository->createUser($validatedData);
-
-        if($this->getCertificates($validatedData, $user)){
-            $user->update(['is_graduate' => 1]);
-        } else {
-            $user->update(['is_graduate' => 0]);
-        }
+        $this->getCertificates($user);
 
         return $user;
     }
 
-    public function getCertificates(array $validatedData, $user)
+    public function getCertificates(User $user): void
     {
-        $certificate_numbers = [];
-        $profession_ids = [];
-
-        $certificates = DB::table('certificates')
-            ->where('phone', $validatedData['phone'])
-            ->get();
-
-        if($certificates->isNotEmpty()){
-            foreach($certificates as $certificate){
-                $certificate_numbers[] = $certificate->certificate_number;
-                $profession_ids[] = $certificate->profession_id;
+        $response     = Http::get(config('services.bitrix.uri') . 'crm.duplicate.findbycomm?type=PHONE&entity_type=CONTACT&values[]=' . $user->phone);
+        if ($response->successful()) {
+            $data = $response->json();
+            if (!empty($data['result']['CONTACT'])) {
+                $contactId = $data['result']['CONTACT'][0];
+                $this->assignCertificate('work', $contactId, $user);
+                $this->assignCertificate('digital', $contactId, $user);
             }
-
-            foreach($profession_ids as $index => $profession_id){
-                if (!$this->hasUserProfession($user->id, $certificate_numbers[$index], $profession_id)) {
-                    $this->userRepository->addUserProfession(
-                        $user->id,
-                        $profession_id,
-                        $certificate_numbers[$index] ?? null
-                    );
-                }
-            }
-
-            return true;
         }
+    }
 
+    protected function assignCertificate(string $type, int $contactId, User $user): void
+    {
         $professionMap = [
-            "Основы изготовления корпусной мебели" => 5,
-            "Ремонт обуви и изготовление ключей" => 6,
-            "Основы  бухгалтерского учета" => 8,
-            "Модельер-конструктор" => 2,
-            "Швея" => 1,
-            "Электрогазосварщик" => 7,
-            "Бариста" => 3,
-            "Продавец-кассир" => 4,
-            "Базовые цифровые навыки" => 16,
+            "Швея"                                     => 1,
+            "Модельер-конструктор"                     => 2,
+            "Бариста"                                  => 3,
+            "Продавец-кассир"                          => 4,
+            "Основы изготовления корпусной мебели"     => 5,
+            "Ремонт обуви и изготовление ключей"       => 6,
+            "Электрогазосварщик"                       => 7,
+            "Основы  бухгалтерского учета"             => 8,
+            "SMM"                                      => 9,
+            "Мобилограф"                               => 10,
+            "Таргетолог"                               => 11,
+            "Графический дизайнер"                     => 12,
+            "Видеомонтаж"                              => 13,
             "Веб-дизайн + Создание и разработка сайта" => 14,
-            "Графический дизайнер" => 12,
-            "Мобилограф" => 10,
-            "Маркетплейс" => 15,
-            "Видеомонтаж" => 13,
-            "Таргетолог" => 11,
-            "SMM" => 9,
+            "Маркетплейс"                              => 15,
+            "Базовые цифровые навыки"                  => 16,
         ];
 
-        $url = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/crm.duplicate.findbycomm?type=PHONE&entity_type=CONTACT&values[]=' . $validatedData['phone'];
+        $baseUri = config('services.bitrix.uri');
+        $path    = $type == 'digital' ? "digital_certificates.certificates.list?contact_id={$contactId}" : "working_certificates.certificates.list?contact_id={$contactId}";
 
-        $response = Http::get($url);
-
-        $responseData = $response->json();
-
-        if (isset($responseData['result']['CONTACT']) && !empty($responseData['result']['CONTACT'])) {
-            $contact_id = $responseData['result']['CONTACT'][0];
-
-            $workUrl = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/working_certificates.certificates.list?contact_id=' . $contact_id;
-            $workResponse = Http::get($workUrl);
-            $workData = $workResponse->json();
-
-            if (isset($workData['result']) && !empty($workData['result'])) {
-                foreach ($workData['result'] as $certificate) {
-                    $certificate_number = $certificate['NUMBER'];
-                    $profession_name = $certificate['PROFESSION']['NAME_RU'];
-                    $profession_id = $professionMap[$profession_name] ?? null;
-
-                    if ($profession_id && !$this->hasUserProfession($user->id, $certificate_number, $profession_id)) {
-                        $this->userRepository->addUserProfession(
-                            $user->id,
-                            $profession_id,
-                            $certificate_number
-                        );
+        $response = Http::get($baseUri . $path);
+        if ($response->successful()) {
+            $data = $response->json();
+            if (!empty($data['result'])) {
+                foreach ($data['result'] as $certificate) {
+                    $professionId = $professionMap[$certificate['PROFESSION']['NAME_RU']] ?? null;
+                    if (!$professionId) {
+                        continue;
                     }
-                }
-
-                return true;
-            }
-
-            $digitalUrl = 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/digital_certificates.certificates.list?contact_id=' . $contact_id;
-            $digitalResponse = Http::get($digitalUrl);
-            $digitalData = $digitalResponse->json();
-
-            if (isset($digitalData['result']) && !empty($digitalData['result'])) {
-                foreach ($digitalData['result'] as $certificate) {
-                    $certificate_number = $certificate['NUMBER'];
-                    $profession_name = $certificate['PROFESSION']['NAME_RU'];
-                    $profession_id = $professionMap[$profession_name] ?? null;
-
-                    if ($profession_id && !$this->hasUserProfession($user->id, $certificate_number, $profession_id)) {
-                        $this->userRepository->addUserProfession(
-                            $user->id,
-                            $profession_id,
-                            $certificate_number
+                    $params = [
+                        'type'               => $type,
+                        'bitrix_id'          => $certificate['ID'],
+                        'user_id'            => $user->id,
+                        'profession_id'      => $professionId,
+                        'certificate_number' => $certificate['NUMBER'],
+                        'certificate_link'   => $certificate['LINK'],
+                    ];
+                    UserProfession::query()
+                        ->updateOrCreate(
+                            [
+                                'user_id'            => $user->id,
+                                'profession_id'      => $professionId,
+                                'certificate_number' => $certificate['NUMBER'],
+                            ],
+                            $params
                         );
-                    }
+                    $user->update(['is_graduate' => 1]);
                 }
-
-                return true;
             }
-        } else {
-            $contact_id = null;
-            return false;
         }
-
-        return false;
     }
 
     /**
@@ -180,7 +139,7 @@ class UserService
         }
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = Hash::make($validatedData['password']);
-        }else{
+        } else {
             unset($validatedData['password']);
         }
 
@@ -208,9 +167,9 @@ class UserService
 
         $path = $file->store('avatars', 'public');
         if ($file->getClientOriginalExtension() === 'heic') {
-            $img = Image::make(Storage::disk('public')->path($path))->encode('jpg');
+            $img     = Image::make(Storage::disk('public')->path($path))->encode('jpg');
             $newPath = str_replace('.heic', '.jpg', $path);
-            Storage::disk('public')->put($newPath, (string) $img);
+            Storage::disk('public')->put($newPath, (string)$img);
             Storage::disk('public')->delete($path);
             $path = $newPath;
         }
@@ -223,19 +182,19 @@ class UserService
 
     public function determineUserStatuses(array $validated): array
     {
-        $ip_status = $validated['ipStatus1'] == 'no' ? "Нет ИП" : "Есть ИП";
-        $ip_status_kz = $validated['ipStatus1'] == 'no' ? "ЖК жоқ" : "ЖК бар";
-        $status = $validated['ipStatus2'] == 'no' ? "Не в активном поиске" : "В активном поиске";
-        $status_kz = $validated['ipStatus2'] == 'no' ? "Жұмыс іздеп жүрген жоқпын" : "Жұмыс іздеп жүрмін";
-        $work_status = $validated['ipStatus3'] == 'no' ? "Ищет заказы" : "Ищет работу";
+        $ip_status      = $validated['ipStatus1'] == 'no' ? "Нет ИП" : "Есть ИП";
+        $ip_status_kz   = $validated['ipStatus1'] == 'no' ? "ЖК жоқ" : "ЖК бар";
+        $status         = $validated['ipStatus2'] == 'no' ? "Не в активном поиске" : "В активном поиске";
+        $status_kz      = $validated['ipStatus2'] == 'no' ? "Жұмыс іздеп жүрген жоқпын" : "Жұмыс іздеп жүрмін";
+        $work_status    = $validated['ipStatus3'] == 'no' ? "Ищет заказы" : "Ищет работу";
         $work_status_kz = $validated['ipStatus3'] == 'no' ? "Тапсырыс орындаушы" : "Мен тұрақты жұмыс іздеймін";
 
         return [
-            'ip' => $ip_status,
-            'ip_kz' => $ip_status_kz,
-            'status' => $status,
-            'status_kz' => $status_kz,
-            'work_status' => $work_status,
+            'ip'             => $ip_status,
+            'ip_kz'          => $ip_status_kz,
+            'status'         => $status,
+            'status_kz'      => $status_kz,
+            'work_status'    => $work_status,
             'work_status_kz' => $work_status_kz,
         ];
     }
@@ -278,7 +237,7 @@ class UserService
             $calculated_rating = ($user->rating + $rating) / ($user->rating_count + 1);
 
             $this->userRepository->updateUser($user, [
-                'rating' => $calculated_rating,
+                'rating'       => $calculated_rating,
                 'rating_count' => $user->rating_count + 1,
             ]);
 
