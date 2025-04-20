@@ -40,7 +40,7 @@ class GetCertificatesCommand extends Command
             $startId = $forStart->bitrix_id;
         }
 
-        $stopId = $startId + 10000;
+        $stopId = $startId + 100;
 
         $professionMap = [
             "Швея"                                     => 1,
