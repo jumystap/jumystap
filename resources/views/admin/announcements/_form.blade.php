@@ -18,7 +18,7 @@
             @foreach ($statuses as $key => $value)
                 <option
                     value="{{ $key }}"
-                    @if(old('status') == $key || isset($announcement) && $announcement->status == $key) selected="selected" @endif
+                    @if(old('status') == $key || isset($announcement) && $announcement->status->value == $key) selected="selected" @endif
                 >
                     {{ $value }}
                 </option>
@@ -28,6 +28,10 @@
         @error('status')
         <span class="invalid-feedback">{{ $message }}</span>
         @enderror
+    </div>
+    <div class="form-group">
+        <label for="publish">{{ __('Опубликовать снова') }}</label>
+        <input type="checkbox" name="publish" {{ old('publish') ? 'checked' : '' }} >
     </div>
 </div>
 <div class="card-footer">
