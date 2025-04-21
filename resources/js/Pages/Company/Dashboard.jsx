@@ -127,9 +127,19 @@ export default function Dashboard({ user, announcements }) {
                                 {user.announcement.map((anonce, index) => (
                                     <div key={index} className='p-3 border-t border-gray-300 w-full'>
                                         <div className='flex items-center'>
-                                            {!anonce.active && (
+                                            {anonce.status === 0 && (
                                                 <div className=' text-sm text-gray-500'>
                                                     {t('on_moderation', { ns: 'dashboard' })}
+                                                </div>
+                                            )}
+                                            {anonce.status === 2 && (
+                                                <div className=' text-sm text-gray-500'>
+                                                    {t('blocked', { ns: 'dashboard' })}
+                                                </div>
+                                            )}
+                                            {anonce.status === 3 && (
+                                                <div className=' text-sm text-gray-500'>
+                                                    {t('archived', { ns: 'dashboard' })}
                                                 </div>
                                             )}
                                             <div className="ml-auto">
@@ -183,7 +193,7 @@ export default function Dashboard({ user, announcements }) {
                                             {anonce.city}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
+                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
                                         </div>
                                         <div className='text-sm font-light text-gray-500 mt-2'>
                                             {anonce.visit_count} {t('views', { ns: 'dashboard' })}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AnnouncementStatus;
 use App\Models\Announcement;
 use App\Models\Profession\Profession;
 use App\Models\Resume;
@@ -85,7 +86,7 @@ class HomeController extends Controller
                     "specialization_id",
                     $resumeSpecializations
                 )
-                    ->where("active", 1)
+                    ->where("status", AnnouncementStatus::ACTIVE->value)
                     ->orderBy("created_at", "desc")
                     ->get();
 
@@ -101,12 +102,12 @@ class HomeController extends Controller
                     "specialization_id",
                     $relatedSpecializationIds
                 )
-                    ->where("active", 1)
+                    ->where("status", AnnouncementStatus::ACTIVE->value)
                     ->whereNotIn("id", $matchedBySpecialization->pluck("id")) // Exclude already fetched
                     ->orderBy("created_at", "desc")
                     ->get();
 
-                $otherAnnouncements = Announcement::where("active", 1)
+                $otherAnnouncements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
                     ->whereNotIn(
                         "id",
                         $matchedBySpecialization
@@ -137,24 +138,24 @@ class HomeController extends Controller
             } else {
                 // If the user doesn't have a resume, just show announcements ordered by creation date
                 $announcements = Announcement::orderBy("created_at", "desc")
-                    ->where("active", 1)
+                    ->where("status", AnnouncementStatus::ACTIVE->value)
                     ->paginate(10);
             }
         } else {
             // For guests, show announcements ordered by creation date
             $announcements = Announcement::orderBy("created_at", "desc")
-                ->where("active", 1)
+                ->where("status", AnnouncementStatus::ACTIVE->value)
                 ->paginate(10);
         }
 
         // Other data remains unchanged
         $urgent_announcements = Announcement::query()
-            ->where("active", 1) // Ensure it's active
+            ->where("status", AnnouncementStatus::ACTIVE->value) // Ensure it's active
             ->where('is_urgent', 1)
             ->take(2)
             ->get();
         $top_announcements = Announcement::query()
-            ->where("active", 1) // Ensure it's active
+            ->where("status", AnnouncementStatus::ACTIVE->value) // Ensure it's active
             ->where("is_top", 1)
             ->whereNotIn('id', collect($urgent_announcements)->pluck('id'))
             ->take(2)

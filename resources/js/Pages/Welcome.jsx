@@ -326,7 +326,7 @@ export default function Welcome({
                   </div>
                   <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">
                     {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
                     {i18n.language == "kz" && ""}
                   </div>
                 </div>
@@ -399,7 +399,7 @@ export default function Welcome({
                   </div>
                   <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
                     {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
                     {i18n.language == "kz" && ""}
                   </div>
                 </div>
@@ -472,7 +472,7 @@ export default function Welcome({
                   </div>
                   <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
                     {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
                     {i18n.language == "kz" && ""}
                   </div>
                 </div>
@@ -632,7 +632,7 @@ export default function Welcome({
                   </div>
                   <div className="text-sm font-light text-gray-500">
                     {i18n.language === "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(urgent.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {`${formatDistanceToNow(new Date(urgent.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
                     {i18n.language === "kz" && ""}
                   </div>
                 </Link>
@@ -676,7 +676,7 @@ export default function Welcome({
                   </div>
                   <div className="text-sm font-light text-gray-500">
                     {i18n.language === "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(top.created_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {`${formatDistanceToNow(new Date(top.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
                     {i18n.language === "kz" && ""}
                   </div>
                 </Link>

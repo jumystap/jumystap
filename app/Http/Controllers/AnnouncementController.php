@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
 use App\Models\Announcement;
 use App\Models\AnnouncementAdress;
@@ -69,6 +70,14 @@ class AnnouncementController extends Controller
             return redirect()->back()->withErrors(['error' => 'Announcement not found']);
         }
 
+        $user = Auth::user();
+        if (
+            $announcement->status !== AnnouncementStatus::ACTIVE->value &&
+            (!$user || $user->role_id !== Roles::ADMIN->value)
+        ) {
+            return redirect('announcements');
+        }
+
         $top_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
         $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
         $more_announcement = $this->announcementService->getAllActiveAnnouncementsWithout($id, $announcement->specialization_id);
@@ -104,7 +113,7 @@ class AnnouncementController extends Controller
             'description' => 'nullable',
             'payment_type' => 'required|string|max:255',
             'cost' => 'required_if:salary_type,exact|nullable|numeric',
-            'active' => 'required|boolean',
+            'status' => 'required|int',
             'work_time' => 'nullable',
             'work_hours' => 'nullable|max:255',
             'employemnt_type' => 'nullable',
@@ -131,7 +140,7 @@ class AnnouncementController extends Controller
         try {
             $announcement = $this->announcementService->createAnnouncement(array_merge($validated, [
                 'user_id' => $user->id,
-                'active' => 0,
+                'status' => AnnouncementStatus::ON_MODERATION->value,
             ]));
 
             if (!empty($validated['location'])) {
@@ -211,7 +220,7 @@ class AnnouncementController extends Controller
             'description' => 'nullable|string',
             'payment_type' => 'required|string|max:255',
             'cost' => 'required_if:salary_type,exact|nullable|numeric',
-            'active' => 'required|boolean',
+            'status' => 'required|int',
             'work_time' => 'nullable|string|max:255', // Assuming work_time is a string
             'work_hours' => 'nullable|max:255',
             'employemnt_type' => 'nullable',
@@ -241,7 +250,7 @@ class AnnouncementController extends Controller
 
         try {
             $success = $this->announcementService->updateAnnouncement($id, array_merge($validated, [
-                'active' => 0,
+                'status' => AnnouncementStatus::ON_MODERATION->value,
             ]));
 
             Log::info('Announcement update attempt', ['success' => $success]);

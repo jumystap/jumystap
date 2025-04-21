@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Domains\Common\Enums\Status;
+use App\Enums\AnnouncementStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,7 +30,8 @@ class Announcement extends Model
         'cost',
         'is_top',
         'is_urgent',
-        'active',
+        'status',
+        'published_at',
         'payment_status',
         'payed_until',
         'work_time',
@@ -42,6 +46,10 @@ class Announcement extends Model
         'employemnt_type',
         'work_hours',
         'start_time',
+    ];
+
+    protected $casts = [
+        'status' => AnnouncementStatus::class,
     ];
 
     /**
@@ -76,4 +84,48 @@ class Announcement extends Model
     {
         return $this->hasMany(AnnouncementResponsibility::class);
     }
+
+    public static function search(array $attributes): Builder
+    {
+        $query = static::query();
+        $query->join('users', 'users.id', '=', 'announcements.user_id');
+
+        if (array_key_exists('company_name', $attributes) && strlen($attributes['company_name'])) {
+            $query->where('users.name', 'LIKE', '%' . $attributes['company_name'] . '%');
+        }
+
+        if (array_key_exists('user_id', $attributes) && strlen($attributes['user_id'])) {
+            $query->where('users.id', $attributes['user_id']);
+        }
+
+        if (array_key_exists('title', $attributes) && strlen($attributes['title'])) {
+            $query->where('title', 'LIKE', '%' . $attributes['title'] . '%');
+        }
+
+        if (array_key_exists('city', $attributes) && strlen($attributes['city'])) {
+            $query->where('city', $attributes['city']);
+        }
+
+        if (array_key_exists('type', $attributes) && strlen($attributes['type'])) {
+            $query->where('type_ru', $attributes['type']);
+        }
+
+        if (array_key_exists('specialization_category_id', $attributes) && strlen($attributes['specialization_category_id'])) {
+            if ($attributes['specialization_category_id'] != 'null') {
+                $specializationIds = Specialization::where('category_id', $attributes['specialization_category_id'])->get()->pluck('id')->toArray();
+                $query->whereIn('specialization_id', $specializationIds);
+            }
+        }
+
+        if (array_key_exists('with_salary', $attributes) && $attributes['with_salary'] == 'on') {
+            $query->where('salary_type', '!=', 'undefined');
+        }
+
+        if (array_key_exists('no_experience', $attributes) && $attributes['no_experience'] == 'on') {
+            $query->where('experience', 'Без опыта работы');
+        }
+
+        return $query;
+    }
+
 }

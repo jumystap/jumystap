@@ -74,7 +74,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         requirement: [''],
         responsibility: [''],
         city: '',
-        active: true,
+        status: 1,
         specialization_id: null,
         salary_type: 'undefined',
         cost_min: null,

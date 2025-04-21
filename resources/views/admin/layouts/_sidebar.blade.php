@@ -22,6 +22,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-star"></i>
+                        <p>Вакансии</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-images"></i>
                         <p>Сертификаты</p>

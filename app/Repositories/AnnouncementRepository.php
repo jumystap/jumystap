@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\AnnouncementStatus;
 use App\Models\Announcement;
 use App\Models\Specialization;
 use App\Models\Favorite;
@@ -14,9 +15,9 @@ class AnnouncementRepository
 {
     public function getAllActiveAnnouncements(array $filters = null)
     {
-        $query = Announcement::orderBy('created_at', 'desc')
+        $query = Announcement::orderBy('published_at', 'desc')
         ->with('user')
-        ->where('active', 1);
+        ->where("status", AnnouncementStatus::ACTIVE->value);
 
         if (!empty($filters['searchKeyword'])) {
             $keyword = $filters['searchKeyword'];
@@ -70,20 +71,20 @@ class AnnouncementRepository
 
     public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)
     {
-        $query = Announcement::orderBy('created_at', 'desc')
+        $query = Announcement::orderBy('published_at', 'desc')
             ->with('user')
             ->where('id', '!=', $id)
             ->where('specialization_id', $specializationId)
-            ->where('active', 1);
+            ->where("status", AnnouncementStatus::ACTIVE->value);
 
         return $query->limit(6)->get();
     }
 
     public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
     {
-        return Announcement::query()->orderBy('created_at', 'desc')
+        return Announcement::query()->orderBy('published_at', 'desc')
             ->with('user')
-            ->where('active', 1)
+            ->where("status", AnnouncementStatus::ACTIVE->value)
             ->whereIn('id', $ids)
             ->paginate(10);
     }

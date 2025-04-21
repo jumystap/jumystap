@@ -113,7 +113,7 @@ export default function Favs({ auth, announcements, errors }) {
         setSearchKeyword(event.target.value);
     };
 
-    const sortedAnnouncements = announcements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const sortedAnnouncements = announcements.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
 
     const uniqueCities = [...new Set(announcements.map(anonce => anonce.city))];
 
@@ -159,7 +159,7 @@ export default function Favs({ auth, announcements, errors }) {
                                         <div className='text-sm'>{anonce.city}, {anonce.location}</div>
                                     </div>
                                     <div className='ml-auto text-sm text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
+                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('орналастырылды')}
                                     </div>
                                 </div>
                                 <div className='mt-7 text-lg font-bold'>

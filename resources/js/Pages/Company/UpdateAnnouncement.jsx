@@ -52,7 +52,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         requirement: announcement.requirements || [''],
         responsibility: announcement.responsibilities || [''],
         city: announcement.city || '',
-        active: announcement.active || true,
+        status: announcement.status,
         specialization_id: announcement.specialization_id || null,
         salary_type: announcement.salary_type || '',
         cost_min: announcement.cost_min || null,

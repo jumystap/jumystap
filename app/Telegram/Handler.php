@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Enums\AnnouncementStatus;
 use App\Models\Announcement;
 use App\Models\TelegramAdmin;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
@@ -57,7 +58,8 @@ class Handler extends WebhookHandler
             $id = $this->data->get('id');
             $chat_id = $this->data->get('chat_id');
             $announcement = Announcement::findOrFail($id);
-            $announcement->active = true;
+            $announcement->status = AnnouncementStatus::ACTIVE->value;
+            $announcement->published_at = AnnouncementStatus::ACTIVE->value;
             $announcement->save();
 
             Log::info('Announcement accepted and activated.', ['announcement_id' => $announcement->id]);
@@ -79,7 +81,7 @@ class Handler extends WebhookHandler
             $id = $this->data->get('id');
             $chat_id = $this->data->get('chat_id');
             $announcement = Announcement::findOrFail($id);
-            $announcement->active = false;
+            $announcement->status = AnnouncementStatus::BLOCKED->value;
             $announcement->save();
 
             Log::info('Announcement rejected and deactivated.', ['announcement_id' => $announcement->id]);

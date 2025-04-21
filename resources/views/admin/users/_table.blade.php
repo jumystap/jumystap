@@ -71,7 +71,7 @@
                         @csrf
                         @method('delete')
                         @if(in_array($user->role->id, [1, 3]) && count($user->announcement) > 0)
-                            <a href="{{ route('admin.announcements.index', ['user_id' => $user->id]) }}" class='btn btn-outline-warning'><i class="fas fa-eye"></i></a>
+                            <a href="{{ route('admin.announcements.index', ['search[user_id]' => $user->id]) }}" class='btn btn-outline-warning'><i class="fas fa-star"></i></a>
                         @endif
                         <a href="{{ route('admin.users.edit', $user) }}" class='btn btn-outline-info'><i class="fas fa-pen"></i></a>
                         <button type="submit" class="btn btn-outline-danger"  onclick="return confirm('Вы действительно хотите удалить?')">
