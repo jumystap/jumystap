@@ -15,6 +15,9 @@
         <th>Компания</th>
         <th>Наименование</th>
         <th>Статус</th>
+        <th>Создано</th>
+        <th>Изменено</th>
+        <th>Опубликовано</th>
         <th style="width: 15%;">Действия</th>
     </tr>
     </thead>
@@ -29,6 +32,9 @@
                 {{ $announcement->status->getLabel() }}
                 </span>
             </td>
+            <td>{{ $announcement->created_at }}</td>
+            <td>{{ $announcement->updated_at }}</td>
+            <td>{{ $announcement->published_at }}</td>
             <td>
                 <div class='btn-group'>
                     <form action="{{ route('admin.announcements.destroy', $announcement) }}" class="d-inline"
