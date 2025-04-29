@@ -44,7 +44,7 @@ class Handler extends WebhookHandler
 
     public function help(): void
     {
-        $this->reply("we can't help");
+        $this->reply("we can't help " . $this->chat->chat_id);
     }
 
     protected function handleUnknownCommand(Stringable $text): void
