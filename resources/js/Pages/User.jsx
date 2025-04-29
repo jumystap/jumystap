@@ -14,7 +14,7 @@ const formatCreatedAt = (createdAt) => {
 };
 
 export default function User({ auth, user, contactShow, employees, userProfessions, resumes }) {
-    const { t } = useTranslation("profile");
+    const { t, i18n } = useTranslation('profile');
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
