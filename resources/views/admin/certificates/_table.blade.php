@@ -25,9 +25,9 @@
     <tbody>
     @foreach($certificates as $certificate)
         <tr id="{{ $certificate->id }}" data-index="{{ $loop->index }}">
-            <td>{{ $certificate->profession->id }}</td>
+            <td>{{ $certificate->id }}</td>
             <td>{{ $certificate->profession->type }}</td>
-            <td>{{ $certificate->profession->bitrix_id }}</td>
+            <td>{{ $certificate->bitrix_id }}</td>
             <td>{{ $certificate->profession->name_ru }}</td>
             <td>
                 {{ $certificate->user->name }}
