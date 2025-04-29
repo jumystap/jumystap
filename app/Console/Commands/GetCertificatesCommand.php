@@ -79,6 +79,7 @@ class GetCertificatesCommand extends Command
                         if ($user) {
                             $professionId = $professionMap[$certificate['PROFESSION']['NAME_RU']] ?? null;
                             if (!$professionId) {
+                                $this->warn($certificate['PROFESSION']['NAME_RU'] . " not found!");
                                 continue;
                             }
                             $params = [
