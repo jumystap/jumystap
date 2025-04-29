@@ -68,7 +68,7 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validated();
 
-        if((int)$validated['status'] === AnnouncementStatus::ACTIVE->value && isset($validated['publish'])) {
+        if((int)$validated['status'] === AnnouncementStatus::ACTIVE->value && (isset($validated['publish']) ||  $announcement->status != AnnouncementStatus::ACTIVE->value)) {
             $validated['published_at'] = now();
         }
         $updated = $announcement->update($validated);
