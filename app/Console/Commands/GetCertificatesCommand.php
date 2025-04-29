@@ -32,22 +32,27 @@ class GetCertificatesCommand extends Command
         $baseUri = config('services.bitrix.uri');
         $startId = 0;
 
-        $forStart = UserProfession::query()
-            ->where('type', $type)
-            ->orderBy('bitrix_id', 'DESC')
-            ->first();
-        if ($forStart) {
-            $startId = $forStart->bitrix_id;
-        }
+//        $forStart = UserProfession::query()
+//            ->where('type', $type)
+//            ->orderBy('bitrix_id', 'DESC')
+//            ->first();
+//        if ($forStart) {
+//            $startId = $forStart->bitrix_id;
+//        }
 
-        $stopId = $startId + 100;
+//        $stopId = $startId + 100;
+        $startId = 0;
+        $stopId = 7000;
+
 
         $professionMap = [
             "Швея"                                     => 1,
             "Модельер-конструктор"                     => 2,
             "Бариста"                                  => 3,
             "Продавец-кассир"                          => 4,
+            "Основы розничной торговли"                => 4,
             "Основы изготовления корпусной мебели"     => 5,
+            "Сборка корпусной мебели"                  => 5,
             "Ремонт обуви и изготовление ключей"       => 6,
             "Электрогазосварщик"                       => 7,
             "Основы  бухгалтерского учета"             => 8,

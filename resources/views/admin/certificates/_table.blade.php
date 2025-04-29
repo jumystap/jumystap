@@ -12,6 +12,8 @@
     <thead>
     <tr>
         <th class="text-center" style="width: 80px;">#</th>
+        <th>Тип</th>
+        <th>Bitrix ID</th>
         <th>Профессия</th>
         <th>фИО</th>
         <th>Телефон</th>
@@ -23,7 +25,9 @@
     <tbody>
     @foreach($certificates as $certificate)
         <tr id="{{ $certificate->id }}" data-index="{{ $loop->index }}">
-            <td>{{ $certificate->id }}</td>
+            <td>{{ $certificate->profession->id }}</td>
+            <td>{{ $certificate->profession->type }}</td>
+            <td>{{ $certificate->profession->bitrix_id }}</td>
             <td>{{ $certificate->profession->name_ru }}</td>
             <td>
                 {{ $certificate->user->name }}
