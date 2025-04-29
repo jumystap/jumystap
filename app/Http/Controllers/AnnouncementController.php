@@ -70,24 +70,23 @@ class AnnouncementController extends Controller
             return redirect()->back()->withErrors(['error' => 'Announcement not found']);
         }
 
-        $user = Auth::user();
         if (
-            $announcement->status !== AnnouncementStatus::ACTIVE->value &&
-            (!$user || $user->role_id !== Roles::ADMIN->value)
+            $announcement->status->value === AnnouncementStatus::ACTIVE->value ||
+            (Auth::check() && Auth::user()->role_id === Roles::ADMIN->value)
         ) {
-            return redirect('announcements');
+            $top_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
+            $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
+            $more_announcement = $this->announcementService->getAllActiveAnnouncementsWithout($announcement->id, $announcement->specialization_id);
+
+            return Inertia::render('Announcement', [
+                'announcement' => $announcement,
+                'top_announcement' => $top_announcement,
+                'urgent_announcement' => $urgent_announcement,
+                'more_announcement' => $more_announcement
+            ]);
         }
 
-        $top_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
-        $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
-        $more_announcement = $this->announcementService->getAllActiveAnnouncementsWithout($id, $announcement->specialization_id);
-
-        return Inertia::render('Announcement', [
-            'announcement' => $announcement,
-            'top_announcement' => $top_announcement,
-            'urgent_announcement' => $urgent_announcement,
-            'more_announcement' => $more_announcement
-        ]);
+        return redirect('announcements');
     }
 
     public function store(): mixed
