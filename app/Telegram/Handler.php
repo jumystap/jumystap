@@ -19,7 +19,7 @@ class Handler extends WebhookHandler
     {
         $chat = $this->chat;
 
-        if(false){
+//        if(false){
             if ($chat instanceof TelegraphChat) {
                 Telegraph::chat($chat)
                     ->message('Добро пожаловать!')
@@ -37,9 +37,9 @@ class Handler extends WebhookHandler
             } else {
                 $this->reply('Чат не найден');
             }
-        } else {
-            $this->reply('Добро пожаловать');
-        }
+//        } else {
+//            $this->reply('Добро пожаловать');
+//        }
     }
 
     public function help(): void
