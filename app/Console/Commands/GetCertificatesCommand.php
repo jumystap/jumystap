@@ -32,16 +32,15 @@ class GetCertificatesCommand extends Command
         $baseUri = config('services.bitrix.uri');
         $startId = 0;
 
-//        $forStart = UserProfession::query()
-//            ->where('type', $type)
-//            ->orderBy('bitrix_id', 'DESC')
-//            ->first();
-//        if ($forStart) {
-//            $startId = $forStart->bitrix_id;
-//        }
+        $forStart = UserProfession::query()
+            ->where('type', $type)
+            ->orderBy('bitrix_id', 'DESC')
+            ->first();
+        if ($forStart) {
+            $startId = $forStart->bitrix_id;
+        }
 
-//        $stopId = $startId + 100;
-        $stopId = 7000;
+        $stopId = $startId + 100;
 
         $professionMap = [
             "Швея"                                     => 1,
@@ -102,10 +101,9 @@ class GetCertificatesCommand extends Command
                                     $params
                                 );
                             $user->update(['is_graduate' => 1]);
+                        } else {
+                            $this->warn("$phone not found!");
                         }
-// else {
-//                            $this->warn("$phone not found!");
-//                        }
                     }
                 }
             }
