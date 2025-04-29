@@ -59,6 +59,21 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                         <p className="text-gray-500 mb-3">
                                             @{user.email.split('@')[0]}
                                         </p>
+                                        {userProfessions.length > 0 && (
+                                            <>
+                                                {userProfessions.map((profession, index) => (
+                                                    <div className='mt-1' key={index}>
+                                                        <a
+                                                            href={profession.certificate_link}
+                                                            target="_blank"
+                                                            className="underline"
+                                                        >
+                                                            {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                        </a>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
                                         <div className="space-y-3">
                                             <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                                 {user.status}
