@@ -54,6 +54,7 @@ class Handler extends WebhookHandler
 
     public function accept()
     {
+        $this->reply($this->data->get('id'), $this->data->get('chat_id'));
         try {
             $id = $this->data->get('id');
             $chat_id = $this->data->get('chat_id');
