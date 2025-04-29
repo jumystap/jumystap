@@ -41,10 +41,10 @@ class GetCertificatesCommand extends Command
 //        }
 
 //        $stopId = $startId + 100;
-        $startId = 0;
-        $stopId = 7000;
+        $startId = $type;
+        $stopId = $startId;
 
-
+        $type = 'work';
         $professionMap = [
             "Швея"                                     => 1,
             "Модельер-конструктор"                     => 2,
@@ -66,7 +66,7 @@ class GetCertificatesCommand extends Command
             "Базовые цифровые навыки"                  => 16,
         ];
 
-        for ($i = $startId; $i < $stopId; $i++) {
+        for ($i = $startId; $i <= $stopId; $i++) {
             $path     = $type == 'digital' ? "digital_certificates.certificates.list?id={$i}" : "working_certificates.certificates.list?id={$i}";
             $response = Http::get($baseUri . $path);
 
