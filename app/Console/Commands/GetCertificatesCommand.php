@@ -62,6 +62,8 @@ class GetCertificatesCommand extends Command
             "Веб-дизайн + Создание и разработка сайта" => 14,
             "Маркетплейс"                              => 15,
             "Базовые цифровые навыки"                  => 16,
+            "Автоспециалист по замене масла и автошин" => 18,
+            "Основы торговли на Kaspi магазине"        => 19,
         ];
 
         for ($i = $startId; $i <= $stopId; $i++) {
@@ -78,6 +80,7 @@ class GetCertificatesCommand extends Command
                             $professionId = $professionMap[$this->cleanString($certificate['PROFESSION']['NAME_RU'])] ?? null;
                             if (!$professionId) {
                                 $this->warn($certificate['PROFESSION']['NAME_RU'] . " not found!");
+                                $this->warn($certificate['PROFESSION']['NAME_KK'] . " not found!");
                                 continue;
                             }
                             $params = [
@@ -98,16 +101,18 @@ class GetCertificatesCommand extends Command
                                     $params
                                 );
                             $user->update(['is_graduate' => 1]);
-                        } else {
-                            $this->warn("$phone not found!");
                         }
+// else {
+//                            $this->warn("$phone not found!");
+//                        }
                     }
                 }
             }
         }
     }
 
-    function cleanString($str) {
+    function cleanString($str): string
+    {
         // Удаление неразрывных пробелов (включая \u{A0})
         $str = preg_replace('/\x{00A0}/u', ' ', $str);
 
