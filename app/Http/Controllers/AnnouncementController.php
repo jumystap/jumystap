@@ -386,17 +386,17 @@ class AnnouncementController extends Controller
                 return;
             }
 
-            try {
-                $admin->delete();
-                TelegramAdmin::create([
-                    'chat_id' => $admin->chat_id,
-                    'name' => $admin->name,
-                    'username' => $admin->username,
-                ]);
-                Log::info('Admin rotation completed.', ['admin_id' => $admin->id]);
-            } catch (\Exception $e) {
-                Log::error('Failed to rotate admin.', ['admin_id' => $admin->id, 'error' => $e->getMessage()]);
-            }
+//            try {
+//                $admin->delete();
+//                TelegramAdmin::create([
+//                    'chat_id' => $admin->chat_id,
+//                    'name' => $admin->name,
+//                    'username' => $admin->username,
+//                ]);
+//                Log::info('Admin rotation completed.', ['admin_id' => $admin->id]);
+//            } catch (\Exception $e) {
+//                Log::error('Failed to rotate admin.', ['admin_id' => $admin->id, 'error' => $e->getMessage()]);
+//            }
         } else {
             Log::warning('No admin found for notification.');
         }
