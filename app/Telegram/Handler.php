@@ -54,13 +54,12 @@ class Handler extends WebhookHandler
 
     public function accept()
     {
-        $this->reply($this->data->get('chat_id'));
         try {
             $id = $this->data->get('id');
             $chat_id = $this->data->get('chat_id');
             $announcement = Announcement::findOrFail($id);
             $announcement->status = AnnouncementStatus::ACTIVE->value;
-            $announcement->published_at = AnnouncementStatus::ACTIVE->value;
+            $announcement->published_at = now();
             $announcement->save();
 
             Log::info('Announcement accepted and activated.', ['announcement_id' => $announcement->id]);
