@@ -41,10 +41,8 @@ class GetCertificatesCommand extends Command
 //        }
 
 //        $stopId = $startId + 100;
-        $startId = $type;
-        $stopId = $startId;
+        $stopId = 7000;
 
-        $type = 'work';
         $professionMap = [
             "Швея"                                     => 1,
             "Модельер-конструктор"                     => 2,
@@ -55,7 +53,7 @@ class GetCertificatesCommand extends Command
             "Сборка корпусной мебели"                  => 5,
             "Ремонт обуви и изготовление ключей"       => 6,
             "Электрогазосварщик"                       => 7,
-            "Основы  бухгалтерского учета"             => 8,
+            "Основы бухгалтерского учета"              => 8,
             "SMM"                                      => 9,
             "Мобилограф"                               => 10,
             "Таргетолог"                               => 11,
@@ -77,7 +75,7 @@ class GetCertificatesCommand extends Command
                         $phone = preg_replace('/\D+/', '', $certificate['PHONE']);
                         $user  = User::query()->where('phone', $phone)->first();
                         if ($user) {
-                            $professionId = $professionMap[$certificate['PROFESSION']['NAME_RU']] ?? null;
+                            $professionId = $professionMap[$this->cleanString($certificate['PROFESSION']['NAME_RU'])] ?? null;
                             if (!$professionId) {
                                 $this->warn($certificate['PROFESSION']['NAME_RU'] . " not found!");
                                 continue;
@@ -107,5 +105,16 @@ class GetCertificatesCommand extends Command
                 }
             }
         }
+    }
+
+    function cleanString($str) {
+        // Удаление неразрывных пробелов (включая \u{A0})
+        $str = preg_replace('/\x{00A0}/u', ' ', $str);
+
+        // Замена множественных пробелов на один
+        $str = preg_replace('/\s+/u', ' ', $str);
+
+        // Обрезка пробелов по краям
+        return trim($str);
     }
 }
