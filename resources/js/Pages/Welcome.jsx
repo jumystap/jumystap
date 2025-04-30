@@ -173,6 +173,31 @@ export default function Welcome({
               </div>
             </div>
             <Carousel>
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="font-bold text-4xl text-orange-500">
+                                {t("free_course", { ns: "index" })}
+                            </p>
+                            <p className="text-lg md:mt-1 text-gray-700">
+                                {t("master_the_profession_of_a_painter_using_polymer_powder_coating", { ns: "index" })}<br/>
+                            </p>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/malyar.png" className="md:w-[150px] w-[200px]" alt="malyar" />
+                        </div>
+                    </div>
+
+                    <div className="flex gap-x-5 mt-3 items-center">
+                        <button onClick={() => setIsOpen(true)}
+                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-orange-400 transition-all duration-150"
+                        >
+                            {t("sign_up_now", { ns: "index" })}
+                        </button>
+                        <img src="/images/Лого.png" className="md:w-[150px] w-[200px]" alt="malyar" />
+                    </div>
+                </div>
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>

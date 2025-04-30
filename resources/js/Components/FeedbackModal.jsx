@@ -18,6 +18,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('shoe_repair_workshop'),
         t('cashier_seller'),
         t('oil_change_tire_service'),
+        t('painter_for_polymer_powder_coating'),
     ];
 
     if (!isOpen) return null;
