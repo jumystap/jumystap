@@ -40,7 +40,8 @@ class AnnouncementController extends Controller
                 'type'                       => null,
                 'company_name'               => null,
                 'title'                      => null,
-                'user_id'                      => null,
+                'user_id'                    => null,
+                'status'                     => null,
             ];
         }
 
@@ -52,6 +53,7 @@ class AnnouncementController extends Controller
             ->with('specializationCategories', SpecializationCategory::all())
             ->with('cities', City::all())
             ->with('types', ['Вакансия', 'Заказ'])
+            ->with('statuses', AnnouncementStatus::list())
             ->with('search', $search);
     }
 

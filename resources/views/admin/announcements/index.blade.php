@@ -88,6 +88,20 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
+                                        <label for="status">{{ __('Статус') }}</label>
+                                        <select name="search[status]" id="status" class="form-control">
+                                            <option value>{{ __('Выберите') }}</option>
+                                            @if($statuses)
+                                                @foreach ($statuses as $key => $value)
+                                                    <option value="{{ $key }}"
+                                                            @if (isset($search['status']) && $search['status'] == $key && $search['status'] != null) selected="selected" @endif>
+                                                        {{ $value }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
                                         <br/>
                                         <label for="no_experience">{{ __('Без опыта работы') }}</label>
                                         @if (isset($search['no_experience']) && $search['no_experience'] == 'on')

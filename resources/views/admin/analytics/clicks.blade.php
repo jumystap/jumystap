@@ -107,7 +107,7 @@
                                     <tr id="{{ $click->id }}" data-index="{{ $loop->index }}">
                                         <td>{{ $click->id }}</td>
                                         <td>{{ $click->parameter->title }}</td>
-                                        <td>{{ $click->created_at }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($click->created_at)->format('d.m.Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

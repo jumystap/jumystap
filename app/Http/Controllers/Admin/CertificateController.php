@@ -26,7 +26,7 @@ class CertificateController extends Controller
         }
 
         return view('admin.certificates.index')
-            ->with('certificates', UserProfession::search($search)->orderBy('user_professions.id', 'DESC')->paginate(100)->appends(request()->query()))
+            ->with('certificates', UserProfession::search($search)->select('user_professions.*')->orderBy('user_professions.id', 'DESC')->paginate(100)->appends(request()->query()))
             ->with('professions', Profession::all())
             ->with('search', $search);
     }

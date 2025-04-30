@@ -32,9 +32,9 @@
                 {{ $announcement->status->getLabel() }}
                 </span>
             </td>
-            <td>{{ $announcement->created_at }}</td>
-            <td>{{ $announcement->updated_at }}</td>
-            <td>{{ $announcement->published_at }}</td>
+            <td>{{ \Carbon\Carbon::parse($announcement->created_at)->format('d.m.Y H:i:s') }}</td>
+            <td>{{ \Carbon\Carbon::parse($announcement->updated_at)->format('d.m.Y H:i:s') }}</td>
+            <td>{{ \Carbon\Carbon::parse($announcement->published_at)->format('d.m.Y H:i:s') }}</td>
             <td>
                 <div class='btn-group'>
                     <form action="{{ route('admin.announcements.destroy', $announcement) }}" class="d-inline"

@@ -117,6 +117,10 @@ class Announcement extends Model
             }
         }
 
+        if (array_key_exists('status', $attributes) && strlen($attributes['status'])) {
+            $query->where('announcements.status', $attributes['status']);
+        }
+
         if (array_key_exists('with_salary', $attributes) && $attributes['with_salary'] == 'on') {
             $query->where('salary_type', '!=', 'undefined');
         }

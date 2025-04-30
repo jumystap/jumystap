@@ -26,7 +26,7 @@
     @foreach($certificates as $certificate)
         <tr id="{{ $certificate->id }}" data-index="{{ $loop->index }}">
             <td>{{ $certificate->id }}</td>
-            <td>{{ $certificate->profession->type }}</td>
+            <td>{{ $certificate->type }}</td>
             <td>{{ $certificate->bitrix_id }}</td>
             <td>{{ $certificate->profession->name_ru }}</td>
             <td>
@@ -39,8 +39,8 @@
             <td>
                 <a href="{{ $certificate->certificate_link }}" target="_blank">{{ $certificate->certificate_number }}</a>
             </td>
-            <td>{{ $certificate->created_at }}</td>
-            <td>{{ $certificate->updated_at }}</td>
+            <td>{{ \Carbon\Carbon::parse($certificate->created_at)->format('d.m.Y H:i:s') }}</td>
+            <td>{{ \Carbon\Carbon::parse($certificate->updated_at)->format('d.m.Y H:i:s') }}</td>
         </tr>
     @endforeach
     </tbody>
