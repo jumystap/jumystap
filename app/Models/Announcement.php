@@ -7,6 +7,7 @@ use App\Enums\AnnouncementStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Announcement extends Model
@@ -30,6 +31,7 @@ class Announcement extends Model
         'cost',
         'is_top',
         'is_urgent',
+        'is_employee_found',
         'status',
         'published_at',
         'payment_status',
@@ -83,6 +85,11 @@ class Announcement extends Model
     public function responsibilities()
     {
         return $this->hasMany(AnnouncementResponsibility::class);
+    }
+
+    public function history(): HasMany
+    {
+        return $this->hasMany(AnnouncementHistory::class);
     }
 
     public static function search(array $attributes): Builder

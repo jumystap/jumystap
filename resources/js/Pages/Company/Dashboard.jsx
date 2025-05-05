@@ -7,6 +7,7 @@ import { LuPhone } from "react-icons/lu";
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { Tabs } from 'antd';
 
 export default function Dashboard({ user, announcements }) {
     const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -38,6 +39,43 @@ export default function Dashboard({ user, announcements }) {
         const thirdPart = phoneNumber.slice(9, 11);
 
         return `${countryCode} ${areaCode} ${firstPart} ${secondPart} ${thirdPart}`;
+    };
+
+    const formatSalary = (anonce) => {
+        const { salary_type, cost, cost_min, cost_max } = anonce;
+        const isRussian = i18n.language === 'ru';
+
+        switch (salary_type) {
+            case 'exact':
+                return cost ? `${cost.toLocaleString()} ₸` : '';
+            case 'min':
+                return cost_min ? `${isRussian ? 'от ' : ''}${cost_min.toLocaleString()} ₸${isRussian ? '' : ' бастап'}` : '';
+            case 'max':
+                return cost_max ? `${isRussian ? 'до ' : ''}${cost_max.toLocaleString()} ₸${isRussian ? '' : ' дейін'}` : '';
+            case 'diapason':
+                if (cost_min && cost_max) {
+                    return `${isRussian ? 'от ' : ''}${cost_min.toLocaleString()} ₸${isRussian ? ' до ' : ' бастап '}${cost_max.toLocaleString()} ₸${isRussian ? '' : ' дейін'}`;
+                }
+                return '';
+            case 'undefined':
+                return t('negotiable', { ns: 'index' });
+            case 'za_smenu':
+                if (cost) {
+                    return `${cost.toLocaleString()} ₸ / ${t('per_shift', { ns: 'index' })}`;
+                }
+                if (cost_min && !cost_max) {
+                    return `${isRussian ? 'от ' : ''}${cost_min.toLocaleString()} ₸${isRussian ? ' / ' : ' '}${t('per_shift', { ns: 'index' })}${isRussian ? '' : ' бастап'}`;
+                }
+                if (!cost_min && cost_max) {
+                    return `${isRussian ? 'до ' : ''}${cost_max.toLocaleString()} ₸${isRussian ? ' / ' : ' '}${t('per_shift', { ns: 'index' })}${isRussian ? '' : ' дейін'}`;
+                }
+                if (cost_min && cost_max) {
+                    return `${isRussian ? 'от ' : ''}${cost_min.toLocaleString()} ₸${isRussian ? ' до ' : ' бастап '}${cost_max.toLocaleString()} ₸${isRussian ? ' ' : ' '}${t('per_shift', { ns: 'index' })}${isRussian ? '' : ' дейін'}`;
+                }
+                return '';
+            default:
+                return '';
+        }
     };
 
     const vacancyCount = user.announcement.filter(anonce => anonce.type_ru === 'Вакансия').length;
@@ -85,6 +123,83 @@ export default function Dashboard({ user, announcements }) {
         }
     };
 
+    const statusTabs = [
+        { key: 'all', label: t('all', { ns: 'dashboard' }), status: null },
+        { key: '0', label: t('on_moderation', { ns: 'dashboard' }), status: 0 },
+        { key: '1', label: t('active', { ns: 'dashboard' }), status: 1 },
+        { key: '2', label: t('blocked', { ns: 'dashboard' }), status: 2 },
+        { key: '3', label: t('archived', { ns: 'dashboard' }), status: 3 },
+    ];
+
+    const renderAnnouncements = (status) => {
+        const filteredAnnouncements = status === null
+            ? user.announcement
+            : user.announcement.filter(anonce => anonce.status === status);
+
+        if (filteredAnnouncements.length === 0) {
+            return (
+                <div className='flex md:h-[200px] h-full'>
+                    <div className='my-auto mx-auto text-gray-400 md:text-2xl text-lg font-bold'>
+                        {t('dont_have_any_ads', { ns: 'dashboard' })}
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div className='grid md:grid-cols-1 grid-cols-1'>
+                {filteredAnnouncements.map((anonce, index) => (
+                    <div key={index} className='p-3 border-t border-gray-300 w-full'>
+                        <div className='flex items-center'>
+                            {anonce.status === 0 && (
+                                <div className='text-sm text-orange-500'>
+                                    {t('on_moderation', { ns: 'dashboard' })}
+                                </div>
+                            )}
+                            {anonce.status === 1 && (
+                                <div className='text-sm text-green-500'>
+                                    {t('active', { ns: 'dashboard' })}
+                                </div>
+                            )}
+                            {anonce.status === 2 && (
+                                <div className='text-sm text-red-500'>
+                                    {t('blocked', { ns: 'dashboard' })}
+                                </div>
+                            )}
+                            {anonce.status === 3 && (
+                                <div className='text-sm text-gray-500'>
+                                    {t('archived', { ns: 'dashboard' })}
+                                </div>
+                            )}
+                            <div className="ml-auto">
+                                <div className='font-bold text-sm ml-auto'>
+                                    {formatSalary(anonce)}
+                                </div>
+                            </div>
+                        </div>
+                        <div className='mt-3'>
+                            {anonce.title}
+                        </div>
+                        <div className='flex mt-2 text-gray-500 gap-x-1 font-light items-center text-sm'>
+                            <FaLocationDot className='text-blue-500' />
+                            {anonce.city}
+                        </div>
+                        <div className='text-sm font-light text-gray-500 mt-2'>
+                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
+                        </div>
+                        <div className='text-sm font-light text-gray-500 mt-2'>
+                            {anonce.visit_count} {t('views', { ns: 'dashboard' })}
+                        </div>
+                        <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
+                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
+                            <Link className='block w-full text-center py-2 text-gray-500 font-light text-sm' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     return (
         <>
             <div className='grid grid-cols-1 md:grid-cols-7'>
@@ -109,111 +224,31 @@ export default function Dashboard({ user, announcements }) {
                         </div>
                         <div className='flex md:flex-row flex-col gap-x-2 gap-y-4 mt-5'>
                             <Link href='/update'
-                                className='text-black border border-gray-300 rounded-lg text-center items-center inline-block py-2 px-10 cursor-pointer'
+                                  className='text-black border border-gray-300 rounded-lg text-center items-center inline-block py-2 px-10 cursor-pointer'
                             >
                                 <span className='text-light text-sm'>{t('update', { ns: 'dashboard' })}</span>
                             </Link>
                             <Link href="/create_announcement"
-                                className='inline-block text-white rounded-lg text-center bg-blue-500 py-2 px-10 cursor-pointer'
+                                  className='inline-block text-white rounded-lg text-center bg-blue-500 py-2 px-10 cursor-pointer'
                             >
                                 <span className='font-light text-sm'>{t('create_announcement', { ns: 'dashboard' })}</span>
                             </Link>
                         </div>
                     </div>
                     <div className='p-3 font-semibold'>{t('your_announcements', { ns: 'dashboard' })}</div>
-                    <div className='rounded-lg '>
-                        {user.announcement.length > 0 ? (
-                            <div className='grid md:grid-cols-1 grid-cols-1'>
-                                {user.announcement.map((anonce, index) => (
-                                    <div key={index} className='p-3 border-t border-gray-300 w-full'>
-                                        <div className='flex items-center'>
-                                            {anonce.status === 0 && (
-                                                <div className=' text-sm text-gray-500'>
-                                                    {t('on_moderation', { ns: 'dashboard' })}
-                                                </div>
-                                            )}
-                                            {anonce.status === 2 && (
-                                                <div className=' text-sm text-gray-500'>
-                                                    {t('blocked', { ns: 'dashboard' })}
-                                                </div>
-                                            )}
-                                            {anonce.status === 3 && (
-                                                <div className=' text-sm text-gray-500'>
-                                                    {t('archived', { ns: 'dashboard' })}
-                                                </div>
-                                            )}
-                                            <div className="ml-auto">
-                                                <div className='font-bold text-sm ml-auto'>
-                                                    {anonce.salary_type === "exact" &&
-                                                        anonce.cost &&
-                                                        `${anonce.cost.toLocaleString()} ₸ `}
-                                                    {anonce?.salary_type === "min" && anonce.cost_min &&
-                                                        `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
-                                                    }
-                                                    {anonce.salary_type === "max" && anonce.cost_max &&
-                                                        `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                                                    }
-                                                    {anonce.salary_type === "diapason" &&
-                                                        anonce.cost_min &&
-                                                        anonce.cost_max &&
-                                                        `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
-                                                            anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                                                    }
-                                                    {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
-                                                    {anonce.salary_type === "za_smenu" && (
-                                                        <>
-                                                            {anonce.cost &&
-                                                                `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
-                                                            }
-                                                            {anonce.cost_min &&
-                                                                !anonce.cost_max &&
-                                                                `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
-                                                            }
-                                                            {!anonce.cost_min &&
-                                                                anonce.cost_max &&
-                                                                `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
-                                                            }
-                                                            {anonce.cost_min &&
-                                                                anonce.cost_max &&
-                                                                `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
-                                                                    t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                                                            }
-                                                        </>
-                                                    )}
-                                            </div>
-                                            </div>
-                                        </div>
-                                        <div className='mt-3'>
-                                            {anonce.title}
-                                        </div>
-                                        <div className='flex mt-2 text-gray-500 gap-x-1 font-light items-center text-sm'>
-                                            <FaLocationDot className='text-blue-500' />
-                                            {anonce.city}
-                                        </div>
-                                        <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
-                                        </div>
-                                        <div className='text-sm font-light text-gray-500 mt-2'>
-                                            {anonce.visit_count} {t('views', { ns: 'dashboard' })}
-                                        </div>
-                                        <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
-                                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
-                                            <Link className='block w-full text-center py-2 text-gray-500 font-light text-sm' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className='flex md:h-[200px] h-full'>
-                                <div className='my-auto mx-auto text-gray-400 md:text-2xl text-lg font-bold'>{t('dont_have_any_ads', { ns: 'dashboard' })}</div>
-                            </div>
-                        )}
+                    <div className='rounded-lg'>
+                        <Tabs
+                            className='ml-1'
+                            defaultActiveKey="all"
+                            items={statusTabs.map(tab => ({
+                                key: tab.key,
+                                label: tab.label,
+                                children: renderAnnouncements(tab.status),
+                            }))}
+                        />
                     </div>
                 </div>
                 <div className='md:block hidden col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>
-
                 </div>
             </div>
         </>

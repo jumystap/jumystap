@@ -33,6 +33,28 @@
         <label for="publish">{{ __('Опубликовать снова') }}</label>
         <input type="checkbox" name="publish" {{ old('publish') ? 'checked' : '' }} >
     </div>
+    @if(count($announcement->history))
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Статус</th>
+                <th>Создано</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($announcement->history as $history)
+                <tr>
+                    <td>
+                    <span class="badge badge-{{ $history->status->getClass() }}">
+                    {{ $history->status->getLabel() }}
+                    </span>
+                    </td>
+                    <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d.m.Y H:i:s') }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @endif
 </div>
 <div class="card-footer">
     <button type="submit" class="btn btn-success font-weight-bold float-right">

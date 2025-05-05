@@ -22,6 +22,7 @@ Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'create']);
 Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements');
 Route::get('/announcement/update/{id}', [AnnouncementController::class, 'edit']);
+Route::post('/announcements/archive/{id}', [AnnouncementController::class, 'archive'])->name('announcement.archive');
 Route::put('/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
 Route::get('/profession/{group}', [ProfessionController::class, 'index'])->name('profession');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');

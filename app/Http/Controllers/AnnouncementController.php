@@ -321,6 +321,17 @@ class AnnouncementController extends Controller
         }
     }
 
+    public function archive(Request $request, int $id): mixed
+    {
+        $validated = $request->validate([
+            'is_employee_found' => "boolean",
+        ]);
+
+        $this->announcementService->updateAnnouncement($id, array_merge($validated, [
+            'status' => AnnouncementStatus::ARCHIVED->value,
+        ]));
+        return redirect('/profile');
+    }
 
     public function delete($id): mixed
     {

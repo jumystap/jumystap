@@ -1,6 +1,8 @@
 {
     "ad_deleted": "Хабарландыру жойылды.",
+    "ad_archived": "Жарнама мұрағатталды.",
     "ad_deletion_error": "Хабарландыруды жою қатесі.",
+    "ad_archivation_error": "Жарнаманы мұрағаттау қатесі.",
     "user_rated": "Пайдаланушы бағаланды.",
     "user_rating_error": "Пайдаланушыны бағалау қатесі.",
     "total_views": "Жалпы қаралым саны",
@@ -13,8 +15,13 @@
     "peak_viewing_time": "Қаралымның ең көп уақыты",
     "users_who_responded": "Жауап берген пайдаланушылар",
     "delete_ad": "Хабарландыруды жою",
+    "archive_ad": "Жарнаманы мұрағаттау",
     "delete": "Жою",
+    "archive": "Мұрағаттау",
     "cancel": "Болдырмау",
     "confirm_deletion": "Жоюды растаңыз",
-    "delete_ad_confirmation": "Бұл хабарландыруды жоюға сенімдісіз бе?"
+    "confirm_archive": "Мұрағаттауды растау",
+    "delete_ad_confirmation": "Бұл хабарландыруды жоюға сенімдісіз бе?",
+    "have_you_found_an_employee": "Сіз қызметкер таптыңыз ба?",
+    "yes": "Иә"
 }

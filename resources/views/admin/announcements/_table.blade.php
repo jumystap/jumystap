@@ -14,6 +14,7 @@
         <th class="text-center" style="width: 80px;">#</th>
         <th>Компания</th>
         <th>Наименование</th>
+        <th>Сотрудник найден</th>
         <th>Статус</th>
         <th>Создано</th>
         <th>Изменено</th>
@@ -27,6 +28,7 @@
             <td>{{ $announcement->id }}</td>
             <td>{{ $announcement->user->name }}</td>
             <td>{{ $announcement->title }}</td>
+            <td>{{ $announcement->is_employee_found ? 'Да' : 'Нет' }}</td>
             <td>
                 <span class="badge badge-{{ $announcement->status->getClass() }}">
                 {{ $announcement->status->getLabel() }}
