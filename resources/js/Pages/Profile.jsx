@@ -173,7 +173,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             <div className='text-[10pt] md:text-sm'>{resume.city}</div>
                                                         </div>
                                                         <div className='text-gray-500 text-sm ml-auto'>
-                                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
+                                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
                                                         </div>
                                                     </div>
                                                     <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>
