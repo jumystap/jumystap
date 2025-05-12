@@ -32,17 +32,25 @@ export default function Welcome({
   const [isInfoOpen, setIsInfoOpen] = useState(false);
     const handleButtonClick = (e, link, parameter_id) => {
         e.preventDefault();
+
+        // Open the popup immediately (Safari-safe)
+        const newWin = window.open('', '_blank');
+
         axios
             .post("/analytics/click", { parameter_id: parameter_id })
             .then((response) => {
-                window.open(link, '_blank');
+                // Set URL after async call
+                if (newWin) newWin.location.href = link;
             })
             .catch((error) => {
                 console.error(error);
+                // Optional: close the new window if error
+                if (newWin) newWin.close();
             });
     };
 
-  const kz = {
+
+    const kz = {
     ...ru,
     formatDistance: (token, count, options) => {
       const formatDistanceLocale = {
@@ -204,9 +212,10 @@ export default function Welcome({
                             <p className="font-bold text-lg md:text-xl text-orange-500">
                                 {t("new_paid_courses_from_skillstap", { ns: "index" })}
                             </p>
-                            <p className="text-lg md:mt-1">
+                            <p className="text-md md:mt-1">
                                 1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
-                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}
+                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
+                                3. {t("mobilograph_pro", { ns: "index" })}
                             </p>
                         </div>
 
