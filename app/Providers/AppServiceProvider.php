@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Announcement;
+use App\Models\User;
 use App\Observers\AnnouncementObserver;
+use App\Observers\UserObserver;
 use App\Services\Notification\Channels\SmsChannel;
 use App\Services\Notification\Channels\SmscChannel;
 use Illuminate\Pagination\Paginator;
@@ -35,5 +37,6 @@ class AppServiceProvider extends ServiceProvider
         App::setLocale($locale);
 
         Announcement::observe(AnnouncementObserver::class);
+        User::observe(UserObserver::class);
     }
 }
