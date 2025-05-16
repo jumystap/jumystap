@@ -17,11 +17,14 @@
     "delete_ad": "Хабарландыруды жою",
     "archive_ad": "Жарнаманы мұрағаттау",
     "delete": "Жою",
-    "archive": "Мұрағаттау",
+    "send": "Жіберу",
     "cancel": "Болдырмау",
     "confirm_deletion": "Жоюды растаңыз",
     "confirm_archive": "Мұрағаттауды растау",
     "delete_ad_confirmation": "Бұл хабарландыруды жоюға сенімдісіз бе?",
     "have_you_found_an_employee": "Сіз қызметкер таптыңыз ба?",
-    "yes": "Иә"
+    "yes": "Иә",
+    "no": "Жоқ",
+    "republish": "Қайтадан жариялау",
+    "select_one_variant": "Опциялардың 1-ін таңдаңыз!"
 }

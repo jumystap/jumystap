@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
+use App\Http\Requests\Announcement\AnnouncementArchiveRequest;
 use App\Http\Requests\Announcement\AnnouncementRepublishRequest;
 use App\Models\Announcement;
 use App\Models\AnnouncementAdress;
@@ -322,14 +323,16 @@ class AnnouncementController extends Controller
         }
     }
 
-    public function archive(Request $request, int $id): mixed
+    public function archive(AnnouncementArchiveRequest $request): mixed
     {
-        $validated = $request->validate([
-            'is_employee_found' => "boolean",
-        ]);
-
-        $this->announcementService->updateAnnouncement($id, array_merge($validated, [
-            'status' => AnnouncementStatus::ARCHIVED->value,
+        $data = [];
+        $id = $request->validated('id');
+        $status = $request->validated('republish') ? AnnouncementStatus::ON_MODERATION->value : AnnouncementStatus::ARCHIVED->value;
+        if($status === AnnouncementStatus::ARCHIVED->value){
+            $data['is_employee_found'] = $request->validated('is_employee_found');
+        }
+        $this->announcementService->updateAnnouncement($id, array_merge($data, [
+            'status' => $status,
         ]));
         return redirect('/profile');
     }

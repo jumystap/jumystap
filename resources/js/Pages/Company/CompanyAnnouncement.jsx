@@ -1,5 +1,5 @@
 import Guest from "@/Layouts/GuestLayout";
-import { Card, Col, Row, Statistic, List, Rate, Button, Modal, Checkbox, message } from 'antd';
+import { Card, Col, Row, Statistic, List, Rate, Button, Modal, Radio, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm, router } from '@inertiajs/react';
@@ -19,7 +19,7 @@ export default function CompanyAnnouncement({
     const [isMobile, setIsMobile] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [isArchiveModalVisible, setIsArchiveModalVisible] = useState(false);
-    const [isEmployeeFound, setIsEmployeeFound] = useState(false);
+    const [employeeFound, setEmployeeFound] = useState(null); // null, 'yes', or 'no'
 
     const { get, delete: destroy, processing } = useForm();
 
@@ -29,15 +29,17 @@ export default function CompanyAnnouncement({
         };
 
         window.addEventListener('resize', handleResize);
-        handleResize(); // Call once to set initial state
+        handleResize();
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const showDeleteModal = () => {
         setIsDeleteModalVisible(true);
     };
+
     const showArchiveModal = () => {
         setIsArchiveModalVisible(true);
+        setEmployeeFound(null); // Reset selection
     };
 
     const handleDelete = () => {
@@ -52,25 +54,34 @@ export default function CompanyAnnouncement({
         });
     };
 
-
     const handleArchive = () => {
-        router.post(`/announcements/archive/${announcement.id}`, {
-                is_employee_found: isEmployeeFound,
+        if (employeeFound === null) {
+            message.error(t('select_one_variant'));
+            return;
+        }
+
+        router.post(
+            `/announcements/archive`,
+            {
+                id: announcement.id,
+                is_employee_found: employeeFound === 'yes',
+                republish: employeeFound === 'republish',
             },
             {
-            onSuccess: () => {
-                message.success(t('ad_archived'));
-                setIsArchiveModalVisible(false);
-                setIsEmployeeFound(false);
-            },
-            onError: () => {
-                message.error(t('ad_archivation_error'));
-            },
-        })
+                onSuccess: () => {
+                    message.success(t('ad_archived'));
+                    setIsArchiveModalVisible(false);
+                    setEmployeeFound(null);
+                },
+                onError: () => {
+                    message.error(t('ad_archivation_error'));
+                },
+            }
+        );
     };
 
     const handleRateUser = (userId, rating) => {
-        get(route('rate.user', { employee_id:userId, rating: rating }), {
+        get(route('rate.user', { employee_id: userId, rating: rating }), {
             onSuccess: () => {
                 message.success(t('user_rated'));
             },
@@ -167,16 +178,22 @@ export default function CompanyAnnouncement({
                         {t('delete_ad')}
                     </Button>
 
-                    {(announcement.status !== 3) && (
-                    <Button type="primary" className="ml-1" danger onClick={showArchiveModal} loading={processing}>
-                        {t('archive_ad')}
-                    </Button>
+                    {announcement.status !== 3 && (
+                        <Button
+                            type="primary"
+                            className="ml-1"
+                            danger
+                            onClick={showArchiveModal}
+                            loading={processing}
+                        >
+                            {t('archive_ad')}
+                        </Button>
                     )}
                 </div>
 
                 <Modal
                     title={t('confirm_deletion')}
-                    visible={isDeleteModalVisible}
+                    open={isDeleteModalVisible}
                     onOk={handleDelete}
                     onCancel={() => setIsDeleteModalVisible(false)}
                     okText={t('delete')}
@@ -187,26 +204,27 @@ export default function CompanyAnnouncement({
 
                 <Modal
                     title={t('confirm_archive')}
-                    visible={isArchiveModalVisible}
+                    open={isArchiveModalVisible}
                     onOk={handleArchive}
                     onCancel={() => {
                         setIsArchiveModalVisible(false);
-                        setIsEmployeeFound(false);
+                        setEmployeeFound(null);
                     }}
-                    okText={t('archive')}
+                    okText={t('send')}
                     cancelText={t('cancel')}
                 >
-                    {t('have_you_found_an_employee')}<br/>
-                    <Checkbox
-                        checked={isEmployeeFound}
-                        onChange={(e) => setIsEmployeeFound(e.target.checked)}
-                        style={{ marginTop: '16px' }}
+                    {t('have_you_found_an_employee')}
+                    <Radio.Group
+                        onChange={(e) => setEmployeeFound(e.target.value)}
+                        value={employeeFound}
+                        style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
                     >
-                        {t('yes')}
-                    </Checkbox>
+                        <Radio value="yes">{t('yes')}</Radio>
+                        <Radio value="no">{t('no')}</Radio>
+                        <Radio value="republish">{t('republish')}</Radio>
+                    </Radio.Group>
                 </Modal>
             </div>
         </Guest>
     );
 }
-
