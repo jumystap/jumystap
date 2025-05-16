@@ -645,7 +645,7 @@ export default function Welcome({
                         {urgent?.salary_type === "min" && urgent.cost_min &&
                             `${i18n?.language === "ru" ? "от " + urgent.cost_min.toLocaleString() + " ₸" : urgent.cost_min.toLocaleString() + " ₸ бастап"}`
                         }
-                        {urgent.salary_type === "max" && anonce.cost_max &&
+                        {urgent.salary_type === "max" && urgent.cost_max &&
                             `${i18n?.language === "ru" ? "до " + urgent.cost_max.toLocaleString() + " ₸" : urgent.cost_max.toLocaleString() + " ₸ дейін"}`
                         }
                         {urgent.salary_type === "diapason" &&
@@ -689,7 +689,7 @@ export default function Welcome({
                         {top?.salary_type === "min" && top.cost_min &&
                             `${i18n?.language === "ru" ? "от " + top.cost_min.toLocaleString() + " ₸" : top.cost_min.toLocaleString() + " ₸ бастап"}`
                         }
-                        {top.salary_type === "max" && anonce.cost_max &&
+                        {top.salary_type === "max" && top.cost_max &&
                             `${i18n?.language === "ru" ? "до " + top.cost_max.toLocaleString() + " ₸" : top.cost_max.toLocaleString() + " ₸ дейін"}`
                         }
                         {top.salary_type === "diapason" &&

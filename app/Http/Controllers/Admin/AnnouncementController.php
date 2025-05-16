@@ -70,9 +70,12 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validated();
 
-        if((int)$validated['status'] === AnnouncementStatus::ACTIVE->value && (isset($validated['publish']) ||  $announcement->status != AnnouncementStatus::ACTIVE->value)) {
+        if((int)$validated['status'] === AnnouncementStatus::ACTIVE->value && (isset($validated['publish']) ||  $announcement->status->value != AnnouncementStatus::ACTIVE->value)) {
             $validated['published_at'] = now();
         }
+        $validated['is_top'] = $validated['is_top'] ?? 0;
+        $validated['is_urgent'] = $validated['is_urgent'] ?? 0;
+
         $updated = $announcement->update($validated);
 
         throw_unless($updated, new BadRequestException(__('Ошибка при редактировании Вакансии')));

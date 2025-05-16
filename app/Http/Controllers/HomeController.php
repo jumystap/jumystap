@@ -152,13 +152,15 @@ class HomeController extends Controller
         $urgent_announcements = Announcement::query()
             ->where("status", AnnouncementStatus::ACTIVE->value) // Ensure it's active
             ->where('is_urgent', 1)
-            ->take(2)
+            ->take(3)
+            ->inRandomOrder()
             ->get();
         $top_announcements = Announcement::query()
             ->where("status", AnnouncementStatus::ACTIVE->value) // Ensure it's active
             ->where("is_top", 1)
             ->whereNotIn('id', collect($urgent_announcements)->pluck('id'))
-            ->take(2)
+            ->take(3)
+            ->inRandomOrder()
             ->get();
         $work_professions = Profession::where("type", "work")
             ->with("group")

@@ -27,6 +27,8 @@ class AnnouncementUpdateRequest extends FormRequest
             'title' => "required|max:255",
             'status' => 'required|int',
             'publish' => 'nullable',
+            'is_top' => 'nullable',
+            'is_urgent' => 'nullable',
         ];
     }
 

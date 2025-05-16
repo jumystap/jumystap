@@ -31,7 +31,23 @@
     </div>
     <div class="form-group">
         <label for="publish">{{ __('Опубликовать снова') }}</label>
-        <input type="checkbox" name="publish" {{ old('publish') ? 'checked' : '' }} >
+        <input type="checkbox" name="publish" {{ old('publish') ? 'checked' : '' }} value="1">
+    </div>
+    <div class="form-group">
+        <label for="is_top">{{ __('Топ') }}</label>
+        @if (isset($announcement) && $announcement->is_top === 1)
+            <input type="checkbox" name="is_top" checked="" value="1">
+        @else
+            <input type="checkbox" name="is_top" {{ old('is_top') ? 'checked' : '' }} value="1">
+        @endif
+    </div>
+    <div class="form-group">
+        <label for="is_urgent">{{ __('Срочно') }}</label>
+        @if (isset($announcement) && $announcement->is_urgent === 1)
+            <input type="checkbox" name="is_urgent" checked="" value="1">
+        @else
+            <input type="checkbox" name="is_urgent" {{ old('is_urgent') ? 'checked' : '' }} value="1">
+        @endif
     </div>
     @if(count($announcement->history))
         <table class="table table-bordered">
