@@ -1,5 +1,5 @@
 import { Inertia } from '@inertiajs/inertia';
-import { Link } from '@inertiajs/react';
+import {Link, router} from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoMailOpenOutline } from "react-icons/io5";
@@ -7,7 +7,7 @@ import { LuPhone } from "react-icons/lu";
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Tabs } from 'antd';
+import {Button, message, Tabs} from 'antd';
 
 export default function Dashboard({ user, announcements }) {
     const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -131,6 +131,24 @@ export default function Dashboard({ user, announcements }) {
         { key: '3', label: t('archived', { ns: 'dashboard' }), status: 3 },
     ];
 
+    const handleRepublish = (id) => {
+        router.post(`/announcements/republish`, {
+                id: id,
+            },
+            {
+                onSuccess: () => {
+                    message.success(t('announcement_republicated', { ns: 'dashboard' }));
+                },
+                onError: (errors) => {
+                    if (errors.id) {
+                        message.error(errors.id); // Display the specific validation error
+                    } else {
+                        message.error(errors.error || t('announcement_republication_error', { ns: 'dashboard' }));
+                    }
+                },
+            })
+    };
+
     const renderAnnouncements = (status) => {
         const filteredAnnouncements = status === null
             ? user.announcement
@@ -185,14 +203,38 @@ export default function Dashboard({ user, announcements }) {
                             {anonce.city}
                         </div>
                         <div className='text-sm font-light text-gray-500 mt-2'>
-                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
+                            {anonce.status === 1 && (
+                                <div className="text-sm font-light text-gray-500 mt-2">
+                                    {i18n.language === 'ru' ? 'Размещено' : ''}{' '}
+                                    {formatDistanceToNow(new Date(anonce.published_at), {
+                                        locale: i18n.language === 'ru' ? ru : kz,
+                                        addSuffix: true,
+                                    })}
+                                    {i18n.language === 'kz' && ''}
+                                </div>
+                            )}
+                            {anonce.status !== 1 && (
+                                <div className="text-sm font-light text-gray-500 mt-2">
+                                    {i18n.language === 'ru' ? 'Создано' : ''}{' '}
+                                    {formatDistanceToNow(new Date(anonce.created_at), {
+                                        locale: i18n.language === 'ru' ? ru : kz,
+                                        addSuffix: true,
+                                    })}
+                                    {i18n.language === 'kz' && ''}
+                                </div>
+                            )}
                         </div>
                         <div className='text-sm font-light text-gray-500 mt-2'>
                             {anonce.visit_count} {t('views', { ns: 'dashboard' })}
                         </div>
                         <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
                             <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
-                            <Link className='block w-full text-center py-2 text-gray-500 font-light text-sm' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
+                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
+                            {(anonce.status === 1 || anonce.status === 3) && (
+                                <Button className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2 h-full' onClick={() => handleRepublish(anonce.id)}>
+                                {t('republish', { ns: 'dashboard' })}
+                                </Button>
+                            )}
                         </div>
                     </div>
                 ))}

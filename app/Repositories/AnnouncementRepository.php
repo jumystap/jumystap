@@ -125,5 +125,12 @@ class AnnouncementRepository
         Response::where('announcement_id', $id)->delete();
         return $announcement->delete();
     }
+
+    public function existsByIdAndUserId(int $id, int $userId): bool
+    {
+        return Announcement::query()
+            ->where(['id' => $id, 'user_id' => $userId])
+            ->exists();
+    }
 }
 

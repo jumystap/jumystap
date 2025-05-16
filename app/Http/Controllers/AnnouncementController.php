@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
+use App\Http\Requests\Announcement\AnnouncementRepublishRequest;
 use App\Models\Announcement;
 use App\Models\AnnouncementAdress;
 use App\Models\AnnouncementCondition;
@@ -330,6 +331,14 @@ class AnnouncementController extends Controller
         $this->announcementService->updateAnnouncement($id, array_merge($validated, [
             'status' => AnnouncementStatus::ARCHIVED->value,
         ]));
+        return redirect('/profile');
+    }
+
+    public function republish(AnnouncementRepublishRequest $request): mixed
+    {
+        $this->announcementService->updateAnnouncement($request->validated('id'), [
+            'status' => AnnouncementStatus::ON_MODERATION->value,
+        ]);
         return redirect('/profile');
     }
 
