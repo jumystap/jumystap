@@ -21,10 +21,5 @@ export default defineConfig({
                 assetFileNames: `assets/[name]-[hash].[ext]`,
             },
         },
-        commonjsOptions: {
-            include: [
-                /node_modules\/(@rc-component|rc-util|rc-upload|antd|lodash)/,
-            ],
-        },
     },
 });
