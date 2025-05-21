@@ -73,7 +73,7 @@ class AnnouncementController extends Controller
     {
         $announcement = $this->announcementService->getAnnouncement($id);
         if (!$announcement) {
-            return redirect()->back()->withErrors(['error' => 'Announcement not found']);
+            return redirect()->back()->withErrors(['error' => __('messages.announcements.errors.not_found')]);
         }
 
         if (
@@ -314,17 +314,24 @@ class AnnouncementController extends Controller
 
     public function delete($id): mixed
     {
-        try {
-            $success = $this->announcementService->deleteAnnouncement($id);
-            if ($success) {
-                Log::info('Announcement deleted successfully');
-                return redirect('/profile')->with('success', 'Announcement deleted successfully');
-            }
+        $announcement = $this->announcementService->getAnnouncement($id);
+        /** @var User $user */
+        $user = Auth::user();
 
-            throw new \Exception('Failed to delete announcement');
-        } catch (\Exception $e) {
-            Log::error('Error deleting announcement', ['exception' => $e]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the announcement']);
+        if($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
+            try {
+                $success = $this->announcementService->deleteAnnouncement($id);
+                if ($success) {
+                    return redirect('/profile')->with('success', 'Announcement deleted successfully');
+                }
+
+                throw new \Exception('Failed to delete announcement');
+            } catch (\Exception $e) {
+                Log::error('Error deleting announcement', ['exception' => $e]);
+                return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the announcement']);
+            }
+        }else{
+            return redirect('profile')->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_delete')]);
         }
     }
 

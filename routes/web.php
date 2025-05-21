@@ -25,7 +25,6 @@ Route::get('/profession/{group}', [ProfessionController::class, 'index'])->name(
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
-Route::delete('/announcements/{id}', [AnnouncementController::class, 'delete'])->name('announcements.delete');
 Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);
@@ -70,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::post('/announcements/archive', [AnnouncementController::class, 'archive'])->name('announcement.archive');
     Route::post('/announcements/republish', [AnnouncementController::class, 'republish'])->name('announcement.republish');
+    Route::delete('/announcements/{id}', [AnnouncementController::class, 'delete'])->name('announcements.delete');
     Route::delete('/delete_resume/{id}', [UserResumeController::class, 'destroy'])->name('delete_resume');
 });
 

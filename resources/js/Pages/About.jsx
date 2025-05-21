@@ -25,7 +25,7 @@ export default function About(){
                     <div className="font-bold inline-block text-white bg-blue-500 rounded-lg px-5 py-2 text-lg mt-7">{t('for_employers_and_customers')}</div>
                     <div className="flex items-center text-lg gap-x-3 mt-4">
                         <IoStar className="fixed-s text-2xl text-white bg-blue-500 p-1 rounded" />
-                        {t('free_ad_submission')}
+                        {t('free_announcement_submission')}
                     </div>
                     <div className="flex items-center text-lg gap-x-3 mt-4">
                         <IoStar className="fixed-s text-2xl text-white bg-blue-500 p-1 rounded" />

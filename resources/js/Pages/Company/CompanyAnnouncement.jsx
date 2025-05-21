@@ -2,7 +2,7 @@ import Guest from "@/Layouts/GuestLayout";
 import { Card, Col, Row, Statistic, List, Rate, Button, Modal, Radio, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm, router } from '@inertiajs/react';
+import { useForm, router, Link } from '@inertiajs/react';
 
 export default function CompanyAnnouncement({
     announcement,
@@ -45,11 +45,11 @@ export default function CompanyAnnouncement({
     const handleDelete = () => {
         destroy(`/announcements/${announcement.id}`, {
             onSuccess: () => {
-                message.success(t('ad_deleted'));
+                message.success(t('announcement_deleted'));
                 setIsDeleteModalVisible(false);
             },
             onError: () => {
-                message.error(t('ad_deletion_error'));
+                message.error(t('announcement_deletion_error'));
             },
         });
     };
@@ -69,12 +69,12 @@ export default function CompanyAnnouncement({
             },
             {
                 onSuccess: () => {
-                    message.success(t('ad_archived'));
+                    message.success(t('announcement_archived'));
                     setIsArchiveModalVisible(false);
                     setEmployeeFound(null);
                 },
                 onError: () => {
-                    message.error(t('ad_archivation_error'));
+                    message.error(t('announcement_archivation_error'));
                 },
             }
         );
@@ -155,7 +155,7 @@ export default function CompanyAnnouncement({
                         <Card title={t('users_who_responded')}>
                             <List
                                 dataSource={respondedUsers}
-                                renderItem={(user) => (
+                                renderItem={(respond) => (
                                     <List.Item
                                         actions={[
                                             <Rate
@@ -165,7 +165,12 @@ export default function CompanyAnnouncement({
                                             />
                                         ]}
                                     >
-                                        {user.user.name}
+                                        <a
+                                            href={route('user', respond.user.id)}
+                                            target="_blank"
+                                        >
+                                        {respond.user.name}
+                                        </a>
                                     </List.Item>
                                 )}
                             />
@@ -175,7 +180,7 @@ export default function CompanyAnnouncement({
 
                 <div style={{ marginTop: '20px', textAlign: 'right' }}>
                     <Button type="primary" danger onClick={showDeleteModal} loading={processing}>
-                        {t('delete_ad')}
+                        {t('delete_announcement')}
                     </Button>
 
                     {announcement.status !== 3 && (
@@ -186,7 +191,7 @@ export default function CompanyAnnouncement({
                             onClick={showArchiveModal}
                             loading={processing}
                         >
-                            {t('archive_ad')}
+                            {t('archive_announcement')}
                         </Button>
                     )}
                 </div>
@@ -199,7 +204,7 @@ export default function CompanyAnnouncement({
                     okText={t('delete')}
                     cancelText={t('cancel')}
                 >
-                    {t('delete_ad_confirmation')}
+                    {t('delete_announcement_confirmation')}
                 </Modal>
 
                 <Modal

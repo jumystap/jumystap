@@ -269,45 +269,53 @@ class UserController extends Controller
     public function myAnnouncement($id)
     {
         $announcement = Announcement::findOrFail($id);
+        /** @var User $user */
+        $user = Auth::user();
 
-        $visits = Visit::where('url', 'like', "%/announcement/$id%")->get();
+        if($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
 
-        $totalViews = $visits->count();
+            $visits = Visit::where('url', 'like', "%/announcement/$id%")->get();
 
-        $totalResponses = Response::where('announcement_id', $id)->count();
+            $totalViews = $visits->count();
 
-        $respondedUsers = Response::where('announcement_id', $id)
-            ->with('user')
-            ->get()
-            ->unique('employee_id');
+            $totalResponses = Response::where('announcement_id', $id)->count();
 
-        $uniqueVisitors = $visits->unique('user_id')->count();
+            $respondedUsers = Response::where('announcement_id', $id)
+                ->with('user')
+                ->get()
+                ->unique('employee_id')
+                ->values();
 
-        $repeatedVisitors = $visits->countBy('user_id')->filter(function ($count) {
-            return $count > 1;
-        })->count();
+            $uniqueVisitors = $visits->unique('user_id')->count();
 
-        $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
+            $repeatedVisitors = $visits->countBy('user_id')->filter(function ($count) {
+                return $count > 1;
+            })->count();
 
-        $viewsOverTime = $visits->groupBy(function ($visit) {
-            return $visit->created_at->format('Y-m-d');
-        })->map->count();
+            $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
 
-        $peakViewingTimes = $visits->groupBy(function ($visit) {
-            return $visit->created_at->format('H');
-        })->map->count();
+            $viewsOverTime = $visits->groupBy(function ($visit) {
+                return $visit->created_at->format('Y-m-d');
+            })->map->count();
 
-        return Inertia::render('Company/CompanyAnnouncement', [
-            'announcement' => $announcement,
-            'totalViews' => $totalViews,
-            'totalResponses' => $totalResponses,
-            'uniqueVisitors' => $uniqueVisitors,
-            'repeatedVisitors' => $repeatedVisitors,
-            'responseRate' => $responseRate,
-            'viewsOverTime' => $viewsOverTime,
-            'peakViewingTimes' => $peakViewingTimes,
-            'respondedUsers' => $respondedUsers
-        ]);
+            $peakViewingTimes = $visits->groupBy(function ($visit) {
+                return $visit->created_at->format('H');
+            })->map->count();
+
+            return Inertia::render('Company/CompanyAnnouncement', [
+                'announcement'     => $announcement,
+                'totalViews'       => $totalViews,
+                'totalResponses'   => $totalResponses,
+                'uniqueVisitors'   => $uniqueVisitors,
+                'repeatedVisitors' => $repeatedVisitors,
+                'responseRate'     => $responseRate,
+                'viewsOverTime'    => $viewsOverTime,
+                'peakViewingTimes' => $peakViewingTimes,
+                'respondedUsers'   => $respondedUsers
+            ]);
+        }else{
+            return redirect('profile')->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_view')]);
+        }
     }
 
     public function rate($employee_id, $rating): mixed

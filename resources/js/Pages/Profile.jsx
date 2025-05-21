@@ -9,6 +9,7 @@ import Dashboard from "./Company/Dashboard";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { formatDistanceToNow } from 'date-fns'; // Import format function
 import { ru } from 'date-fns/locale'; // Import Russian locale
+import ErrorNotification from "@/Components/ErrorNotification";
 
 const formatCreatedAt = (createdAt) => {
     return formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: ru });
@@ -105,6 +106,7 @@ export default function Profile({ auth, user, announcements, employees, professi
     return (
         <>
             <GuestLayout>
+                <ErrorNotification namespace="common" />
                 {user.role.name === 'employee' ? (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-7">

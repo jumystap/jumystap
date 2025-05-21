@@ -343,7 +343,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 />
                             </p>
 
-                            <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">{t('more_ads')}</Link>
+                            <Link href='/announcements' className="px-5 mt-5 border-b py-2 border-gray-200 block font-bold">{t('more_announcements')}</Link>
                             {more_announcement.length > 0 ? (
                             <div className='grid grid-cols-1 md:grid-cols-1'>
                                 {more_announcement.map((anonce, index) => (

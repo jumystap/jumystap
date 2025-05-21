@@ -158,7 +158,7 @@ export default function Dashboard({ user, announcements }) {
             return (
                 <div className='flex md:h-[200px] h-full'>
                     <div className='my-auto mx-auto text-gray-400 md:text-2xl text-lg font-bold'>
-                        {t('dont_have_any_ads', { ns: 'dashboard' })}
+                        {t('dont_have_any_announcements', { ns: 'dashboard' })}
                     </div>
                 </div>
             );

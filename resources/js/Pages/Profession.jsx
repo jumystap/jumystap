@@ -134,7 +134,7 @@ export default function Profession({ professions }) {
                         <div className='flex'>
                             <div className='flex gap-5 mx-auto mt-10 items-center'>
                                 <a href={profession.video_url} className='block font-bold border-2 border-orange-500 px-5 py-2 text-orange-500 rounded-lg'>{i18n.language == 'ru' ? (`Смотреть видеоролик`):(`Бейнероликті көру`)}</a>
-                                <div className='font-bold bg-orange-500 rounded-lg text-white px-5 py-2'>{i18n.language == 'ru' ? (`Создать объявление`) : (`Жарнама жасау`)}</div>
+                                <div className='font-bold bg-orange-500 rounded-lg text-white px-5 py-2'>{i18n.language == 'ru' ? (`Создать объявление`) : (`Хабарландыру қосу`)}</div>
                             </div>
                         </div>
                         {profession.name_ru === 'Модельер-конструктор' && (

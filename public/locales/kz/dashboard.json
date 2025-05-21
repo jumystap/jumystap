@@ -11,8 +11,8 @@
     "view": "Көру",
     "views": "рет қаралды",
     "republish": "Қайта жариялау",
-    "announcement_republicated": "Жарнама қайта жариялауға сәтті жіберілді.",
-    "announcement_republication_error": "Жарнаманы қайта жариялау қатесі.",
+    "announcement_republicated": "Хабарландыру қайта жариялауға сәтті жіберілді.",
+    "announcement_republication_error": "Хабарландыруды қайта жариялау қатесі.",
     "posted": "Жарияланды",
-    "dont_have_any_ads": "Сізде әлі ешқандай жарнама жоқ."
+    "dont_have_any_announcements": "Сізде әлі ешқандай хабарландыру жоқ."
 }

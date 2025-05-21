@@ -114,7 +114,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                     href="/create_announcement"
                                     className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
                                 >
-                                    {t('post_ad', { ns: 'carousel' })}
+                                    {t('post_announcement', { ns: 'carousel' })}
                                 </Link>
                                 <Link
                                     href="/employees"

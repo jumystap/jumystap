@@ -22,6 +22,8 @@ import {
 import { IoSchoolOutline } from "react-icons/io5";
 import { Button, Dropdown, Space } from "antd";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
+
+import { FaInstagram, FaYoutube } from "react-icons/fa";
 const items = [
   {
     key: "1",
@@ -268,6 +270,18 @@ export default function Guest({ children }) {
               </>
             )}
             <div></div>
+              <div className="md:absolute md:bottom-5 text-md text-gray-500">
+                  <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
+                  <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
+                      <FaInstagram className="text-xl" /> <span className="ml-1">instagram JOLTAP</span>
+                  </a>
+                  <a href="https://www.instagram.com/skillstap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
+                      <FaInstagram className="text-xl" /> <span className="ml-1">instagram skillstap</span>
+                  </a>
+                  <a href="https://www.youtube.com/@JOLTAP" target="_blank" rel="noopener noreferrer" className="flex justify-start">
+                      <FaYoutube className="text-xl" /> <span className="ml-1">Youtube канал</span>
+                  </a>
+              </div>
           </div>
           <div className="col-span-7">{children}</div>
         </div>
