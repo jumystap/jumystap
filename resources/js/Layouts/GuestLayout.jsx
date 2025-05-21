@@ -273,10 +273,10 @@ export default function Guest({ children }) {
               <div className="md:absolute md:bottom-5 text-md text-gray-500">
                   <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
                   <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
-                      <FaInstagram className="text-xl" /> <span className="ml-1">instagram JOLTAP</span>
+                      <FaInstagram className="text-xl" /> <span className="ml-1">Instagram JOLTAP</span>
                   </a>
                   <a href="https://www.instagram.com/skillstap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
-                      <FaInstagram className="text-xl" /> <span className="ml-1">instagram skillstap</span>
+                      <FaInstagram className="text-xl" /> <span className="ml-1">Instagram SkillsTap</span>
                   </a>
                   <a href="https://www.youtube.com/@JOLTAP" target="_blank" rel="noopener noreferrer" className="flex justify-start">
                       <FaYoutube className="text-xl" /> <span className="ml-1">Youtube канал</span>
