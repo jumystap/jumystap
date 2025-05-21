@@ -22,7 +22,9 @@ export default defineConfig({
             },
         },
         commonjsOptions: {
-            include: [/node_modules/],
+            include: [
+                /node_modules\/(@rc-component|rc-util|rc-upload|antd|lodash)/,
+            ],
         },
     },
 });
