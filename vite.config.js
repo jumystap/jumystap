@@ -11,6 +11,8 @@ export default defineConfig({
         react(),
     ],
     build: {
+        minify: 'esbuild',
+        sourcemap: false,
         rollupOptions: {
             output: {
                 // Добавление хэша к именам файлов для сброса кэша
@@ -18,7 +20,6 @@ export default defineConfig({
                 chunkFileNames: `assets/[name]-[hash].js`,
                 assetFileNames: `assets/[name]-[hash].[ext]`,
             },
-            sourcemap: false,
         },
     },
 });
