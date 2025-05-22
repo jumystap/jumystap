@@ -3,7 +3,17 @@
         <label for="name">{{ __('ФИО') }}</label>
         <input name="name" id="name" type="text"
                class="form-control @error('name') is-invalid @enderror"
-               value="{{ old('name', $user->name ?? null) }}">
+               value="{{ old('name', $user->name ?? null) }}" {{ $disabled }}>
+
+        @error('name')
+        <span class="invalid-feedback">{{ $message }}</span>
+        @enderror
+    </div>
+    <div class="form-group">
+        <label for="phone">{{ __('Телефон') }}</label>
+        <input name="phone" id="phone" type="text"
+               class="form-control @error('phone') is-invalid @enderror"
+               value="{{ old('phone', $user->phone ?? null) }}">
 
         @error('name')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -13,7 +23,7 @@
         <label for="email">{{ __('Email') }}</label>
         <input name="email" id="email" type="text"
                class="form-control @error('email') is-invalid @enderror"
-               value="{{ old('email', $user->email ?? null) }}">
+               value="{{ old('email', $user->email ?? null) }}" {{ $disabled }}>
 
         @error('name')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -39,11 +49,11 @@
         <span class="invalid-feedback">{{ $message }}</span>
         @enderror
     </div>
-    @if(in_array($user->role->id, [\App\Enums\Roles::EMPLOYER->value, \App\Enums\Roles::CUSTOMER->value]))
+    @if(in_array($user->role->id, [\App\Enums\Roles::EMPLOYER->value, \App\Enums\Roles::COMPANY->value]))
         <div class="form-group">
             <label for="description">{{ __('Описание') }}</label>
             <textarea name="description" id="description" rows="4"
-                      class="form-control @error('description') is-invalid @enderror">{!! old('description', $user->description ?? null) !!}</textarea>
+                      class="form-control @error('description') is-invalid @enderror" {{ $disabled }}>{!! old('description', $user->description ?? null) !!}</textarea>
 
             @error('description')
             <span class="invalid-feedback">{{ $message }}</span>
@@ -54,7 +64,7 @@
         <label for="name">{{ __('Пароль') }}</label>
         <input name="password" id="password" type="password"
                class="form-control @error('password') is-invalid @enderror"
-               value="{{ old('password') }}">
+               value="{{ old('password') }}" {{ $disabled }}>
 
         @error('password')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -64,7 +74,7 @@
         <label for="name">{{ __('Подтвердить пароль') }}</label>
         <input name="password_confirmation" id="password_confirmation" type="password"
                class="form-control @error('password_confirmation') is-invalid @enderror"
-               value="{{ old('password_confirmation') }}">
+               value="{{ old('password_confirmation') }}" {{ $disabled }}>
 
         @error('password_confirmation')
         <span class="invalid-feedback">{{ $message }}</span>
@@ -74,9 +84,9 @@
     <div class="form-group">
         <label for="is_blocked">{{ __('Заблокирован') }}</label>
         @if (isset($user) && $user->is_blocked === 1)
-            <input type="checkbox" name="is_blocked" checked="">
+            <input type="checkbox" name="is_blocked" checked="" {{ $disabled }}>
         @else
-            <input type="checkbox" name="is_blocked" {{ old('is_blocked') ? 'checked' : '' }} >
+            <input type="checkbox" name="is_blocked" {{ old('is_blocked') ? 'checked' : '' }} {{ $disabled }}>
         @endif
 
         @if($errors->has('is_blocked'))

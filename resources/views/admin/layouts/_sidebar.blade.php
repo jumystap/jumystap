@@ -1,3 +1,7 @@
+@php
+    use App\Enums\Roles;
+@endphp
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('admin.index') }}" class="brand-link text-center">
@@ -21,24 +25,26 @@
                         <p>Пользователи</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-star"></i>
-                        <p>Вакансии</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-images"></i>
-                        <p>Сертификаты</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.analytics.clicks') }}" class="nav-link {{ request()->routeIs('admin.analytics.clicks.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-box"></i>
-                        <p>Аналитика по кликам</p>
-                    </a>
-                </li>
+                @if(Auth::user()->hasRole(Roles::ADMIN))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-star"></i>
+                            <p>Вакансии</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-images"></i>
+                            <p>Сертификаты</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.analytics.clicks') }}" class="nav-link {{ request()->routeIs('admin.analytics.clicks.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-box"></i>
+                            <p>Аналитика по кликам</p>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link" target="_blank">
                         <i class="nav-icon fas fa-home"></i>

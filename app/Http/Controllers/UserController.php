@@ -176,7 +176,7 @@ class UserController extends Controller
         $contactShow = false;
         $user = $this->userService->getUserWithProfessionsAndPortfolio($id);
 
-        if($user->role_id != Roles::GRADUATE->value){
+        if($user->role_id != Roles::EMPLOYEE->value){
             return Inertia::render('NotFound');
         }
         if($user->status === 'В активном поиске' || count($user->response) > 0){

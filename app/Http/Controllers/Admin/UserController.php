@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Roles;
 use App\Http\Requests\Admin\User\UserStoreRequest;
 use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Models\Role;
@@ -98,7 +99,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'))
-            ->with('roles', Role::all());
+            ->with('roles', Role::all())
+            ->with('disabled', Auth::user()->hasRole(Roles::MODERATOR) ? 'disabled' : '');
     }
 
     /**

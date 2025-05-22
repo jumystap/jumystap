@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\Roles;
 use App\Models\Profession\Profession;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -141,6 +142,11 @@ class User extends Authenticatable
     public function response(): HasMany
     {
         return $this->hasMany(Response::class, 'employee_id', 'id');
+    }
+
+    public function hasRole(Roles $role):bool
+    {
+        return $this->role_id === $role->value;
     }
 
     public static function search(array $attributes): Builder
