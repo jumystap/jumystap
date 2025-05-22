@@ -115,7 +115,7 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user): Application|Redirector|RedirectResponse
     {
         if ($request->isNotFilled('password')) {
-            $input = $request->only('name', 'email', 'description');
+            $input = $request->only('name', 'email', 'description', 'phone');
         } else {
             $input             = $request->validated();
             $input['password'] = Hash::make($input['password']);
