@@ -21,6 +21,7 @@ use App\Services\AnnouncementService;
 use DefStudio\Telegraph\Facades\Telegraph;
 use DefStudio\Telegraph\Keyboard\Button;
 use DefStudio\Telegraph\Keyboard\Keyboard;
+use Exception;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -188,7 +189,7 @@ class AnnouncementController extends Controller
             $this->notifyAdmin($announcement, $user);
 
             return redirect('/profile');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error creating announcement', ['exception' => $e]);
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the announcement'])->withInput();
         }
@@ -283,8 +284,8 @@ class AnnouncementController extends Controller
             }
 
             Log::warning('Update announcement failed', ['announcement_id' => $id]);
-            throw new \Exception('Failed to update announcement');
-        } catch (\Exception $e) {
+            throw new Exception('Failed to update announcement');
+        } catch (Exception $e) {
             Log::error('Error updating announcement', ['exception' => $e->getMessage(), 'announcement_id' => $id]);
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the announcement'])->withInput();
         }
@@ -306,10 +307,22 @@ class AnnouncementController extends Controller
 
     public function republish(AnnouncementRepublishRequest $request): mixed
     {
-        $this->announcementService->updateAnnouncement($request->validated('id'), [
-            'status' => AnnouncementStatus::ON_MODERATION->value,
-        ]);
-        return redirect('/profile');
+        $id = $request->validated('id');
+        try {
+            $success = $this->announcementService->updateAnnouncement($id, [
+                'status' => AnnouncementStatus::ON_MODERATION->value,
+            ]);
+            if ($success) {
+                $announcement = Announcement::find($id);
+                $user = Auth::user();
+                $this->notifyAdmin($announcement, $user);
+                return redirect('/profile');
+            }
+
+            throw new Exception('Failed to update announcement');
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the announcement'])->withInput();
+        }
     }
 
     public function delete($id): mixed
@@ -325,8 +338,8 @@ class AnnouncementController extends Controller
                     return redirect('/profile')->with('success', 'Announcement deleted successfully');
                 }
 
-                throw new \Exception('Failed to delete announcement');
-            } catch (\Exception $e) {
+                throw new Exception('Failed to delete announcement');
+            } catch (Exception $e) {
                 Log::error('Error deleting announcement', ['exception' => $e]);
                 return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the announcement']);
             }
@@ -377,7 +390,7 @@ class AnnouncementController extends Controller
                     ->send();
 
                 Log::info('Notification sent successfully to admin.', ['admin_id' => $admin->id]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error('Failed to send notification to admin.', ['admin_id' => $admin->id, 'error' => $e->getMessage()]);
                 return;
             }
