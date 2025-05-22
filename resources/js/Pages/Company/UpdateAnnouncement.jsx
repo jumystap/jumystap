@@ -45,7 +45,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         work_hours: announcement.work_hours || '',
         education: announcement.education || '',
         experience: announcement.experience || '',
-        employemnt_type: announcement.employemnt_type || '',
+        employment_type: announcement.employment_type || '',
         start_time: announcement.start_time || '',
         location: announcement.address || [''],
         condition: announcement.conditions || [''],
@@ -523,13 +523,13 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label={t('employemnt_type', { ns: 'createAnnouncement' })}
-                                name="employemnt_type"
+                                label={t('employment_type', { ns: 'createAnnouncement' })}
+                                name="employment_type"
                             >
                                 <Select
-                                    name="employemnt_type"
-                                    value={data.employemnt_type}
-                                    onChange={(value) => setData('employemnt_type', value)}
+                                    name="employment_type"
+                                    value={data.employment_type}
+                                    onChange={(value) => setData('employment_type', value)}
                                 >
                                     <Option value="Полная занятость">Полная занятость</Option>
                                     <Option value="Частичная занятость">Частичная занятость </Option>

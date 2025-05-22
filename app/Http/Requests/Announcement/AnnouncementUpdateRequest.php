@@ -33,7 +33,7 @@ class AnnouncementUpdateRequest extends FormRequest
             'status' => 'required|int',
             'work_time' => 'nullable|string|max:255', // Assuming work_time is a string
             'work_hours' => 'nullable|max:255',
-            'employemnt_type' => 'nullable',
+            'employment_type' => 'nullable',
             'experience' => 'nullable',
             'location' => 'nullable|array',
             'location.*.id' => 'nullable|integer', // Ensure each location has an id
@@ -54,6 +54,7 @@ class AnnouncementUpdateRequest extends FormRequest
             'condition.*.condition' => 'required|string|max:2000', // Ensure each condition has a description
             'is_top' => "nullable|boolean",
             'is_urgent' => "nullable|boolean",
+            'phone' => "nullable|max:20",
         ];
     }
 }

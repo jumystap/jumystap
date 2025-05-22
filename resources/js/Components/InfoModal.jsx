@@ -62,7 +62,7 @@ export default function InfoModal({ isOpen, onClose, specializations }) {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        post('/resume', {
+        post('/resumes/send', {
             onSuccess: () => {
                 reset();
                 setIsSpecializationOpen(false);

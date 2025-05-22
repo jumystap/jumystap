@@ -96,7 +96,7 @@ class AnnouncementController extends Controller
         return redirect('announcements');
     }
 
-    public function store(): mixed
+    public function create(): mixed
     {
         if(Auth::user()->role_id != 2){
             $industries = Industry::all();
@@ -110,7 +110,7 @@ class AnnouncementController extends Controller
         }
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'type_kz' => 'required|string|max:255',
@@ -122,7 +122,7 @@ class AnnouncementController extends Controller
             'status' => 'required|int',
             'work_time' => 'nullable',
             'work_hours' => 'nullable|max:255',
-            'employemnt_type' => 'nullable',
+            'employment_type' => 'nullable',
             'experience' => 'nullable',
             'education' => 'nullable',
             'location' => 'nullable|array', // Validate as an array
@@ -138,6 +138,7 @@ class AnnouncementController extends Controller
             'requirement.*' => 'string|max:2000', // Validate each requirement item
             'condition' => 'nullable|array', // Validate as an array
             'condition.*' => 'string|max:2000', // Validate each requirement item
+            'phone' => 'nullable|max:20',
         ]);
 
         $user = Auth::user();
@@ -421,8 +422,8 @@ class AnnouncementController extends Controller
         $announcement = Announcement::find($announcement_id);
 
         $employer = User::find($announcement->user_id);
-
-        $whatsappUrl = "https://wa.me/". $employer->phone ."?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
+        $phone = $announcement->phone ?? $employer->phone;
+        $whatsappUrl = "https://wa.me/". $phone ."?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
 
         return redirect()->away($whatsappUrl);
     }

@@ -74,7 +74,7 @@ class UserResumeController extends Controller
         $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
 
         $resume->organizations = $resume->organizations->map(function ($organization) {
-            $organization->position_name = $this->getSpecializationName($organization->position);
+            $organization->position_name = $this->getSpecializationName($organization->position_id);
             return $organization;
         });
 
