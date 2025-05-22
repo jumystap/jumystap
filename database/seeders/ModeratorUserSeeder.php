@@ -18,7 +18,7 @@ class ModeratorUserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Moderator User',
             'email' => 'moderator@example.com',
-            'phone' => '77777777777',
+            'phone' => '77787777777',
             'password' => Hash::make('123456'),
             'role_id' => Roles::MODERATOR->value,
             'created_at' => now(),
