@@ -26,6 +26,7 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         $user = Auth::user();
+
         if ($user->hasRole(Roles::ADMIN)) {
             return [
                 'name' => 'required|max:255',
