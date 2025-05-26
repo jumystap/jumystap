@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin\User;
 
 use App\Enums\Roles;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -24,7 +25,8 @@ class UserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        if ($this->user->hasRole(Roles::ADMIN)) {
+        $user = Auth::user();
+        if ($user->hasRole(Roles::ADMIN->value)) {
             return [
                 'name' => 'required|max:255',
                 'phone' => 'required|max:16|unique:users,phone,' . $this->user->id,

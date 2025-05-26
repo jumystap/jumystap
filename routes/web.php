@@ -55,22 +55,27 @@ Route::middleware('auth')->group(function () {
     Route::post('/fav/{id}', [FavoriteController::class, 'store'])->name('fav.store');
     Route::delete('/fav/{id}', [FavoriteController::class, 'delete'])->name('fav.delete');
     Route::get('/update', [UserController::class, 'edit'])->name('edit');
-    Route::post('/create_announcement', [AnnouncementController::class, 'create']);
-    Route::get('/create_announcement', [AnnouncementController::class, 'store']);
     Route::get('/profile/announcement/{id}', [UserController::class, 'myAnnouncement']);
-    Route::post('/resume', [ResumeController::class, 'create']);
-    Route::get('/create_resume', [UserResumeController::class, 'create']);
-    Route::post('/create_resume', [UserResumeController::class, 'store']);
-    Route::get('/update_resume/{id}', [UserResumeController::class, 'edit']);
-    Route::post('/update_resume/{id}', [UserResumeController::class, 'update']);
-    Route::get('/resume/{id}', [UserResumeController::class, 'show']);
+    Route::prefix('resumes')->group(function (){
+        Route::post('send', [ResumeController::class, 'create']);
+        Route::get('create', [UserResumeController::class, 'create']);
+        Route::post('create', [UserResumeController::class, 'store']);
+        Route::get('update/{id}', [UserResumeController::class, 'edit']);
+        Route::post('update/{id}', [UserResumeController::class, 'update']);
+        Route::get('{id}', [UserResumeController::class, 'show']);
+        Route::delete('/delete/{id}', [UserResumeController::class, 'destroy'])->name('delete');
+    });
+    Route::prefix('announcements')->group(function (){
+        Route::get('create', [AnnouncementController::class, 'create']);
+        Route::post('store', [AnnouncementController::class, 'store']);
+        Route::get('update/{id}', [AnnouncementController::class, 'edit']);
+        Route::put('{id}', [AnnouncementController::class, 'update'])->name('update');
+        Route::post('archive', [AnnouncementController::class, 'archive'])->name('archive');
+        Route::post('republish', [AnnouncementController::class, 'republish'])->name('republish');
+        Route::delete('{id}', [AnnouncementController::class, 'delete'])->name('delete');
+    });
     Route::get('/chat', [HomeController::class, 'chat']);
-    Route::get('/announcement/update/{id}', [AnnouncementController::class, 'edit']);
-    Route::put('/announcements/{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
-    Route::post('/announcements/archive', [AnnouncementController::class, 'archive'])->name('announcement.archive');
-    Route::post('/announcements/republish', [AnnouncementController::class, 'republish'])->name('announcement.republish');
-    Route::delete('/announcements/{id}', [AnnouncementController::class, 'delete'])->name('announcements.delete');
-    Route::delete('/delete_resume/{id}', [UserResumeController::class, 'destroy'])->name('delete_resume');
+
 });
 
 

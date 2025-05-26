@@ -23,7 +23,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]); // Initially all organizations are in edit mode
     const { data, setData, post } = useForm({
-        organizations: [{ organization: '', position: '', period: '', isCurrent: false, start_date: '', end_date: '' }],
+        organizations: [{ organization: '', position_id: '', period: '', isCurrent: false, start_date: '', end_date: '' }],
         city: '',
         district: '',
         languages: [],
@@ -53,7 +53,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
     }));
 
     const addOrganization = () => {
-        setData('organizations', [...data.organizations, { organization: '', position: '', period: null }]);
+        setData('organizations', [...data.organizations, { organization: '', position_id: '', period: null }]);
         setEditMode([...editMode, true]); // Add a new entry to editMode for the new organization
     };
 
@@ -97,7 +97,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
     };
 
     const handleSubmit = () => {
-        post('/create_resume');
+        post('/resumes/create');
     };
 
     const handleInputChange = (field, value) => {
@@ -206,7 +206,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                             <Cascader
                                                 options={cascaderData}
                                                 defaultValue={defaultValue}
-                                                onChange={(value) => handleNestedChange(index, 'position', value[1])}
+                                                onChange={(value) => handleNestedChange(index, 'position_id', value[1])}
                                                 placeholder={t('position')}
                                             />
                                         </Form.Item>
@@ -256,7 +256,7 @@ const CreateUpdateResume = ({ announcement, specialization }) => {
                                 ) : (
                                     <div className='border border-gray-200 py-4 mt-2 px-5 rounded-lg'>
                                         <p><strong>{t('organization')}:</strong> {organization.organization}</p>
-                                        <p><strong>{t('position')}:</strong> {findSpecializationName(specialization, organization.position)}</p>
+                                        <p><strong>{t('position')}:</strong> {findSpecializationName(specialization, organization.position_id)}</p>
                                         <p><strong>{t('work_period')}:</strong> {organization.period}</p>
                                         <div className='flex mt-4 items-center gap-x-2'>
                                             <Button type="dashed" onClick={() => toggleEditMode(index)}>Редактировать</Button>

@@ -67,7 +67,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         work_hours: '',
         education: '',
         experience: '',
-        employemnt_type: '',
+        employment_type: '',
         start_time: '',
         location: [''],
         condition: [''],
@@ -359,13 +359,13 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
-                                label={t('employemnt_type', { ns: 'createAnnouncement' })}
-                                name="employemnt_type"
-                                rules={[{ required: true, message: t('please_select_employemnt_type', { ns: 'createAnnouncement' }) }]}
+                                label={t('employment_type', { ns: 'createAnnouncement' })}
+                                name="employment_type"
+                                rules={[{ required: true, message: t('please_select_employment_type', { ns: 'createAnnouncement' }) }]}
                             >
                                 <Select
-                                    value={data.employemnt_type}
-                                    onChange={(value) => setData('employemnt_type', value)}
+                                    value={data.employment_type}
+                                    onChange={(value) => setData('employment_type', value)}
                                 >
                                     <Option value="Полная занятость">Полная занятость</Option>
                                     <Option value="Частичная занятость">Частичная занятость </Option>

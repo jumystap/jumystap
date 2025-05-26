@@ -29,7 +29,7 @@ export default function Profile({ auth, user, announcements, employees, professi
     const deleteResume = (resumeId) => {
         if (confirm(t('confirm_delete_resume',  { ns: 'profile' }))) {
             deleteResumeForm(
-                route("delete_resume", resumeId), // Backend route to handle delete
+                route("resumes/delete", resumeId), // Backend route to handle delete
                 {
                     onSuccess: () => {
                         setResumeList((prevList) => prevList.filter((resume) => resume.id !== resumeId)); // Update state
@@ -159,7 +159,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     </div>
                                 </div>
                                 <div className='px-5 mt-5'>
-                                    <Link href='/create_resume' className='px-7 py-2 mr-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
+                                    <Link href='/resumes/create' className='px-7 py-2 mr-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
                                         {t('create_resume', { ns: 'profile' })}
                                     </Link>
                                     <Link href='/my-responses' className='px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
@@ -168,7 +168,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     {resumes.length > 0 && (
                                         <div className="grid grid-cols-1 gap-4 mt-5">
                                             {resumes.map((resume, index) => (
-                                                <a href={`/resume/${resume.id}`} className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                                <a href={`/resumes/${resume.id}`} className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
                                                     <div className='flex'>
                                                         <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                                             <FaLocationDot className='text-sm'/>
@@ -209,7 +209,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                         {t('delete_resume', { ns: 'profile' })}
                                                     </button>
                                                     <Link
-                                                        href={`/update_resume/${resume.id}`}
+                                                        href={`/resumes/update/${resume.id}`}
                                                         className='text-sm'
                                                     >
                                                         {t('edit', { ns: 'profile' })}

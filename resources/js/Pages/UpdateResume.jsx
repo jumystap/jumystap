@@ -18,7 +18,7 @@ const UpdateResume = ({ resume, specialization }) => {
     const [showOtherCityInput, setShowOtherCityInput] = useState(resume.city === 'Другое');
     const [editMode, setEditMode] = useState(resume.organizations.map(() => false)); // Initially all organizations are not in edit mode
     const { data, setData, post, setDefaults } = useForm({
-        organizations: resume.organizations || [{ organization: '', position: '', period: '' }],
+        organizations: resume.organizations || [{ organization: '', position_id: '', period: '' }],
         city: resume.city || '',
         district: resume.district || '',
         languages: resume.languages || [],
@@ -52,7 +52,7 @@ const UpdateResume = ({ resume, specialization }) => {
     }));
 
     const addOrganization = () => {
-        setData('organizations', [...data.organizations, { organization: '', position: '', period: null }]);
+        setData('organizations', [...data.organizations, { organization: '', position_id: '', period: null }]);
         setEditMode([...editMode, true]);
     };
 
@@ -75,7 +75,7 @@ const UpdateResume = ({ resume, specialization }) => {
     };
 
     const handleSubmit = () => {
-        post(`/update_resume/${resume.id}`);
+        post(`/resumes/update/${resume.id}`);
     };
 
     const handleInputChange = (field, value) => {
@@ -130,8 +130,8 @@ const UpdateResume = ({ resume, specialization }) => {
                         <div className='font-semibold text-2xl mb-4'>Редактировать резюме</div>
                         <div className='flex gap-x-5'>
                         {data.photo && data.photo instanceof File && (
-    <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>
-)}
+                            <img src={URL.createObjectURL(data.photo)} className='w-[200px] h-[250px] object-cover'/>
+                        )}
                         <Form.Item label="Загрузите вашу фотографию" name='photo'>
                             <Upload {...uploadProps} showUploadList={false}>
                                 <Button icon={<UploadOutlined />}>Загрузить фото</Button>
@@ -163,7 +163,7 @@ const UpdateResume = ({ resume, specialization }) => {
                                         >
                                             <Cascader
                                                 options={cascaderData}
-                                                onChange={(value) => handleNestedChange(index, 'position', value[1])}
+                                                onChange={(value) => handleNestedChange(index, 'position_id', value[1])}
                                                 placeholder="Должность"
                                             />
                                         </Form.Item>
@@ -195,7 +195,7 @@ const UpdateResume = ({ resume, specialization }) => {
                                 ) : (
                                     <div className='border border-gray-200 py-4 mt-2 px-5 rounded-lg'>
                                         <p><strong>Организация:</strong> {organization.organization}</p>
-                                        <p><strong>Должность:</strong> {organization.position}</p>
+                                        <p><strong>Должность:</strong> {organization.position_id}</p>
                                         <p><strong>Период работы:</strong> {organization.period}</p>
                                         <div className='flex mt-4 items-center gap-x-2'>
                                             <Button type="dashed" onClick={() => toggleEditMode(index)}>Редактировать</Button>

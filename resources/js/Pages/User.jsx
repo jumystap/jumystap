@@ -106,7 +106,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                 <div className="mt-8 space-y-6">
                                     {resumes.map((resume, index) => (
                                         <Link
-                                            href={`/resume/${resume.id}`}
+                                            href={`/resumes/${resume.id}`}
                                             key={index}
                                             className="block"
                                         >

@@ -229,7 +229,7 @@ export default function Dashboard({ user, announcements }) {
                         </div>
                         <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
                             <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
-                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/announcement/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
+                            <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/announcements/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
                             {(anonce.status === 1 || anonce.status === 3) && (
                                 <Button className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2 h-full' onClick={() => handleRepublish(anonce.id)}>
                                 {t('republish', { ns: 'dashboard' })}

@@ -197,7 +197,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                             <span className='font-bold'>{t('contact')}</span>
                                         </a>
                                         {auth.user.email === 'admin@example.com' && (
-                                            <a href={`/announcement/update/${announcement.id}`}
+                                            <a href={`/announcements/update/${announcement.id}`}
                                                 className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                                 <span className='font-bold'>{t('edit')}</span>
                                             </a>
@@ -282,7 +282,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('employment_type')}</div>
-                                <div>{announcement.employemnt_type}</div>
+                                <div>{announcement.employment_type}</div>
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('education')}</div>

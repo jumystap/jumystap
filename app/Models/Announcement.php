@@ -45,9 +45,10 @@ class Announcement extends Model
         'specialization_id',
         'experience',
         'education',
-        'employemnt_type',
+        'employment_type',
         'work_hours',
         'start_time',
+        'phone'
     ];
 
     protected $casts = [
