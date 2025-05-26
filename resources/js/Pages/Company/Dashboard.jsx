@@ -270,7 +270,7 @@ export default function Dashboard({ user, announcements }) {
                             >
                                 <span className='text-light text-sm'>{t('update', { ns: 'dashboard' })}</span>
                             </Link>
-                            <Link href="/create_announcement"
+                            <Link href="/announcements/create"
                                   className='inline-block text-white rounded-lg text-center bg-blue-500 py-2 px-10 cursor-pointer'
                             >
                                 <span className='font-light text-sm'>{t('create_announcement', { ns: 'dashboard' })}</span>
