@@ -239,7 +239,7 @@ export default function Guest({ children }) {
               {auth?.user?.role?.name === 'employer' ? (
                   <Link
                       className="text-center hover:bg-blue-500 hover:text-white transition-all duration-300 block w-full mt-3 text-blue-500 font-bold py-1 text-lg border-[3px] border-blue-500 rounded-full"
-                      href="/create_announcement"
+                      href="/announcements/create"
                   >
                       {t("create_announcement", { ns: "header" })}
                   </Link>

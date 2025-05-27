@@ -111,7 +111,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             </h1>
                             <div className='flex flex-col md:flex-row gap-4'>
                                 <Link
-                                    href="/create_announcement"
+                                    href="/announcements/create"
                                     className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
                                 >
                                     {t('post_announcement', { ns: 'carousel' })}

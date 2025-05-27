@@ -223,7 +223,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         }
 
         const submitAction = isEdit ? put : post;
-        const url = isEdit ? `/announcements/${announcement.id}` : '/create_announcement';
+        const url = isEdit ? `/announcements/${announcement.id}` : '/announcements/create';
         submitAction(url, {
             ...data,
             onSuccess: () => message.success(t('successfully_saved', { ns : 'createAnnouncement'})),
