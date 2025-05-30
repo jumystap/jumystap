@@ -62,7 +62,7 @@
                                     <h3>15 000</h3>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion users-list"></i>
+                                    <i class="ion ion-person-add"></i>
                                 </div>
                             </div>
                         </div>
