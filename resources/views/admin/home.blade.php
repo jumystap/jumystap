@@ -213,7 +213,6 @@
                 @endforeach
             @endif
         </div>
-        </div>
 
     </section>
 @endsection
