@@ -59,7 +59,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество пользователей</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['usersCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-stalker"></i>
@@ -72,7 +72,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество всех работодателей</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['allEmployersCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-briefcase"></i>
@@ -83,7 +83,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество работодателей</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['employerCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-gear-b"></i>
@@ -94,7 +94,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество заказчиков</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['companyCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-gear-a"></i>
@@ -107,7 +107,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество соискателей</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['allEmployeesCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person"></i>
@@ -118,7 +118,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество выпускников</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['graduatesCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-university"></i>
@@ -129,7 +129,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество не выпускников</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['nonGraduatesCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-man"></i>
@@ -142,8 +142,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Новые пользователи на сегодня</small>
-                                    <h3>10</h3>
-
+                                    <h3>{{ $data['registeredTodayCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
@@ -157,7 +156,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество активных вакансий</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['announcementsCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-star"></i>
@@ -168,7 +167,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Количество откликов</small>
-                                    <h3>15 000</h3>
+                                    <h3>{{ $data['responsesCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-stats-bars"></i>
@@ -179,8 +178,7 @@
                             <div class="small-box">
                                 <div class="inner">
                                     <small>Сегодня откликнулись</small>
-                                    <h3>14</h3>
-
+                                    <h3>{{ $data['responsesTodayCount'] }}</h3>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-arrow-graph-up-right"></i>
@@ -192,26 +190,6 @@
                 <div class="card-footer clearfix">
                 </div>
 
-                @if($data)
-                    @foreach($data as $item)
-                        <div class="col-md-4 col-sm-6 col-12">
-                            <a href="{{ $item['link'] }}" style="color: #000;">
-                                <div class="info-box">
-                                    <span class="info-box-icon {{ $item['bg'] }}"><i
-                                            class="{{ $item['icon'] }}"></i></span>
-
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">{{ $item['title'] }}</span>
-                                        <span class="info-box-number">{{ $item['count'] }}</span>
-                                    </div>
-                                    <!-- /.info-box-content -->
-                                </div>
-                            </a>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                    @endforeach
-                @endif
             </div>
         </div>
     </section>
