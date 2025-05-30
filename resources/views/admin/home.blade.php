@@ -60,9 +60,9 @@
                                 <div class="inner">
                                     <small>Количество пользователей</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion users-list"></i>
                                 </div>
                             </div>
                         </div>
@@ -73,9 +73,9 @@
                                 <div class="inner">
                                     <small>Количество всех работодателей</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -84,9 +84,9 @@
                                 <div class="inner">
                                     <small>Количество работодателей</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -95,9 +95,9 @@
                                 <div class="inner">
                                     <small>Количество заказчиков</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -108,9 +108,9 @@
                                 <div class="inner">
                                     <small>Количество соискателей</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -119,9 +119,9 @@
                                 <div class="inner">
                                     <small>Количество выпускников</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -130,9 +130,9 @@
                                 <div class="inner">
                                     <small>Количество не выпускников</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -143,9 +143,10 @@
                                 <div class="inner">
                                     <small>Новые пользователи на сегодня</small>
                                     <h3>10</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -157,9 +158,9 @@
                                 <div class="inner">
                                     <small>Количество активных вакансий</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -168,9 +169,9 @@
                                 <div class="inner">
                                     <small>Количество откликов</small>
                                     <h3>15 000</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
@@ -179,9 +180,10 @@
                                 <div class="inner">
                                     <small>Сегодня откликнулись</small>
                                     <h3>14</h3>
-                                    <div class="icon">
-                                        <i class="ion ion-person"></i>
-                                    </div>
+
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person"></i>
                                 </div>
                             </div>
                         </div>
