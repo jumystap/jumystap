@@ -64,15 +64,15 @@
                                             @endif
                                         </select>
                                     </div>
-                                    <div class="col-md-3">
-                                        <br/>
-                                        <label for="is_graduate">{{ __('Выпускник') }}</label>
-                                        @if (isset($search['is_graduate']) && $search['is_graduate'] == 'on')
-                                            <input type="checkbox" name="search[is_graduate]" checked>
-                                        @else
-                                            <input type="checkbox" name="search[is_graduate]">
-                                        @endif
-                                    </div>
+{{--                                    <div class="col-md-3">--}}
+{{--                                        <br/>--}}
+{{--                                        <label for="is_graduate">{{ __('Выпускник') }}</label>--}}
+{{--                                        @if (isset($search['is_graduate']) && $search['is_graduate'] == 'on')--}}
+{{--                                            <input type="checkbox" name="search[is_graduate]" checked>--}}
+{{--                                        @else--}}
+{{--                                            <input type="checkbox" name="search[is_graduate]">--}}
+{{--                                        @endif--}}
+{{--                                    </div>--}}
                                     <div class="col-md-12 mt-4">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-search fa-fw"></i>

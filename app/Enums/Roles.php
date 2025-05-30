@@ -8,4 +8,5 @@ enum Roles : int
     case COMPANY = 3;
     case ADMIN = 4;
     case MODERATOR = 5;
+    case NON_GRADUATE = 6;
 }

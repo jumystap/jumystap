@@ -166,16 +166,22 @@ class User extends Authenticatable
         }
 
         if (array_key_exists('role_id', $attributes) && strlen($attributes['role_id'])) {
-            if ($attributes['role_id'] == 'null') {
-                $query->where('role_id', 0);
-            } else {
-                $query->where('role_id', $attributes['role_id']);
+            $roleId = (int)$attributes['role_id'];
+
+            if($roleId === Roles::NON_GRADUATE->value){
+                $query->where('role_id', Roles::EMPLOYEE->value);
+            }else {
+                $query->where('role_id', $roleId);
+            }
+
+            if($roleId === Roles::EMPLOYEE->value){
+                $query->where('users.is_graduate', true);
             }
         }
 
-        if (array_key_exists('is_graduate', $attributes) && $attributes['is_graduate'] == 'on') {
-            $query->where('users.is_graduate', true);
-        }
+//        if (array_key_exists('is_graduate', $attributes) && $attributes['is_graduate'] == 'on') {
+//            $query->where('users.is_graduate', true);
+//        }
 
         return $query;
     }

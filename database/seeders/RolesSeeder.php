@@ -45,6 +45,12 @@ class RolesSeeder extends Seeder
                 'name' => 'moderator',
                 'name_kz' => 'Модератор',
                 'name_ru' => 'Модератор',
+            ],
+            [
+                'id' => Roles::NON_GRADUATE->value,
+                'name' => 'non_graduate',
+                'name_kz' => 'Түлек емес',
+                'name_ru' => 'Не выпускник',
             ]
         ];
 
