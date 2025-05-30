@@ -160,7 +160,7 @@
                                     <h3>15 000</h3>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-person"></i>
+                                    <i class="ion ion-star"></i>
                                 </div>
                             </div>
                         </div>
@@ -171,7 +171,7 @@
                                     <h3>15 000</h3>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-person"></i>
+                                    <i class="ion ion-stats-bars"></i>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +183,7 @@
 
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-person"></i>
+                                    <i class="ion ion-arrow-graph-up-right"></i>
                                 </div>
                             </div>
                         </div>
