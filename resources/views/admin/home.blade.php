@@ -102,116 +102,115 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Количество соискателей</small>
+                                    <h3>15 000</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Количество выпускников</small>
+                                    <h3>15 000</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Количество не выпускников</small>
+                                    <h3>15 000</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Новые пользователи на сегодня</small>
+                                    <h3>10</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Количество активных вакансий</small>
+                                    <h3>15 000</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Количество откликов</small>
+                                    <h3>15 000</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small-box">
+                                <div class="inner">
+                                    <small>Сегодня откликнулись</small>
+                                    <h3>14</h3>
+                                    <div class="icon">
+                                        <i class="ion ion-person"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Количество соискателей</small>
-                                <h3>15 000</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Количество выпускников</small>
-                                <h3>15 000</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Количество не выпускников</small>
-                                <h3>15 000</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer clearfix">
                 </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Новые пользователи на сегодня</small>
-                                <h3>10</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Количество активных вакансий</small>
-                                <h3>15 000</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Количество откликов</small>
-                                <h3>15 000</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="small-box">
-                            <div class="inner">
-                                <small>Сегодня откликнулись</small>
-                                <h3>14</h3>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer clearfix">
-            </div>
 
-            @if($data)
-                @foreach($data as $item)
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <a href="{{ $item['link'] }}" style="color: #000;">
-                            <div class="info-box">
+                @if($data)
+                    @foreach($data as $item)
+                        <div class="col-md-4 col-sm-6 col-12">
+                            <a href="{{ $item['link'] }}" style="color: #000;">
+                                <div class="info-box">
                                     <span class="info-box-icon {{ $item['bg'] }}"><i
                                             class="{{ $item['icon'] }}"></i></span>
 
-                                <div class="info-box-content">
-                                    <span class="info-box-text">{{ $item['title'] }}</span>
-                                    <span class="info-box-number">{{ $item['count'] }}</span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">{{ $item['title'] }}</span>
+                                        <span class="info-box-number">{{ $item['count'] }}</span>
+                                    </div>
+                                    <!-- /.info-box-content -->
                                 </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                        </a>
-                        <!-- /.info-box -->
-                    </div>
-                    <!-- /.col -->
-                @endforeach
-            @endif
+                            </a>
+                            <!-- /.info-box -->
+                        </div>
+                        <!-- /.col -->
+                    @endforeach
+                @endif
+            </div>
         </div>
-
     </section>
 @endsection
