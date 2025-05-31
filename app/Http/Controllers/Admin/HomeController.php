@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
+use App\Helpers\TextHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Response;
@@ -80,14 +81,29 @@ class HomeController extends Controller
             ->groupBy('sc.id', 'sc.name_ru')
             ->get();
 
+        // Преобразуем вторую коллекцию (с зарплатами) в ассоциативную по category_id
+        $costMap = $costAverages->keyBy('category_id');
+
+        // Объединим данные из обеих коллекций
+        $combinedData = $announcementsBySpecializations->map(function ($item) use ($costMap) {
+            $categoryId    = $item->category_id;
+            $averageSalary = $costMap[$categoryId]->average_salary ?? null;
+
+            return [
+                'name'           => $item->name_ru,
+                'total'          => $item->total,
+                'average_salary' => TextHelper::numberFormat(round($averageSalary)),
+            ];
+        });
+
         $data = [
             'usersCount'                     => User::whereNotIn('role_id', $excludedRoles)->tap($filterByDate)->count(),
             'allEmployersCount'              => User::whereIn('role_id', $employerRoles)->tap($filterByDate)->count(),
-//            'employerCount'                  => User::where('role_id', Roles::EMPLOYER->value)->tap($filterByDate)->count(),
-//            'companyCount'                   => User::where('role_id', Roles::COMPANY->value)->tap($filterByDate)->count(),
+            //            'employerCount'                  => User::where('role_id', Roles::EMPLOYER->value)->tap($filterByDate)->count(),
+            //            'companyCount'                   => User::where('role_id', Roles::COMPANY->value)->tap($filterByDate)->count(),
             'allEmployeesCount'              => (clone $employeeQuery)->tap($filterByDate)->count(),
             'graduatesCount'                 => (clone $employeeQuery)->where('is_graduate', true)->tap($filterByDate)->count(),
-//            'nonGraduatesCount'              => (clone $employeeQuery)->where('is_graduate', false)->tap($filterByDate)->count(),
+            //            'nonGraduatesCount'              => (clone $employeeQuery)->where('is_graduate', false)->tap($filterByDate)->count(),
             'registeredTodayCount'           => User::whereNotIn('role_id', $excludedRoles)
                 ->whereDate('created_at', today())
                 ->count(),
@@ -97,15 +113,8 @@ class HomeController extends Controller
             'responsesTodayCount'            => Response::whereNotNull('announcement_id')
                 ->whereDate('created_at', today())
                 ->count(),
-            'announcementsBySpecializations' => [
-                'name'  => $announcementsBySpecializations->pluck('name_ru'),
-                'total' => $announcementsBySpecializations->pluck('total'),
-            ],
             'announcementsByCities'          => $announcementsByCities,
-            'costAverages'                   => [
-                'name'  => $costAverages->pluck('category_name'),
-                'total' => $costAverages->pluck('average_salary'),
-            ],
+            'combinedData' => $combinedData
         ];
 //        dd($announcementsByCities);
 

@@ -175,12 +175,34 @@
                                 @endforeach
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
-
-                    <canvas id="myChartSpecializations"></canvas>
-                    <canvas id="myChartCosts"></canvas>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-center text-bold"></p>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 80px;">#</th>
+                                    <th>Категория</th>
+                                    <th>Количество вакансии, шт</th>
+                                    <th>Средняя зарплата, тг</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @php $i = 1; @endphp
+                                @foreach($data['combinedData'] as $item)
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $item['name'] }}</td>
+                                        <td>{{ $item['total'] }}</td>
+                                        <td>{{ $item['average_salary'] }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-footer clearfix">
                 </div>
@@ -191,7 +213,6 @@
 @endsection
 @push('scripts')
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
     <script>
@@ -235,59 +256,6 @@
             endDate = _endDate;
             updateEndDate();
         }
-    </script>
-    <script>
-        const xValues = {!! json_encode($data['announcementsBySpecializations']['name']) !!};
-        const yValues = {!! json_encode($data['announcementsBySpecializations']['total']) !!};
-        const barColors = xValues.map((_, i) =>
-            ['red', 'green', 'blue', 'orange', 'brown', 'purple', 'cyan', 'magenta', 'yellow', 'teal'][i % 10]
-        );
-
-        new Chart("myChartSpecializations", {
-            type: "bar",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues
-                }]
-            },
-            options: {
-                indexAxis: 'y', // 👈 горизонтальная ориентация
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: {
-                        display: true,
-                        text: "Количество объявлений по категориям специализации"
-                    }
-                }
-            }
-        });
-
-
-        const xValues3 = {!! json_encode($data['costAverages']['name']) !!};
-        const yValues3 = {!! json_encode($data['costAverages']['total']) !!};
-        new Chart("myChartCosts", {
-            type: "bar",
-            data: {
-                labels: xValues3,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {display: false},
-                    title: {
-                        display: true,
-                        text: "Средняя зарплата по категориям специализации"
-                    }
-                }
-            }
-        });
     </script>
 @endpush
 
