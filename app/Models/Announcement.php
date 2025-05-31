@@ -7,6 +7,7 @@ use App\Enums\AnnouncementStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -92,6 +93,12 @@ class Announcement extends Model
     {
         return $this->hasMany(AnnouncementHistory::class);
     }
+
+    public function specialization(): BelongsTo
+    {
+        return $this->belongsTo(Specialization::class);
+    }
+
 
     public static function search(array $attributes): Builder
     {
