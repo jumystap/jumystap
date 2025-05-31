@@ -253,16 +253,18 @@
                 }]
             },
             options: {
+                indexAxis: 'y', // 👈 горизонтальная ориентация
                 responsive: true,
                 plugins: {
-                    legend: {display: false},
+                    legend: { display: false },
                     title: {
                         display: true,
-                        text: "Количество объявления по категориям специализации"
+                        text: "Количество объявлений по категориям специализации"
                     }
                 }
             }
         });
+
 
         const xValues3 = {!! json_encode($data['costAverages']['name']) !!};
         const yValues3 = {!! json_encode($data['costAverages']['total']) !!};
