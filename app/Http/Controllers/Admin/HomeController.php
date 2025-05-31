@@ -55,6 +55,7 @@ class HomeController extends Controller
                                "Экибастуз", "Рудный", "Жезказган"])
             ->where('status', 1)
             ->groupBy('city')
+            ->orderBy('total', 'DESC')
             ->get();
 
         $costAverages = DB::table('announcements as a')
