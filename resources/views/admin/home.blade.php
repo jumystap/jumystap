@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')
 @php
+    use App\Helpers\TextHelper;
     $title = 'Главная';
 @endphp
 @section('content')
@@ -57,137 +58,128 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество пользователей</small>
-                                    <h3>{{ $data['usersCount'] }}</h3>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество пользователей</small>
+                                            <h3>{{ TextHelper::numberFormat($data['usersCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-person-stalker"></i>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-stalker"></i>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Новые пользователи на сегодня</small>
+                                            <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-person-add"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество работодателей</small>
+                                            <h3>{{ TextHelper::numberFormat($data['allEmployersCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-briefcase"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество активных вакансий</small>
+                                            <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество соискателей</small>
+                                            <h3>{{ TextHelper::numberFormat($data['allEmployeesCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-person"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество выпускников JOLTAP</small>
+                                            <h3>{{ TextHelper::numberFormat($data['graduatesCount']) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-university"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Количество откликов</small>
+                                            <h3>{{ TextHelper::numberFormat($data['responsesCount'] * 2) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-stats-bars"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="small-box">
+                                        <div class="inner">
+                                            <small>Сегодня откликнулись</small>
+                                            <h3>{{ TextHelper::numberFormat($data['responsesTodayCount'] * 2) }}</h3>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-arrow-graph-up-right"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="row">
+
+                            </div>
+
                         </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Новые пользователи на сегодня</small>
-                                    <h3>{{ $data['registeredTodayCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество всех работодателей</small>
-                                    <h3>{{ $data['allEmployersCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-briefcase"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество работодателей</small>
-                                    <h3>{{ $data['employerCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-gear-b"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество заказчиков</small>
-                                    <h3>{{ $data['companyCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-gear-a"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество соискателей</small>
-                                    <h3>{{ $data['allEmployeesCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество выпускников</small>
-                                    <h3>{{ $data['graduatesCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-university"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество не выпускников</small>
-                                    <h3>{{ $data['nonGraduatesCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-man"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество активных вакансий</small>
-                                    <h3>{{ $data['announcementsCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Количество откликов</small>
-                                    <h3>{{ $data['responsesCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="small-box">
-                                <div class="inner">
-                                    <small>Сегодня откликнулись</small>
-                                    <h3>{{ $data['responsesTodayCount'] }}</h3>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-arrow-graph-up-right"></i>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <p class="text-center text-bold">Количество вакансии по городам</p>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 80px;">#</th>
+                                    <th>Город</th>
+                                    <th>Количество</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @php $i = 1; @endphp
+                                @foreach($data['announcementsByCities'] as $item)
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $item->city }}</td>
+                                        <td>{{ $item->total }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
+
                     <canvas id="myChartSpecializations"></canvas>
-                    <canvas id="myChartCities"></canvas>
                     <canvas id="myChartCosts"></canvas>
                 </div>
                 <div class="card-footer clearfix">
@@ -263,33 +255,10 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: false },
+                    legend: {display: false},
                     title: {
                         display: true,
-                        text: "Объявления по категориям специализации"
-                    }
-                }
-            }
-        });
-
-        const xValues2 = {!! json_encode($data['announcementsByCities']['name']) !!};
-        const yValues2 = {!! json_encode($data['announcementsByCities']['total']) !!};
-        new Chart("myChartCities", {
-            type: "bar",
-            data: {
-                labels: xValues2,
-                datasets: [{
-                    backgroundColor: barColors,
-                    data: yValues2
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    title: {
-                        display: true,
-                        text: "Объявления по городам"
+                        text: "Количество объявления по категориям специализации"
                     }
                 }
             }
@@ -309,7 +278,7 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: false },
+                    legend: {display: false},
                     title: {
                         display: true,
                         text: "Средняя зарплата по категориям специализации"
@@ -321,5 +290,13 @@
 @endpush
 
 @push('stylesheets')
+    <style>
+        .table{
+            font-size: 15px;
+        }
+        .table td, .table th {
+            padding: 0 0.75rem;
+        }
+    </style>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 @endpush
