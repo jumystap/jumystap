@@ -45,7 +45,7 @@ class HomeController extends Controller
         $announcementsBySpecializations = Announcement::select('specialization_categories.id as category_id', 'specialization_categories.name_ru', DB::raw('count(announcements.id) as total'))
             ->join('specializations', 'announcements.specialization_id', '=', 'specializations.id')
             ->join('specialization_categories', 'specializations.category_id', '=', 'specialization_categories.id')
-            ->where('specialization_categories.id', '!=', 19)
+            ->where('specialization_categories.id', '<', 18)
             ->groupBy('specialization_categories.id', 'specialization_categories.name_ru')
             ->orderBy('total', 'DESC')
             ->get();
@@ -78,7 +78,7 @@ class HomeController extends Controller
             )
             ->whereIn('a.salary_type', ['diapason', 'exact'])
             ->where('a.status', 1)
-            ->where('sc.id', '!=', 19)
+            ->where('sc.id', '<', 18)
             ->groupBy('sc.id', 'sc.name_ru')
             ->get();
 
