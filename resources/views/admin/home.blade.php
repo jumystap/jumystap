@@ -155,7 +155,7 @@
 
                         </div>
                         <div class="col-md-6">
-                            <p class="text-center text-bold">Количество вакансии по городам</p>
+                            <p class="text-center text-bold">Количество вакансий по городам</p>
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -185,7 +185,7 @@
                                 <tr>
                                     <th class="text-center" style="width: 80px;">#</th>
                                     <th>Категория</th>
-                                    <th>Количество вакансии, шт</th>
+                                    <th>Количество вакансий, шт</th>
                                     <th>Средняя зарплата, тг</th>
                                 </tr>
                                 </thead>
