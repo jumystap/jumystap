@@ -138,9 +138,9 @@ class AnnouncementController extends Controller
             'requirement.*' => 'string|max:2000', // Validate each requirement item
             'condition' => 'nullable|array', // Validate as an array
             'condition.*' => 'string|max:2000', // Validate each requirement item
-            'phone' => 'nullable|max:20',
+            'phone' => 'nullable|digits:11',
         ]);
-
+dd($request->all());
         $user = Auth::user();
         Log::info('Creating announcement with data:', $validated);
 
@@ -280,7 +280,7 @@ class AnnouncementController extends Controller
                 Log::info('All related records saved successfully for announcement', ['announcement_id' => $id]);
                 $announcement = Announcement::find($id);
                 $user = Auth::user();
-                $this->notifyAdmin($announcement, $user);
+//                $this->notifyAdmin($announcement, $user);
                 return redirect('/profile');
             }
 
