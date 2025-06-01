@@ -42,6 +42,8 @@ class AnnouncementController extends Controller
                 'title'                      => null,
                 'user_id'                    => null,
                 'status'                     => null,
+                'start_date'    => null,
+                'end_date'      => null,
             ];
         }
 

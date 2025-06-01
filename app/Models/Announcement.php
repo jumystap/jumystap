@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Domains\Common\Enums\Status;
 use App\Enums\AnnouncementStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -142,6 +143,14 @@ class Announcement extends Model
 
         if (array_key_exists('no_experience', $attributes) && $attributes['no_experience'] == 'on') {
             $query->where('experience', 'Без опыта работы');
+        }
+
+        if (array_key_exists('start_date', $attributes) && $attributes['start_date']) {
+            $query->where('announcements.created_at', '>=', now()->parse($attributes['start_date'])->format('Y-m-d'));
+        }
+
+        if (array_key_exists('end_date', $attributes) && $attributes['end_date']) {
+            $query->where('announcements.created_at', '<=', Carbon::parse($attributes['end_date'])->endOfDay()->toDateTimeString());
         }
 
         return $query;

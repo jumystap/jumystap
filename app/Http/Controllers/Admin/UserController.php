@@ -34,10 +34,12 @@ class UserController extends Controller
 
         if (!$search) {
             $search = [
-                'name'    => null,
-                'phone'   => null,
-                'email'   => null,
-                'role_id' => null,
+                'name'       => null,
+                'phone'      => null,
+                'email'      => null,
+                'role_id'    => null,
+                'start_date' => null,
+                'end_date'   => null,
             ];
         }
 
@@ -121,7 +123,7 @@ class UserController extends Controller
             $input['password'] = Hash::make($input['password']);
         }
         $input['is_blocked'] = $request->has('is_blocked') ? 1 : 0;
-        $updated = $user->update($input);
+        $updated             = $user->update($input);
 
         throw_unless($updated, new BadRequestException(__('Ошибка при редактировании Пользователя')));
 

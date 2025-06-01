@@ -2,6 +2,7 @@
 @php
     use App\Helpers\TextHelper;
     use App\Enums\Roles;
+    use App\Enums\AnnouncementStatus;
     $title = 'Главная';
 @endphp
 @section('content')
@@ -62,7 +63,7 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index') }}">
+                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество пользователей</small>
@@ -88,7 +89,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYER, Roles::COMPANY]]]) }}">
+                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYER, Roles::COMPANY], 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество работодателей</small>
@@ -101,7 +102,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="">
+                                    <a href="{{ route('admin.announcements.index', ['search' => ['status' => AnnouncementStatus::ACTIVE, 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество активных вакансий</small>
@@ -114,7 +115,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYEE]]]) }}">
+                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYEE], 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество соискателей</small>
@@ -127,7 +128,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['role_id' => Roles::EMPLOYEE]]) }}">
+                                    <a href="{{ route('admin.users.index', ['search' => ['role_id' => Roles::EMPLOYEE->value, 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество выпускников JOLTAP</small>
