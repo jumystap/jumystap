@@ -1,6 +1,7 @@
 @extends('admin.layouts.app')
 @php
     use App\Helpers\TextHelper;
+    use App\Enums\Roles;
     $title = 'Главная';
 @endphp
 @section('content')
@@ -61,81 +62,95 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество пользователей</small>
-                                            <h3>{{ TextHelper::numberFormat($data['usersCount']) }}</h3>
+                                    <a href="{{ route('admin.users.index') }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество пользователей</small>
+                                                <h3>{{ TextHelper::numberFormat($data['usersCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person-stalker"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-person-stalker"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Новые пользователи на сегодня</small>
-                                            <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Новые пользователи на сегодня</small>
+                                                <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person-add"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-person-add"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество работодателей</small>
-                                            <h3>{{ TextHelper::numberFormat($data['allEmployersCount']) }}</h3>
+                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYER, Roles::COMPANY]]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество работодателей</small>
+                                                <h3>{{ TextHelper::numberFormat($data['allEmployersCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-briefcase"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-briefcase"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество активных вакансий</small>
-                                            <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
+                                    <a href="">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество активных вакансий</small>
+                                                <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-star"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-star"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество соискателей</small>
-                                            <h3>{{ TextHelper::numberFormat($data['allEmployeesCount']) }}</h3>
+                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYEE]]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество соискателей</small>
+                                                <h3>{{ TextHelper::numberFormat($data['allEmployeesCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-person"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество выпускников JOLTAP</small>
-                                            <h3>{{ TextHelper::numberFormat($data['graduatesCount']) }}</h3>
+                                    <a href="{{ route('admin.users.index', ['search' => ['role_id' => Roles::EMPLOYEE]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество выпускников JOLTAP</small>
+                                                <h3>{{ TextHelper::numberFormat($data['graduatesCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-university"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-university"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Количество откликов</small>
-                                            <h3>{{ TextHelper::numberFormat($data['responsesCount'] * 2) }}</h3>
+                                    <a href="{{ route('admin.responses.index') }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество откликов</small>
+                                                <h3>{{ TextHelper::numberFormat($data['responsesCount'] * 2) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-stats-bars"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-stats-bars"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="small-box">
@@ -261,9 +276,10 @@
 
 @push('stylesheets')
     <style>
-        .table{
+        .table {
             font-size: 15px;
         }
+
         .table td, .table th {
             padding: 0 0.75rem;
         }

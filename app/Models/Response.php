@@ -26,4 +26,9 @@ class Response extends Model
     {
         return $this->belongsTo(User::class, 'employee_id');
     }
+
+    public function announcement(): BelongsTo
+    {
+        return $this->belongsTo(Announcement::class, 'announcement_id');
+    }
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\Roles;
 use App\Models\Profession\Profession;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -177,6 +178,18 @@ class User extends Authenticatable
             if($roleId === Roles::EMPLOYEE->value){
                 $query->where('users.is_graduate', true);
             }
+        }
+
+        if (array_key_exists('roles_id', $attributes) && count($attributes['roles_id'])) {
+            $query->whereIn('role_id', $attributes['roles_id']);
+        }
+
+        if (array_key_exists('start_date', $attributes) && $attributes['start_date']) {
+            $query->where('created_at', '>=', now()->parse($attributes['start_date'])->format('Y-m-d'));
+        }
+
+        if (array_key_exists('end_date', $attributes) && $attributes['end_date']) {
+            $query->where('created_at', '<=', Carbon::parse($attributes['end_date'])->endOfDay()->toDateTimeString());
         }
 
 //        if (array_key_exists('is_graduate', $attributes) && $attributes['is_graduate'] == 'on') {

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\ResponseController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
@@ -37,5 +38,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
     Route::prefix('analytics')->name('analytics.')->group(function (){
         Route::get('clicks', [AnalyticController::class, 'clicks'])->name('clicks');
+    });
+    Route::prefix('responses')->name('responses.')->group(function (){
+        Route::get('', [ResponseController::class, 'index'])->name('index');
     });
 });
