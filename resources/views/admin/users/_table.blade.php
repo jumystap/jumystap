@@ -48,7 +48,12 @@
             </td>
             <td>{{ $user->email }}</td>
             <td>+{{ $user->phone }}</td>
-            <td>{{ $user->role->name_ru ?? '' }}
+            <td>
+                @if($user->role->id == Roles::EMPLOYEE->value && !$user->is_graduate)
+                    Не выпускник
+                @else
+                    {{ $user->role->name_ru ?? '' }}
+                @endif
                 @if(in_array($user->role->id, [Roles::EMPLOYER->value, Roles::COMPANY->value]))
                     ({{ count($user->announcement) }})
                 @endif
