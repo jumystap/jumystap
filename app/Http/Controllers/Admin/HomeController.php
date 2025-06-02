@@ -108,8 +108,7 @@ class HomeController extends Controller
             'registeredTodayCount'           => User::whereNotIn('role_id', $excludedRoles)
                 ->whereDate('created_at', today())
                 ->count(),
-            'announcementsCount'             => Announcement::where('status', AnnouncementStatus::ACTIVE)
-                ->tap($filterByDate)->count(),
+            'announcementsCount'             => Announcement::all()->tap($filterByDate)->count(),
             'responsesCount'                 => Response::whereNotNull('announcement_id')->tap($filterByDate)->count(),
             'responsesTodayCount'            => Response::whereNotNull('announcement_id')
                 ->whereDate('created_at', today())

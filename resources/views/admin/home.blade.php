@@ -102,7 +102,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.announcements.index', ['search' => ['status' => AnnouncementStatus::ACTIVE, 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
+                                    <a href="{{ route('admin.announcements.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество активных вакансий</small>
