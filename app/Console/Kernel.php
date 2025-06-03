@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:get-certificates digital')->dailyAt('01:01');
         $schedule->command('app:delete-certificates work')->dailyAt('02:01');
         $schedule->command('app:delete-certificates digital')->dailyAt('03:01');
+        $schedule->command('app:fix-gender')->dailyAt('04:01');
     }
 
     /**
