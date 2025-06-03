@@ -30,23 +30,29 @@ class FixGenderCommand extends Command
     {
         $this->info('Started at: ' . date('d.m.Y H:i:s'));
 
-        $baseUri = config('services.genderize.uri');
+        $baseUri = config('services.gender.uri');
+        $key = config('services.gender.key');
 
         $users = User::query()
             ->where('role_id', Roles::EMPLOYEE->value)
+            ->limit(200)
             ->get();
 
         foreach ($users as $user) {
             $parts = explode(' ', $user->name);
             if (isset($parts[1])) {
-                $response = Http::get($baseUri . '?name=' . $parts[1]);
+                $params = [
+                    'name' => $parts[1],
+                    'key' => $key,
+                ];
+                $response = Http::get($baseUri . 'api', $params);
 
                 if ($response->successful()) {
                     $data = $response->json();
                     if (!empty($data)) {
                         $gender = $data['gender'] == 'female' ? 'ж' : 'м';
-                        $user->update(['gender' => $gender]);
-                        $this->info($user->name . ' - ' . $gender);
+                        $user->update(['gender' => $gender, 'fixed' => true]);
+                        $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
                     }
                 }
             } else {
