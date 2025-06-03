@@ -44,4 +44,8 @@ return [
     'bitrix'=> [
         'uri' => env('BITRIX_URI', 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/')
     ],
+
+    'genderize'=> [
+        'uri' => env('GENDERIZE_URI', 'https://api.genderize.io/')
+    ],
 ];
