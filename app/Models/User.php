@@ -55,7 +55,6 @@ class User extends Authenticatable
         'source',
         'is_graduate',
         'is_blocked',
-        'gender',
         'fixed'
     ];
 
