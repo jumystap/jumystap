@@ -43,7 +43,7 @@ class FixGenderCommand extends Command
 
                 if ($response->successful()) {
                     $data = $response->json();
-                    if (empty($data)) {
+                    if (!empty($data)) {
                         $gender = $data['gender'] == 'female' ? 'ж' : 'м';
                         $user->update(['gender' => $gender]);
                         $this->info($user->name . ' - ' . $gender);
