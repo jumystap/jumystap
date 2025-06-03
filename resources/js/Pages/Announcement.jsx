@@ -424,32 +424,32 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         </span>
                                     )}
                                 </div>
-                                <div className="flex-wrap">
-                                    {announcement.responses_count !== 0 && (
-                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                            <div className="flex items-center gap-x-1">
-                                                <HiOutlineUserGroup className="text-xl" />
-                                                <div>{announcement.responses_count} {announcement.responses_count === 1 ? t('response') : (announcement.responses_count >= 2 && announcement.responses_count <= 4) ? t('response2') : t('responses')}</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {announcement.visits_count !== 0 && (
-                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                            <div className="flex items-center gap-x-1">
-                                                <MdOutlineRemoveRedEye className="text-xl" />
-                                                <div>{announcement.visits_count} {announcement.visits_count === 1 ? t('view') : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? t('view2') : t('views')}</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {orderCount !== 0 && (
-                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                            <div className="flex items-center gap-x-1">
-                                                <MdOutlineWorkOutline className="text-xl" />
-                                                <div>{orderCount} {orderCount === 1 ? t('order') : t('orders')}</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                {/*<div className="flex-wrap">*/}
+                                {/*    {announcement.responses_count !== 0 && (*/}
+                                {/*        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">*/}
+                                {/*            <div className="flex items-center gap-x-1">*/}
+                                {/*                <HiOutlineUserGroup className="text-xl" />*/}
+                                {/*                <div>{announcement.responses_count} {announcement.responses_count === 1 ? t('response') : (announcement.responses_count >= 2 && announcement.responses_count <= 4) ? t('response2') : t('responses')}</div>*/}
+                                {/*            </div>*/}
+                                {/*        </div>*/}
+                                {/*    )}*/}
+                                {/*    {announcement.visits_count !== 0 && (*/}
+                                {/*        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">*/}
+                                {/*            <div className="flex items-center gap-x-1">*/}
+                                {/*                <MdOutlineRemoveRedEye className="text-xl" />*/}
+                                {/*                <div>{announcement.visits_count} {announcement.visits_count === 1 ? t('view') : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? t('view2') : t('views')}</div>*/}
+                                {/*            </div>*/}
+                                {/*        </div>*/}
+                                {/*    )}*/}
+                                {/*    {orderCount !== 0 && (*/}
+                                {/*        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">*/}
+                                {/*            <div className="flex items-center gap-x-1">*/}
+                                {/*                <MdOutlineWorkOutline className="text-xl" />*/}
+                                {/*                <div>{orderCount} {orderCount === 1 ? t('order') : t('orders')}</div>*/}
+                                {/*            </div>*/}
+                                {/*        </div>*/}
+                                {/*    )}*/}
+                                {/*</div>*/}
                             </div>
                         {urgent_announcement && (
                             <Link href={`/announcement/${urgent_announcement.id}`}  className='hover:bg-gray-100 transition-all duration-150 border-b border-gray-300 p-3 w-full hidden md:block '>

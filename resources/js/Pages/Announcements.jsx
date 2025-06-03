@@ -387,9 +387,9 @@ export default function Announcements({ auth, announcements, specializations, er
                                         <CiLocationOn />
                                         <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
                                     </div>
-                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}
-                                    </div>
+                                    {/*<div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>*/}
+                                    {/*    {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}*/}
+                                    {/*</div>*/}
                                 </div>
                                 <div className='mt-5 text-lg font-bold'>
                                     {anonce.title}

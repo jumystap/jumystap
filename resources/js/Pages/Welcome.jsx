@@ -358,11 +358,11 @@ export default function Welcome({
                         {t("urgent", { ns: "index" })}
                     </div>
                   </div>
-                  <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">
-                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language == "kz" && ""}
-                  </div>
+                  {/*<div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">*/}
+                  {/*  {i18n.language == "ru" ? "Размещено" : ""}{" "}*/}
+                  {/*  {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
+                  {/*  {i18n.language == "kz" && ""}*/}
+                  {/*</div>*/}
                 </div>
                 <div className="md:mt-7 mt-5 text-lg font-bold">
                   {anonce.title}
@@ -431,11 +431,11 @@ export default function Welcome({
                         {t("top", { ns: "index" })}
                     </div>
                   </div>
-                  <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
-                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language == "kz" && ""}
-                  </div>
+                  {/*<div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">*/}
+                  {/*  {i18n.language == "ru" ? "Размещено" : ""}{" "}*/}
+                  {/*  {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
+                  {/*  {i18n.language == "kz" && ""}*/}
+                  {/*</div>*/}
                 </div>
                 <div className="md:mt-7 mt-5 text-lg font-bold">
                   {anonce.title}
@@ -504,11 +504,11 @@ export default function Welcome({
                     <FaLocationDot className="text-sm" />
                     <div className="text-[10pt] md:text-sm">{anonce.city}</div>
                   </div>
-                  <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
-                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language == "kz" && ""}
-                  </div>
+                  {/*<div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">*/}
+                  {/*  {i18n.language == "ru" ? "Размещено" : ""}{" "}*/}
+                  {/*  {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
+                  {/*  {i18n.language == "kz" && ""}*/}
+                  {/*</div>*/}
                 </div>
                 <div className="md:mt-7 mt-5 text-lg font-bold">
                   {anonce.title}
@@ -664,11 +664,11 @@ export default function Welcome({
                     <FaLocationDot className="text-red-600" />
                     {urgent.city}
                   </div>
-                  <div className="text-sm font-light text-gray-500">
-                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(urgent.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language === "kz" && ""}
-                  </div>
+                  {/*<div className="text-sm font-light text-gray-500">*/}
+                  {/*  {i18n.language === "ru" ? "Размещено" : ""}{" "}*/}
+                  {/*  {`${formatDistanceToNow(new Date(urgent.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
+                  {/*  {i18n.language === "kz" && ""}*/}
+                  {/*</div>*/}
                 </Link>
               ))}
               {top_announcements.map((top, key) => (
@@ -708,11 +708,11 @@ export default function Welcome({
                     <FaLocationDot className="text-blue-500" />
                     {top.city}
                   </div>
-                  <div className="text-sm font-light text-gray-500">
-                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
-                    {`${formatDistanceToNow(new Date(top.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
-                    {i18n.language === "kz" && ""}
-                  </div>
+                  {/*<div className="text-sm font-light text-gray-500">*/}
+                  {/*  {i18n.language === "ru" ? "Размещено" : ""}{" "}*/}
+                  {/*  {`${formatDistanceToNow(new Date(top.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
+                  {/*  {i18n.language === "kz" && ""}*/}
+                  {/*</div>*/}
                 </Link>
               ))}
             </div>
