@@ -275,9 +275,9 @@ export default function Guest({ children }) {
                   <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
                       <FaInstagram className="text-xl" /> <span className="ml-1">Instagram JOLTAP</span>
                   </a>
-                  <a href="https://www.instagram.com/skillstap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
-                      <FaInstagram className="text-xl" /> <span className="ml-1">Instagram SkillsTap</span>
-                  </a>
+                  {/*<a href="https://www.instagram.com/skillstap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">*/}
+                  {/*    <FaInstagram className="text-xl" /> <span className="ml-1">Instagram SkillsTap</span>*/}
+                  {/*</a>*/}
                   <a href="https://www.youtube.com/@JOLTAP" target="_blank" rel="noopener noreferrer" className="flex justify-start">
                       <FaYoutube className="text-xl" /> <span className="ml-1">Youtube канал</span>
                   </a>

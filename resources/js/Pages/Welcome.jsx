@@ -206,32 +206,32 @@ export default function Welcome({
                         <img src="/images/Лого.png" className="md:w-[150px] w-[200px]" alt="malyar" />
                     </div>
                 </div>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="font-bold text-lg md:text-xl text-orange-500">
-                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
-                            </p>
-                            <p className="text-md md:mt-1">
-                                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
-                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
-                                3. {t("mobilograph_pro", { ns: "index" })}
-                            </p>
-                        </div>
+                {/*<div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">*/}
+                {/*    <div className="flex">*/}
+                {/*        <div>*/}
+                {/*            <p className="font-bold text-lg md:text-xl text-orange-500">*/}
+                {/*                {t("new_paid_courses_from_skillstap", { ns: "index" })}*/}
+                {/*            </p>*/}
+                {/*            <p className="text-md md:mt-1">*/}
+                {/*                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>*/}
+                {/*                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>*/}
+                {/*                3. {t("mobilograph_pro", { ns: "index" })}*/}
+                {/*            </p>*/}
+                {/*        </div>*/}
 
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
-                        </div>
-                    </div>
+                {/*        <div className="hidden md:block ml-auto">*/}
+                {/*            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
 
-                    <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
-                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
-                        >
-                            {t("submit_an_application", { ns: "index" })}
-                        </button>
-                    </div>
-                </div>
+                {/*    <div className="flex gap-x-5 mt-3 items-center">*/}
+                {/*        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}*/}
+                {/*                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"*/}
+                {/*        >*/}
+                {/*            {t("submit_an_application", { ns: "index" })}*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
@@ -565,62 +565,62 @@ export default function Welcome({
               </Link>
             ))}
             <Pagination links={announcements.links} />
-            <div className="pb-10">
-              <div className="flex mt-5">
-                <div className="mx-auto">
-                  <div className="border-orange-500 text-orange-500 border px-10 rounded-lg py-2 font-light">
-                    {work_professions.length}{" "}
-                    {t("work_skills", { ns: "index" })}
-                  </div>
-                </div>
-              </div>
-              <div className="grid px-5 md:grid-cols-2 gap-5 mt-7">
-                {work_professions.map((work, index) => (
-                  <Link
-                    href={`/profession/${work.group.name}#${work.id}`}
-                    key={index}
-                    className="flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150"
-                  >
-                    <img
-                      src={`/storage/${work.icon_url}`}
-                      className="w-[30px] h-[30px]"
-                      alt=""
-                    />
-                    <div>
-                      {i18n.language === "ru" ? work.name_ru : work.name_kz}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              <div className="flex mt-5">
-                <div className="mx-auto">
-                  <div className="border-orange-500 border px-10 text-orange-500 rounded-lg mt-5 py-2 font-light">
-                    {digital_professions.length}{" "}
-                    {t("digital_skills", { ns: "index" })}
-                  </div>
-                </div>
-              </div>
-              <div className="grid px-5 md:grid-cols-2 gap-5 mt-7">
-                {digital_professions.map((digital, index) => (
-                  <Link
-                    href={`/profession/${digital.group.name}#${digital.id}`}
-                    key={index}
-                    className="flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150"
-                  >
-                    <img
-                      src={`/storage/${digital.icon_url}`}
-                      className="w-[30px] h-[30px]"
-                      alt=""
-                    />
-                    <div>
-                      {i18n.language == "ru"
-                        ? digital.name_ru
-                        : digital.name_kz}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+            {/*<div className="pb-10">*/}
+            {/*  <div className="flex mt-5">*/}
+            {/*    <div className="mx-auto">*/}
+            {/*      <div className="border-orange-500 text-orange-500 border px-10 rounded-lg py-2 font-light">*/}
+            {/*        {work_professions.length}{" "}*/}
+            {/*        {t("work_skills", { ns: "index" })}*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*  <div className="grid px-5 md:grid-cols-2 gap-5 mt-7">*/}
+            {/*    {work_professions.map((work, index) => (*/}
+            {/*      <Link*/}
+            {/*        href={`/profession/${work.group.name}#${work.id}`}*/}
+            {/*        key={index}*/}
+            {/*        className="flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150"*/}
+            {/*      >*/}
+            {/*        <img*/}
+            {/*          src={`/storage/${work.icon_url}`}*/}
+            {/*          className="w-[30px] h-[30px]"*/}
+            {/*          alt=""*/}
+            {/*        />*/}
+            {/*        <div>*/}
+            {/*          {i18n.language === "ru" ? work.name_ru : work.name_kz}*/}
+            {/*        </div>*/}
+            {/*      </Link>*/}
+            {/*    ))}*/}
+            {/*  </div>*/}
+            {/*  <div className="flex mt-5">*/}
+            {/*    <div className="mx-auto">*/}
+            {/*      <div className="border-orange-500 border px-10 text-orange-500 rounded-lg mt-5 py-2 font-light">*/}
+            {/*        {digital_professions.length}{" "}*/}
+            {/*        {t("digital_skills", { ns: "index" })}*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*  <div className="grid px-5 md:grid-cols-2 gap-5 mt-7">*/}
+            {/*    {digital_professions.map((digital, index) => (*/}
+            {/*      <Link*/}
+            {/*        href={`/profession/${digital.group.name}#${digital.id}`}*/}
+            {/*        key={index}*/}
+            {/*        className="flex gap-5 w-full py-3 border border-gray-300 px-5 rounded-lg items-center hover:border-[#f36706] transition-all duration-150"*/}
+            {/*      >*/}
+            {/*        <img*/}
+            {/*          src={`/storage/${digital.icon_url}`}*/}
+            {/*          className="w-[30px] h-[30px]"*/}
+            {/*          alt=""*/}
+            {/*        />*/}
+            {/*        <div>*/}
+            {/*          {i18n.language == "ru"*/}
+            {/*            ? digital.name_ru*/}
+            {/*            : digital.name_kz}*/}
+            {/*        </div>*/}
+            {/*      </Link>*/}
+            {/*    ))}*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
           <div className="col-span-2 border-l md:block hidden border-gray-200 h-screen sticky top-0">
             <div>
