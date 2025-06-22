@@ -103,9 +103,10 @@ export default function Registration({ errors, professions }) {
     };
 
     const isValidCyrillicName = (name) => {
-        const cyrillicPattern = /^[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+\s[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+ *$/;
-        return cyrillicPattern.test(name);
+        const cyrillicPattern = /^[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+(?:-[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+)*\s[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+(?:-[А-ЯЁӘІҢҒҮҰҚӨҺ][а-яёәіңғүұқөһ]+)*$/;
+        return cyrillicPattern.test(name.trim());
     };
+
 
     const handleBasicInfoSubmit = (e) => {
         e.preventDefault();
@@ -330,7 +331,7 @@ export default function Registration({ errors, professions }) {
                                         <textarea
                                             value={data.description}
                                             onChange={(e) => setData('description', e.target.value)}
-                                            className='w-full h-[150px] mt-1 border-gray-300 rounded-lg capitalize'
+                                            className='w-full h-[150px] mt-1 border-gray-300 rounded-lg'
                                             placeholder={t('enter_company_description')}
                                         />
                                     </>
