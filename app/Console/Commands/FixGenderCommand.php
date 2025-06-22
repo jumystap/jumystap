@@ -35,6 +35,7 @@ class FixGenderCommand extends Command
 
         $users = User::query()
             ->where('role_id', Roles::EMPLOYEE->value)
+            ->where('fixed', 0)
             ->limit(200)
             ->get();
 
