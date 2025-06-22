@@ -112,7 +112,6 @@ export default function Announcements({ auth, announcements, specializations, er
             setData('searchKeyword', searchKeyword);
             setData('isSalary', isSalary);
             setData('noExperience', noExperience);
-            setIsSalary(isSalary);
             setData('city', city);
             setCity(city);
             setData('minSalary', minSalary);

@@ -52,7 +52,7 @@ class AnnouncementController extends Controller
             'publicTime' => $request->input('publicTime'),
         ];
 
-        $announcements = $this->announcementService->getAllActiveAnnouncements($filters);
+        $announcements = $this->announcementService->getAllActiveAnnouncements($filters)->withQueryString();
         $specializations = SpecializationCategory::with('specialization')->get()->toArray();
         foreach ($specializations as &$category) {
                 $category['specialization'][] = [
