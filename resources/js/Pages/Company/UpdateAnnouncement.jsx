@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
+import PhoneInput from 'react-phone-input-2';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -30,6 +31,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const [isUrgent, setIsUrgent] = useState(announcement.is_urgent);
     const [isExactSalary, setIsExactSalary] = useState(announcement.salary_type === 'exact');
     const [isUndefinedSalary, setIsUndefinedSalary] = useState(announcement.salary_type === 'undefined');
+    const [useMyPhone, setMyPhone] = useState(!announcement.phone);
     const newRequirementRef = useRef(null);
     const newResponsibilityRef = useRef(null);
     const newConditionRef = useRef(null);
@@ -59,12 +61,21 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         cost_max: announcement.cost_max || null,
         is_top: announcement.is_top || false,
         is_urgent: announcement.is_urgent || false,
+        phone: announcement.phone || '',
     });
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
         setSalaryType(isChecked ? 'za_smenu' : '');
         setData('salary_type', isChecked ? 'za_smenu' : '');
+    };
+
+    const handleUseMyPhone = (e) => {
+        const isChecked = e.target.checked;
+        setMyPhone(isChecked);
+        if(isChecked){
+            setData('phone', '');
+        }
     };
 
     const handleIsTopChange = (e) => {
@@ -372,21 +383,44 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         return phoneRegex.test(text);
     };
 
+    function isValidPhone(phone) {
+        if (!phone) return false;
+
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length !== 11) return false;
+
+        const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '771', '775', '777', '778'];
+
+        return validCodes.includes(code);
+    }
+
+
     const handleSubmit = (e) => {
         const errors = {};
 
         if (containsForbiddenWords(data.title)) {
-            errors.title = "Измените текст. Присутствует цензура";
+            errors.title = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
         if (containsForbiddenWords(data.description)) {
-            errors.description = "Измените текст. Присутствует цензура";
+            errors.description = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
         if (containsForbiddenWords(data.payment_type)) {
-            errors.payment_type = "Измените текст. Присутствует цензура";
+            errors.payment_type = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
 
         if (containsPhoneNumber(data.description)) {
-            errors.description = "Описание содержит номер телефона, что запрещено.";
+            errors.description = t('description_contains_phone_number', { ns: 'createAnnouncement' });
+        }
+
+        if (!useMyPhone && !isValidPhone(data.phone)) {
+            if(!data.phone){
+                errors.phone = t('enter_phone_again', { ns: 'createAnnouncement' });
+            }else{
+                errors.phone = t('invalid_phone_number', { ns: 'createAnnouncement' });
+            }
+        }else{
+            setData('phone', '')
         }
 
         if (Object.keys(errors).length > 0) {
@@ -428,8 +462,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 </span>
                             }
                             name="title"
-                            validateStatus={errors.title ? 'error' : ''}
-                            help={errors.title}
+                            validateStatus={validationErrors.title || errors.title ? 'error' : ''}
+                            help={validationErrors.title || errors.title}
                         >
                             <Input
                                 type="text"
@@ -487,8 +521,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                             <Form.Item
                                 name={`location[${index}].adress`}
                                 className='mt-[-15px]'
-                                validateStatus={errors?.[`location.${index}.adress`] ? 'error' : ''}
-                                help={errors?.[`location.${index}.adress`] || null}
+                                validateStatus={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] ? 'error' : ''}
+                                help={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] || null}
                             >
                                 <input
                                     key={index}
@@ -497,7 +531,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     value={loc.adress}
                                     onChange={(e) => handleLocationChange(index, e)}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                <div className='text-right'>
+                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                </div>
                             </Form.Item>
                         ))}
                         <div
@@ -548,8 +584,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 </span>
                             }
                             name="work_hours"
-                            validateStatus={errors.work_hours ? 'error' : ''}
-                            help={errors.work_hours}
+                            validateStatus={validationErrors.work_hours || errors.work_hours ? 'error' : ''}
+                            help={validationErrors.work_hours || errors.work_hours}
                         >
                             <Input
                                 type="text"
@@ -585,8 +621,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                             name="cost"
                                             value={data.cost}
                                             onValueChange={(value) => handleSalaryChange(value, 'cost')}
-                                            validateStatus={errors.cost ? 'error' : ''}
-                                            help={errors.cost}
+                                            validateStatus={validationErrors.cost || errors.cost ? 'error' : ''}
+                                            help={validationErrors.cost || errors.cost}
                                         />
                                     </Form.Item>
                                 ) : (
@@ -600,8 +636,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                                 value={data.cost_min}
                                                 onValueChange={(value) => handleSalaryChange(value, 'cost_min')}
                                                 className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
-                                                validateStatus={errors.cost_min ? 'error' : ''}
-                                                help={errors.cost_min}
+                                                validateStatus={validationErrors.cost_min || errors.cost_min ? 'error' : ''}
+                                                help={validationErrors.cost_min || errors.cost_min}
                                             />
                                         </Form.Item>
                                         <Form.Item
@@ -613,8 +649,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                                 name="cost_max"
                                                 value={data.cost_max}
                                                 onValueChange={(value) => handleSalaryChange(value, 'cost_max')}
-                                                validateStatus={errors.cost_max ? 'error' : ''}
-                                                help={errors.cost_max}
+                                                validateStatus={validationErrors.cost_max || errors.cost_max ? 'error' : ''}
+                                                help={validationErrors.cost_max || errors.cost_max}
                                             />
                                         </Form.Item>
                                     </div>
@@ -703,8 +739,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                             <Form.Item
                                 name={`requirement[${index}].requirement`}
                                 className='mt-[-10px]'
-                                validateStatus={errors?.[`requirement.${index}.requirement`] ? 'error' : ''}
-                                help={errors?.[`requirement.${index}.requirement`] || null}
+                                validateStatus={validationErrors[`requirement.${index}.requirement`] || errors[`requirement.${index}.requirement`] ? 'error' : ''}
+                                help={validationErrors[`requirement.${index}.requirement`] || errors[`requirement.${index}.requirement`] || null}
                             >
                                 <TextArea
                                     ref={index === data.requirement.length - 1 ? newRequirementRef : null}
@@ -731,7 +767,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteRequirement(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                <div className='text-right'>
+                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteRequirement(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                </div>
                             </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
@@ -747,8 +785,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                             <Form.Item
                                 name={`responsibility[${index}].responsibility`}
                                 className='mt-[-10px]'
-                                validateStatus={errors?.[`responsibility.${index}.responsibility`] ? 'error' : ''}
-                                help={errors?.[`responsibility.${index}.responsibility`] || null}
+                                validateStatus={validationErrors[`responsibility.${index}.responsibility`] || errors[`responsibility.${index}.responsibility`] ? 'error' : ''}
+                                help={validationErrors[`responsibility.${index}.responsibility`] || errors[`responsibility.${index}.responsibility`] || null}
                             >
                                 <TextArea
                                     ref={index === data.responsibility.length - 1 ? newResponsibilityRef : null}
@@ -776,7 +814,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteResponsibility(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                <div className='text-right'>
+                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteResponsibility(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                </div>
                             </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
@@ -792,8 +832,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                             <Form.Item
                                 name={`condition[${index}].condition`}
                                 className='mt-[-10px]'
-                                validateStatus={errors?.[`condition.${index}.condition`] ? 'error' : ''}
-                                help={errors?.[`condition.${index}.condition`] || null}
+                                validateStatus={validationErrors[`condition.${index}.condition`] || errors[`condition.${index}.condition`] ? 'error' : ''}
+                                help={validationErrors[`condition.${index}.condition`] || errors[`condition.${index}.condition`] || null}
                             >
                                 <TextArea
                                     ref={index === data.condition.length - 1 ? newConditionRef : null}
@@ -821,7 +861,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                         }
                                     }}
                                 />
-                                <button type="button" className='text-red-500 mt-1' onClick={() => deleteCondition(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                <div className='text-right'>
+                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteCondition(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                </div>
                             </Form.Item>
                         ))}
                         <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
@@ -867,6 +909,46 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 </div>
                             : ''
                         }
+                        <>
+                            <div className='flex items-center gap-x-2 mt-2 mb-2'>
+                                <input
+                                    type='checkbox'
+                                    name='use_my_phone'
+                                    id='use_my_phone'
+                                    className='rounded border-gray-400'
+                                    checked={useMyPhone}
+                                    onChange={handleUseMyPhone}
+                                />
+                                <label htmlFor='use_my_phone'>{t('use_my_phone', { ns: 'createAnnouncement' })}</label>
+                            </div>
+                        </>
+                        {!useMyPhone && (
+                            <Form.Item
+                                label={
+                                    <span>
+                                    {t('enter_whatsapp_number', { ns: 'createAnnouncement' })}
+                                        <span className="ml-2 text-gray-500">
+                                    </span>
+                                </span>
+                                }
+                                name="phone"
+                                validateStatus={(validationErrors.phone || errors.phone) ? 'error' : ''}
+                                help={validationErrors.phone || errors.phone}
+                            >
+                                <PhoneInput
+                                    specialLabel={t('phone', { ns: 'createAnnouncement' })}
+                                    country={'kz'}
+                                    onlyCountries={['kz']}
+                                    value={data.phone}
+                                    onChange={phone => setData('phone', phone)}
+                                    inputClass="ant-input css-dev-only-do-not-override-qnu6hi ant-input-outlined text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                />
+                                <Input
+                                    type="hidden"
+                                    value={data.phone}
+                                />
+                            </Form.Item>
+                        )}
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={processing}>

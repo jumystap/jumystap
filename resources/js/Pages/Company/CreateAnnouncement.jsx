@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
+import PhoneInput from 'react-phone-input-2';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,6 +27,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const { t } = useTranslation();
     const isEdit = announcement !== null;
     const [isExactSalary, setIsExactSalary] = useState(false);
+    const [withPhone, setWithPhone] = useState(false);
 
     const handleSalaryTypeChange = (e) => {
         setData(prevData => ({
@@ -79,6 +81,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         salary_type: 'undefined',
         cost_min: null,
         cost_max: null,
+        phone: '',
     });
 
     const deleteRequirement = (index) => {
@@ -135,7 +138,6 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
 
-    console.log(data)
     const addRequirement = () => {
         setData('requirement', [...data.requirement, '']);
     };
@@ -200,21 +202,47 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         return phoneRegex.test(text);
     };
 
+    const handleWithPhone = (e) => {
+        const isChecked = e.target.checked;
+        setWithPhone(isChecked);
+        setData('phone', isChecked ? data.phone : '');
+    };
+
+    function isValidPhone(phone) {
+        if (!phone) return false;
+
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length !== 11) return false;
+
+        const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '771', '775', '777', '778'];
+
+        return validCodes.includes(code);
+    }
+
     const handleSubmit = (e) => {
         const errors = {};
 
         if (containsForbiddenWords(data.title)) {
-            errors.title = "Измените текст. Присутствует цензура";
+            errors.title = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
         if (containsForbiddenWords(data.description)) {
-            errors.description = "Измените текст. Присутствует цензура";
+            errors.description = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
         if (containsForbiddenWords(data.payment_type)) {
-            errors.payment_type = "Измените текст. Присутствует цензура";
+            errors.payment_type = t('change_text_censorship_detected', { ns: 'createAnnouncement' });
         }
 
         if (containsPhoneNumber(data.description)) {
-            errors.description = "Описание содержит номер телефона, что запрещено.";
+            errors.description = t('description_contains_phone_number', { ns: 'createAnnouncement' });
+        }
+
+        if (withPhone && !isValidPhone(data.phone)) {
+            if(!data.phone){
+                errors.phone = t('enter_phone_again', { ns: 'createAnnouncement' });
+            }else{
+                errors.phone = t('invalid_phone_number', { ns: 'createAnnouncement' });
+            }
         }
 
         if (Object.keys(errors).length > 0) {
@@ -324,7 +352,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             onChange={(e) => handleLocationChange(index, e)}
                                         />
                                         <button
-                                            className="text-red-500 mt-3"
+                                            className="text-orange-500 mt-3"
                                             type="button"
                                             onClick={() => deleteLocation(index)}
                                         >
@@ -537,7 +565,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             onChange={(e) => handleRequirementChange(index, e)}
                                         />
                                         <button
-                                            className="text-red-500 mt-3"
+                                            className="text-orange-500 mt-3"
                                             type="button"
                                             onClick={() => deleteRequirement(index)}
                                         >
@@ -579,7 +607,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             onChange={(e) => handleResponsibilityChange(index, e)}
                                         />
                                         <button
-                                            className="text-red-500 mt-3"
+                                            className="text-orange-500 mt-3"
                                             type="button"
                                             onClick={() => deleteResponsibility(index)}
                                         >
@@ -621,7 +649,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             onChange={(e) => handleConditionChange(index, e)}
                                         />
                                         <button
-                                            className="text-red-500 mt-3"
+                                            className="text-orange-500 mt-3"
                                             type="button"
                                             onClick={() => deleteCondition(index)}
                                         >
@@ -653,6 +681,46 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 rows={12}
                             />
                         </Form.Item>
+                        <>
+                            <div className='flex items-center gap-x-2 mt-2 mb-2'>
+                                <input
+                                    type='checkbox'
+                                    name='with_phone'
+                                    id='with_phone'
+                                    className='rounded border-gray-400'
+                                    checked={withPhone}
+                                    onChange={handleWithPhone}
+                                />
+                                <label htmlFor='with_phone'>{t('with_phone', { ns: 'createAnnouncement' })}</label>
+                            </div>
+                        </>
+                        {withPhone && (
+                            <Form.Item
+                                label={
+                                    <span>
+                                    {t('additional_info', { ns: 'createAnnouncement' })}
+                                        <span className="ml-2 text-gray-500">
+                                    </span>
+                                </span>
+                                }
+                                name="phone"
+                                validateStatus={(validationErrors.phone || errors.phone) ? 'error' : ''}
+                                help={validationErrors.phone || errors.phone}
+                            >
+                                <PhoneInput
+                                    specialLabel={t('phone', { ns: 'createAnnouncement' })}
+                                    country={'kz'}
+                                    onlyCountries={['kz']}
+                                    value={data.phone}
+                                    onChange={(value) => setData('phone', value)}
+                                    inputClass="ant-input css-dev-only-do-not-override-qnu6hi ant-input-outlined text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                />
+                                <Input
+                                    type="hidden"
+                                    value={data.phone}
+                                />
+                            </Form.Item>
+                        )}
                         <Form.Item>
                             <Button
                                 type="primary"
@@ -660,7 +728,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 loading={processing}
                                 className="w-full md:w-auto"
                             >
-                                {isEdit ? "Сохранить" : t('create', { ns: 'createAnnouncement' })}
+                                {isEdit ? t('save', { ns: 'createAnnouncement' }) : t('create', { ns: 'createAnnouncement' })}
                             </Button>
                             <Button
                                 type="default"

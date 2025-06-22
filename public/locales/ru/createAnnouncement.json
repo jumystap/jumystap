@@ -13,6 +13,7 @@
     "paymentType": "Тип оплаты",
     "please_select_paymentType": "Пожалуйста, выберите Тип оплаты",
     "create": "Создать",
+    "save": "Сохранить",
     "specialization": "Специализация",
     "select_specialization": "Выберите Специализацию",
     "please_select_specialization": "Пожалуйста, выберите Специализацию",
@@ -55,5 +56,13 @@
     "edit": "Изменить",
     "back": "Назад",
     "is_top": "Топ",
-    "is_urgent": "Срочно"
+    "is_urgent": "Срочно",
+    "enter_whatsapp_number": "Введите номер на котором есть WhatsApp",
+    "phone": "Телефон",
+    "use_my_phone": "Использовать собственный телефон для связи",
+    "with_phone": "Указать телефон для связи(по умолчанию используется Ваш номер телефона)",
+    "change_text_censorship_detected": "Измените текст. Присутствует цензура",
+    "description_contains_phone_number": "Описание содержит номер телефона, что запрещено.",
+    "enter_phone_again": "Введите номер телефона заново.",
+    "invalid_phone_number": "Некорректный номер телефона."
 }

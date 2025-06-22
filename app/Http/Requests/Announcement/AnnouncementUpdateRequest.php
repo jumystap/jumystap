@@ -54,7 +54,7 @@ class AnnouncementUpdateRequest extends FormRequest
             'condition.*.condition' => 'required|string|max:2000', // Ensure each condition has a description
             'is_top' => "nullable|boolean",
             'is_urgent' => "nullable|boolean",
-            'phone' => "nullable|max:20",
+            'phone' => "nullable|digits:11",
         ];
     }
 }

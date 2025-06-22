@@ -13,6 +13,7 @@
     "paymentType": "Төлем түрі",
     "please_select_paymentType": "Төлем түрін таңдаңыз",
     "create": "Жасау",
+    "save": "Сақтау",
     "specialization": "Мамандық",
     "select_specialization": "Мамандық таңдаңыз",
     "please_select_specialization": "Мамандық таңдаңыз",
@@ -55,5 +56,13 @@
     "edit": "Өзгерту",
     "back": "Артқа",
     "is_top": "Топ",
-    "is_urgent": "Шұғыл"
+    "is_urgent": "Шұғыл",
+    "enter_whatsapp_number": "WhatsApp бар нөмірді енгізіңіз",
+    "phone": "Телефон",
+    "use_my_phone": "Байланыс үшін өз телефонымды пайдаланамын",
+    "with_phone": "Байланыс телефон нөмірін көрсету (Телефон нөмірін енгізбеген жағдайда өз нөміріңіз автоматты түрде қолданылады)",
+    "change_text_censorship_detected": "Мәтінді өзгертіңіз. Цензура анықталды",
+    "description_contains_phone_number": "Сипаттамада телефон нөмірі бар, бұл тыйым салынған.",
+    "enter_phone_again": "Телефон нөмірін қайта енгізіңіз.",
+    "invalid_phone_number": "Телефон нөмірі дұрыс емес."
 }

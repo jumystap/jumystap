@@ -110,7 +110,7 @@ class AnnouncementRepository
 
     public function createAnnouncement(array $data): Announcement
     {
-        return Announcement::create($data);
+        return Announcement::query()->create($data);
     }
 
     public function updateAnnouncement($id, array $data): bool
