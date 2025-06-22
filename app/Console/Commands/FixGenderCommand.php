@@ -47,15 +47,21 @@ class FixGenderCommand extends Command
                     'key' => $key,
                 ];
                 $response = Http::get($baseUri . 'api', $params);
+                $data = $response->json();
 
                 if ($response->successful()) {
-                    $data = $response->json();
                     if (!empty($data)) {
                         $gender = $data['gender'] == 'female' ? 'ж' : 'м';
                         $user->update(['gender' => $gender, 'fixed' => true]);
                         $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
                     }
+                }else{
+                    if($data['status'] === false){
+                        $this->warn($data['errmsg']);
+                        break;
+                    }
                 }
+
             } else {
                 $this->warn('Error on name: ' . $user->name);
             }
