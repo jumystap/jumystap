@@ -51,7 +51,7 @@ class FixGenderCommand extends Command
                 if (!empty($data)) {
                     $gender = $data['gender'] == 'female' ? 'ж' : 'м';
                     $user->forceFill(['gender' => $gender, 'fixed' => $data['probability']])->save();
-                    $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
+                    $this->info($user->id . ') ' . $user->name . ' - ' . $user->gender);
                 }
             }else{
                 if($data['status'] === false){
