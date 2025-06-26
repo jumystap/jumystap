@@ -40,30 +40,24 @@ class FixGenderCommand extends Command
             ->get();
 
         foreach ($users as $user) {
-            $parts = explode(' ', $user->name);
-            if (isset($parts[1])) {
-                $params = [
-                    'name' => $parts[1],
-                    'key' => $key,
-                ];
-                $response = Http::get($baseUri . 'api', $params);
-                $data = $response->json();
+            $params = [
+                'name' => $user->name,
+                'key' => $key,
+            ];
+            $response = Http::get($baseUri . 'api', $params);
+            $data = $response->json();
 
-                if ($response->successful()) {
-                    if (!empty($data)) {
-                        $gender = $data['gender'] == 'female' ? 'ж' : 'м';
-                        $user->update(['gender' => $gender, 'fixed' => true]);
-                        $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
-                    }
-                }else{
-                    if($data['status'] === false){
-                        $this->warn($data['errmsg']);
-                        break;
-                    }
+            if ($response->successful()) {
+                if (!empty($data)) {
+                    $gender = $data['gender'] == 'female' ? 'ж' : 'м';
+                    $user->forceFill(['gender' => $gender, 'fixed' => $data['probability']])->save();
+                    $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
                 }
-
-            } else {
-                $this->warn('Error on name: ' . $user->name);
+            }else{
+                if($data['status'] === false){
+                    $this->warn($data['errmsg']);
+                    break;
+                }
             }
         }
 
