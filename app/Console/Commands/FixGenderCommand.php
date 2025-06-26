@@ -14,7 +14,7 @@ class FixGenderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:fix-gender';
+    protected $signature = 'app:fix-gender {arg}';
 
     /**
      * The console command description.
@@ -28,10 +28,11 @@ class FixGenderCommand extends Command
      */
     public function handle()
     {
+        $arg = $this->argument('arg');
         $this->info('Started at: ' . date('d.m.Y H:i:s'));
 
         $baseUri = config('services.gender.uri');
-        $key = config('services.gender.key');
+        $key = config('services.gender.key' . $arg);
 
         $users = User::query()
             ->where('role_id', Roles::EMPLOYEE->value)
@@ -53,8 +54,8 @@ class FixGenderCommand extends Command
                     $user->forceFill(['gender' => $gender, 'fixed' => $data['probability']])->save();
                     $this->info($user->id . ') ' . $user->name . ' - ' . $user->gender);
                 }
-            }else{
-                if($data['status'] === false){
+            } else {
+                if ($data['status'] === false) {
                     $this->warn($data['errmsg']);
                     break;
                 }
