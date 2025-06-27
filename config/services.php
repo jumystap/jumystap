@@ -47,6 +47,8 @@ return [
 
     'gender'=> [
         'uri' => env('GENDER_API_URI', 'https://api.genderapi.io/'),
-        'key' => env('GENDER_API_KEY', '683ec13028573e4d869109fa')
+        'key1' => env('GENDER_API_KEY_1', '683ec13028573e4d869109fa'),
+        'key2' => env('GENDER_API_KEY_2', '685d0239f060778ce6158d0e'),
+        'key3' => env('GENDER_API_KEY_3')
     ],
 ];

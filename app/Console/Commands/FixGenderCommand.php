@@ -14,7 +14,7 @@ class FixGenderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:fix-gender';
+    protected $signature = 'app:fix-gender {arg}';
 
     /**
      * The console command description.
@@ -28,10 +28,11 @@ class FixGenderCommand extends Command
      */
     public function handle()
     {
+        $arg = $this->argument('arg');
         $this->info('Started at: ' . date('d.m.Y H:i:s'));
 
         $baseUri = config('services.gender.uri');
-        $key = config('services.gender.key');
+        $key = config('services.gender.key' . $arg);
 
         $users = User::query()
             ->where('role_id', Roles::EMPLOYEE->value)
@@ -40,30 +41,24 @@ class FixGenderCommand extends Command
             ->get();
 
         foreach ($users as $user) {
-            $parts = explode(' ', $user->name);
-            if (isset($parts[1])) {
-                $params = [
-                    'name' => $parts[1],
-                    'key' => $key,
-                ];
-                $response = Http::get($baseUri . 'api', $params);
-                $data = $response->json();
+            $params = [
+                'name' => $user->name,
+                'key' => $key,
+            ];
+            $response = Http::get($baseUri . 'api', $params);
+            $data = $response->json();
 
-                if ($response->successful()) {
-                    if (!empty($data)) {
-                        $gender = $data['gender'] == 'female' ? 'ж' : 'м';
-                        $user->update(['gender' => $gender, 'fixed' => true]);
-                        $this->info($user->id . ') ' . $user->name . ' - ' . $gender);
-                    }
-                }else{
-                    if($data['status'] === false){
-                        $this->warn($data['errmsg']);
-                        break;
-                    }
+            if ($response->successful()) {
+                if (!empty($data)) {
+                    $gender = $data['gender'] == 'female' ? 'ж' : 'м';
+                    $user->forceFill(['gender' => $gender, 'fixed' => $data['probability']])->save();
+                    $this->info($user->id . ') ' . $user->name . ' - ' . $user->gender);
                 }
-
             } else {
-                $this->warn('Error on name: ' . $user->name);
+                if ($data['status'] === false) {
+                    $this->warn($data['errmsg']);
+                    break;
+                }
             }
         }
 
