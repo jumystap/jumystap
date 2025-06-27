@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::get('create', [UserResumeController::class, 'create']);
         Route::post('create', [UserResumeController::class, 'store']);
         Route::get('update/{id}', [UserResumeController::class, 'edit']);
-        Route::post('update/{id}', [UserResumeController::class, 'update']);
+        Route::put('{resume}', [UserResumeController::class, 'update']);
         Route::get('{id}', [UserResumeController::class, 'show']);
         Route::delete('/delete/{id}', [UserResumeController::class, 'destroy'])->name('delete');
     });

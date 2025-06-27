@@ -93,11 +93,12 @@ class UserResumeController extends Controller
 
     public function edit($id)
     {
-        $resume = UserResume::where('id', $id)->with('organizations', 'languages')->first();
-        $specialization = SpecializationCategory::with('specialization')->get();
+        $resume = UserResume::where('id', $id)->with('organizations')->first();
+        $specializations = SpecializationCategory::with('specialization')->get();
         return Inertia::render('UpdateResume', [
             'resume' => $resume,
-            'specialization' => $specialization,
+            'languages' => collect($resume->languages)->pluck('language')->toArray(),
+            'specializations' => $specializations,
         ]);
     }
 
@@ -111,7 +112,7 @@ class UserResumeController extends Controller
             'specialization' => 'nullable|string',
             'graduation_year' => 'nullable|integer',
             'ip_status' => 'required|in:Присутствует,Отсутствует',
-            'desired_field' => 'required|string',
+            'desired_field' => 'required',
             'skills' => 'required|array',
             'photo_path' => 'nullable|file|image',
             'organizations' => 'required|array',

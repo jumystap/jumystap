@@ -9,7 +9,7 @@ class Organization extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['resume_id', 'organization', 'position_id', 'position', 'period'];
+    protected $fillable = ['user_resume_id', 'organization', 'position_id', 'position', 'period'];
 
     public function resume()
     {
