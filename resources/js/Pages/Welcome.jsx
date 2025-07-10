@@ -257,7 +257,7 @@ export default function Welcome({
                         </button>
                     </div>
                 </div>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
                             <p className="font-bold text-lg md:text-xl text-orange-500">
