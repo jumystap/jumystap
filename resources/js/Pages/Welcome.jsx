@@ -230,32 +230,59 @@ export default function Welcome({
                         <img src="/images/Лого.png" className="md:w-[150px] w-[200px]" alt="malyar" />
                     </div>
                 </div>
-                {/*<div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">*/}
-                {/*    <div className="flex">*/}
-                {/*        <div>*/}
-                {/*            <p className="font-bold text-lg md:text-xl text-orange-500">*/}
-                {/*                {t("new_paid_courses_from_skillstap", { ns: "index" })}*/}
-                {/*            </p>*/}
-                {/*            <p className="text-md md:mt-1">*/}
-                {/*                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>*/}
-                {/*                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>*/}
-                {/*                3. {t("mobilograph_pro", { ns: "index" })}*/}
-                {/*            </p>*/}
-                {/*        </div>*/}
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="font-bold text-lg md:text-xl text-orange-500">
+                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
+                            </p>
+                            <p className="text-sm md:mt-1">
+                                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
+                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
+                                3. {t("mobilograph_pro", { ns: "index" })}<br/>
+                                4. {t("basic_course_on_ai", { ns: "index" })}
+                            </p>
+                        </div>
 
-                {/*        <div className="hidden md:block ml-auto">*/}
-                {/*            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
+                        </div>
+                    </div>
 
-                {/*    <div className="flex gap-x-5 mt-3 items-center">*/}
-                {/*        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}*/}
-                {/*                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"*/}
-                {/*        >*/}
-                {/*            {t("submit_an_application", { ns: "index" })}*/}
-                {/*        </button>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                    <div className="flex gap-x-5 mt-3 items-center">
+                        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
+                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
+                        >
+                            {t("submit_an_application", { ns: "index" })}
+                        </button>
+                    </div>
+                </div>
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="font-bold text-lg md:text-xl text-orange-500">
+                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
+                            </p>
+                            <p className="text-sm md:mt-1">
+                                5. {t("auto_glass_repair_and_cracks", { ns: "index" })}<br/>
+                                6. {t("design_and_sewing_sportswear", { ns: "index" })}<br/>
+                                7. {t("public_speaking", { ns: "index" })}
+                            </p>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
+                        </div>
+                    </div>
+
+                    <div className="flex gap-x-5 mt-3 items-center">
+                        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
+                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
+                        >
+                            {t("submit_an_application", { ns: "index" })}
+                        </button>
+                    </div>
+                </div>
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
