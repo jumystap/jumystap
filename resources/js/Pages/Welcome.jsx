@@ -236,7 +236,7 @@ export default function Welcome({
                             <p className="font-bold text-lg md:text-xl text-orange-500">
                                 {t("new_paid_courses_from_skillstap", { ns: "index" })}
                             </p>
-                            <p className="text-sm md:mt-1">
+                            <p className="text-md md:mt-1">
                                 1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
                                 2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
                                 3. {t("mobilograph_pro", { ns: "index" })}<br/>
@@ -263,7 +263,7 @@ export default function Welcome({
                             <p className="font-bold text-lg md:text-xl text-orange-500">
                                 {t("new_paid_courses_from_skillstap", { ns: "index" })}
                             </p>
-                            <p className="text-sm md:mt-1">
+                            <p className="text-md md:mt-1">
                                 5. {t("auto_glass_repair_and_cracks", { ns: "index" })}<br/>
                                 6. {t("design_and_sewing_sportswear", { ns: "index" })}<br/>
                                 7. {t("public_speaking", { ns: "index" })}
