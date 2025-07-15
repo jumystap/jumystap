@@ -63,10 +63,12 @@ class UserService
             "Модельер-конструктор"                     => 2,
             "Бариста"                                  => 3,
             "Продавец-кассир"                          => 4,
+            "Основы розничной торговли"                => 4,
             "Основы изготовления корпусной мебели"     => 5,
+            "Сборка корпусной мебели"                  => 5,
             "Ремонт обуви и изготовление ключей"       => 6,
             "Электрогазосварщик"                       => 7,
-            "Основы  бухгалтерского учета"             => 8,
+            "Основы бухгалтерского учета"              => 8,
             "SMM"                                      => 9,
             "Мобилограф"                               => 10,
             "Таргетолог"                               => 11,
@@ -74,7 +76,13 @@ class UserService
             "Видеомонтаж"                              => 13,
             "Веб-дизайн + Создание и разработка сайта" => 14,
             "Маркетплейс"                              => 15,
+            "Основы торговли на Wildberries"           => 15,
             "Базовые цифровые навыки"                  => 16,
+            "Контент-криэйтор"                         => 17,
+            "Основы торговли на Kaspi магазине"        => 18,
+            "Автоспециалист по замене масла и автошин" => 19,
+            "Специалист по замене масла и автошин"     => 19,
+            "Маляр по полимерно-порошковой покраске"   => 20,
         ];
 
         $baseUri = config('services.bitrix.uri');
@@ -85,7 +93,7 @@ class UserService
             $data = $response->json();
             if (!empty($data['result'])) {
                 foreach ($data['result'] as $certificate) {
-                    $professionId = $professionMap[$certificate['PROFESSION']['NAME_RU']] ?? null;
+                    $professionId = $professionMap[$this->cleanString($certificate['PROFESSION']['NAME_RU'])] ?? null;
                     if (!$professionId) {
                         continue;
                     }
@@ -110,6 +118,18 @@ class UserService
                 }
             }
         }
+    }
+
+    private function cleanString($str): string
+    {
+        // Удаление неразрывных пробелов (включая \u{A0})
+        $str = preg_replace('/\x{00A0}/u', ' ', $str);
+
+        // Замена множественных пробелов на один
+        $str = preg_replace('/\s+/u', ' ', $str);
+
+        // Обрезка пробелов по краям
+        return trim($str);
     }
 
     /**
