@@ -250,7 +250,7 @@ export default function Welcome({
                     </div>
 
                     <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
+                        <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
                                 className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
                         >
                             {t("submit_an_application", { ns: "index" })}
@@ -276,7 +276,7 @@ export default function Welcome({
                     </div>
 
                     <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={(e) => handleButtonClick(e, 'https://forms.gle/Mb2h6yuWh93YqgEXA', 1)}
+                        <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
                                 className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
                         >
                             {t("submit_an_application", { ns: "index" })}
