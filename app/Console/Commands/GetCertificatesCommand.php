@@ -77,6 +77,9 @@ class GetCertificatesCommand extends Command
                 $data = $response->json();
                 if (!empty($data['result'])) {
                     foreach ($data['result'] as $certificate) {
+                        if(!isset($certificate['PHONE'])){
+                            continue;
+                        }
                         $phone = preg_replace('/\D+/', '', $certificate['PHONE']);
                         $user  = User::query()->where('phone', $phone)->first();
                         if ($user) {
