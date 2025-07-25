@@ -1,5 +1,5 @@
 import { Inertia } from '@inertiajs/inertia';
-import {Link, router} from '@inertiajs/react';
+import {Link, router, useForm} from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoMailOpenOutline } from "react-icons/io5";
@@ -7,29 +7,33 @@ import { LuPhone } from "react-icons/lu";
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import {Button, message, Tabs} from 'antd';
+import {Button, message, Modal, Radio, Tabs} from 'antd';
 
-export default function Dashboard({ user, announcements }) {
-    const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+export default function Dashboard({ user }) {
+    // const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
     const { t, i18n } = useTranslation('dashboard');
+    const [isArchiveModalVisible, setIsArchiveModalVisible] = useState(false);
+    const [employeeFound, setEmployeeFound] = useState(null); // null, 'yes', or 'no'
+    const [announcementId, setAnnouncementId] = useState(null);
 
-    const openCreateAnnouncementModal = () => {
-        setSelectedAnnouncement(null);
-    };
+    const { processing } = useForm();
+    // const openCreateAnnouncementModal = () => {
+    //     setSelectedAnnouncement(null);
+    // };
+    //
+    // const openEditAnnouncementModal = (announcement) => {
+    //     setSelectedAnnouncement(announcement);
+    // };
 
-    const openEditAnnouncementModal = (announcement) => {
-        setSelectedAnnouncement(announcement);
-    };
-
-    const deleteAnnouncement = (id) => {
-        Inertia.delete(route('announcements.delete', { id: id }), {
-            onSuccess: () => {
-            },
-            onError: (errors) => {
-                console.log(errors);
-            }
-        });
-    }
+    // const deleteAnnouncement = (id) => {
+    //     Inertia.delete(route('announcements.delete', { id: id }), {
+    //         onSuccess: () => {
+    //         },
+    //         onError: (errors) => {
+    //             console.log(errors);
+    //         }
+    //     });
+    // }
 
     const formatPhoneNumber = (phoneNumber) => {
         const countryCode = '+7';
@@ -149,6 +153,39 @@ export default function Dashboard({ user, announcements }) {
             })
     };
 
+    const showArchiveModal = (id) => {
+        setIsArchiveModalVisible(true);
+        setEmployeeFound(null); // Reset selection
+        setAnnouncementId(id);
+    };
+
+    const handleArchive = () => {
+        if (employeeFound === null) {
+            message.error(t('select_one_variant'));
+            return;
+        }
+
+        router.post(
+            `/announcements/archive`,
+            {
+                id: announcementId,
+                is_employee_found: employeeFound === 'yes',
+                republish: employeeFound === 'republish',
+            },
+            {
+                onSuccess: () => {
+                    message.success(t('announcement_archived'));
+                    setIsArchiveModalVisible(false);
+                    setEmployeeFound(null);
+                    setAnnouncementId(null); // Reset the ID
+                },
+                onError: () => {
+                    message.error(t('announcement_archivation_error'));
+                },
+            }
+        );
+    };
+
     const renderAnnouncements = (status) => {
         const filteredAnnouncements = status === null
             ? user.announcement
@@ -229,10 +266,21 @@ export default function Dashboard({ user, announcements }) {
                         </div>
                         <div className='flex md:flex-row flex-col mt-4 gap-x-5 gap-y-2'>
                             <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/profile/announcement/${anonce.id}`}>{t('view', { ns: 'dashboard' })}</Link>
+                            {(anonce.status !== 2) && (
                             <Link className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2' href={`/announcements/update/${anonce.id}`}>{t('update', { ns: 'dashboard' })}</Link>
+                            )}
                             {(anonce.status === 1 || anonce.status === 3) && (
                                 <Button className='block w-full text-center border border-gray-300 rounded-lg text-sm py-2 h-full' onClick={() => handleRepublish(anonce.id)}>
                                 {t('republish', { ns: 'dashboard' })}
+                                </Button>
+                            )}
+                            {(anonce.status === 0 || anonce.status === 1) && (
+                                <Button
+                                    className="block w-full text-center border border-gray-300 rounded-lg text-sm py-2 h-full"
+                                    onClick={() => showArchiveModal(anonce.id)}
+                                    loading={processing}
+                                >
+                                    {t('archive')}
                                 </Button>
                             )}
                         </div>
@@ -293,6 +341,29 @@ export default function Dashboard({ user, announcements }) {
                 <div className='md:block hidden col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>
                 </div>
             </div>
+
+            <Modal
+                title={t('confirm_archive')}
+                open={isArchiveModalVisible}
+                onOk={handleArchive}
+                onCancel={() => {
+                    setIsArchiveModalVisible(false);
+                    setEmployeeFound(null);
+                }}
+                okText={t('send')}
+                cancelText={t('cancel')}
+            >
+                {t('have_you_found_an_employee')}
+                <Radio.Group
+                    onChange={(e) => setEmployeeFound(e.target.value)}
+                    value={employeeFound}
+                    style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                >
+                    <Radio value="yes">{t('yes')}</Radio>
+                    <Radio value="no">{t('no')}</Radio>
+                    <Radio value="republish">{t('republish')}</Radio>
+                </Radio.Group>
+            </Modal>
         </>
     )
 }

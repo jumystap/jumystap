@@ -183,7 +183,7 @@ export default function CompanyAnnouncement({
                         {t('delete_announcement')}
                     </Button>
 
-                    {announcement.status !== 3 && (
+                    {(announcement.status === 0 || announcement.status === 1) && (
                         <Button
                             type="primary"
                             className="ml-1"

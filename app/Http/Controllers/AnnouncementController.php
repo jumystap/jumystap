@@ -173,6 +173,9 @@ class AnnouncementController extends Controller
     public function edit($id): mixed
     {
         $announcement = $this->announcementService->getAnnouncement($id);
+        if($announcement->status === AnnouncementStatus::BLOCKED){
+            return redirect(route('profile'))->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_update')])->withInput();
+        }
         $industries = Industry::all();
         $specializations = SpecializationCategory::with('specialization')->get();
         $user = Auth::user();
