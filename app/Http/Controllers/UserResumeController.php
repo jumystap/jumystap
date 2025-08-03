@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DrivingLicenseCategory;
+use App\Enums\EmploymentType;
+use App\Enums\WorkSchedule;
 use App\Models\UserResume;
 use App\Models\SpecializationCategory;
 use App\Models\User;
@@ -21,9 +24,15 @@ class UserResumeController extends Controller
     public function create()
     {
         $specialization = SpecializationCategory::with('specialization')->get();
+        $workSchedules = WorkSchedule::options();
+        $employmentTypes = EmploymentType::options();
+        $drivingLicenses = DrivingLicenseCategory::options();
 
         return Inertia::render('CreateResume', [
-            'specialization' => $specialization
+            'specialization' => $specialization,
+            'workSchedules' => $workSchedules,
+            'employmentTypes' => $employmentTypes,
+            'drivingLicenses' => $drivingLicenses
         ]);
     }
 
