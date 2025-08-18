@@ -31,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('vendor.pagination.bootstrap-4');
 
         $locale = request()->header('X-Locale', session('locale', config('app.locale')));
+        $locale = $locale === 'kz' ? 'kk' : $locale;
         app()->setLocale($locale);
         session(['locale' => $locale]);
 
