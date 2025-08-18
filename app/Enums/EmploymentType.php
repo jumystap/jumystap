@@ -15,10 +15,10 @@ enum EmploymentType: int
     public function label(): string
     {
         return match ($this) {
-            self::FULL_TIME => __('messages.employment_type.full_time'),
-            self::PART_TIME => __('messages.employment_type.part_time'),
-            self::TEMPORARY => __('messages.employment_type.temporary'),
-            self::CONTRACT => __('messages.employment_type.contract'),
+            self::FULL_TIME => __('messages.resume.employment_type.full_time'),
+            self::PART_TIME => __('messages.resume.employment_type.part_time'),
+            self::TEMPORARY => __('messages.resume.employment_type.temporary'),
+            self::CONTRACT => __('messages.resume.employment_type.contract'),
         };
     }
 

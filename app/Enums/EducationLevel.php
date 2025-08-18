@@ -15,10 +15,10 @@ enum EducationLevel: int
     public function label(): string
     {
         return match ($this) {
-            self::SECONDARY => __('messages.education_level.secondary'),
-            self::SPECIAL_SECONDARY => __('messages.education_level.secondary_special'),
-            self::INCOMPLETE_HIGHER => __('messages.education_level.incomplete_higher'),
-            self::HIGHER => __('messages.education_level.higher')
+            self::SECONDARY => __('messages.resume.education_level.secondary'),
+            self::SPECIAL_SECONDARY => __('messages.resume.education_level.secondary_special'),
+            self::INCOMPLETE_HIGHER => __('messages.resume.education_level.incomplete_higher'),
+            self::HIGHER => __('messages.resume.education_level.higher')
         };
     }
 
