@@ -30,11 +30,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::defaultView('vendor.pagination.bootstrap-4');
 
-        // Получаем локаль из сессии или запроса
-        $locale = request()->header('X-Locale', Session::get('locale', config('app.locale')));
-
-        // Устанавливаем локаль приложения
-        App::setLocale($locale);
+        $locale = request()->header('X-Locale', session('locale', config('app.locale')));
+        app()->setLocale($locale);
+        session(['locale' => $locale]);
 
         Announcement::observe(AnnouncementObserver::class);
         User::observe(UserObserver::class);
