@@ -16,11 +16,11 @@ enum WorkSchedule: int
     public function label(): string
     {
         return match ($this) {
-            self::FULL_DAY => 'Полный день',
-            self::SHIFT => 'Сменный график',
-            self::FLEXIBLE => 'Гибкий график',
-            self::REMOTE => 'Удаленная работа',
-            self::ROTATIONAL => 'Вахта',
+            self::FULL_DAY => __('messages.work_schedule.full_day'),
+            self::SHIFT => __('messages.work_schedule.shift'),
+            self::FLEXIBLE => __('messages.work_schedule.flexible'),
+            self::REMOTE => __('messages.work_schedule.remote'),
+            self::ROTATIONAL => __('messages.work_schedule.rotational')
         };
     }
 

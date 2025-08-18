@@ -12,5 +12,26 @@ return [
             'does_not_access_to_update' => 'У вас нет доступа на изменение этого объявления!',
             'does_not_access_to_delete' => 'У вас нет доступа на удаление этого объявления!',
         ]
+    ],
+    'resume' => [
+        'education_level' => [
+            "secondary" => "Среднее",
+            "secondary_special" => "Среднее специальное",
+            "incomplete_higher" => "Неоконченное высшее",
+            "higher" => "Высшее",
+        ],
+        'employment_type' => [
+            "full_time" => "Полная занятость",
+            "part_time" => "Частичная занятость",
+            "temporary" => "Подработка",
+            "contract" => "Проектная работа",
+        ],
+        'work_schedule' => [
+            "full_day" => "Полный день",
+            "shift" => "Сменный график",
+            "flexible" => "Гибкий график",
+            "remote" => "Удаленная работа",
+            "rotational" => "Вахта",
+        ],
     ]
 ];
