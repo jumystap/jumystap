@@ -2,12 +2,12 @@
 
 namespace App\Enums;
 
-enum EmploymentType: string
+enum EmploymentType: int
 {
-    case FULL_TIME = 'full_time';
-    case PART_TIME = 'part_time';
-    case TEMPORARY = 'temporary';
-    case CONTRACT = 'contract';
+    case FULL_TIME = 1;
+    case PART_TIME = 2;
+    case TEMPORARY = 3;
+    case CONTRACT = 4;
 
     /**
      * Человекочитаемые названия (можно вынести в lang)

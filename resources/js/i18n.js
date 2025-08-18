@@ -24,6 +24,6 @@ i18n
   });
 
 // Log the initial language to help with debugging
-console.log('Initial language:', i18n.language);
+// console.log('Initial language:', i18n.language);
 
 export default i18n;

@@ -178,7 +178,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
                                                         </div>
                                                     </div>
-                                                    <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.desired_field_name}</div>
+                                                    <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.position}</div>
                                                     {resume.organizations.length > 0 && (
                                                         <div className='mt-2'>
                                                             <div className='text-sm text-gray-500'>{t('experience', { ns: 'profile' })}:</div>

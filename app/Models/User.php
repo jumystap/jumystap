@@ -151,6 +151,11 @@ class User extends Authenticatable
         return $this->role_id === $role->value;
     }
 
+    public function resumes(): HasMany
+    {
+        return $this->hasMany(UserResume::class, 'user_id', 'id');
+    }
+
     public static function search(array $attributes): Builder
     {
         $query = static::query();

@@ -2,13 +2,13 @@
 
 namespace App\Enums;
 
-enum WorkSchedule: string
+enum WorkSchedule: int
 {
-    case FULL_DAY = 'full_day';
-    case SHIFT = 'shift';
-    case FLEXIBLE = 'flexible';
-    case REMOTE = 'remote';
-    case ROTATIONAL = 'rotational';
+    case FULL_DAY = 1;
+    case SHIFT = 2;
+    case FLEXIBLE = 3;
+    case REMOTE = 4;
+    case ROTATIONAL = 5;
 
     /**
      * Человекочитаемые названия (можно вынести в lang)

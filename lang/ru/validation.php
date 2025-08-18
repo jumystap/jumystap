@@ -154,5 +154,7 @@ return [
         'requirement.*'    => "Критерии/Требования",
         'responsibility.*' => "Обязанности работника",
         'condition.*'      => "Условия труда",
+        'organizations.*'  => 'Опыт работы',
+        'organizations.*.period'  => 'Период работы',
     ],
 ];

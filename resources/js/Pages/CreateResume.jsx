@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { Form, Checkbox, Input, Select, DatePicker, Tag, Button, Upload, Space } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import {Form, Checkbox, Input, Select, DatePicker, Tag, Button, Space, message} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/ru';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { useTranslation } from 'react-i18next';
+import PhoneInput from 'react-phone-input-2';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -19,33 +20,32 @@ const kazakhstanCities = [
     'Экибастуз', 'Рудный', 'Жезказган',
 ];
 
-const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules }) => {
+const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedules, educationLevels }) => {
     const { t } = useTranslation('createResume');
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]);
+    const gender = user.gender === 'м' ? t('male', { ns: 'createResume' }) : t('female', { ns: 'createResume' });
 
-    const { data, setData, post } = useForm({
-        title: '',
-        photo_path: null,
+    const { data, setData, post, errors } = useForm({
         email: '',
         phone: '',
         city: '',
         district: '',
-        profession: '',
+        position: '',
         salary: '',
-        employment_type: '',
-        work_schedule: '',
+        employment_type_id: '',
+        work_schedule_id: '',
         organizations: [{
             organization: '',
             position: '',
-            responsibility: '',
+            responsibilities: '',
             period: '',
             isCurrent: false,
             start_date: '',
             end_date: ''
         }],
-        noWorkExperience: false,
-        education: '',
+        no_work_experience: false,
+        education_level_id: '',
         faculty: '',
         educational_institution: '',
         graduation_year: null,
@@ -57,6 +57,8 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
         about: '',
     });
 
+    const [validationErrors, setValidationErrors] = useState({});
+
     const handleCityChange = (value) => {
         setData('city', value);
         setShowOtherCityInput(value === 'Другое');
@@ -66,11 +68,11 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
         const checked = e.target.checked;
         setData((prevData) => ({
             ...prevData,
-            noWorkExperience: checked,
+            no_work_experience: checked,
             organizations: checked ? [] : [{
                 organization: '',
                 position: '',
-                responsibility: '',
+                responsibilities: '',
                 period: '',
                 isCurrent: false,
                 start_date: '',
@@ -81,13 +83,13 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
     };
 
     const addOrganization = () => {
-        if (!data.noWorkExperience) {
+        if (!data.no_work_experience) {
             setData('organizations', [
                 ...data.organizations,
                 {
                     organization: '',
                     position: '',
-                    responsibility: '',
+                    responsibilities: '',
                     period: '',
                     isCurrent: false,
                     start_date: '',
@@ -138,8 +140,40 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
         setEditMode(editMode.filter((_, i) => i !== index));
     };
 
+    function isValidPhone(phone) {
+        if (!phone) return false;
+
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length !== 11) return false;
+
+        const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '771', '775', '777', '778'];
+
+        return validCodes.includes(code);
+    }
+
     const handleSubmit = () => {
-        post('/resumes/create');
+        const errors = {};
+
+        if (data.phone && !isValidPhone(data.phone)) {
+            errors.phone = t('invalid_phone_number');
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
+        const submitAction = post;
+        const url = '/resumes/create';
+        submitAction(url, {
+            ...data,
+            onSuccess: () => message.success(t('successfully_saved')),
+            onError: (err) => {
+                message.error(t('failed_to_save'));
+                console.error('Failed to save announcement:', err);
+            }
+        });
     };
 
     const handleInputChange = (field, value) => {
@@ -161,13 +195,6 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
             newEditMode[index] = !newEditMode[index];
             return newEditMode;
         });
-    };
-
-    const uploadProps = {
-        beforeUpload: (file) => {
-            setData('photo_path', file);
-            return false;
-        },
     };
 
     const addSkill = () => {
@@ -195,38 +222,44 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         <div className="font-semibold text-2xl mb-4">{t('create_resume')}</div>
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_1')}</div>
                         <Form.Item
-                            name="title"
-                            label={t('title')}
-                            rules={[{ required: true, message: t('please_enter_title') }]}
+                            name="full_name"
+                            label={t('full_name')}
                         >
                             <Input
-                                value={data.title}
-                                onChange={(e) => handleInputChange('title', e.target.value)}
+                                defaultValue={user.name}
+                                disabled
                                 className="text-sm rounded py-1 border border-gray-300"
                             />
                         </Form.Item>
-
-                        <div className="flex gap-x-5">
-                            {data.photo_path && (
-                                <img src={URL.createObjectURL(data.photo_path)} className="w-[200px] h-[250px] object-cover" />
-                            )}
-                            <Form.Item
-                                label={t('upload_your_photo')}
-                                name="photo"
-                                rules={[{ required: true, message: t('please_upload_photo') }]}
-                            >
-                                <Upload {...uploadProps} showUploadList={false}>
-                                    <Button icon={<UploadOutlined />}>{t('upload_photo')}</Button>
-                                </Upload>
-                            </Form.Item>
-                        </div>
+                        <Form.Item
+                            name="date_of_birth"
+                            label={t('date_of_birth')}
+                        >
+                            <Input
+                                defaultValue={format(new Date(user.date_of_birth), 'dd.MM.yyyy')}
+                                disabled
+                                className="text-sm rounded py-1 border border-gray-300"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="gender"
+                            label={t('gender')}
+                        >
+                            <Input
+                                defaultValue={gender}
+                                disabled
+                                className="text-sm rounded py-1 border border-gray-300"
+                            />
+                        </Form.Item>
                         <Form.Item
                             name="email"
                             label={t('email')}
-                            rules={[{ required: true, message: t('please_enter_email') }]}
+                            validateStatus={(validationErrors.email || errors.email) ? 'error' : ''}
+                            help={validationErrors.email || errors.email}
                         >
                             <Input
                                 value={data.email}
+                                type="email"
                                 onChange={(e) => handleInputChange('email', e.target.value)}
                                 className="text-sm rounded py-1 border border-gray-300"
                             />
@@ -234,19 +267,28 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         <Form.Item
                             name="phone"
                             label={t('phone')}
-                            rules={[{ required: true, message: t('please_enter_phone') }]}
+                            rules={[
+                                { required: true, message: t('enter_phone') },
+                            ]}
+                            validateStatus={(validationErrors.phone || errors.phone) ? 'error' : ''}
+                            help={validationErrors.phone || errors.phone}
                         >
-                            <Input
+                            <PhoneInput
+                                country={'kz'}
+                                onlyCountries={['kz']}
                                 value={data.phone}
-                                onChange={(e) => handleInputChange('phone', e.target.value)}
-                                className="text-sm rounded py-1 border border-gray-300"
+                                onChange={(value) => setData('phone', value)}
+                                specialLabel=""
+                                inputClass="ant-input css-dev-only-do-not-override-qnu6hi ant-input-outlined text-sm rounded py-1 mt-[0px] border border-gray-300"
                             />
                         </Form.Item>
                         <Form.Item
                             label={t('city')}
                             name="city"
                             className="mt-4"
-                            rules={[{ required: true, message: t('select_a_city') }]}
+                            rules={[{ required: true, message: t('select_city') }]}
+                            validateStatus={(validationErrors.city || errors.city) ? 'error' : ''}
+                            help={validationErrors.city || errors.city}
                         >
                             <Select value={data.city} onChange={handleCityChange}>
                                 {kazakhstanCities.map((city) => (
@@ -262,7 +304,9 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                             <Form.Item
                                 label={t('enter_other_city')}
                                 name="city"
-                                rules={[{ required: true, message: t('please_enter_city') }]}
+                                rules={[{ required: true, message: t('enter_city') }]}
+                                validateStatus={(validationErrors.city || errors.city) ? 'error' : ''}
+                                help={validationErrors.city || errors.city}
                             >
                                 <Input
                                     type="text"
@@ -274,9 +318,11 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         )}
                         {data.city === 'Астана' && (
                             <Form.Item
-                                label={t('specify_residence_area')}
+                                label={t('residence_area')}
                                 name="district"
-                                rules={[{ required: true, message: t('please_specify_residence_area') }]}
+                                rules={[{ required: true, message: t('select_residence_area') }]}
+                                validateStatus={(validationErrors.district || errors.district) ? 'error' : ''}
+                                help={validationErrors.district || errors.district}
                             >
                                 <Select value={data.district} onChange={(value) => handleInputChange('district', value)}>
                                     <Option value="Есиль">Есиль</Option>
@@ -290,20 +336,23 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
 
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_2')}</div>
                         <Form.Item
-                            name="profession"
-                            label={t('profession')}
-                            rules={[{ required: true, message: t('please_enter_profession') }]}
+                            name="position"
+                            label={t('position')}
+                            rules={[{ required: true, message: t('enter_position') }]}
+                            validateStatus={(validationErrors.position || errors.position) ? 'error' : ''}
+                            help={validationErrors.position || errors.position}
                         >
                             <Input
-                                value={data.profession}
-                                onChange={(e) => handleInputChange('profession', e.target.value)}
+                                value={data.position}
+                                onChange={(e) => handleInputChange('position', e.target.value)}
                                 className="text-sm rounded py-1 border border-gray-300"
                             />
                         </Form.Item>
                         <Form.Item
                             name="salary"
                             label={t('salary')}
-                            rules={[{ required: true, message: t('please_enter_salary') }]}
+                            validateStatus={(validationErrors.salary || errors.salary) ? 'error' : ''}
+                            help={validationErrors.salary || errors.salary}
                         >
                             <Input
                                 value={data.salary}
@@ -313,11 +362,12 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         </Form.Item>
                         <Form.Item
                             label={t('work_schedule')}
-                            name="work_schedule"
+                            name="work_schedule_id"
                             className="mt-4"
-                            rules={[{ required: true, message: t('select_a_work_schedule') }]}
+                            validateStatus={(validationErrors.work_schedule_id || errors.work_schedule_id) ? 'error' : ''}
+                            help={validationErrors.work_schedule_id || errors.work_schedule_id}
                         >
-                            <Select value={data.work_schedule} onChange={(value) => handleInputChange('work_schedule', value)}>
+                            <Select value={data.work_schedule_id} onChange={(value) => handleInputChange('work_schedule_id', value)}>
                                 {Object.entries(workSchedules).map(([value, label]) => (
                                     <Select.Option key={value} value={value}>
                                         {label}
@@ -327,11 +377,12 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         </Form.Item>
                         <Form.Item
                             label={t('employment_type')}
-                            name="employment_type"
+                            name="employment_type_id"
                             className="mt-4"
-                            rules={[{ required: true, message: t('select_a_employment_type') }]}
+                            validateStatus={(validationErrors.employment_type_id || errors.employment_type_id) ? 'error' : ''}
+                            help={validationErrors.employment_type_id || errors.employment_type_id}
                         >
-                            <Select value={data.employment_type} onChange={(value) => handleInputChange('employment_type', value)}>
+                            <Select value={data.employment_type_id} onChange={(value) => handleInputChange('employment_type_id', value)}>
                                 {Object.entries(employmentTypes).map(([value, label]) => (
                                     <Select.Option key={value} value={value}>
                                         {label}
@@ -341,16 +392,16 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         </Form.Item>
 
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_3')}</div>
-                        <Form.Item name="noWorkExperience" valuePropName="checked">
+                        <Form.Item name="no_work_experience" valuePropName="checked">
                             <Checkbox
-                                checked={data.noWorkExperience}
+                                checked={data.no_work_experience}
                                 onChange={handleNoWorkExperienceChange}
                             >
                                 {t('no_work_experience')}
                             </Checkbox>
                         </Form.Item>
 
-                        {!data.noWorkExperience && (
+                        {!data.no_work_experience && (
                             <>
                                 {data.organizations.map((organization, index) => (
                                     <Space key={index} direction="vertical" style={{ display: 'flex', marginBottom: 5 }}>
@@ -359,7 +410,9 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                                 <Form.Item
                                                     label={t('organization_name')}
                                                     name={`organization_${index}_name`}
-                                                    rules={[{ required: true, message: t('please_specify_organization_name') }]}
+                                                    rules={[{ required: true, message: t('enter_organization_name') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.organization`] || errors[`organizations.${index}.organization`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.organization`] || errors[`organizations.${index}.organization`]}
                                                 >
                                                     <Input
                                                         value={organization.organization}
@@ -370,7 +423,9 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                                 <Form.Item
                                                     label={t('position')}
                                                     name={`organization_${index}_position`}
-                                                    rules={[{ required: true, message: t('please_specify_position') }]}
+                                                    rules={[{ required: true, message: t('enter_position') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.position`] || errors[`organizations.${index}.position`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.position`] || errors[`organizations.${index}.position`]}
                                                 >
                                                     <Input
                                                         value={organization.position}
@@ -380,18 +435,22 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                                 </Form.Item>
                                                 <Form.Item
                                                     label={t('responsibilities')}
-                                                    name={`organization_${index}_responsibility`}
+                                                    name={`organization_${index}_responsibilities`}
+                                                    validateStatus={(validationErrors[`organizations.${index}.responsibilities`] || errors[`organizations.${index}.responsibilities`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.responsibilities`] || errors[`organizations.${index}.responsibilities`]}
                                                 >
                                                     <TextArea
-                                                        value={organization.responsibility}
-                                                        onChange={(e) => handleNestedChange(index, 'responsibility', e.target.value)}
+                                                        value={organization.responsibilities}
+                                                        onChange={(e) => handleNestedChange(index, 'responsibilities', e.target.value)}
                                                         rows={2}
                                                         className="text-sm rounded py-1 border border-gray-300"
                                                     />
                                                 </Form.Item>
                                                 <Form.Item
                                                     label={t('work_period')}
-                                                    rules={[{ required: true, message: t('please_specify_start_date') }]}
+                                                    rules={[{ required: true, message: t('select_start_date') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.period`] || errors[`organizations.${index}.period`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.period`] || errors[`organizations.${index}.period`]}
                                                 >
                                                     <div className="flex gap-x-5">
                                                         <div>
@@ -439,7 +498,7 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                                     <strong>{t('position')}:</strong> {organization.position}
                                                 </p>
                                                 <p>
-                                                    <strong>{t('responsibilities')}:</strong> {organization.responsibility || t('none_specified')}
+                                                    <strong>{t('responsibilities')}:</strong> {organization.responsibilities}
                                                 </p>
                                                 <p>
                                                     <strong>{t('work_period')}:</strong> {organization.period}
@@ -461,29 +520,34 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                 </Button>
                             </>
                         )}
-
                         <hr />
+                        <br/>
 
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_4')}</div>
                         <Form.Item
-                            label={t('specify_education')}
-                            name="education"
-                            rules={[{ required: true, message: t('please_specify_education') }]}
+                            label={t('education_level')}
+                            name="education_level_id"
+                            className="mt-4"
+                            rules={[{ required: true, message: t('select_education_level') }]}
+                            validateStatus={(validationErrors.education_level_id || errors.education_level_id) ? 'error' : ''}
+                            help={validationErrors.education_level_id || errors.education_level_id}
                         >
-                            <Select value={data.education} onChange={(value) => handleInputChange('education', value)}>
-                                <Option value="Среднее">{t('secondary')}</Option>
-                                <Option value="Среднее специальное">{t('secondary_special')}</Option>
-                                <Option value="Неоконченное высшее">{t('incomplete_higher')}</Option>
-                                <Option value="Высшее">{t('higher')}</Option>
+                            <Select value={data.education_level_id} onChange={(value) => handleInputChange('education_level_id', value)}>
+                                {Object.entries(educationLevels).map(([value, label]) => (
+                                    <Select.Option key={value} value={value}>
+                                        {label}
+                                    </Select.Option>
+                                ))}
                             </Select>
                         </Form.Item>
 
-                        {data.education !== 'Среднее' && (
+                        {data.education_level_id != 1 && (
                             <>
                                 <Form.Item
                                     name="educational_institution"
                                     label={t('educational_institution')}
-                                    rules={[{ required: true, message: t('please_enter_educational_institution') }]}
+                                    validateStatus={(validationErrors.educational_institution || errors.educational_institution) ? 'error' : ''}
+                                    help={validationErrors.educational_institution || errors.educational_institution}
                                 >
                                     <Input
                                         value={data.educational_institution}
@@ -494,7 +558,8 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                 <Form.Item
                                     name="faculty"
                                     label={t('faculty_and_specialization')}
-                                    rules={[{ required: true, message: t('please_faculty_and_specialization') }]}
+                                    validateStatus={(validationErrors.faculty || errors.faculty) ? 'error' : ''}
+                                    help={validationErrors.faculty || errors.faculty}
                                 >
                                     <Input
                                         value={data.faculty}
@@ -505,7 +570,8 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                 <Form.Item
                                     name="year"
                                     label={t('graduation_year')}
-                                    rules={[{ required: true, message: t('please_specify_graduation_year') }]}
+                                    validateStatus={(validationErrors.graduation_year || errors.graduation_year) ? 'error' : ''}
+                                    help={validationErrors.graduation_year || errors.graduation_year}
                                 >
                                     <DatePicker
                                         picker="year"
@@ -518,14 +584,15 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         )}
 
                         <Form.Item
-                            label={t('specify_languages')}
+                            label={t('languages')}
                             name="languages"
-                            rules={[{ required: true, message: t('please_specify_languages') }]}
                         >
                             <Select
                                 mode="multiple"
                                 value={data.languages}
                                 onChange={(value) => handleInputChange('languages', value)}
+                                validateStatus={(validationErrors.languages || errors.languages) ? 'error' : ''}
+                                help={validationErrors.languages || errors.languages}
                             >
                                 <Option value="Казахский">{t('kazakh')}</Option>
                                 <Option value="Русский">{t('russian')}</Option>
@@ -535,7 +602,12 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                 <Option value="Китайский">{t('chinese')}</Option>
                             </Select>
                         </Form.Item>
-                        <Form.Item label={t('skills')} name="skills">
+                        <Form.Item
+                            label={t('skills')}
+                            name="skills"
+                            validateStatus={(validationErrors.skills || errors.skills) ? 'error' : ''}
+                            help={validationErrors.skills || errors.skills}
+                        >
                             <div className="flex items-center gap-x-2">
                                 <Input
                                     value={data.newSkill}
@@ -560,19 +632,21 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                         </Form.Item>
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_5')}</div>
                         <Form.Item
-                            label={t('specify_ip_status')}
+                            label={t('ip_status')}
                             name="ip_status"
-                            rules={[{ required: true, message: t('please_specify_ip_status') }]}
+                            validateStatus={(validationErrors.ip_status || errors.ip_status) ? 'error' : ''}
+                            help={validationErrors.ip_status || errors.ip_status}
                         >
                             <Select value={data.ip_status} onChange={(value) => handleInputChange('ip_status', value)}>
-                                <Option value="Присутствует">{t('present')}</Option>
-                                <Option value="Отсутствует">{t('absent')}</Option>
+                                <Option value="0">{t('absent')}</Option>
+                                <Option value="1">{t('present')}</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
                             label={t('has_car')}
                             name="has_car"
-                            rules={[{ required: true, message: t('please_select_has_car') }]}
+                            validateStatus={(validationErrors.has_car || errors.has_car) ? 'error' : ''}
+                            help={validationErrors.has_car || errors.has_car}
                         >
                             <Select value={data.has_car} onChange={(value) => handleInputChange('has_car', value)}>
                                 <Option value="0">{t('no')}</Option>
@@ -583,7 +657,8 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                             label={t('driving_license')}
                             name="driving_license"
                             className="mt-4"
-                            rules={[{ required: true, message: t('select_a_driving_license') }]}
+                            validateStatus={(validationErrors.driving_license || errors.driving_license) ? 'error' : ''}
+                            help={validationErrors.driving_license || errors.driving_license}
                         >
                             <Select value={data.driving_license} onChange={(value) => handleInputChange('driving_license', value)}>
                                 {Object.entries(drivingLicenses).map(([value, label]) => (
@@ -593,9 +668,14 @@ const CreateUpdateResume = ({ drivingLicenses, employmentTypes, workSchedules })
                                 ))}
                             </Select>
                         </Form.Item>
-                        <Form.Item label={t('about')}>
+                        <Form.Item
+                            label={t('about')}
+                            name="about"
+                            rules={[{ required: true, message: t('enter_about') }]}
+                            validateStatus={(validationErrors.about || errors.about) ? 'error' : ''}
+                            help={validationErrors.about || errors.about}
+                        >
                             <TextArea
-                                name="about"
                                 value={data.about}
                                 onChange={(e) => handleInputChange('about', e.target.value)}
                                 rows={4}

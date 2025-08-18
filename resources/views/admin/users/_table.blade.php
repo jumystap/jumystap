@@ -69,6 +69,9 @@
                     @if($responses = count($user->response))
                         <span class="badge badge-warning">Откликов: {{ $responses }}</span>
                     @endif
+                    @if($resumes = count($user->resumes))
+                        <span class="badge badge-success">Резюме: {{ $resumes }}</span>
+                    @endif
                 @endif
             </td>
             <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d.m.Y H:i:s') }}</td>

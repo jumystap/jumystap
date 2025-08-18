@@ -94,8 +94,8 @@ export default function Guest({ children }) {
   };
 
   const currentPath = new URL(url, window.location.origin);
-  console.log(window.location.pathname);
-  console.log(currentPath);
+  // console.log(window.location.pathname);
+  // console.log(currentPath);
 
   const isActive = (path) => window.location.pathname === path;
 

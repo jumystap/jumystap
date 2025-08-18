@@ -2,18 +2,18 @@
 
 namespace App\Enums;
 
-enum DrivingLicenseCategory: string
+enum DrivingLicenseCategory: int
 {
-    case NONE = 'none';
-    case A = 'A';
-    case B = 'B';
-    case C = 'C';
-    case D = 'D';
-    case BE = 'BE';
-    case CE = 'CE';
-    case DE = 'DE';
-    case TM = 'Tm';
-    case TB = 'Tb';
+    case NONE = 0;
+    case A = 1;
+    case B = 2;
+    case C = 3;
+    case D = 4;
+    case BE = 5;
+    case CE = 6;
+    case DE = 7;
+    case TM = 8;
+    case TB = 9;
 
     /**
      * Человекочитаемые переводы (можно вынести в lang)

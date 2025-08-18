@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DrivingLicenseCategory;
+use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
 use App\Enums\WorkSchedule;
 use App\Models\UserResume;
@@ -23,43 +24,56 @@ class UserResumeController extends Controller
 
     public function create()
     {
-        $specialization = SpecializationCategory::with('specialization')->get();
         $workSchedules = WorkSchedule::options();
         $employmentTypes = EmploymentType::options();
         $drivingLicenses = DrivingLicenseCategory::options();
+        $educationLevels = EducationLevel::options();
 
         return Inertia::render('CreateResume', [
-            'specialization' => $specialization,
+            'user' => auth()->user(),
             'workSchedules' => $workSchedules,
             'employmentTypes' => $employmentTypes,
-            'drivingLicenses' => $drivingLicenses
+            'drivingLicenses' => $drivingLicenses,
+            'educationLevels' => $educationLevels
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'email' => 'nullable|email',
+            'phone' => 'required|max:20',
             'city' => 'required|string',
             'district' => 'nullable|string',
-            'education' => 'required|in:Среднее,Среднее специальное,Неоконченное высшее,Высшее',
-            'faculty' => 'nullable|string',
-            'specialization' => 'nullable|string',
-            'graduation_year' => 'nullable|integer',
-            'ip_status' => 'required|in:Присутствует,Отсутствует',
-            'desired_field' => 'required|string',
-            'skills' => 'required|array',
-            'photo_path' => 'nullable|file|image',
+            'position' => 'required|max:100',
+            'salary' => 'nullable|numeric',
+            'employment_type_id' => 'nullable|int',
+            'work_schedule_id' => 'nullable|int',
+            'no_work_experience' => 'nullable|bool',
             'organizations' => 'nullable|array',
-            'languages' => 'required|array',
+            'organizations.*.organization' => 'required',
+            'organizations.*.position' => 'required',
+            'organizations.*.period' => 'required',
+            'organizations.*.responsibilities' => 'nullable',
+            'education_level_id' => 'required|int',
+            'educational_institution' => 'nullable|string',
+            'faculty' => 'nullable|string',
+            'graduation_year' => 'nullable|integer',
+            'languages' => 'nullable|array',
+            'skills' => 'nullable|array',
+            'ip_status' => 'nullable|int',
+            'has_car' => 'nullable|string',
+            'driving_license' => 'nullable|string',
+            'about' => 'required|max:10000',
         ]);
 
         $data['user_id'] = Auth::id();
 
-        if ($request->hasFile('photo_path')) {
-            $data['photo_path'] = $request->file('photo_path')->store('resume', 'public');
-        }
+//        if ($request->hasFile('photo_path')) {
+//            $data['photo_path'] = $request->file('photo_path')->store('resume', 'public');
+//        }
 
-        $resume = UserResume::create($data);
+        $resume = UserResume::query()->create($data);
 
         if(!empty($data['organizations'])){
             foreach ($data['organizations'] as $organization) {
@@ -103,29 +117,48 @@ class UserResumeController extends Controller
     public function edit($id)
     {
         $resume = UserResume::where('id', $id)->with('organizations')->first();
-        $specializations = SpecializationCategory::with('specialization')->get();
+        $workSchedules = WorkSchedule::options();
+        $employmentTypes = EmploymentType::options();
+        $drivingLicenses = DrivingLicenseCategory::options();
+        $educationLevels = EducationLevel::options();
         return Inertia::render('UpdateResume', [
+            'user' => auth()->user(),
             'resume' => $resume,
             'languages' => collect($resume->languages)->pluck('language')->toArray(),
-            'specializations' => $specializations,
+            'drivingLicenses' => $drivingLicenses,
+            'employmentTypes' => $employmentTypes,
+            'workSchedules' => $workSchedules,
+            'educationLevels' => $educationLevels,
         ]);
     }
 
     public function update(Request $request, UserResume $resume)
     {
         $data = $request->validate([
+            'email' => 'nullable|email',
+            'phone' => 'required|max:20',
             'city' => 'required|string',
             'district' => 'nullable|string',
-            'education' => 'required|in:Среднее,Среднее специальное,Неоконченное высшее,Высшее',
+            'position' => 'required|max:100',
+            'salary' => 'nullable|numeric',
+            'employment_type_id' => 'nullable|int',
+            'work_schedule_id' => 'nullable|int',
+            'no_work_experience' => 'nullable|bool',
+            'organizations' => 'nullable|array',
+            'organizations.*.organization' => 'required',
+            'organizations.*.position' => 'required',
+            'organizations.*.period' => 'required',
+            'organizations.*.responsibilities' => 'nullable',
+            'education_level_id' => 'required|int',
+            'educational_institution' => 'nullable|string',
             'faculty' => 'nullable|string',
-            'specialization' => 'nullable|string',
             'graduation_year' => 'nullable|integer',
-            'ip_status' => 'required|in:Присутствует,Отсутствует',
-            'desired_field' => 'required',
-            'skills' => 'required|array',
-            'photo_path' => 'nullable|file|image',
-            'organizations' => 'required|array',
-            'languages' => 'required|array',
+            'languages' => 'nullable|array',
+            'skills' => 'nullable|array',
+            'ip_status' => 'nullable|int',
+            'has_car' => 'nullable|string',
+            'driving_license' => 'nullable|string',
+            'about' => 'required|max:10000',
         ]);
 
         if ($request->hasFile('photo_path')) {
