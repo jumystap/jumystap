@@ -70,6 +70,13 @@ export default function Guest({ children }) {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("i18nextLng", lng);
+
+    router.get(window.location.pathname, {}, {
+        headers: { 'X-Locale': lng }, // или query param ?lang=lng
+        replace: true,
+        preserveScroll: true,
+        preserveState: false,
+    });
   };
 
   useEffect(() => {
