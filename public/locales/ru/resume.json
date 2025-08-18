@@ -1,5 +1,6 @@
 {
     "create_resume": "Создать резюме",
+    "edit_resume": "Изменить резюме",
     "full_name": "ФИО",
     "date_of_birth": "Дата рождение",
     "gender": "Пол",
@@ -40,10 +41,10 @@
     "incomplete_higher": "Неоконченное высшее",
     "higher": "Высшее",
     "faculty_and_specialization": "Факультет и специализация",
+    "graduation_year": "Год окончания",
     "select_graduation_year": "Введите год окончания",
     "educational_institution": "Название учебного заведения",
     "enter_educational_institution": "Введите название учебного заведения",
-    "graduation_year": "Год окончания",
     "ip_status": "Укажите наличие ИП",
     "select_ip_status": "Выберите статус ИП",
     "present": "Присутствует",
@@ -60,7 +61,6 @@
     "block_3": "Блок 3. Опыт работы",
     "block_4": "Блок 4. Образование и навыки",
     "block_5": "Блок 5. Разрешения и дополнительная информация",
-    "title": "Название резюме",
     "email": "Почта",
     "phone": "Телефон",
     "enter_phone": "Введите Телефон",
@@ -75,7 +75,8 @@
     "about": "О себе",
     "enter_about": "Введите информацию о себе",
     "no_work_experience": "Нет опыта работы",
-    "responsibilities": "Расскажите подробнее о ваших обязанностях и достижениях"
-
+    "responsibilities": "Расскажите подробнее о ваших обязанностях и достижениях",
+    "successfully_saved": "Успешно сохранено",
+    "failed_to_save": "Ошибка при сохранении"
 
 }

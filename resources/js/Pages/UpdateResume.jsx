@@ -21,10 +21,10 @@ const kazakhstanCities = [
 ];
 
 const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentTypes, workSchedules, educationLevels }) => {
-    const { t } = useTranslation('createResume');
+    const { t } = useTranslation('resume');
     const [showOtherCityInput, setShowOtherCityInput] = useState(resume.city === 'Другое' || resume.city === 'Дистанционное');
     const [editMode, setEditMode] = useState(resume.organizations.map(() => false));
-    const gender = user.gender === 'м' ? t('male', { ns: 'createResume' }) : t('female', { ns: 'createResume' });
+    const gender = user.gender === 'м' ? t('male', { ns: 'resume' }) : t('female', { ns: 'resume' });
 
     const { data, setData, put, errors } = useForm({
         email: resume.email || user.email || '',
@@ -33,11 +33,11 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
         district: resume.district || '',
         position: resume.position || '',
         salary: resume.salary || '',
-        employment_type_id: resume.employment_type_id.toString() || '',
-        work_schedule_id: resume.work_schedule_id.toString() || '',
+        employment_type_id: resume.employment_type_id ? resume.employment_type_id.toString() : '',
+        work_schedule_id: resume.work_schedule_id ? resume.work_schedule_id.toString() : '',
         organizations: resume.organizations || [{ organization: '', position: '', responsibilities: '', period: '', isCurrent: false, start_date: '', end_date: '' }],
         no_work_experience: resume.no_work_experience || false,
-        education_level_id: resume.education_level_id.toString() || '',
+        education_level_id: resume.education_level_id ? resume.education_level_id.toString() : '',
         faculty: resume.faculty || '',
         educational_institution: resume.educational_institution || '',
         graduation_year: resume.graduation_year || null,
@@ -46,9 +46,8 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
         newSkill: '',
         ip_status: resume.ip_status || '',
         driving_license: resume.driving_license || '',
-        has_car: resume.has_car.toString() || '',
+        has_car: resume.has_car ? resume.has_car.toString() : '',
         about: resume.about || '',
-        desired_field: Number(resume.desired_field) || '',
     });
 
     const [validationErrors, setValidationErrors] = useState({});
@@ -651,7 +650,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                             />
                         </Form.Item>
                         <Button type="primary" htmlType="submit">
-                            {t('save_changes')}
+                            {t('save')}
                         </Button>
                     </Form>
                 </div>

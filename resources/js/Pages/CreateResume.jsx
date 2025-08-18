@@ -21,10 +21,10 @@ const kazakhstanCities = [
 ];
 
 const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedules, educationLevels }) => {
-    const { t } = useTranslation('createResume');
+    const { t } = useTranslation('resume');
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
     const [editMode, setEditMode] = useState([true]);
-    const gender = user.gender === 'м' ? t('male', { ns: 'createResume' }) : t('female', { ns: 'createResume' });
+    const gender = user.gender === 'м' ? t('male', { ns: 'resume' }) : t('female', { ns: 'resume' });
 
     const { data, setData, post, errors } = useForm({
         email: '',
