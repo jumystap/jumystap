@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\Roles;
+use App\Helpers\DateHelper;
 use App\Models\Profession\Profession;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -81,6 +82,8 @@ class User extends Authenticatable
         ];
     }
 
+    protected $appends = ['gender_name', 'born'];
+
     /**
      * Get users by role name
      *
@@ -146,7 +149,26 @@ class User extends Authenticatable
         return $this->hasMany(Response::class, 'employee_id', 'id');
     }
 
-    public function hasRole(Roles $role):bool
+    public function getGenderNameAttribute()
+    {
+        return match ($this->gender) {
+            'м' => __('messages.user.gender.male'),
+            'ж' => __('messages.user.gender.female'),
+            default => '',
+        };
+    }
+
+    public function getAgeAttribute()
+    {
+        return $this->date_of_birth ? DateHelper::calculateAge($this->date_of_birth) : '';
+    }
+
+    public function getBornAttribute()
+    {
+        return $this->date_of_birth ? Carbon::parse($this->date_of_birth)->format('d.m.Y') : '';
+    }
+
+    public function hasRole(Roles $role): bool
     {
         return $this->role_id === $role->value;
     }
@@ -175,13 +197,13 @@ class User extends Authenticatable
         if (array_key_exists('role_id', $attributes) && strlen($attributes['role_id'])) {
             $roleId = (int)$attributes['role_id'];
 
-            if($roleId === Roles::NON_GRADUATE->value){
+            if ($roleId === Roles::NON_GRADUATE->value) {
                 $query->where('role_id', Roles::EMPLOYEE->value);
-            }else {
+            } else {
                 $query->where('role_id', $roleId);
             }
 
-            if($roleId === Roles::EMPLOYEE->value){
+            if ($roleId === Roles::EMPLOYEE->value) {
                 $query->where('users.is_graduate', true);
             }
         }

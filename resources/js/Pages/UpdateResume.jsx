@@ -256,7 +256,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                 value={data.phone}
                                 onChange={(value) => setData('phone', value)}
                                 specialLabel=""
-                                inputClass="ant-input css-dev-only-do-not-override-qnu6hi ant-input-outlined text-sm rounded py-1 mt-[0px] border border-gray-300"
+                                inputClass="ant-input ant-input-outlined text-sm rounded py-1 mt-0 border border-gray-300 w-full"
                             />
                         </Form.Item>
                         <Form.Item

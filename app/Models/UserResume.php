@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\DrivingLicenseCategory;
+use App\Enums\EducationLevel;
+use App\Enums\EmploymentType;
+use App\Enums\WorkSchedule;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,6 +39,39 @@ class UserResume extends Model
     protected $casts = [
         'skills' => 'array',
     ];
+
+    protected $appends = [
+        'employment_type',
+        'work_schedule',
+        'formatted_salary',
+        'education_level',
+        'driving_license_title',
+    ];
+
+    public function getEmploymentTypeAttribute(): string
+    {
+        return $this->employment_type_id ? EmploymentType::from($this->employment_type_id)->label() : '';
+    }
+
+    public function getWorkScheduleAttribute(): string
+    {
+        return $this->work_schedule_id ? WorkSchedule::from($this->work_schedule_id)->label() : '';
+    }
+
+    public function getFormattedSalaryAttribute(): string
+    {
+        return $this->salary ? number_format($this->salary, 0, '.', ' ') : '';
+    }
+
+    public function getEducationLevelAttribute(): string
+    {
+        return $this->education_level_id ? EducationLevel::from($this->education_level_id)->label() : '';
+    }
+
+    public function getDrivingLicenseTitleAttribute(): string
+    {
+        return $this->driving_license ? DrivingLicenseCategory::from($this->driving_license)->label() : '';
+    }
 
     public function organizations(): HasMany
     {

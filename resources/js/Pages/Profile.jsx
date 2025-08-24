@@ -15,13 +15,14 @@ const formatCreatedAt = (createdAt) => {
     return formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: ru });
 };
 
-export default function Profile({ auth, user, announcements, employees, professions, userProfessions, resumes }) {
+export default function Profile({ user, announcements, userProfessions, resumes }) {
     const { t, i18n } = useTranslation('profile');
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
     const [missingCertificateProfession, setMissingCertificateProfession] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const isRussian = i18n.language === 'ru';
 
     // Create form instance using useForm from Inertia
     const { delete: deleteResumeForm } = useForm();
@@ -29,10 +30,10 @@ export default function Profile({ auth, user, announcements, employees, professi
     const deleteResume = (resumeId) => {
         if (confirm(t('confirm_delete_resume',  { ns: 'profile' }))) {
             deleteResumeForm(
-                route("resumes/delete", resumeId), // Backend route to handle delete
+                route("resumes.delete", resumeId), // Backend route to handle delete
                 {
                     onSuccess: () => {
-                        setResumeList((prevList) => prevList.filter((resume) => resume.id !== resumeId)); // Update state
+                        // setResumeList((prevList) => prevList.filter((resume) => resume.id !== resumeId)); // Update state
                     },
                 }
             );
@@ -139,14 +140,14 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                             target="_blank"
                                                             className="underline"
                                                         >
-                                                            {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                            {isRussian ? profession.profession_name : profession.professions_name_kz}
                                                         </a>
                                                     </div>
                                                 ))}
                                             </>
                                         )}
                                         <div className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
-                                            {user.status}
+                                            {isRussian ? user.status : user.status_kz}
                                         </div>
                                     </div>
                                     <div className='md:ml-auto'>
@@ -168,23 +169,25 @@ export default function Profile({ auth, user, announcements, employees, professi
                                     {resumes.length > 0 && (
                                         <div className="grid grid-cols-1 gap-4 mt-5">
                                             {resumes.map((resume, index) => (
-                                                <a href={`/resumes/${resume.id}`} className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                                <div className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
                                                     <div className='flex'>
                                                         <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                                             <FaLocationDot className='text-sm'/>
                                                             <div className='text-[10pt] md:text-sm'>{resume.city}</div>
                                                         </div>
                                                         <div className='text-gray-500 text-sm ml-auto'>
-                                                            {i18n.language === 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
+                                                            {isRussian ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: isRussian ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
                                                         </div>
                                                     </div>
-                                                    <div className='font-semibold text-2xl text-blue-500 mt-4'>{resume.position}</div>
+                                                    <div className='font-semibold text-2xl text-blue-500 mt-4'>
+                                                        <Link href={`/resumes/${resume.id}`}>{resume.position}</Link>
+                                                    </div>
                                                     {resume.organizations.length > 0 && (
                                                         <div className='mt-2'>
                                                             <div className='text-sm text-gray-500'>{t('experience', { ns: 'profile' })}:</div>
                                                             <ul className="">
                                                                 {resume.organizations.map(org => (
-                                                                    <li key={org.id}>- {org.organization} - {org.position_name}</li>
+                                                                    <li key={org.id}>- {org.organization} - {org.position}</li>
                                                                 ))}
                                                             </ul>
                                                         </div>
@@ -215,7 +218,7 @@ export default function Profile({ auth, user, announcements, employees, professi
                                                         {t('edit', { ns: 'profile' })}
                                                     </Link>
                                                     </div>
-                                                </a>
+                                                </div>
                                             ))}
                                         </div>
                                     )}

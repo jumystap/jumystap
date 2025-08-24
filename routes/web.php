@@ -56,14 +56,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/fav/{id}', [FavoriteController::class, 'delete'])->name('fav.delete');
     Route::get('/update', [UserController::class, 'edit'])->name('edit');
     Route::get('/profile/announcement/{id}', [UserController::class, 'myAnnouncement']);
-    Route::prefix('resumes')->group(function (){
+    Route::prefix('resumes')->name('resumes.')->group(function (){
         Route::post('send', [ResumeController::class, 'create']);
         Route::get('create', [UserResumeController::class, 'create']);
         Route::post('create', [UserResumeController::class, 'store']);
         Route::get('update/{id}', [UserResumeController::class, 'edit']);
         Route::put('{resume}', [UserResumeController::class, 'update']);
         Route::get('{id}', [UserResumeController::class, 'show']);
-        Route::delete('/delete/{id}', [UserResumeController::class, 'destroy'])->name('delete');
+        Route::delete('{id}', [UserResumeController::class, 'destroy'])->name('delete');
     });
     Route::prefix('announcements')->group(function (){
         Route::get('create', [AnnouncementController::class, 'create']);

@@ -16,4 +16,9 @@ class Specialization extends Model
     {
         return $this->belongsTo(SpecializationCategory::class, 'category_id');
     }
+
+    public function resumes()
+    {
+        return $this->hasMany(ResumeSpecialization::class);
+    }
 }

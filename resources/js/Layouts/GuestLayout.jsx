@@ -71,6 +71,10 @@ export default function Guest({ children }) {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("i18nextLng", lng);
+    const locale = lng === 'kz' ? 'kk' : lng;
+    document.querySelector('meta[name="locale"]')?.setAttribute('content', locale);
+    document.cookie = `locale=${locale}; path=/; SameSite=Lax`;
+    window.axios.defaults.headers.common['X-Locale'] = locale;
 
     router.get(window.location.pathname, {}, {
         headers: { 'X-Locale': lng }, // или query param ?lang=lng

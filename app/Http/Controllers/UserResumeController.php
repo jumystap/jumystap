@@ -91,20 +91,10 @@ class UserResumeController extends Controller
     public function show($id)
     {
         $resume = UserResume::where('id', $id)
-            ->with(['organizations', 'languages'])
+            ->with(['organizations', 'languages', 'user'])
             ->first();
-
-        $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
-
-        $resume->organizations = $resume->organizations->map(function ($organization) {
-            $organization->position_name = $this->getSpecializationName($organization->position_id);
-            return $organization;
-        });
-
-        $user = User::find($resume->user_id);
         return Inertia::render('Resume', [
             'resume' => $resume,
-            'user' => $user,
         ]);
     }
 

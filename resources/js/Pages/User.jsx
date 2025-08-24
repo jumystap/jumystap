@@ -17,6 +17,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
     const { t, i18n } = useTranslation('profile');
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const isRussian = i18n.language === 'ru';
 
     const openImageModal = (index) => {
         setCurrentImageIndex(index);
@@ -31,6 +32,48 @@ export default function User({ auth, user, contactShow, employees, userProfessio
         setCurrentImageIndex((currentImageIndex - 1 + user.portfolio.length) % user.portfolio.length);
     };
 
+    const kz = {
+        ...ru,
+        formatDistance: (token, count, options) => {
+            const formatDistanceLocale = {
+                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
+                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
+                halfAMinute: 'жарты минут',
+                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
+                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
+                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
+                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
+                xDays: { one: 'Бір күн', other: '{{count}} күн' },
+                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
+                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
+                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
+                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
+                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
+                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
+                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
+                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
+            };
+
+            const result = formatDistanceLocale[token];
+
+            if (typeof result === 'string') {
+                return result;
+            }
+
+            const form = count === 1 ? result.one : result.other.replace('{{count}}', count);
+
+            if (options?.addSuffix) {
+                if (options?.comparison > 0) {
+                    return form + ' кейін';
+                } else {
+                    return form + ' бұрын';
+                }
+            }
+
+            return form;
+        }
+    };
+
     return (
         <GuestLayout>
             <div className="min-h-screen bg-gray-50">
@@ -41,15 +84,15 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                 <div className="p-8 flex flex-col md:flex-row gap-6 items-start md:items-center">
                                     <div className="relative group">
                                         <img
-                                            src={`/storage/${user.image_url}`}
+                                            src={user.image_url ? `/storage/${user.image_url}` : '/images/default-avatar.png'}
                                             className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-50 transition-transform duration-300 group-hover:scale-105"
                                             alt={user.name}
                                         />
-                                        {user.is_graduate && (
+                                        {user.is_graduate ? (
                                             <div className="absolute -bottom-2 -right-2">
                                                 <RiVerifiedBadgeFill className="text-2xl text-blue-500 drop-shadow-sm" />
                                             </div>
-                                        )}
+                                        ) : ''}
                                     </div>
 
                                     <div className="flex-grow">
@@ -68,16 +111,14 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                             target="_blank"
                                                             className="underline"
                                                         >
-                                                            {i18n.language === 'ru' ? profession.profession_name : profession.professions_name_kz}
+                                                            {isRussian ? profession.profession_name : profession.professions_name_kz}
                                                         </a>
                                                     </div>
                                                 ))}
                                             </>
                                         )}
-                                        <div className="space-y-3">
-                                            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                                {user.status}
-                                            </span>
+                                        <div className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
+                                            {isRussian ? user.status : user.status_kz}
                                         </div>
                                     </div>
 
@@ -124,18 +165,18 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                         <span className="text-sm font-medium">{resume.city}</span>
                                                     </div>
                                                     <span className="text-sm text-gray-500">
-                                                        Размещено {formatCreatedAt(resume.created_at)}
+                                                        {isRussian ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(resume.created_at), { locale: isRussian ? ru : kz, addSuffix: true })}`} {i18n.language === 'kz' && ('')}
                                                     </span>
                                                 </div>
 
                                                 <h2 className="text-xl font-semibold text-blue-600 mb-4">
-                                                    {resume.desired_field_name}
+                                                    {resume.position}
                                                 </h2>
 
                                                 {resume.organizations.length > 0 && (
                                                     <div className="mb-4">
                                                         <h3 className="text-sm font-medium text-gray-500 mb-2">
-                                                            Опыт работы:
+                                                            {t('experience')}:
                                                         </h3>
                                                         <ul className="space-y-2">
                                                             {resume.organizations.map(org => (
