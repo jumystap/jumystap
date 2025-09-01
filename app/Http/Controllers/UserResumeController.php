@@ -7,8 +7,7 @@ use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
 use App\Enums\WorkSchedule;
 use App\Models\UserResume;
-use App\Models\SpecializationCategory;
-use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,14 +23,14 @@ class UserResumeController extends Controller
 
     public function create()
     {
-        $workSchedules = WorkSchedule::options();
+        $workSchedules   = WorkSchedule::options();
         $employmentTypes = EmploymentType::options();
         $drivingLicenses = DrivingLicenseCategory::options();
         $educationLevels = EducationLevel::options();
 
         return Inertia::render('CreateResume', [
-            'user' => auth()->user(),
-            'workSchedules' => $workSchedules,
+            'user'            => auth()->user(),
+            'workSchedules'   => $workSchedules,
             'employmentTypes' => $employmentTypes,
             'drivingLicenses' => $drivingLicenses,
             'educationLevels' => $educationLevels
@@ -41,30 +40,30 @@ class UserResumeController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'email' => 'nullable|email',
-            'phone' => 'required|max:20',
-            'city' => 'required|string',
-            'district' => 'nullable|string',
-            'position' => 'required|max:100',
-            'salary' => 'nullable|numeric',
-            'employment_type_id' => 'nullable|int',
-            'work_schedule_id' => 'nullable|int',
-            'no_work_experience' => 'nullable|bool',
-            'organizations' => 'nullable|array',
-            'organizations.*.organization' => 'required',
-            'organizations.*.position' => 'required',
-            'organizations.*.period' => 'required',
+            'email'                            => 'nullable|email',
+            'phone'                            => 'required|max:20',
+            'city'                             => 'required|string',
+            'district'                         => 'nullable|string',
+            'position'                         => 'required|max:100',
+            'salary'                           => 'nullable|numeric',
+            'employment_type_id'               => 'nullable|int',
+            'work_schedule_id'                 => 'nullable|int',
+            'no_work_experience'               => 'nullable|bool',
+            'organizations'                    => 'nullable|array',
+            'organizations.*.organization'     => 'required',
+            'organizations.*.position'         => 'required',
+            'organizations.*.period'           => 'required',
             'organizations.*.responsibilities' => 'nullable',
-            'education_level_id' => 'required|int',
-            'educational_institution' => 'nullable|string',
-            'faculty' => 'nullable|string',
-            'graduation_year' => 'nullable|integer',
-            'languages' => 'nullable|array',
-            'skills' => 'nullable|array',
-            'ip_status' => 'nullable|int',
-            'has_car' => 'nullable|string',
-            'driving_license' => 'nullable|string',
-            'about' => 'required|max:10000',
+            'education_level_id'               => 'required|int',
+            'educational_institution'          => 'nullable|string',
+            'faculty'                          => 'nullable|string',
+            'graduation_year'                  => 'nullable|integer',
+            'languages'                        => 'nullable|array',
+            'skills'                           => 'nullable|array',
+            'ip_status'                        => 'nullable|int',
+            'has_car'                          => 'nullable|string',
+            'driving_license'                  => 'nullable|string',
+            'about'                            => 'required|max:10000',
         ]);
 
         $data['user_id'] = Auth::id();
@@ -75,7 +74,7 @@ class UserResumeController extends Controller
 
         $resume = UserResume::query()->create($data);
 
-        if(!empty($data['organizations'])){
+        if (!empty($data['organizations'])) {
             foreach ($data['organizations'] as $organization) {
                 $resume->organizations()->create($organization);
             }
@@ -106,18 +105,18 @@ class UserResumeController extends Controller
 
     public function edit($id)
     {
-        $resume = UserResume::where('id', $id)->with('organizations')->first();
-        $workSchedules = WorkSchedule::options();
+        $resume          = UserResume::where('id', $id)->with('organizations')->first();
+        $workSchedules   = WorkSchedule::options();
         $employmentTypes = EmploymentType::options();
         $drivingLicenses = DrivingLicenseCategory::options();
         $educationLevels = EducationLevel::options();
         return Inertia::render('UpdateResume', [
-            'user' => auth()->user(),
-            'resume' => $resume,
-            'languages' => collect($resume->languages)->pluck('language')->toArray(),
+            'user'            => auth()->user(),
+            'resume'          => $resume,
+            'languages'       => collect($resume->languages)->pluck('language')->toArray(),
             'drivingLicenses' => $drivingLicenses,
             'employmentTypes' => $employmentTypes,
-            'workSchedules' => $workSchedules,
+            'workSchedules'   => $workSchedules,
             'educationLevels' => $educationLevels,
         ]);
     }
@@ -125,30 +124,30 @@ class UserResumeController extends Controller
     public function update(Request $request, UserResume $resume)
     {
         $data = $request->validate([
-            'email' => 'nullable|email',
-            'phone' => 'required|max:20',
-            'city' => 'required|string',
-            'district' => 'nullable|string',
-            'position' => 'required|max:100',
-            'salary' => 'nullable|numeric',
-            'employment_type_id' => 'nullable|int',
-            'work_schedule_id' => 'nullable|int',
-            'no_work_experience' => 'nullable|bool',
-            'organizations' => 'nullable|array',
-            'organizations.*.organization' => 'required',
-            'organizations.*.position' => 'required',
-            'organizations.*.period' => 'required',
+            'email'                            => 'nullable|email',
+            'phone'                            => 'required|max:20',
+            'city'                             => 'required|string',
+            'district'                         => 'nullable|string',
+            'position'                         => 'required|max:100',
+            'salary'                           => 'nullable|numeric',
+            'employment_type_id'               => 'nullable|int',
+            'work_schedule_id'                 => 'nullable|int',
+            'no_work_experience'               => 'nullable|bool',
+            'organizations'                    => 'nullable|array',
+            'organizations.*.organization'     => 'required',
+            'organizations.*.position'         => 'required',
+            'organizations.*.period'           => 'required',
             'organizations.*.responsibilities' => 'nullable',
-            'education_level_id' => 'required|int',
-            'educational_institution' => 'nullable|string',
-            'faculty' => 'nullable|string',
-            'graduation_year' => 'nullable|integer',
-            'languages' => 'nullable|array',
-            'skills' => 'nullable|array',
-            'ip_status' => 'nullable|int',
-            'has_car' => 'nullable|string',
-            'driving_license' => 'nullable|string',
-            'about' => 'required|max:10000',
+            'education_level_id'               => 'required|int',
+            'educational_institution'          => 'nullable|string',
+            'faculty'                          => 'nullable|string',
+            'graduation_year'                  => 'nullable|integer',
+            'languages'                        => 'nullable|array',
+            'skills'                           => 'nullable|array',
+            'ip_status'                        => 'nullable|int',
+            'has_car'                          => 'nullable|string',
+            'driving_license'                  => 'nullable|string',
+            'about'                            => 'required|max:10000',
         ]);
 
         if ($request->hasFile('photo_path')) {
@@ -176,4 +175,60 @@ class UserResumeController extends Controller
         $resume->delete();
         return redirect('/profile');
     }
+
+    public function download(int $id)
+    {
+        $resume = UserResume::find($id);
+
+        if(!$resume){
+            return Inertia::render('NotFound');
+        }
+        if($resume->user_id != Auth::id()){
+            return Inertia::render('NotFound');
+        }
+
+        $experience = [];
+        if ($resume->organizations) {
+            foreach ($resume->organizations as $organization) {
+                $experience[] = [
+                    'title'            => $organization->position,
+                    'company'          => $organization->organization,
+                    'period'           => str_replace('until_now', 'по настоящее время', $organization->period),
+                    'responsibilities' => $organization->responsibilities
+                ];
+            }
+        }
+
+        $data = [
+            'name'                  => $resume->user->name,
+            'info'                  => $resume->user->gender_name . ', ' . $resume->user->age . ', ' . $resume->user->born,
+            'email'                 => $resume->user->email,
+            'phone'                 => '+' . $resume->user->phone,
+            'address'               => $resume->city . ($resume->city == 'Астана' ? ', район ' . $resume->district : ''),
+            'position'              => $resume->position,
+            'salary'                => $resume->formatted_salary . ' ₸',
+            'employment_type'       => $resume->employment_type,
+            'work_schedule'         => $resume->work_schedule,
+            'experience'            => $experience,
+            'education'             => [
+                'education_level' => $resume->education_level,
+                'degree'          => $resume->faculty,
+                'institution'     => $resume->educational_institution,
+                'period'          => $resume->graduation_year,
+            ],
+            'languages'             => $resume->languages ? $resume->languages->pluck('language')->join(', ') : '',
+            'skills'                => $resume->skills,
+            'ip_status'             => $resume->ip_status ? 'Присутствует' : 'Отсутствует',
+            'has_car'               => $resume->has_car ? 'Да' : 'Нет',
+            'driving_license_title' => $resume->driving_license_title,
+            'about'                 => $resume->about,
+        ];
+
+        $html = view('pdf.resume', $data)->render();
+
+        $pdf = Pdf::loadHTML($html);
+
+        return $pdf->download('resume.pdf');
+    }
+
 }

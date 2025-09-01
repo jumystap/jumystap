@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::post('create', [UserResumeController::class, 'store']);
         Route::get('update/{id}', [UserResumeController::class, 'edit']);
         Route::put('{resume}', [UserResumeController::class, 'update']);
+        Route::get('download/{id}', [UserResumeController::class, 'download']);
         Route::get('{id}', [UserResumeController::class, 'show']);
         Route::delete('{id}', [UserResumeController::class, 'destroy'])->name('delete');
     });

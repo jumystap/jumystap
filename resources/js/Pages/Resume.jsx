@@ -59,9 +59,16 @@ export default function Resume({ user, resume }) {
                                         <span>+{resume.phone ?? resume.user.phone ?? ''}</span>
                                     </div>
                                     <div className="space-y-3">
-                                        <span className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
+                                        <span className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500 mr-2">
                                             {isRussian ? resume.user.status : resume.user.status_kz}
                                         </span>
+                                        <a
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href={`/resumes/download/${resume.id}`}
+                                            className='text-blue-500 text-center rounded-lg border-2 border-blue-500 py-1 px-3 text-sm hover:bg-blue-500 hover:text-white transition'>
+                                            <span className='font-bold'>{t('download')}</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
