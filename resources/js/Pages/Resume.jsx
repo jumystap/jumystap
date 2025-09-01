@@ -15,7 +15,7 @@ export default function Resume({ user, resume }) {
             <div className="min-h-screen bg-gray-50">
                 <div className="max-w-5xl mx-auto py-8 px-4">
                     {/* Header Section */}
-                    <div className="bg-white rounded-xl shadow-sm p-8 mb-6">
+                    <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
                         <div className="flex flex-col md:flex-row gap-8 items-start">
                             <div className="relative">
                                 <img
