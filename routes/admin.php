@@ -7,7 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\Admin\AccountController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +32,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->group(function () {
+    Route::group(['prefix' => '/account', 'as' => 'account.'], function () {
+        Route::get('/', [AccountController::class, 'index'])->name('index');
+        Route::put('/update', [AccountController::class, 'update'])->name('update');
+    });
+
     Route::get('/index', [HomeController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
     Route::resource('announcements', AnnouncementController::class);
