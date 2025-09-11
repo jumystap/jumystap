@@ -130,7 +130,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
         const digits = phone.replace(/\D/g, '');
         if (digits.length !== 11) return false;
         const code = digits.substring(1, 4);
-        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '777', '778'];
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '776', '777', '778'];
         return validCodes.includes(code);
     }
 
