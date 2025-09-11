@@ -147,7 +147,7 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
         if (digits.length !== 11) return false;
 
         const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
-        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '771', '775', '777', '778'];
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '777', '778'];
 
         return validCodes.includes(code);
     }
