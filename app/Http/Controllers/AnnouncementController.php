@@ -13,6 +13,7 @@ use App\Models\AnnouncementAdress;
 use App\Models\AnnouncementCondition;
 use App\Models\AnnouncementRequirement;
 use App\Models\AnnouncementResponsibility;
+use App\Models\City;
 use App\Models\Industry;
 use App\Models\Response;
 use App\Models\SpecializationCategory;
@@ -62,12 +63,12 @@ class AnnouncementController extends Controller
                     "name_kz" => "Барлығы"
                 ];
         }
-        $cities = Announcement::pluck('city')->unique()->filter();
+//        $cities = Announcement::pluck('city')->unique()->filter();
 
         return Inertia::render('Announcements', [
             'announcements' => $announcements,
             'specializations' => $specializations,
-            'cities' => $cities,
+            'cities' => City::query()->orderBy('order_id')->pluck('title'),
         ]);
     }
 

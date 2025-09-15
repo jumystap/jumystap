@@ -144,7 +144,7 @@ export default function Guest({ children }) {
                         fill="currentColor"
                     />
                 </svg>
-              <div className="text-center text-xs">{t("home", { ns: "header" })}</div>
+              <div className="text-center text-sm">{t("home", { ns: "header" })}</div>
             </Link>
             <Link
               className={`block flex-col text-center ${isActive("/announcements") ? "text-red-500" : "text-gray-500"}`}
@@ -157,7 +157,7 @@ export default function Guest({ children }) {
                     />
                 </svg>
 
-                <div className="text-center text-xs">{t("announcements", { ns: "header" })}</div>
+                <div className="text-center text-sm">{t("announcements", { ns: "header" })}</div>
             </Link>
             <Link
               className={`block flex-col text-center ${isActive("/employees") ? "text-red-500" : "text-gray-500"}`}
@@ -170,7 +170,7 @@ export default function Guest({ children }) {
                     />
                 </svg>
 
-                <div className="text-center text-xs">{t("employees", { ns: "header" })}</div>
+                <div className="text-center text-sm">{t("employees", { ns: "header" })}</div>
             </Link>
             <Dropdown
               menu={{
@@ -188,7 +188,7 @@ export default function Guest({ children }) {
                           fill="currentColor"
                       />
                   </svg>
-                <div className="text-center text-xs">Еще</div>
+                <div className="text-center text-sm">Еще</div>
               </div>
             </Dropdown>
           </div>
@@ -205,7 +205,7 @@ export default function Guest({ children }) {
               <ApplicationLogo />
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 font-regular mt-5 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 font-regular mt-5 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/") ? "text-black" : "text-gray-500"}`}
               href="/"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -217,7 +217,7 @@ export default function Guest({ children }) {
                 {t("home", { ns: "header" })}
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/employees") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/employees") ? "text-black" : "text-gray-500"}`}
               href="/employees"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -230,7 +230,7 @@ export default function Guest({ children }) {
                 {t("nav_for_employers", { ns: "header" })}
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/announcements") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/announcements") ? "text-black" : "text-gray-500"}`}
               href="/announcements"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -243,7 +243,7 @@ export default function Guest({ children }) {
                 {t("announcements", { ns: "header" })}
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/about") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/about") ? "text-black" : "text-gray-500"}`}
               href="/about"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -256,7 +256,7 @@ export default function Guest({ children }) {
                 {t("about", { ns: "header" })}
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/faq") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/faq") ? "text-black" : "text-gray-500"}`}
               href="/faq"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -273,7 +273,7 @@ export default function Guest({ children }) {
                 {t("about_education", { ns: "header" })}
             </Link>
             <Link
-              className={`flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/fav") ? "text-black" : "text-gray-500"}`}
+              className={`flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/fav") ? "text-black" : "text-gray-500"}`}
               href="/fav"
             >
                 <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -286,7 +286,7 @@ export default function Guest({ children }) {
                 {t("favorites", { ns: "header" })}
             </Link>
               <Button
-                  className="flex items-center text-lg gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 text-gray-500 w-full"
+                  className="flex items-center text-xl gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 text-gray-500 w-full"
                   onClick={() =>
                       changeLanguage(i18n.language === "ru" ? "kz" : "ru")
                   }

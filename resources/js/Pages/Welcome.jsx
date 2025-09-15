@@ -55,6 +55,10 @@ export default function Welcome({
         get('/', {preserveScroll: true, preserveState: true });
     };
 
+    const handleSearchAnnouncements = () => {
+        get('/announcements', {preserveScroll: true, preserveState: true });
+    };
+
     const handleButtonClick = (e, link, parameter_id) => {
         e.preventDefault();
 
@@ -240,33 +244,8 @@ export default function Welcome({
                                 1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
                                 2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
                                 3. {t("mobilograph_pro", { ns: "index" })}<br/>
-                                4. {t("basic_course_on_ai", { ns: "index" })}
-                            </p>
-                        </div>
-
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
-                        </div>
-                    </div>
-
-                    <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
-                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
-                        >
-                            {t("submit_an_application", { ns: "index" })}
-                        </button>
-                    </div>
-                </div>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="font-bold text-lg md:text-xl text-orange-500">
-                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
-                            </p>
-                            <p className="text-md md:mt-1">
-                                5. {t("auto_glass_repair_and_cracks", { ns: "index" })}<br/>
-                                6. {t("design_and_sewing_sportswear", { ns: "index" })}<br/>
-                                7. {t("public_speaking", { ns: "index" })}
+                                4. {t("basic_course_on_ai", { ns: "index" })}<br/>
+                                5. {t("public_speaking", { ns: "index" })}
                             </p>
                         </div>
 
@@ -397,6 +376,28 @@ export default function Welcome({
               </div>
             </div>
             <div className="border-b border-gray-200 mt-5"></div>
+              <div className='md:hidden mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                  <input
+
+                      type="text"
+                      value={data.searchKeyword}
+                      onChange={handleSearchKeywordChange}
+                      placeholder={t('search', { ns: 'announcements' })}
+                      className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                  />
+                  <button
+                      className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
+                      onClick={handleSearch}
+                  >
+                      {t('search', { ns: 'announcements' })}
+                  </button>
+                  <button
+                      className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                      onClick={handleSearchAnnouncements}
+                  >
+                      <IoSearch />
+                  </button>
+              </div>
             {urgent_announcements.map((anonce, index) => (
               <Link
                 href={`/announcement/${anonce.id}`}
@@ -542,138 +543,127 @@ export default function Welcome({
                 </div>
               </Link>
             ))}
-            <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
-              <input
+              <div className="hidden md:block">
+                  <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                      <input
 
-                  type="text"
-                  value={data.searchKeyword}
-                  onChange={handleSearchKeywordChange}
-                  placeholder={t('search', { ns: 'announcements' })}
-                  className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
-              />
-              <button
-                  className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
-                  onClick={handleSearch}
-              >
-                  {t('search', { ns: 'announcements' })}
-              </button>
-              <button
-                  className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
-                  onClick={handleSearch}
-              >
-                  <IoSearch />
-              </button>
-              <div
-                  onClick={() => setIsFilterOpen(true)}
-                  className='text-3xl px-2 border-2 rounded-lg text-blue-500 md:hidden border-blue-500 py-1'
-              >
-                  <CgArrowsExchangeAltV />
-              </div>
-            </div>
-            {announcements.data.map((anonce, index) => (
-              <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
-                  <div className='flex items-center'>
-                      <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-400')} items-center`}>
-                          <CiLocationOn />
-                          <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
+                          type="text"
+                          value={data.searchKeyword}
+                          onChange={handleSearchKeywordChange}
+                          placeholder={t('search', { ns: 'announcements' })}
+                          className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                      />
+                      <button
+                          className='text-white rounded-lg bg-blue-500 py-2 px-5'
+                          onClick={handleSearch}
+                      >
+                          {t('search', { ns: 'announcements' })}
+                      </button>
+                  </div>
+                {announcements.data.map((anonce, index) => (
+                  <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
+                      <div className='flex items-center'>
+                          <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-400')} items-center`}>
+                              <CiLocationOn />
+                              <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
+                          </div>
+                          <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
+                              {i18n.language == 'ru' ? ('Изменено') : ('')} {`${formatDistanceToNow(new Date(anonce.updated_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('өзгертілді')}
+                          </div>
                       </div>
-                      {/*<div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>*/}
-                      {/*    {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}*/}
-                      {/*</div>*/}
-                  </div>
-                  <div className='mt-5 text-lg font-bold'>
-                      {anonce.title}
-                  </div>
+                      <div className='mt-5 text-lg font-bold'>
+                          {anonce.title}
+                      </div>
 
-                  <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
-                      <div className='md:text-xl text-xl font-regular'>
-                          {anonce.salary_type === "exact" &&
-                              anonce.cost &&
-                              `${anonce.cost.toLocaleString()} ₸ `}
-                          {anonce?.salary_type === "min" && anonce.cost_min &&
-                              `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
-                          }
-                          {anonce.salary_type === "max" && anonce.cost_max &&
-                              `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                          }
-                          {anonce.salary_type === "diapason" &&
-                              anonce.cost_min &&
-                              anonce.cost_max &&
-                              `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
-                                  anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                          }
-                          {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
-                          {anonce.salary_type === "za_smenu" && (
-                              <>
-                                  {anonce.cost &&
-                                      `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
-                                  }
-                                  {anonce.cost_min &&
-                                      !anonce.cost_max &&
-                                      `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                          t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
-                                  }
-                                  {!anonce.cost_min &&
-                                      anonce.cost_max &&
-                                      `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                          t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
-                                  }
-                                  {anonce.cost_min &&
-                                      anonce.cost_max &&
-                                      `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
-                                          t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
-                                  }
-                              </>
-                          )}
-                      </div>
-                  </div>
-                  <div className='flex gap-x-2 mt-2'>
-                      <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
-                          {anonce.experience}
-                      </div>
-                      <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
-                          {anonce.work_time}
-                      </div>
-                  </div>
-                  <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                      {auth.user ? (
-                          <>
-                              <a
-                                  href={`/connect/${auth.user.id}/${anonce.id}`}
-                                  onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                  className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                  <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                              </a>
-                              {auth.user.email === 'admin@example.com' && (
-                                  <a
-                                      href={`/announcements/update/${anonce.id}`}
-                                      onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                      className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                      <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
-                                  </a>
+                      <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
+                          <div className='md:text-xl text-xl font-regular'>
+                              {anonce.salary_type === "exact" &&
+                                  anonce.cost &&
+                                  `${anonce.cost.toLocaleString()} ₸ `}
+                              {anonce?.salary_type === "min" && anonce.cost_min &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸" : anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                              }
+                              {anonce.salary_type === "max" && anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸" : anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                              }
+                              {anonce.salary_type === "diapason" &&
+                                  anonce.cost_min &&
+                                  anonce.cost_max &&
+                                  `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸" :
+                                      anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                              }
+                              {anonce.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                              {anonce.salary_type === "za_smenu" && (
+                                  <>
+                                      {anonce.cost &&
+                                          `${anonce.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                      }
+                                      {anonce.cost_min &&
+                                          !anonce.cost_max &&
+                                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                              t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап"}`
+                                      }
+                                      {!anonce.cost_min &&
+                                          anonce.cost_max &&
+                                          `${i18n?.language === "ru" ? "до " + anonce.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                              t("per_shift", { ns: "index" }) + " " + anonce.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                      }
+                                      {anonce.cost_min &&
+                                          anonce.cost_max &&
+                                          `${i18n?.language === "ru" ? "от " + anonce.cost_min.toLocaleString() + " ₸ до " + anonce.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                              t("per_shift", { ns: "index" }) + " " + anonce.cost_min.toLocaleString() + " ₸ бастап " + anonce.cost_max.toLocaleString() + " ₸ дейін"}`
+                                      }
+                                  </>
                               )}
-                          </>
-                      ) : (
-                          <Link
-                              href='/login'
-                              onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                              className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                              <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                          </Link>
-                      )}
-                      <div
-                          onClick={(e) => {
-                              e.stopPropagation(); // Prevents click propagation to Link
-                              handleShare(anonce.id);
-                          }}
-                          className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                          <MdIosShare className='text-blue-500 text-xl' />
+                          </div>
                       </div>
-                  </div>
-              </Link>
-            ))}
-
-            <Pagination links={announcements.links} searchKeyword={data.searchKeyword} />
+                      <div className='flex gap-x-2 mt-2'>
+                          <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                              {anonce.experience}
+                          </div>
+                          <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
+                              {anonce.work_time}
+                          </div>
+                      </div>
+                      <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
+                          {auth.user ? (
+                              <>
+                                  <a
+                                      href={`/connect/${auth.user.id}/${anonce.id}`}
+                                      onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                      className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                      <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
+                                  </a>
+                                  {auth.user.email === 'admin@example.com' && (
+                                      <a
+                                          href={`/announcements/update/${anonce.id}`}
+                                          onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                          className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                          <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
+                                      </a>
+                                  )}
+                              </>
+                          ) : (
+                              <Link
+                                  href='/login'
+                                  onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                  className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                  <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
+                              </Link>
+                          )}
+                          <div
+                              onClick={(e) => {
+                                  e.stopPropagation(); // Prevents click propagation to Link
+                                  handleShare(anonce.id);
+                              }}
+                              className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
+                              <MdIosShare className='text-blue-500 text-xl' />
+                          </div>
+                      </div>
+                  </Link>
+                ))}
+                <Pagination links={announcements.links} searchKeyword={data.searchKeyword} />
+              </div>
             {/*<div className="pb-10">*/}
             {/*  <div className="flex mt-5">*/}
             {/*    <div className="mx-auto">*/}

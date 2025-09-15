@@ -329,27 +329,6 @@ export default function Announcements({ auth, announcements, specializations, er
                                 <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                             </div>
                         </div>
-                        <div
-                        className='mx-3 md:mx-5 md:px-10 px-4 py-7 bg-gradient-to-r from-blue-500 to-blue-800  mt-2 rounded-lg'
-                        >
-                            <div className='font-semibold text-lg md:text-xl text-white'>{t('find_jobs_for_yourself', { ns: 'announcements' })}</div>
-                            <div className='font-light mt-2 text-white'>{t('fill_out_the_form_and_find_suitable_jobs', { ns: 'announcements' })}</div>
-                            {auth.user ? (
-                                <div
-                                    className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
-                                    onClick={() => setIsInfoOpen(true)}
-                                >
-                                    {t('fill_out', { ns: 'announcements' })}
-                                </div>
-                            ):(
-                                <Link
-                                    className='text-blue-500 px-10 py-2 text-sm mt-4 cursor-pointer bg-white rounded-lg font-bold inline-block'
-                                    href='/login'
-                                >
-                                    {t('fill_out', { ns: 'announcements' })}
-                                </Link>
-                            )}
-                        </div>
                         </Carousel>
                         <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
@@ -386,9 +365,9 @@ export default function Announcements({ auth, announcements, specializations, er
                                         <CiLocationOn />
                                         <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
                                     </div>
-                                    {/*<div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>*/}
-                                    {/*    {i18n.language == 'ru' ? ('Размещено') : ('')} {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('')}*/}
-                                    {/*</div>*/}
+                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
+                                        {i18n.language == 'ru' ? ('Изменено') : ('')} {`${formatDistanceToNow(new Date(anonce.updated_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('өзгертілді')}
+                                    </div>
                                 </div>
                                 <div className='mt-5 text-lg font-bold'>
                                     {anonce.title}

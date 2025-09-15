@@ -51,10 +51,9 @@ class HomeController extends Controller
             ->get();
 
         $announcementsByCities = Announcement::select('city', DB::raw('count(*) as total'))
-            ->whereIn('city', ["Алматы", "Астана", "Шымкент", "Караганда", "Актобе", "Тараз",
-                               "Павлодар", "Усть-Каменогорск", "Семей", "Костанай", "Петропавловск",
-                               "Кызылорда", "Атырау", "Актау", "Уральск", "Темиртау", "Талдыкорган",
-                               "Экибастуз", "Рудный", "Жезказган"])
+            ->whereIn('city', ["Алматы", "Астана", "Шымкент", "Актау", "Атырау", "Жезказган", "Караганда", "Косшы",
+                               "Костанай", "Кызылорда", "Павлодар", "Петропавловск", "Рудный", "Семей", "Талдыкорган",
+                               "Тараз", "Темиртау", "Туркестан", "Уральск", "Усть-Каменогорск", "Щучинск", "Экибастуз"])
             ->where('status', 1)
             ->groupBy('city')
             ->orderBy('total', 'DESC')
@@ -98,25 +97,24 @@ class HomeController extends Controller
         });
 
         $data = [
-            'usersCount'                     => User::whereNotIn('role_id', $excludedRoles)->tap($filterByDate)->count(),
-            'allEmployersCount'              => User::whereIn('role_id', $employerRoles)->tap($filterByDate)->count(),
+            'usersCount'            => User::whereNotIn('role_id', $excludedRoles)->tap($filterByDate)->count(),
+            'allEmployersCount'     => User::whereIn('role_id', $employerRoles)->tap($filterByDate)->count(),
             //            'employerCount'                  => User::where('role_id', Roles::EMPLOYER->value)->tap($filterByDate)->count(),
             //            'companyCount'                   => User::where('role_id', Roles::COMPANY->value)->tap($filterByDate)->count(),
-            'allEmployeesCount'              => (clone $employeeQuery)->tap($filterByDate)->count(),
-            'graduatesCount'                 => (clone $employeeQuery)->where('is_graduate', true)->tap($filterByDate)->count(),
+            'allEmployeesCount'     => (clone $employeeQuery)->tap($filterByDate)->count(),
+            'graduatesCount'        => (clone $employeeQuery)->where('is_graduate', true)->tap($filterByDate)->count(),
             //            'nonGraduatesCount'              => (clone $employeeQuery)->where('is_graduate', false)->tap($filterByDate)->count(),
-            'registeredTodayCount'           => User::whereNotIn('role_id', $excludedRoles)
+            'registeredTodayCount'  => User::whereNotIn('role_id', $excludedRoles)
                 ->whereDate('created_at', today())
                 ->count(),
-            'announcementsCount'             => Announcement::all()->tap($filterByDate)->count(),
-            'responsesCount'                 => Response::whereNotNull('announcement_id')->tap($filterByDate)->count(),
-            'responsesTodayCount'            => Response::whereNotNull('announcement_id')
+            'announcementsCount'    => Announcement::all()->tap($filterByDate)->count(),
+            'responsesCount'        => Response::whereNotNull('announcement_id')->tap($filterByDate)->count(),
+            'responsesTodayCount'   => Response::whereNotNull('announcement_id')
                 ->whereDate('created_at', today())
                 ->count(),
-            'announcementsByCities'          => $announcementsByCities,
-            'combinedData' => $combinedData
+            'announcementsByCities' => $announcementsByCities,
+            'combinedData'          => $combinedData
         ];
-//        dd($announcementsByCities);
 
         session()->flash('success', __('Страница успешно загружена!'));
         return view('admin.home', compact('data', 'search'));
