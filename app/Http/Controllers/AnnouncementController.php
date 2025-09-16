@@ -44,31 +44,39 @@ class AnnouncementController extends Controller
     public function index(Request $request): mixed
     {
         $filters = [
-            'searchKeyword' => $request->input('searchKeyword'),
-            'specialization' => $request->input('specialization'),
-            'city' => $request->input('city'),
-            'minSalary' => $request->input('minSalary'),
-            'isSalary' => $request->input('isSalary'),
-            'noExperience' => $request->input('noExperience'),
-            'publicTime' => $request->input('publicTime'),
+            'searchKeyword'            => $request->input('searchKeyword'),
+            'specializationCategories' => $request->input('specializationCategories'),
+            'specializations'          => $request->input('specializations'),
+            'city'                     => $request->input('city'),
+            'minSalary'                => $request->input('minSalary'),
+            'isSalary'                 => $request->input('isSalary'),
+            'noExperience'             => $request->input('noExperience'),
+            'publicTime'               => $request->input('publicTime'),
         ];
 
-        $announcements = $this->announcementService->getAllActiveAnnouncements($filters)->withQueryString();
-        $specializations = SpecializationCategory::with('specialization')->get()->toArray();
-        foreach ($specializations as &$category) {
-                $category['specialization'][] = [
-                    "id" => "_" . $category['id'],
-                    "category_id" => $category['id'],
-                    "name_ru" => "Все",
-                    "name_kz" => "Барлығы"
+        $announcements      = $this->announcementService->getAllActiveAnnouncements($filters)->withQueryString();
+        $specializationCategories    = SpecializationCategory::with('specialization')->get();
+        $specializationCategoriesData = [];
+        foreach ($specializationCategories as $key => $category) {
+            $specializationCategoriesData[$key] = [
+                "value" => $category->id,
+                "label" => $category->name,
+            ];
+            foreach ($category['specialization'] as $key2 => $specilzation) {
+                $specializationCategoriesData[$key]['specializations'][$key2] = [
+                    "value" => $specilzation->id,
+                    "label" => $specilzation->name,
                 ];
+            }
         }
+        $specializationCategories = $specializationCategories->toArray();
 //        $cities = Announcement::pluck('city')->unique()->filter();
 
         return Inertia::render('Announcements', [
-            'announcements' => $announcements,
-            'specializations' => $specializations,
-            'cities' => City::query()->orderBy('order_id')->pluck('title'),
+            'announcements'      => $announcements,
+            'specializationCategories'    => $specializationCategories,
+            'specializationCategoriesData' => $specializationCategoriesData,
+            'cities'             => City::query()->orderBy('order_id')->pluck('title'),
         ]);
     }
 
@@ -83,15 +91,15 @@ class AnnouncementController extends Controller
             $announcement->status->value === AnnouncementStatus::ACTIVE->value ||
             (Auth::check() && Auth::user()->role_id === Roles::ADMIN->value)
         ) {
-            $top_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
+            $top_announcement    = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
             $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
-            $more_announcement = $this->announcementService->getAllActiveAnnouncementsWithout($announcement->id, $announcement->specialization_id);
+            $more_announcement   = $this->announcementService->getAllActiveAnnouncementsWithout($announcement->id, $announcement->specialization_id);
 
             return Inertia::render('Announcement', [
-                'announcement' => $announcement,
-                'top_announcement' => $top_announcement,
+                'announcement'        => $announcement,
+                'top_announcement'    => $top_announcement,
                 'urgent_announcement' => $urgent_announcement,
-                'more_announcement' => $more_announcement
+                'more_announcement'   => $more_announcement
             ]);
         }
 
@@ -100,14 +108,14 @@ class AnnouncementController extends Controller
 
     public function create(): mixed
     {
-        if(Auth::user()->role_id != 2){
-            $industries = Industry::all();
+        if (Auth::user()->role_id != 2) {
+            $industries      = Industry::all();
             $specializations = SpecializationCategory::with('specialization')->get();
             return Inertia::render('Company/CreateAnnouncement', [
-                'industries' => $industries,
+                'industries'      => $industries,
                 'specializations' => $specializations,
             ]);
-        }else{
+        } else {
             return redirect('/');
         }
     }
@@ -115,20 +123,20 @@ class AnnouncementController extends Controller
     public function store(AnnouncementCreateRequest $request)
     {
         $validated = $request->validated();
-        $user = Auth::user();
+        $user      = Auth::user();
         Log::info('Creating announcement with data:', $validated);
 
         try {
             $announcement = $this->announcementService->createAnnouncement(array_merge($validated, [
                 'user_id' => $user->id,
-                'status' => AnnouncementStatus::ON_MODERATION->value,
+                'status'  => AnnouncementStatus::ON_MODERATION->value,
             ]));
 
             if (!empty($validated['location'])) {
                 foreach ($validated['location'] as $location) {
                     AnnouncementAdress::create([
                         'announcement_id' => $announcement->id,
-                        'adress' => $location,
+                        'adress'          => $location,
                     ]);
                 }
             }
@@ -137,7 +145,7 @@ class AnnouncementController extends Controller
                 foreach ($validated['responsibility'] as $responsibility) {
                     AnnouncementResponsibility::create([
                         'announcement_id' => $announcement->id,
-                        'responsibility' => $responsibility,
+                        'responsibility'  => $responsibility,
                     ]);
                 }
             }
@@ -146,7 +154,7 @@ class AnnouncementController extends Controller
                 foreach ($validated['requirement'] as $requirement) {
                     AnnouncementRequirement::create([
                         'announcement_id' => $announcement->id,
-                        'requirement' => $requirement,
+                        'requirement'     => $requirement,
                     ]);
                 }
             }
@@ -155,7 +163,7 @@ class AnnouncementController extends Controller
                 foreach ($validated['condition'] as $requirement) {
                     AnnouncementCondition::create([
                         'announcement_id' => $announcement->id,
-                        'condition' => $requirement,
+                        'condition'       => $requirement,
                     ]);
                 }
             }
@@ -174,21 +182,21 @@ class AnnouncementController extends Controller
     public function edit($id): mixed
     {
         $announcement = $this->announcementService->getAnnouncement($id);
-        if($announcement->status === AnnouncementStatus::BLOCKED){
+        if ($announcement->status === AnnouncementStatus::BLOCKED) {
             return redirect(route('profile'))->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_update')])->withInput();
         }
-        $industries = Industry::all();
+        $industries      = Industry::all();
         $specializations = SpecializationCategory::with('specialization')->get();
-        $user = Auth::user();
+        $user            = Auth::user();
 
-        if($user && ($user->id == $announcement->user_id || $user->email == 'admin@example.com')){
+        if ($user && ($user->id == $announcement->user_id || $user->email == 'admin@example.com')) {
             return Inertia::render('Company/UpdateAnnouncement', [
-                'isAdmin' => $user->role_id === Roles::ADMIN->value,
-                'announcement' => $announcement,
-                'industries' => $industries,
+                'isAdmin'         => $user->role_id === Roles::ADMIN->value,
+                'announcement'    => $announcement,
+                'industries'      => $industries,
                 'specializations' => $specializations
             ]);
-        }else{
+        } else {
             return redirect('/');
         }
     }
@@ -219,7 +227,7 @@ class AnnouncementController extends Controller
                     foreach ($validated['location'] as $location) {
                         AnnouncementAdress::create([
                             'announcement_id' => $id,
-                            'adress' => $location['adress'], // Access 'adress' as a string
+                            'adress'          => $location['adress'], // Access 'adress' as a string
                         ]);
                     }
                 }
@@ -229,7 +237,7 @@ class AnnouncementController extends Controller
                     foreach ($validated['responsibility'] as $responsibility) {
                         AnnouncementResponsibility::create([
                             'announcement_id' => $id,
-                            'responsibility' => $responsibility['responsibility'], // Access 'responsibility' as a string
+                            'responsibility'  => $responsibility['responsibility'], // Access 'responsibility' as a string
                         ]);
                     }
                 }
@@ -239,7 +247,7 @@ class AnnouncementController extends Controller
                     foreach ($validated['requirement'] as $requirement) {
                         AnnouncementRequirement::create([
                             'announcement_id' => $id,
-                            'requirement' => $requirement['requirement'], // Access 'requirement' as a string
+                            'requirement'     => $requirement['requirement'], // Access 'requirement' as a string
                         ]);
                     }
                 }
@@ -249,14 +257,14 @@ class AnnouncementController extends Controller
                     foreach ($validated['condition'] as $condition) {
                         AnnouncementCondition::create([
                             'announcement_id' => $id,
-                            'condition' => $condition['condition'], // Access 'condition' as a string
+                            'condition'       => $condition['condition'], // Access 'condition' as a string
                         ]);
                     }
                 }
 
                 Log::info('All related records saved successfully for announcement', ['announcement_id' => $id]);
                 $announcement = Announcement::find($id);
-                $user = Auth::user();
+                $user         = Auth::user();
                 $this->notifyAdmin($announcement, $user);
                 return redirect('/profile');
             }
@@ -271,10 +279,10 @@ class AnnouncementController extends Controller
 
     public function archive(AnnouncementArchiveRequest $request): mixed
     {
-        $data = [];
-        $id = $request->validated('id');
+        $data   = [];
+        $id     = $request->validated('id');
         $status = $request->validated('republish') ? AnnouncementStatus::ON_MODERATION->value : AnnouncementStatus::ARCHIVED->value;
-        if($status === AnnouncementStatus::ARCHIVED->value){
+        if ($status === AnnouncementStatus::ARCHIVED->value) {
             $data['is_employee_found'] = $request->validated('is_employee_found');
         }
         $this->announcementService->updateAnnouncement($id, array_merge($data, [
@@ -292,7 +300,7 @@ class AnnouncementController extends Controller
             ]);
             if ($success) {
                 $announcement = Announcement::find($id);
-                $user = Auth::user();
+                $user         = Auth::user();
                 $this->notifyAdmin($announcement, $user);
                 return redirect('/profile');
             }
@@ -309,7 +317,7 @@ class AnnouncementController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
+        if ($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
             try {
                 $success = $this->announcementService->deleteAnnouncement($id);
                 if ($success) {
@@ -321,7 +329,7 @@ class AnnouncementController extends Controller
                 Log::error('Error deleting announcement', ['exception' => $e]);
                 return redirect()->back()->withErrors(['error' => 'An error occurred while deleting the announcement']);
             }
-        }else{
+        } else {
             return redirect('profile')->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_delete')]);
         }
     }
@@ -346,7 +354,7 @@ class AnnouncementController extends Controller
             $message .= "<i>Тип оплаты:</i> " . $announcement->payment_type . "\n";
             $message .= "<i>Тип зарплаты:</i> " . $announcement->salary_type . "\n";
             $message .= "<i>Зарплата:</i> " . $announcement->cost . $announcement->cost_min . $announcement->cost_max . "\n";
-            $message .= "<i>Номер телефона:</i> " . Auth::user()->phone. "\n";
+            $message .= "<i>Номер телефона:</i> " . Auth::user()->phone . "\n";
             $message .= "https://jumystap.kz/announcement/" . $announcement->id . "\n";
 
             try {
@@ -393,14 +401,14 @@ class AnnouncementController extends Controller
     {
         Response::create([
             'announcement_id' => $announcement_id,
-            'employee_id' => $employee_id
+            'employee_id'     => $employee_id
         ]);
 
         $announcement = Announcement::find($announcement_id);
 
-        $employer = User::find($announcement->user_id);
-        $phone = $announcement->phone ?? $employer->phone;
-        $whatsappUrl = "https://wa.me/". $phone ."?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
+        $employer    = User::find($announcement->user_id);
+        $phone       = $announcement->phone ?? $employer->phone;
+        $whatsappUrl = "https://wa.me/" . $phone . "?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
 
         return redirect()->away($whatsappUrl);
     }
