@@ -154,7 +154,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.responses.index', ['search' => ['start_date' => $search['start_date']]]) }}">
+                                    <a href="{{ route('admin.responses.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Сегодня откликнулись</small>
