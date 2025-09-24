@@ -28,7 +28,6 @@ class AnalyticByClick extends Model
         }
 
         if (array_key_exists('end_date', $attributes) && $attributes['end_date']) {
-
             $query->where('created_at', '<=', Carbon::parse($attributes['end_date'])->endOfDay()->toDateTimeString());
         }
 

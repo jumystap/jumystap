@@ -102,6 +102,16 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
+                                        <label for="start_date">{{ __('Дата c') }}</label>
+                                        <input type="text" id="start_date" class="form-control" name="search[start_date]"
+                                               value="{{ $search['start_date'] ?? '' }}" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="end_date">{{ __('Дата по') }}</label>
+                                        <input type="text" id="end_date" class="form-control" name="search[end_date]"
+                                               value="{{ $search['end_date'] ?? '' }}" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-3">
                                         <br/>
                                         <label for="no_experience">{{ __('Без опыта работы') }}</label>
                                         @if (isset($search['no_experience']) && $search['no_experience'] == 'on')
@@ -153,3 +163,53 @@
     </section>
 
 @endsection
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+    <script>
+        var startDate,
+            endDate,
+            updateStartDate = function () {
+                startPicker.setStartRange(startDate);
+                endPicker.setStartRange(startDate);
+                endPicker.setMinDate(startDate);
+            },
+            updateEndDate = function () {
+                startPicker.setEndRange(endDate);
+                startPicker.setMaxDate(endDate);
+                endPicker.setEndRange(endDate);
+            },
+            startPicker = new Pikaday({
+                field: document.getElementById('start_date'),
+                format: 'DD.MM.YYYY',
+                onSelect: function () {
+                    startDate = this.getDate();
+                    updateStartDate();
+                }
+            }),
+            endPicker = new Pikaday({
+                field: document.getElementById('end_date'),
+                format: 'DD.MM.YYYY',
+                onSelect: function () {
+                    endDate = this.getDate();
+                    updateEndDate();
+                }
+            }),
+            _startDate = startPicker.getDate(),
+            _endDate = endPicker.getDate();
+
+        if (_startDate) {
+            startDate = _startDate;
+            updateStartDate();
+        }
+
+        if (_endDate) {
+            endDate = _endDate;
+            updateEndDate();
+        }
+    </script>
+@endpush
+
+@push('stylesheets')
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+@endpush

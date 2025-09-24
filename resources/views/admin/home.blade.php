@@ -141,11 +141,11 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.responses.index') }}">
+                                    <a href="{{ route('admin.responses.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
                                                 <small>Количество откликов</small>
-                                                <h3>{{ TextHelper::numberFormat($data['responsesCount'] * 2) }}</h3>
+                                                <h3>{{ TextHelper::numberFormat($data['responsesCount']) }}</h3>
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-stats-bars"></i>
@@ -154,15 +154,17 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="small-box">
-                                        <div class="inner">
-                                            <small>Сегодня откликнулись</small>
-                                            <h3>{{ TextHelper::numberFormat($data['responsesTodayCount'] * 2) }}</h3>
+                                    <a href="{{ route('admin.responses.index', ['search' => ['start_date' => $search['start_date']]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Сегодня откликнулись</small>
+                                                <h3>{{ TextHelper::numberFormat($data['responsesTodayCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-arrow-graph-up-right"></i>
+                                            </div>
                                         </div>
-                                        <div class="icon">
-                                            <i class="ion ion-arrow-graph-up-right"></i>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="row">

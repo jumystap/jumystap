@@ -23,7 +23,7 @@ class ResponseController extends Controller
         }
 
         return view('admin.responses.index')
-            ->with('responses', Response::query()->latest()->paginate(100)->appends(request()->query()))
+            ->with('responses', Response::search($search)->latest()->paginate(100)->appends(request()->query()))
             ->with('search', $search);
     }
 

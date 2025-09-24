@@ -31,7 +31,6 @@
 
     <!-- Main content -->
     <section class="content">
-
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -41,20 +40,48 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-{{--                            <small class="float-right">Отображено {{ $count }} элементов с {{ $from }} по {{ $to }} из {{ $responses->total() }}.</small>--}}
+                            <form action="{{ route('admin.responses.index') }}" method="get">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="start_date">{{ __('Дата c') }}</label>
+                                        <input type="text" id="start_date" class="form-control" name="search[start_date]"
+                                               value="{{ $search['start_date'] ?? '' }}" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="end_date">{{ __('Дата по') }}</label>
+                                        <input type="text" id="end_date" class="form-control" name="search[end_date]"
+                                               value="{{ $search['end_date'] ?? '' }}" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-12 mt-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search fa-fw"></i>
+                                            {{ __('Поиск') }}
+                                        </button>
+                                        <a type="button" href="{{ route('admin.responses.index') }}"
+                                           class="btn btn-outline-secondary">
+                                            {{ __('Сбросить') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-body">
+                            <small class="float-right">Отображено {{ $count }} элементов с {{ $from }} по {{ $to }} из {{ $responses->total() }}.</small>
 
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Соискатель</th>
                                     <th>Вакансия</th>
                                     <th>Работодатель</th>
-{{--                                    <th>Создано</th>--}}
+                                    <th>Создано</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($responses as $response)
                                     <tr>
+                                        <td>{{ $response->id }}</td>
                                         <td>{{ $response->user->name }}</td>
                                         <td>
                                             {{ $response->announcement->title }}
@@ -64,7 +91,7 @@
                                         </td>
                                         </td>
                                         <td>{{ $response->announcement->user->name }}</td>
-{{--                                        <td>{{ \Carbon\Carbon::parse($response->created_at)->format('d.m.Y H:i:s') }}</td>--}}
+                                        <td>{{ \Carbon\Carbon::parse($response->created_at)->format('d.m.Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -81,8 +108,6 @@
                 <!-- /.card -->
             </div>
         </div>
-        </div>
-
     </section>
 
 @endsection

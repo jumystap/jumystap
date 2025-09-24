@@ -33,6 +33,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('admin.responses.index') }}" class="nav-link {{ request()->routeIs('admin.responses.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-plus"></i>
+                            <p>Отклики</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-images"></i>
                             <p>Сертификаты</p>
