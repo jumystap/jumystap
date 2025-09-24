@@ -25,7 +25,7 @@ const kazakhstanCities = [
 const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const { t } = useTranslation();
     const isEdit = true;
-    const [salaryType, setSalaryType] = useState(announcement.salary_type || '');
+    const [salaryType, setSalaryType] = useState(announcement.salary_type || 'min');
     const [isTop, setIsTop] = useState(announcement.is_top);
     const [isUrgent, setIsUrgent] = useState(announcement.is_urgent);
     const [isExactSalary, setIsExactSalary] = useState(announcement.salary_type === 'exact');
@@ -65,8 +65,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
-        setSalaryType(isChecked ? 'za_smenu' : '');
-        setData('salary_type', isChecked ? 'za_smenu' : '');
+        setSalaryType(isChecked ? 'za_smenu' : 'min');
+        setData('salary_type', isChecked ? 'za_smenu' : 'min');
     };
 
     const handleUseMyPhone = (e) => {
