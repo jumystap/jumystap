@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
+import { Input, Button, Select, Form, Typography, Cascader, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 import PhoneInput from 'react-phone-input-2';
@@ -428,19 +428,28 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         }
 
         const url = `/announcements/${announcement.id}`;
-        try {
-            put(url, data, {
-                onSuccess: () => {
-                    message.success('Announcement saved successfully');
-                },
-                onError: (errors) => {
-                    message.error('Failed to save announcement');
-                    console.error('Failed to save announcement:', errors);
+        put(url, {
+            ...data,
+            onSuccess: () => {
+                notification.success({
+                    message: t('successfully_updated', { ns: 'createAnnouncement' })
+                });
+            },
+            onError: (errors) => {
+                if (typeof errors === 'object' && errors !== null) {
+                    Object.values(errors).forEach((error) => {
+                        notification.error({
+                            message: t('failed_to_save', { ns: 'createAnnouncement' }),
+                            description: error,
+                        });
+                    });
+                } else {
+                    notification.error({
+                        message: t('failed_to_save', { ns: 'createAnnouncement' }),
+                    });
                 }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-        }
+            },
+        });
     };
 
     return (

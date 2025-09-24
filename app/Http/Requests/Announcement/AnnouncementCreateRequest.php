@@ -36,8 +36,8 @@ class AnnouncementCreateRequest extends FormRequest
             'employment_type' => 'nullable',
             'experience' => 'nullable',
             'education' => 'nullable',
-            'location' => 'nullable|array', // Validate as an array
-            'location.*' => 'string|max:255', // Validate each location item
+            'location' => 'required|array', // Validate as an array
+            'location.*' => 'required|string|max:255', // Validate each location item
             'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable',
             'salary_type' => 'required',

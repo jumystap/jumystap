@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, message, Cascader } from 'antd';
+import { Input, Button, Select, Form, Typography, Cascader, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 import PhoneInput from 'react-phone-input-2';
@@ -253,10 +253,22 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         const url = isEdit ? `/announcements/${announcement.id}` : '/announcements/store';
         submitAction(url, {
             ...data,
-            onSuccess: () => message.success(t('successfully_saved', { ns : 'createAnnouncement'})),
-            onError: (err) => {
-                message.error(t('failed_to_save', { ns: 'createAnnouncement' }));
-                console.error('Failed to save announcement:', err);
+            onSuccess: () => notification.success({
+                message: t('successfully_saved', { ns : 'createAnnouncement'})
+            }),
+            onError: (errors) => {
+                if (typeof errors === 'object') {
+                    Object.values(errors).forEach((error) => {
+                        notification.error({
+                            message: t('failed_to_save', { ns: 'createAnnouncement' }),
+                            description: error,
+                        });
+                    });
+                } else {
+                    notification.error({
+                        message: t('failed_to_save', { ns: 'createAnnouncement' }),
+                    });
+                }
             }
         });
     };
