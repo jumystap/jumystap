@@ -209,59 +209,6 @@ export default function Welcome({
               </div>
             </div>
             <Carousel>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="font-bold text-4xl text-orange-500">
-                                {t("free_course", { ns: "index" })}
-                            </p>
-                            <p className="text-lg md:mt-1 text-gray-700">
-                                {t("master_the_profession_of_a_painter_using_polymer_powder_coating", { ns: "index" })}<br/>
-                            </p>
-                        </div>
-
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/malyar.png" className="md:w-[150px] w-[200px]" alt="malyar" />
-                        </div>
-                    </div>
-
-                    <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={() => setIsOpen(true)}
-                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-orange-400 transition-all duration-150"
-                        >
-                            {t("sign_up_now", { ns: "index" })}
-                        </button>
-                        <img src="/images/Лого.png" className="md:w-[150px] w-[200px]" alt="malyar" />
-                    </div>
-                </div>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="font-bold text-lg md:text-xl text-orange-500">
-                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
-                            </p>
-                            <p className="text-md md:mt-1">
-                                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
-                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
-                                3. {t("mobilograph_pro", { ns: "index" })}<br/>
-                                4. {t("basic_course_on_ai", { ns: "index" })}<br/>
-                                5. {t("public_speaking", { ns: "index" })}
-                            </p>
-                        </div>
-
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
-                        </div>
-                    </div>
-
-                    <div className="flex gap-x-5 mt-3 items-center">
-                        <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
-                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
-                        >
-                            {t("submit_an_application", { ns: "index" })}
-                        </button>
-                    </div>
-                </div>
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
@@ -295,90 +242,100 @@ export default function Welcome({
                         </button>
                     </div>
                 </div>
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-950 to-violet-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="font-bold text-lg md:text-xl text-orange-500">
+                                {t("new_paid_courses_from_skillstap", { ns: "index" })}
+                            </p>
+                            <p className="text-md md:mt-1">
+                                1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
+                                2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
+                                3. {t("mobilograph_pro", { ns: "index" })}<br/>
+                                4. {t("basic_course_on_ai", { ns: "index" })}<br/>
+                                5. {t("public_speaking", { ns: "index" })}
+                            </p>
+                        </div>
 
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/resource.png" className="md:w-[100px] w-[120px]" alt="scam" />
+                        </div>
+                    </div>
+                    <div className="flex gap-x-5 mt-3 items-center">
+                        <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
+                                className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-white transition-all duration-150 hover:text-orange-500"
+                        >
+                            {t("submit_an_application", { ns: "index" })}
+                        </button>
+                    </div>
+                </div>
+                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-orange-500 to-orange-500 mt-2 rounded-lg md:px-10 md:py-7 text-white">
+                    <div className="flex">
+                        <div>
+                            <p className="mt-3 font-bold text-3xl text-white-500">
+                                JOLTAP <div className="mb-3 bg-orange-400 text-white text-base font-bold py-1 px-4 border border-orange-300 rounded-full inline">
+                                26.09 - 30.12
+                            </div>
+                                <br/>
+                                жайлы бөліс
+                            </p>
+                            <p className="mt-3 text-lg md:mt-1 text-white">
+                                Расскажи о JOLTAP
+                            </p>
+                            <a
+                                href={`https://www.instagram.com/p/DPDtJM_iO9p/`}
+                                target="_blank"
+                                className="mt-3 text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-orange-400 hover:text-white transition-all duration-150"
+                            >
+                                {t("more_button", { ns: "index" })}
+                            </a>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/share_joltap.png" className="md:w-[250px] w-[300px]" alt="malyar" />
+                        </div>
+                    </div>
+                </div>
             </Carousel>
             <div className="flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
+                <a
+                    href={`https://t.me/jumystapjobs`}
+                    target={`_blank`}
+                    className="border border-gray-200 rounded-lg"
+                >
+                    <div className="w-[300px] px-3 bg-[url('/images/telegram.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
+                        <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
+                            <br />
+                            <p className="font-bold text-4xl md:text-xl">
+                                {t("telegram_vacancy", { ns: "index" })}<br />&nbsp;
+                            </p>
+
+                        </div>
+                    </div>
+                    <div className="px-3 mt-2 text-sm font-light text-gray-500">
+                        {t("telegram_subscribe", { ns: "index" })}<br />&nbsp;
+                    </div>
+                </a>
               <div
                 onClick={() => setIsOpen(true)}
                 className="border border-gray-200 rounded-lg"
               >
-                <div className="w-[300px] px-3 bg-[url('/images/image1.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
-                  <div className="flex-wrap flex gap-1">
-                    <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                        {t("enrollment_in_progress", { ns: "index" })}
-                    </div>
-                    <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                        {t("new", { ns: "index" })}
-                    </div>
-                  </div>
-                  <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                      {t("oil_change_and_tire_service", { ns: "index" })}
-                  </div>
-                </div>
-                <div className="px-3 mb-2 mt-2 text-sm font-light text-gray-500">
-                    {t("learn_oil_and_tire_replacement", { ns: "index" })}
-                </div>
-              </div>
-              <div
-                onClick={() => setIsOpen(true)}
-                className="border border-gray-200 rounded-lg"
-              >
-                <div className="w-[300px] px-3 bg-[url('/images/image2.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
-                  <div className="flex-wrap flex gap-1">
-                    <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      {t("enrollment_in_progress", { ns: "index" })}
-                    </div>
-                  </div>
-                  <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                      {t("basics_of_cabinet_furniture_manufacturing", { ns: "index" })}
-                  </div>
-                </div>
-                <div className="px-3 mt-2 text-sm font-light text-gray-500 mb-2">
-                    {t("practical_skills_for_furniture_career", { ns: "index" })}
-                </div>
-              </div>
-              <div
-                onClick={() => setIsOpen(true)}
-                className="border border-gray-200 rounded-lg"
-              >
-                <div className="w-[300px] px-3 bg-[url('/images/image3.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
-                  <div className="flex-wrap flex gap-1">
-                    <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      {t("enrollment_in_progress", { ns: "index" })}
-                    </div>
-                  </div>
-                  <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
-                      {t("shoe_repair_workshop", { ns: "index" })}
-                  </div>
-                </div>
-                <div className="px-3 mb-2 mt-2 text-sm font-light text-gray-500">
-                    {t("learn_shoe_repair_and_key_making", { ns: "index" })}
-                </div>
-              </div>
-              <div
-                onClick={() => setIsOpen(true)}
-                className="border border-gray-200 rounded-lg"
-              >
-                <div className="w-[300px] px-3 bg-[url('/images/image4.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
-                  <div className="flex-wrap flex gap-1">
-                    <div className="px-4 py-1 text-xs border border-white bg-black bg-opacity-50 rounded-full inline-block">
-                      {t("enrollment_in_progress", { ns: "index" })}
-                    </div>
-                  </div>
+                <div className="w-[300px] px-3 bg-[url('/images/3_in_1.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
                     <br />
-                      {t("electric_gas_welder", { ns: "index" })}
+                      {t("oil_change", { ns: "index" })}<br />
+                      {t("furniture_assembly", { ns: "index" })}<br />
+                      {t("polymer_painter", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mt-2 text-sm font-light text-gray-500">
-                    {t("ideal_for_industry_career", { ns: "index" })}
+                    {t("free_course", { ns: "index" })}<br />&nbsp;
                 </div>
               </div>
             </div>
             <div className="border-b border-gray-200 mt-5"></div>
               <div className='md:hidden mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                   <input
-
                       type="text"
                       value={data.searchKeyword}
                       onChange={handleSearchKeywordChange}

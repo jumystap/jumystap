@@ -1,5 +1,5 @@
 {
-    "more": "Подробнее об обучении в рамках проекта JOLTAP",
+    "more_button": "Подробнее",
     "work_skills": "рабочих навыков",
     "digital_skills": "цифровых навыков",
     "for_employers": "ТОП пользователей",
@@ -44,6 +44,11 @@
     "write_whatsapp": "Написать в WhatsApp",
     "write_site": "Написать на сайте",
     "sign_up_now": "Записаться сейчас",
-    "free_course": "Бесплатный курс!",
-    "master_the_profession_of_a_painter_using_polymer_powder_coating": "Освой профессию маляра по полимерно-порошковой покраске с JOLTAP"
+    "free_course": "Запишись на бесплатное обучение",
+    "master_the_profession_of_a_painter_using_polymer_powder_coating": "Освой профессию маляра по полимерно-порошковой покраске с JOLTAP",
+    "oil_change": "Замена масла",
+    "furniture_assembly": "Сборка мебели",
+    "polymer_painter": "Маляр полимерной покраски",
+    "telegram_subscribe": "Получайте вакансии в Telegram!",
+    "telegram_vacancy": "Подисывайся на канал с вакансиями!"
 }

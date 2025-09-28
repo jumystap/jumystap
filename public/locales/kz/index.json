@@ -1,5 +1,5 @@
 {
-    "more": "JOLTAP жобасы аясындағы оқыту туралы толығырақ",
+    "more_button": "Толығырақ",
     "work_skills": "жұмысшы дағдылар",
     "digital_skills": "цифрлық дағдылар",
     "for_employers": "Жұмыс берушілерге",
@@ -44,7 +44,11 @@
     "write_whatsapp": "Whatsapp-қа шағымдану",
     "write_site": "Сайтта шағым қалдыру",
     "sign_up_now": "Қазір тіркеліңіз",
-    "free_course": "Тегін курс!",
-    "master_the_profession_of_a_painter_using_polymer_powder_coating": "Полимерлі ұнтақ бояу маманы дағдысына JOLTAP-пен үйрен!"
-
+    "free_course": "Тегін оқытуға жазыл",
+    "master_the_profession_of_a_painter_using_polymer_powder_coating": "Полимерлі ұнтақ бояу маманы дағдысына JOLTAP-пен үйрен!",
+    "oil_change": "Май ауыстыру",
+    "furniture_assembly": "Жиһаз жинау",
+    "polymer_painter": "Полимерлік бояушы",
+    "telegram_subscribe": "Вакансияларымыз жиналған арнаға жазылыңыз!",
+    "telegram_vacancy": "Хабарламаларды Telegram арқылы қабылдаңыз!"
 }
