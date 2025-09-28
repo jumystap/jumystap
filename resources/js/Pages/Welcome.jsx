@@ -248,7 +248,7 @@ export default function Welcome({
                             <p className="font-bold text-lg md:text-xl text-orange-500">
                                 {t("new_paid_courses_from_skillstap", { ns: "index" })}
                             </p>
-                            <p className="text-md md:mt-1">
+                            <p className="text-sm md:mt-1">
                                 1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
                                 2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
                                 3. {t("mobilograph_pro", { ns: "index" })}<br/>
@@ -306,10 +306,7 @@ export default function Welcome({
                     <div className="w-[300px] px-3 bg-[url('/images/telegram.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                         <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
                             <br />
-                            <p className="font-bold text-4xl md:text-xl">
                                 {t("telegram_vacancy", { ns: "index" })}<br />&nbsp;
-                            </p>
-
                         </div>
                     </div>
                     <div className="px-3 mt-2 text-sm font-light text-gray-500">
