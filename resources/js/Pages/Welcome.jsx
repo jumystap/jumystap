@@ -252,8 +252,7 @@ export default function Welcome({
                                 1. {t("basics_of_earning_money_on_youtube", { ns: "index" })}<br/>
                                 2. {t("how_to_open_a_coffee_shop", { ns: "index" })}<br/>
                                 3. {t("mobilograph_pro", { ns: "index" })}<br/>
-                                4. {t("basic_course_on_ai", { ns: "index" })}<br/>
-                                5. {t("public_speaking", { ns: "index" })}
+                                4. {t("basic_course_on_ai", { ns: "index" })}
                             </p>
                         </div>
 
