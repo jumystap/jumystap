@@ -51,5 +51,13 @@ return [
             "category_tm"   => 'Трамвай (Tm)',
             "category_tb"   => 'Троллейбус (Tb)',
         ],
-    ]
+    ],
+    'roles'         => [
+        "employer"     => "Жұмыс беруші",
+        "employee"     => "Жұмыс іздеуші",
+        "company"      => "Тапсырыс беруші",
+        "admin"        => "Администратор",
+        "moderator"    => "Модератор",
+        "non_graduate" => "Түлек емес",
+    ],
 ];

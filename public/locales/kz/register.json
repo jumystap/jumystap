@@ -43,8 +43,8 @@
     "full_name": "Аты-жөні",
     "company_name": "Компания атауы",
     "email": "Электрондық пошта",
-    "birth_date": "Туған күніңіз",
-    "select_birth_date": "Туған күніңізді таңдаңыз",
+    "date_of_birth": "Туған күніңіз",
+    "select_date_of_birth": "Туған күніңізді таңдаңыз",
     "sex": "Жынысы",
     "male": "Ер",
     "female": "Әйел",
@@ -74,8 +74,9 @@
     "all_fields_required": "Барлық өрістерді толтыру қажет.",
     "company_description_required": "Компания сипаттамасы міндетті түрде толтырылуы керек.",
     "registration_error": "Тіркеу қатесі",
-
-
+    "role": "Рөл",
+    "profile_successfully_updated": "Профиль сәтті жаңартылды!",
+    "profile_update_error": "Профильді жаңарту қатесі!",
     "save": "Сақтау"
 }
 

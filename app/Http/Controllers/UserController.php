@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Models\Announcement;
 use App\Models\Visit;
 use App\Models\UserResume;
@@ -124,34 +125,18 @@ class UserController extends Controller
     public function edit(): mixed
     {
         $user = Auth::user()->load('role');
-        $professions = $this->userService->getAllProfessions();
-        $userProfessions = $this->userService->getUserProfessions($user->id);
+        $roles = Roles::options();
 
         return Inertia::render('UpdateUser', [
             'user' => $user,
-            'userProfessions' => $userProfessions,
-            'professions' => $professions,
+            'roles' => $roles,
         ]);
     }
 
-    public function update(Request $request): SymfonyRedirectResponse
+    public function update(ProfileUpdateRequest $request): SymfonyRedirectResponse
     {
         $user = Auth::user();
-
-        $validated = $request->validate([
-            'phone' => 'required|string',
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'password' => 'nullable|string|min:8|confirmed',
-            'password_confirmation' => "nullable",
-            'avatar' => 'nullable|file|max:2048',
-            'ipStatus1' => 'nullable|string',
-            'ipStatus2' => 'nullable|string',
-            'ipStatus3' => 'nullable|string',
-            'description' => 'nullable|string',
-            'age' => 'nullable',
-            'date_of_birth' => 'nullable'
-        ]);
+        $validated = $request->validated();
 
         try {
             if (!empty($validated['ipStatus1'])) {

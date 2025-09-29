@@ -148,7 +148,8 @@ return [
     'attributes' => [
         'name'                  => 'Аты',
         'username'              => 'Лақап аты',
-        'email'                 => 'E-Mail мекенжай',
+        'email'                 => 'Электрондық пошта',
+        'date_of_birth'         => 'Туған күніңіз',
         'first_name'            => 'Аты',
         'last_name'             => 'Тегі',
         'password'              => 'Құпиясөз',
@@ -168,7 +169,7 @@ return [
         'minute'                => 'Минут',
         'second'                => 'Секунд',
         'content'               => 'Контент',
-        'description'           => 'Сипаттамасы',
+        'description'           => 'Сипаттама',
         'excerpt'               => 'Үзінді',
         'date'                  => 'Күні',
         'time'                  => 'Уақыт',

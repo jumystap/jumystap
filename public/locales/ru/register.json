@@ -43,8 +43,8 @@
     "full_name": "Имя и Фамилия",
     "company_name": "Название компании",
     "email": "Электронная почта",
-    "birth_date": "Дата рождения",
-    "select_birth_date": "Выберите дату рождения",
+    "date_of_birth": "Дата рождения",
+    "select_date_of_birth": "Выберите дату рождения",
     "sex": "Пол",
     "male": "Мужской",
     "female": "Женский",
@@ -74,6 +74,8 @@
     "all_fields_required": "Все поля обязательны для заполнения.",
     "company_description_required": "Описание компании обязательно для заполнения.",
     "registration_error": "Ошибка регистрации",
-
+    "role": "Роль",
+    "profile_successfully_updated": "Профиль успешно обновлен!",
+    "profile_update_error": "Ошибка при обновлении профиля!",
     "save": "Cохранить"
 }

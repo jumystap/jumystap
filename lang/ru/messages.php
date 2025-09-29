@@ -51,5 +51,13 @@ return [
             "category_tm"   => 'Трамвай (Tm)',
             "category_tb"   => 'Троллейбус (Tb)',
         ],
-    ]
+    ],
+    'roles'         => [
+        "employer"     => "Работодатель",
+        "employee"     => "Соискатель",
+        "company"      => "Заказчик",
+        "admin"        => "Администратор",
+        "moderator"    => "Модератор",
+        "non_graduate" => "Не выпускник",
+    ],
 ];

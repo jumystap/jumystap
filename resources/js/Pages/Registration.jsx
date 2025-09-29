@@ -234,13 +234,13 @@ export default function Registration({ errors, professions }) {
                                 {data.role == 'employee' && (
                                     <div className='flex w-[350px] gap-x-5'>
                                         <div className='w-[50%]'>
-                                            <div className='mt-5 text-sm font-semibold'>{t('birth_date')}</div>
+                                            <div className='mt-5 text-sm font-semibold'>{t('date_of_birth')}</div>
                                             <input
                                                 type='date'
                                                 value={data.date_of_birth}
                                                 onChange={(e) => setData('date_of_birth', e.target.value)}
                                                 className='w-full mt-1 border-gray-300 rounded-lg'
-                                                placeholder={t('select_birth_date')}
+                                                placeholder={t('select_date_of_birth')}
                                             />
                                         </div>
                                         <div className='w-[50%]'>
