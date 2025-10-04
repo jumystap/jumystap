@@ -38,15 +38,10 @@ const UpdateUser = ({user, roles}) => {
         if (data.role_id == employeeRole) {
             setData((prev) => ({
                 ...prev,
-                description: '',
             }));
         } else {
             setData((prev) => ({
                 ...prev,
-                ipStatus1: 'no',
-                ipStatus2: 'no',
-                ipStatus3: 'no',
-                date_of_birth: '',
             }));
         }
     }, [data.role_id]);
@@ -116,7 +111,7 @@ const UpdateUser = ({user, roles}) => {
                     <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="mb-2">
                             <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="name">
-                                {t('name_label', {ns: 'register'})}
+                                {data.role_id == employeeRole ? t('name_label', {ns: 'register'}) : t('company_name_label', {ns: 'register'})}
                             </label>
                             <input
                                 type="text"

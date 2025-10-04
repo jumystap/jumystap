@@ -40,7 +40,7 @@ class ProfileUpdateRequest extends FormRequest
             ];
         } else {
             $additional = [
-                'description' => 'required|string|max:3000|min:100',
+                'description' => 'required|string|max:3000|min:50',
             ];
         }
 
