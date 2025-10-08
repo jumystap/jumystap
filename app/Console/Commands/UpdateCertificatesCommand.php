@@ -7,14 +7,14 @@ use App\Models\UserProfession;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
-class GetCertificatesCommand extends Command
+class UpdateCertificatesCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:get-certificates {type}';
+    protected $signature = 'app:update-certificates {type}';
 
     /**
      * The console command description.
@@ -32,15 +32,8 @@ class GetCertificatesCommand extends Command
         $baseUri = config('services.bitrix.uri');
         $startId = 0;
 
-        $forStart = UserProfession::query()
-            ->where('type', $type)
-            ->orderBy('bitrix_id', 'DESC')
-            ->first();
-        if ($forStart) {
-            $startId = $forStart->bitrix_id;
-        }
 
-        $stopId = $startId + 100;
+        $stopId = $startId + $type === 'digital' ? 7000 : 10300;
 
         $professionMap = [
             "Швея"                                     => 1,
