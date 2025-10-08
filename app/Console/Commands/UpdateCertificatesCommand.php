@@ -101,10 +101,13 @@ class UpdateCertificatesCommand extends Command
                                     $params
                                 );
                             $user->update(['is_graduate' => 1]);
+                            $this->info("Certificate by id: $i updated!");
                         } else {
                             $this->warn("$phone not found!");
                         }
                     }
+                }else{
+                    $this->warn("Certificate by id: $i not found!");
                 }
             }
         }
