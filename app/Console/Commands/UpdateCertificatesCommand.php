@@ -33,7 +33,7 @@ class UpdateCertificatesCommand extends Command
         $startId = 0;
 
 
-        $stopId = $startId + $type === 'digital' ? 7000 : 10300;
+        $stopId = $type === 'digital' ? 7000 : 10300;
 
         $professionMap = [
             "Швея"                                     => 1,
