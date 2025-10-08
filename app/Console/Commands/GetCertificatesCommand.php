@@ -78,7 +78,7 @@ class GetCertificatesCommand extends Command
                 $data = $response->json();
                 if (!empty($data['result'])) {
                     foreach ($data['result'] as $certificate) {
-                        if(!isset($certificate['PHONE'])){
+                        if(!isset($certificate['PHONE']) || !isset($certificate['PROFESSION'])){
                             continue;
                         }
                         $phone = preg_replace('/\D+/', '', $certificate['PHONE']);
