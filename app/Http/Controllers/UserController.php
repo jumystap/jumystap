@@ -164,9 +164,9 @@ class UserController extends Controller
         if($user->role_id != Roles::EMPLOYEE->value){
             return Inertia::render('NotFound');
         }
-        if($user->status === 'В активном поиске' || count($user->response) > 0){
-            $contactShow = true;
-        }
+//        if($user->status === 'В активном поиске' || count($user->response) > 0){
+//            $contactShow = true;
+//        }
 
         $userProfessions = $this->userService->getUserProfessions($id);
 
