@@ -305,11 +305,11 @@ export default function Welcome({
                     <div className="w-[300px] px-3 bg-[url('/images/telegram.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                         <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
                             <br />
-                                {t("telegram_vacancy", { ns: "index" })}<br />&nbsp;
+                                {t("telegram_subscribe", { ns: "index" })}<br />&nbsp;
                         </div>
                     </div>
                     <div className="px-3 mt-2 text-sm font-light text-gray-500">
-                        {t("telegram_subscribe", { ns: "index" })}<br />&nbsp;
+                        {t("telegram_vacancy", { ns: "index" })}<br />&nbsp;
                     </div>
                 </a>
               <div
