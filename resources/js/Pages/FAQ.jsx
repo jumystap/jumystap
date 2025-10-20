@@ -72,25 +72,25 @@ export default function FAQ() {
                 t('order_answer_65', { ns: 'faq' })
             ]
         },
-        {
-            question: t('question_7', { ns: 'faq' }),
-            answers: [
-                t('answer_71', { ns: 'faq' }),
-                t('answer_72', { ns: 'faq' }),
-                t('answer_73', { ns: 'faq' }),
-                t('answer_74', { ns: 'faq' }),
-                t('answer_75', { ns: 'faq' }),
-                t('answer_76', { ns: 'faq' }),
-                t('answer_77', { ns: 'faq' }),
-                t('answer_78', { ns: 'faq' }),
-                t('answer_79', { ns: 'faq' }),
-                t('answer_710', { ns: 'faq' }),
-                t('answer_711', { ns: 'faq' }),
-                t('answer_712', { ns: 'faq' }),
-                t('answer_713', { ns: 'faq' }),
-                t('answer_714', { ns: 'faq' })
-            ]
-        },
+        // {
+        //     question: t('question_7', { ns: 'faq' }),
+        //     answers: [
+        //         t('answer_71', { ns: 'faq' }),
+        //         t('answer_72', { ns: 'faq' }),
+        //         t('answer_73', { ns: 'faq' }),
+        //         t('answer_74', { ns: 'faq' }),
+        //         t('answer_75', { ns: 'faq' }),
+        //         t('answer_76', { ns: 'faq' }),
+        //         t('answer_77', { ns: 'faq' }),
+        //         t('answer_78', { ns: 'faq' }),
+        //         t('answer_79', { ns: 'faq' }),
+        //         t('answer_710', { ns: 'faq' }),
+        //         t('answer_711', { ns: 'faq' }),
+        //         t('answer_712', { ns: 'faq' }),
+        //         t('answer_713', { ns: 'faq' }),
+        //         t('answer_714', { ns: 'faq' })
+        //     ]
+        // },
         {
             question: t('question_8', { ns: 'faq' }),
             answers: [
@@ -99,32 +99,32 @@ export default function FAQ() {
                 t('answer_83', { ns: 'faq' })
             ]
         },
-        {
-            question: t('question_9', { ns: 'faq' }),
-            answers: [
-                t('answer_91', { ns: 'faq' }),
-                t('answer_92', { ns: 'faq' }),
-                t('answer_93', { ns: 'faq' }),
-                t('answer_94', { ns: 'faq' })
-            ]
-        },
-        {
-            question: t('question_10', { ns: 'faq' }),
-            answers: [t('answer_10', { ns: 'faq' })]
-        },
-        {
-            question: t('question_11', { ns: 'faq' }),
-            answers: [
-                t('answer_110', { ns: 'faq' }),
-                t('graduate_answer_110', { ns: 'faq' }),
-                t('graduate_answer_111', { ns: 'faq' }),
-                t('graduate_answer_112', { ns: 'faq' }),
-                t('graduate_answer_113', { ns: 'faq' }),
-                t('employer_answer_110', { ns: 'faq' }),
-                t('employer_answer_111', { ns: 'faq' }),
-                t('employer_answer_112', { ns: 'faq' })
-            ]
-        },
+        // {
+        //     question: t('question_9', { ns: 'faq' }),
+        //     answers: [
+        //         t('answer_91', { ns: 'faq' }),
+        //         t('answer_92', { ns: 'faq' }),
+        //         t('answer_93', { ns: 'faq' }),
+        //         t('answer_94', { ns: 'faq' })
+        //     ]
+        // },
+        // {
+        //     question: t('question_10', { ns: 'faq' }),
+        //     answers: [t('answer_10', { ns: 'faq' })]
+        // },
+        // {
+        //     question: t('question_11', { ns: 'faq' }),
+        //     answers: [
+        //         t('answer_110', { ns: 'faq' }),
+        //         t('graduate_answer_110', { ns: 'faq' }),
+        //         t('graduate_answer_111', { ns: 'faq' }),
+        //         t('graduate_answer_112', { ns: 'faq' }),
+        //         t('graduate_answer_113', { ns: 'faq' }),
+        //         t('employer_answer_110', { ns: 'faq' }),
+        //         t('employer_answer_111', { ns: 'faq' }),
+        //         t('employer_answer_112', { ns: 'faq' })
+        //     ]
+        // },
         {
             question: t('question_12', { ns: 'faq' }),
             answers: [
