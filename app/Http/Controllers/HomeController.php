@@ -133,7 +133,7 @@ class HomeController extends Controller
                             ->orWhere("description", "like", "%{$keyword}%");
                     });
                 })
-                ->orderByRaw('FIELD(id, ' . implode(',', $ids) . ') DESC')
+                ->orderByRaw('FIELD(id, ' . implode(',', $ids) . ')')
                 ->orderBy("created_at", "desc")
                 ->paginate(10)
                 ->withQueryString();
