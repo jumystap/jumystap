@@ -124,7 +124,7 @@ class HomeController extends Controller
 
         // Гости и пользователи без резюме
         if (empty($announcements)) {
-            $ids = [4417, 4399, 4372, 4142, 4363, 4376, 4186, 4289, 4112, 4377, 4156, 4206];
+            $ids = [4206, 4156, 4377, 4112, 4289, 4186, 4376, 4363, 4142, 4372, 4399, 4417];
 
             $announcements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
                 ->when($searchKeyword, function ($query, $keyword) {
