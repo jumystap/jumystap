@@ -110,7 +110,7 @@ class HomeController extends Controller
                     ->merge($otherAnnouncements);
 
                 $currentPage = request()->get("page", 1);
-                $perPage = 12;
+                $perPage = 10;
 
                 $announcements = new LengthAwarePaginator(
                     $allAnnouncements->forPage($currentPage, $perPage)->values()->all(),
