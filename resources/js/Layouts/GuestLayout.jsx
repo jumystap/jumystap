@@ -29,21 +29,13 @@ const items = [
   {
     key: "1",
     label: (
-      <Link href="/reviews" className="block py-2 flex items-center">
-        Оставить отзыв
-      </Link>
-    ),
-  },
-  {
-    key: "2",
-    label: (
       <Link href="/profile" className="block py-2">
         Профиль
       </Link>
     ),
   },
   {
-    key: "3",
+    key: "2",
     label: (
       <Link href="/fav" className="block py-2">
         Избранные
@@ -51,7 +43,7 @@ const items = [
     ),
   },
   {
-    key: "4",
+    key: "3",
     label: (
       <Link href="/about" className="block py-2">
         О платформе
