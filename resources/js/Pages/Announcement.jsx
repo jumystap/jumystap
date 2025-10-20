@@ -236,7 +236,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     )}
                                 </div>
                                 <div className="flex-wrap">
-                                    {announcement.responses_count !== 0 && (
+                                    {announcement.responses_count > 0 && (
                                         <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
                                             <div className="flex items-center gap-x-1">
                                                 <HiOutlineUserGroup className="text-xl" />
@@ -244,22 +244,22 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                             </div>
                                         </div>
                                     )}
-                                    {announcement.visits_count !== 0 && (
-                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                            <div className="flex items-center gap-x-1">
-                                                <MdOutlineRemoveRedEye className="text-xl" />
-                                                <div>{announcement.visits_count} {announcement.visits_count === 1 ? t('view') : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? t('view2') : t('views')}</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {orderCount !== 0 && (
-                                        <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">
-                                            <div className="flex items-center gap-x-1">
-                                                <MdOutlineWorkOutline className="text-xl" />
-                                                <div>{orderCount} {orderCount === 1 ? t('order') : t('orders')}</div>
-                                            </div>
-                                        </div>
-                                    )}
+                                    {/*{announcement.visits_count !== 0 && (*/}
+                                    {/*    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">*/}
+                                    {/*        <div className="flex items-center gap-x-1">*/}
+                                    {/*            <MdOutlineRemoveRedEye className="text-xl" />*/}
+                                    {/*            <div>{announcement.visits_count} {announcement.visits_count === 1 ? t('view') : (announcement.visits_count >= 2 && announcement.visits_count <= 4) ? t('view2') : t('views')}</div>*/}
+                                    {/*        </div>*/}
+                                    {/*    </div>*/}
+                                    {/*)}*/}
+                                    {/*{orderCount !== 0 && (*/}
+                                    {/*    <div className="inline-block mr-1 mt-3 px-4 text-sm text-blue-500 py-2 rounded-full border border-blue-500">*/}
+                                    {/*        <div className="flex items-center gap-x-1">*/}
+                                    {/*            <MdOutlineWorkOutline className="text-xl" />*/}
+                                    {/*            <div>{orderCount} {orderCount === 1 ? t('order') : t('orders')}</div>*/}
+                                    {/*        </div>*/}
+                                    {/*    </div>*/}
+                                    {/*)}*/}
                                 </div>
                             </div>
                         </div>
