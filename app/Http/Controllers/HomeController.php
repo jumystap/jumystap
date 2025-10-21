@@ -112,13 +112,13 @@ class HomeController extends Controller
                 $currentPage = request()->get("page", 1);
                 $perPage = 10;
 
-                $announcements = new LengthAwarePaginator(
-                    $allAnnouncements->forPage($currentPage, $perPage)->values()->all(),
-                    $allAnnouncements->count(),
-                    $perPage,
-                    $currentPage,
-                    ["path" => request()->url(), "query" => request()->query()]
-                );
+//                $announcements = new LengthAwarePaginator(
+//                    $allAnnouncements->forPage($currentPage, $perPage)->values()->all(),
+//                    $allAnnouncements->count(),
+//                    $perPage,
+//                    $currentPage,
+//                    ["path" => request()->url(), "query" => request()->query()]
+//                );
             }
         }
 
