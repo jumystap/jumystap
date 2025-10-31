@@ -16,7 +16,7 @@ i18n
       lookupLocalStorage: 'i18nextLng',
     },
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
+      loadPath: '/locale/{{lng}}/{{ns}}.json'
     },
     debug: false,
     cache: false,
