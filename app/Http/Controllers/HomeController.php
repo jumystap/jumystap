@@ -112,20 +112,18 @@ class HomeController extends Controller
                 $currentPage = request()->get("page", 1);
                 $perPage = 10;
 
-//                $announcements = new LengthAwarePaginator(
-//                    $allAnnouncements->forPage($currentPage, $perPage)->values()->all(),
-//                    $allAnnouncements->count(),
-//                    $perPage,
-//                    $currentPage,
-//                    ["path" => request()->url(), "query" => request()->query()]
-//                );
+                $announcements = new LengthAwarePaginator(
+                    $allAnnouncements->forPage($currentPage, $perPage)->values()->all(),
+                    $allAnnouncements->count(),
+                    $perPage,
+                    $currentPage,
+                    ["path" => request()->url(), "query" => request()->query()]
+                );
             }
         }
 
         // Гости и пользователи без резюме
         if (empty($announcements)) {
-            $ids = [4206, 4156, 4377, 4112, 4289, 4186, 4376, 4363, 4142, 4372, 4399, 4417];
-
             $announcements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
                 ->when($searchKeyword, function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
@@ -133,13 +131,9 @@ class HomeController extends Controller
                             ->orWhere("description", "like", "%{$keyword}%");
                     });
                 })
-                // сортируем так, чтобы выбранные ID шли первыми
-                ->orderByRaw('FIELD(id, ' . implode(',', $ids) . ') DESC')
-                // а потом уже по дате (для остальных)
                 ->orderBy("created_at", "desc")
-                ->paginate(12)
+                ->paginate(10)
                 ->withQueryString();
-
         }
 
         // Доп. объявления
