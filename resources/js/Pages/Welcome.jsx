@@ -268,27 +268,27 @@ export default function Welcome({
                         </button>
                     </div>
                 </div>
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-200 to-violet-100 mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="font-bold text-2xl text-violet-900">
-                                {t("do_you_want_to_earn_from_400", { ns: "index" })}
-                            </p>
-                            <p className="md:text-lg text-black">
-                                {t("master_the_profession_of_a_sales_manager", { ns: "index" })}<br/>
-                            </p>
-                            <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}
-                                    className="mt-3 text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-violet-900 text-white hover:bg-white transition-all duration-150 hover:text-violet-900"
-                            >
-                                {t("more_button", { ns: "index" })}
-                            </button>
-                        </div>
+                {/*<div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-violet-200 to-violet-100 mt-2 rounded-lg md:px-10 md:py-7 text-white">*/}
+                {/*    <div className="flex">*/}
+                {/*        <div>*/}
+                {/*            <p className="font-bold text-2xl text-violet-900">*/}
+                {/*                {t("do_you_want_to_earn_from_400", { ns: "index" })}*/}
+                {/*            </p>*/}
+                {/*            <p className="md:text-lg text-black">*/}
+                {/*                {t("master_the_profession_of_a_sales_manager", { ns: "index" })}<br/>*/}
+                {/*            </p>*/}
+                {/*            <button onClick={(e) => handleButtonClick(e, 'https://forms.amocrm.ru/rwcxdlc', 1)}*/}
+                {/*                    className="mt-3 text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-violet-900 text-white hover:bg-white transition-all duration-150 hover:text-violet-900"*/}
+                {/*            >*/}
+                {/*                {t("more_button", { ns: "index" })}*/}
+                {/*            </button>*/}
+                {/*        </div>*/}
 
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/sales.png" className="md:w-[300px] w-[295px]" alt="scam" />
-                        </div>
-                    </div>
-                </div>
+                {/*        <div className="hidden md:block ml-auto">*/}
+                {/*            <img src="/images/sales.png" className="md:w-[300px] w-[295px]" alt="scam" />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-orange-500 to-orange-500 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
