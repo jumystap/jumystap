@@ -37,11 +37,14 @@ class Kernel extends HttpKernel
             EncryptCookies::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            TrackVisits::class,
         ],
 
         'api' => [
             'throttle:api',
         ],
+    ];
+
+    protected $routeMiddleware = [
+        'track.visits' => TrackVisits::class,
     ];
 }
