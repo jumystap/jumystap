@@ -24,9 +24,7 @@ Route::get('/announcements', [AnnouncementController::class, 'index'])->name('an
 Route::get('/profession/{group}', [ProfessionController::class, 'index'])->name('profession');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::middleware(['track.visits'])->group(function () {
-    Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
-});
+Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
 Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);

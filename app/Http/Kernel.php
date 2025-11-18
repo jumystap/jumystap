@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\TrackVisits;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Middleware\TrustProxies;
@@ -42,9 +41,5 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:api',
         ],
-    ];
-
-    protected $routeMiddleware = [
-        'track.visits' => TrackVisits::class,
     ];
 }
