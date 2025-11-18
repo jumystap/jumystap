@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\TrackVisits;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Middleware\TrustProxies;
@@ -36,6 +37,7 @@ class Kernel extends HttpKernel
             EncryptCookies::class,
             StartSession::class,
             ShareErrorsFromSession::class,
+            TrackVisits::class,
         ],
 
         'api' => [
