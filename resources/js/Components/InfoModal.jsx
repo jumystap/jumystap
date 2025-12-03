@@ -172,6 +172,7 @@ export default function InfoModal({ isOpen, onClose, specializations }) {
                                         <Select.Option value='Нура'>Нура</Select.Option>
                                         <Select.Option value='Байконур'>Байконур</Select.Option>
                                         <Select.Option value='Сарыарка'>Сарыарка</Select.Option>
+                                        <Select.Option value='Сарайшык'>Сарайшык</Select.Option>
                                     </Select>
                                 </>
                             )}

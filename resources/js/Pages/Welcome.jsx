@@ -360,7 +360,7 @@ export default function Welcome({
                   />
                   <button
                       className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
-                      onClick={handleSearch}
+                      onClick={handleSearchAnnouncements}
                   >
                       {t('search', { ns: 'announcements' })}
                   </button>
@@ -736,11 +736,11 @@ export default function Welcome({
                     <FaLocationDot className="text-red-600" />
                     {urgent.city}
                   </div>
-                  {/*<div className="text-sm font-light text-gray-500">*/}
-                  {/*  {i18n.language === "ru" ? "Размещено" : ""}{" "}*/}
-                  {/*  {`${formatDistanceToNow(new Date(urgent.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
-                  {/*  {i18n.language === "kz" && ""}*/}
-                  {/*</div>*/}
+                  <div className="text-sm font-light text-gray-500">
+                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
+                    {`${formatDistanceToNow(new Date(urgent.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {i18n.language === "kz" && ""}
+                  </div>
                 </Link>
               ))}
               {top_announcements.map((top, key) => (
@@ -780,11 +780,11 @@ export default function Welcome({
                     <FaLocationDot className="text-blue-500" />
                     {top.city}
                   </div>
-                  {/*<div className="text-sm font-light text-gray-500">*/}
-                  {/*  {i18n.language === "ru" ? "Размещено" : ""}{" "}*/}
-                  {/*  {`${formatDistanceToNow(new Date(top.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
-                  {/*  {i18n.language === "kz" && ""}*/}
-                  {/*</div>*/}
+                  <div className="text-sm font-light text-gray-500">
+                    {i18n.language === "ru" ? "Размещено" : ""}{" "}
+                    {`${formatDistanceToNow(new Date(top.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {i18n.language === "kz" && ""}
+                  </div>
                 </Link>
               ))}
             </div>

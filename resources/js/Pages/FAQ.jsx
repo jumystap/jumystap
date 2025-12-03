@@ -166,7 +166,7 @@ export default function FAQ() {
                             {t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
                         </div>
                         <div className='mt-10 text-sm'>
-                            <div>+7 707 221 31 31</div>
+                            <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
                             <div className='mt-3'>janamumkindik@gmail.com</div>
                         </div>
                     </div>

@@ -304,6 +304,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                     <Option value="Нура">Нура</Option>
                                     <Option value="Сарыарка">Сарыарка</Option>
                                     <Option value="Байконур">Байконур</Option>
+                                    <Option value="Сарайшык">Сарайшык</Option>
                                 </Select>
                             </Form.Item>
                         )}
@@ -658,7 +659,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                         <div className="text-lg">{t('troubles_with_creation')}</div>
                         <div className="text-sm font-light text-gray-500">{t('contact_for_help')}</div>
                         <div className="mt-10 text-sm">
-                            <div>+7 707 221 31 31</div>
+                            <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
                             <div className="ml-auto">janamumkindik@gmail.com</div>
                         </div>
                     </div>

@@ -24,7 +24,7 @@ import { IoSchoolOutline } from "react-icons/io5";
 import { Button, Dropdown, Space } from "antd";
 import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
 
-import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaTelegram } from "react-icons/fa";
 const items = [
   {
     key: "1",
@@ -120,7 +120,7 @@ export default function Guest({ children }) {
                 changeLanguage(i18n.language === "ru" ? "kz" : "ru")
               }
             >
-              {i18n.language == "ru" ? "Рус" : "Қаз"}
+              {i18n.language == "ru" ? "Поменять язык" : "Tілді өзгерту"}
             </div>
           </div>
         </div>
@@ -346,6 +346,9 @@ export default function Guest({ children }) {
             <div></div>
               <div className="md:absolute md:bottom-5 text-md text-gray-500">
                   <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
+                  <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
+                      <FaTelegram className="text-xl" /> <span className="ml-1">Вакансии в Telegram</span>
+                  </a>
                   <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
                       <FaInstagram className="text-xl" /> <span className="ml-1">Instagram JOLTAP</span>
                   </a>
