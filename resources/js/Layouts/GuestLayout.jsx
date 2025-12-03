@@ -120,7 +120,7 @@ export default function Guest({ children }) {
                 changeLanguage(i18n.language === "ru" ? "kz" : "ru")
               }
             >
-              {i18n.language == "ru" ? "Поменять язык" : "Tілді өзгерту"}
+              {i18n.language == "ru" ? "Tілді өзгерту" : "Поменять язык"}
             </div>
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function Guest({ children }) {
                       />
                   </svg>
 
-                  {i18n.language == "ru" ? "Поменять язык" : "Тілді өзгерту"}
+                  {i18n.language == "ru" ? "Tілді өзгерту" : "Поменять язык"}
               </Button>
 
             {!auth.user ? (
@@ -345,10 +345,10 @@ export default function Guest({ children }) {
             )}
             <div></div>
               <div className="md:absolute md:bottom-5 text-md text-gray-500">
-                  <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
                   <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
-                      <FaTelegram className="text-xl" /> <span className="ml-1">Вакансии в Telegram</span>
+                      <FaTelegram className="text-xl" /> <span className="ml-1">Получайте вакансии в Telegram!</span>
                   </a>
+                  <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
                   <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer" className="flex justify-start">
                       <FaInstagram className="text-xl" /> <span className="ml-1">Instagram JOLTAP</span>
                   </a>
