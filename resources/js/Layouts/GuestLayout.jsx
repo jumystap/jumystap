@@ -290,7 +290,7 @@ export default function Guest({ children }) {
                       />
                   </svg>
 
-                  {i18n.language == "ru" ? "Смена языка" : "Тілді өзгерту"}
+                  {i18n.language == "ru" ? "Поменять язык" : "Тілді өзгерту"}
               </Button>
 
             {!auth.user ? (
