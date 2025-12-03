@@ -383,11 +383,11 @@ export default function Welcome({
                         {t("urgent", { ns: "index" })}
                     </div>
                   </div>
-                  {/*<div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">*/}
-                  {/*  {i18n.language == "ru" ? "Размещено" : ""}{" "}*/}
-                  {/*  {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
-                  {/*  {i18n.language == "kz" && ""}*/}
-                  {/*</div>*/}
+                  <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500 flex items-center">
+                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
+                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {i18n.language == "kz" && ""}
+                  </div>
                 </div>
                 <div className="md:mt-7 mt-5 text-lg font-bold">
                   {anonce.title}
@@ -456,11 +456,11 @@ export default function Welcome({
                         {t("top", { ns: "index" })}
                     </div>
                   </div>
-                  {/*<div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">*/}
-                  {/*  {i18n.language == "ru" ? "Размещено" : ""}{" "}*/}
-                  {/*  {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}*/}
-                  {/*  {i18n.language == "kz" && ""}*/}
-                  {/*</div>*/}
+                  <div className="ml-auto md:text-sm text-[10pt] text-right text-gray-500">
+                    {i18n.language == "ru" ? "Размещено" : ""}{" "}
+                    {`${formatDistanceToNow(new Date(anonce.published_at), { locale: i18n.language === "ru" ? ru : kz, addSuffix: true })}`}{" "}
+                    {i18n.language == "kz" && ""}
+                  </div>
                 </div>
                 <div className="md:mt-7 mt-5 text-lg font-bold">
                   {anonce.title}
@@ -528,7 +528,7 @@ export default function Welcome({
                       />
                       <button
                           className='text-white rounded-lg bg-blue-500 py-2 px-5'
-                          onClick={handleSearch}
+                          onClick={handleSearchAnnouncements}
                       >
                           {t('search', { ns: 'announcements' })}
                       </button>
