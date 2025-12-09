@@ -9,6 +9,7 @@
     "home": "Басты бет",
     "create_announcement": "Хабарландыру қосу",
     "announcements": "Жұмыс орындар",
+    "nav_for_announcements": "Жұмыс орындар",
     "employees": "Жұмыс іздеушілер",
     "about": "Платформа туралы",
     "about_education": "Оқу туралы",
@@ -54,5 +55,8 @@
     "intimate_services": "жыныстық қызметтер",
     "other_custom_option": "басқа (өз нұсқаңыз)",
     "custom_option": "өз нұсқаңыз",
-    "reason_required": "Өз нұсқаңызды толтырыңыз."
+    "reason_required": "Өз нұсқаңызды толтырыңыз.",
+    "more": "Тағы",
+    "profile": "Профиль",
+    "favorite": "Таңдалғандар"
 }

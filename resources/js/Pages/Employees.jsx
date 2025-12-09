@@ -1,9 +1,10 @@
-import { useCallback, useState, memo } from 'react';
+import React, { useCallback, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { Head, Link, router } from '@inertiajs/react';
 import Pagination from '@/Components/Pagination.jsx';
 import { RiVerifiedBadgeFill, RiSearch2Line } from "react-icons/ri";
+import FeedbackModal from "@/Components/FeedbackModal.jsx";
 
 // Мемоизация компонента FilterSelect для предотвращения лишних рендеров
 const FilterSelect = memo(({ name, options, value, onChange }) => (
@@ -56,6 +57,15 @@ export default function Employees({ auth, employees, professions, filters = {} }
         profession: filters.profession || '',
         graduateStatus: filters.graduateStatus || 'all',
     });
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleFeedbackSubmit = (feedback) => {
+        axios.post('/send-feedback', { feedback }).then((response) => {
+            console.log(t('feedback_sent', { ns: 'header' }));
+        }).catch((error) => {
+            console.error(error);
+        });
+    };
 
     // Используем useCallback для мемоизации обработчиков
     const handleSearch = useCallback(() => {
@@ -101,28 +111,33 @@ export default function Employees({ auth, employees, professions, filters = {} }
             <Head title="Биржа фрилансеров в Астане | Поиск работы и услуг фрилансеров">
                 <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
             </Head>
+            <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
 
             <div className='grid grid-cols-1 md:grid-cols-7 gap-6'>
                 <div className='col-span-5'>
-                    <div className='m-5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-xl shadow-lg'>
-                        <div className='p-8'>
-                            <h1 className='text-2xl font-bold text-white mb-4 text-center md:text-left'>
-                                {t('for_everyone', { ns: 'index' })}
-                            </h1>
-                            <div className='flex flex-col md:flex-row gap-4'>
-                                <Link
-                                    href="/announcements/create"
-                                    className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
-                                >
-                                    {t('post_announcement', { ns: 'carousel' })}
-                                </Link>
-                                <Link
-                                    href="/employees"
-                                    className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
-                                >
-                                    {t('find_employee', { ns: 'carousel' })}
-                                </Link>
+                    <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                        <div>
+                            <div className='font-bold text-lg md:text-xl'>
+                                {t('get_free_training', { ns: 'announcements' })}
                             </div>
+                            <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'announcements' })}</div>
+                            <div className='flex gap-x-5 mt-3 items-center'>
+                                <div
+                                    onClick={() => setIsOpen(true)}
+                                    className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
+                                >
+                                    {t('submit_an_application', { ns: 'announcements' })}
+                                </div>
+                                <a
+                                    href='https://www.instagram.com/joltap.kz'
+                                    className='block text-white text-sm font-light md:text-sm'
+                                >
+                                    {t('detail', { ns: 'announcements' })}
+                                </a>
+                            </div>
+                        </div>
+                        <div className='ml-auto pt-2'>
+                            <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                         </div>
                     </div>
 

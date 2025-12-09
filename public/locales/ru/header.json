@@ -2,13 +2,14 @@
     "title": "JOLTAP – программа возможностей",
     "og_title": "JOLTAP – программа возможностей",
     "og_description": "Проект JOLTAP – программа возможностей для жителей Астаны, стремящихся к повышению доходов и стабильному заработку!",
-    "nav_for_employers": "Соискатели",
+    "nav_for_employers": "Найти соискателей",
     "nav_for_clients": "Фрилансеры",
     "nav_for_graduates": "Объявления",
     "nav_about_training": "Об обучении",
     "home": "Главная",
     "create_announcement": "Создать объявление",
     "announcements": "Вакансии",
+    "nav_for_announcements": "Найти работу",
     "employees": "Соискатели",
     "about": "О платформе",
     "about_education": "Об обучении",
@@ -54,5 +55,8 @@
     "intimate_services": "интимные услуги",
     "other_custom_option": "другое (свой вариант)",
     "custom_option": "свой вариант",
-    "reason_required": "Пожалуйста, заполните свой вариант жалобы."
+    "reason_required": "Пожалуйста, заполните свой вариант жалобы.",
+    "more": "Еще",
+    "profile": "Профиль",
+    "favorite": "Избранные"
 }

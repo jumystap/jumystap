@@ -3,14 +3,10 @@ import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { CgClose } from "react-icons/cg";
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { MdAccessTime } from 'react-icons/md';
 import Pagination from '@/Components/Pagination';
-import FeedbackModal from '@/Components/FeedbackModal';
 import { Switch, Select } from 'antd'; // Import Select from Ant Design
-import Carousel from '@/Components/Carousel';
 import InfoModal from '@/Components/InfoModal';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
@@ -30,7 +26,6 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [isSalary, setIsSalary] = useState(false);
     const [noExperience, setNoExperience] = useState(false);
     const [publicTime, setPublicTime] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
 
@@ -219,14 +214,6 @@ export default function Announcements({ auth, announcements, specializationCateg
         }
     };
 
-    const handleFeedbackSubmit = (feedback) => {
-        axios.post('/send-feedback', { feedback }).then((response) => {
-            console.log(t('feedback_sent', { ns: 'header' }));
-        }).catch((error) => {
-            console.error(error);
-        });
-    };
-
     const handleAnnouncementTypeChange = (event) => {
         setAnnouncementType(event.target.value);
     };
@@ -239,7 +226,6 @@ export default function Announcements({ auth, announcements, specializationCateg
                 <Head title="Работа в Казахстане | свежие вакансии и объявления ">
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
-                <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
                 <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializationCategories} />
                 <div className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'>
                     <div className='w-[80%] bg-white rounded-lg h-[20%]'></div>
@@ -333,33 +319,27 @@ export default function Announcements({ auth, announcements, specializationCateg
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
-                        <Carousel>
-                            <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
-                                <div>
-                                    <div className='font-bold text-lg md:text-xl'>
-                                        {t('get_free_training', { ns: 'announcements' })}
-                                    </div>
-                                    <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'announcements' })}</div>
-                                    <div className='flex gap-x-5 mt-3 items-center'>
-                                        <div
-                                            onClick={() => setIsOpen(true)}
-                                            className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
-                                        >
-                                            {t('submit_an_application', { ns: 'announcements' })}
-                                        </div>
-                                        <a
-                                            href='https://www.instagram.com/joltap.kz'
-                                            className='block text-white text-sm font-light md:text-sm'
-                                        >
-                                            {t('detail', { ns: 'announcements' })}
-                                        </a>
-                                    </div>
-                                </div>
-                                <div className='ml-auto pt-2'>
-                                    <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
+                        <div className='m-5 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-xl shadow-lg'>
+                            <div className='p-8'>
+                                <h1 className='text-2xl font-bold text-white mb-4 text-center md:text-left'>
+                                    {t('for_everyone', { ns: 'index' })}
+                                </h1>
+                                <div className='flex flex-col md:flex-row gap-4'>
+                                    <Link
+                                        href="/announcements/create"
+                                        className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
+                                    >
+                                        {t('post_announcement', { ns: 'carousel' })}
+                                    </Link>
+                                    <Link
+                                        href="/employees"
+                                        className='px-6 py-3 text-white text-center rounded-lg border-2 border-white hover:bg-white hover:text-blue-600 transition-all duration-200 font-medium'
+                                    >
+                                        {t('find_employee', { ns: 'carousel' })}
+                                    </Link>
                                 </div>
                             </div>
-                        </Carousel>
+                        </div>
                         <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
                                 type="text"
