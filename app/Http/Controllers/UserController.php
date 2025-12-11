@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function index(Request $request): mixed
     {
-        $filters = $request->only(['search', 'profession', 'jobType', 'graduateStatus']);
+        $filters = $request->only(['search', 'profession', 'isLookingWork', 'withCertificate', 'withResume']);
 
         $employees = $this->userService->getEmployees($filters);
         $professions = $this->userService->getAllProfessions();
