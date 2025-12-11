@@ -1,63 +1,31 @@
-import React, { useCallback, useState, memo } from 'react';
+import React, {useCallback, useState, memo, useEffect} from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Head, Link, router } from '@inertiajs/react';
+import {Head, Link, router, useForm} from '@inertiajs/react';
 import Pagination from '@/Components/Pagination.jsx';
 import { RiVerifiedBadgeFill, RiSearch2Line } from "react-icons/ri";
 import FeedbackModal from "@/Components/FeedbackModal.jsx";
-
-// Мемоизация компонента FilterSelect для предотвращения лишних рендеров
-const FilterSelect = memo(({ name, options, value, onChange }) => (
-    <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="block w-full px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-    >
-        {options.map((option, index) => (
-            <option key={index} value={option.value}>
-                {option.label}
-            </option>
-        ))}
-    </select>
-));
-
-// Мемоизация компонента FilterSection
-const FilterSection = memo(({ children, className = "", searchTerm, onSearchChange, onSearch }) => {
-    const { t } = useTranslation("employees"); // Загружаем namespace "employees"
-
-    return (
-        <div className={`space-y-4 ${className}`}>
-            <div className="relative">
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={onSearchChange}
-                    placeholder={t("search_by_name")}
-                    className="w-full pl-4 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                />
-                <button
-                    onClick={onSearch}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
-                >
-                    <RiSearch2Line className="text-xl" />
-                </button>
-            </div>
-            {children}
-        </div>
-    );
-});
-
+import {Select, Switch} from "antd";
+import {IoSearch} from "react-icons/io5";
+import {CgArrowsExchangeAltV, CgClose} from "react-icons/cg";
 
 export default function Employees({ auth, employees, professions, filters = {} }) {
     const { t, i18n } = useTranslation();
-    const [searchTerm, setSearchTerm] = useState(filters.search || '');
-    const [filterValues, setFilterValues] = useState({
-        jobType: filters.jobType || 'all',
-        profession: filters.profession || '',
-        graduateStatus: filters.graduateStatus || 'all',
-    });
     const [isOpen, setIsOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [search, setSearch] = useState('');
+    const [profession, setProfession] = useState('');
+    const [isLookingWork, setIsLookingWork] = useState(false);
+    const [withCertificate, setWithCertificate] = useState(false);
+    const [withResume, setWithResume] = useState(false);
+
+    const { data, setData, get } = useForm({
+        search: '',
+        profession: '',
+        isLookingWork: false,
+        withCertificate: false,
+        withResume: false,
+    });
 
     const handleFeedbackSubmit = (feedback) => {
         axios.post('/send-feedback', { feedback }).then((response) => {
@@ -67,39 +35,76 @@ export default function Employees({ auth, employees, professions, filters = {} }
         });
     };
 
-    // Используем useCallback для мемоизации обработчиков
-    const handleSearch = useCallback(() => {
-        router.get('/employees', {
-            ...filterValues,
-            search: searchTerm
-        }, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true
-        });
-    }, [filterValues, searchTerm]);
+    const handleSearch = () => {
+        setIsFilterOpen(false)
+        get('/employees', { preserveScroll: true, preserveState: true });
+    };
 
-    const handleSearchChange = useCallback((e) => {
-        setSearchTerm(e.target.value);
+    const resetSearch = () => {
+        setData({
+            search: '',
+            profession: '',
+            isLookingWork: false,
+            withCertificate: false,
+            withResume: false,
+        });
+        setSearch('');
+        setProfession('');
+        setIsLookingWork(false);
+        setWithResume(false);
+        setWithCertificate(false);
+        get('/employees', {
+            preserveScroll: true,
+            preserveState: true
+        });
+    };
+
+    const handleSearchChange = (event) => {
+        setSearch(event.target.value);
+        setData('search', event.target.value);
+    };
+    const handleProfessionChange = (event) => {
+        setProfession(event.target.value);
+        setData('profession', event.target.value);
+    };
+
+    const handleIsLookingWorkChange = (checked) => {
+        setIsLookingWork(checked);
+        setData('isLookingWork', checked);
+    };
+
+    const handleWithCertificateChange = (checked) => {
+        setWithCertificate(checked);
+        setData('withCertificate', checked);
+    };
+
+    const handleWithResumeChange = (checked) => {
+        setWithResume(checked);
+        setData('withResume', checked);
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const search = params.get('search');
+        const profession = params.get('profession');
+        const isLookingWork = params.get('isLookingWork');
+        const withCertificate = params.get('withCertificate');
+        const withResume = params.get('withResume');
+        if (search || profession || isLookingWork || withCertificate || withResume) {
+            setData({
+                search: search || '',
+                profession: profession || '',
+                isLookingWork: isLookingWork === 'true',
+                withCertificate: withCertificate === 'true',
+                withResume: withResume === 'true',
+            });
+            setSearch(search || '');
+            setProfession(profession || '');
+            setIsLookingWork(isLookingWork === 'true');
+            setWithCertificate(withCertificate === 'true');
+            setWithResume(withResume === 'true');
+        }
     }, []);
-
-    const handleFilterChange = useCallback((e) => {
-        const { name, value } = e.target;
-        setFilterValues(prev => ({
-            ...prev,
-            [name]: value
-        }));
-
-        router.get('/employees', {
-            ...filterValues,
-            [name]: value,
-            search: searchTerm
-        }, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true
-        });
-    }, [filterValues, searchTerm]);
 
     const toDoubleString = useCallback((value) => {
         const number = parseFloat(value);
@@ -112,27 +117,71 @@ export default function Employees({ auth, employees, professions, filters = {} }
                 <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
             </Head>
             <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
-
+            {/* Mobile Filter Modal */}
+            {isFilterOpen && (
+                <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
+                    <div className='flex w-full items-center'>
+                        <div className='text-xl font-bold'>{t('filters', { ns: 'employees' })}</div>
+                        <CgClose
+                            onClick={() => setIsFilterOpen(false)}
+                            className='ml-auto text-2xl inline-block cursor-pointer'
+                        />
+                    </div>
+                    <div className='text-gray-500 mt-3'>{t('any_work_default', { ns: 'employees' })}</div>
+                    <select
+                        value={profession}
+                        onChange={handleProfessionChange}
+                        className='block mt-1 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
+                    >
+                        <option value="">{t('select', { ns: 'employees' })}</option>
+                        {professions.map(prof => (
+                            <option key={prof.id} value={prof.id}>
+                                {prof.name_ru}
+                            </option>
+                        ))}
+                    </select>
+                    <div className='mt-5 flex items-center'>
+                        <div>{t('looking_work', { ns: 'employees' })}</div>
+                        <Switch className='ml-auto' checked={isLookingWork} onChange={handleIsLookingWorkChange} />
+                    </div>
+                    <div className='mt-5 flex items-center'>
+                        <div>{t('with_certificate', { ns: 'employees' })}</div>
+                        <Switch className='ml-auto' checked={withCertificate} onChange={handleWithCertificateChange} />
+                    </div>
+                    <div className='mt-5 flex items-center'>
+                        <div>{t('with_resume', { ns: 'employees' })}</div>
+                        <Switch className='ml-auto' checked={withResume} onChange={handleWithResumeChange} />
+                    </div>
+                    <div className='bottom-10'>
+                        <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
+                            {t('apply', { ns: 'employees' })}
+                        </div>
+                        <div onClick={resetSearch} className='w-full text-blue-500 border-2 border-blue-500 font-semibold py-2 text-center rounded-lg mt-2 cursor-pointer'>
+                            {t('reset', { ns: 'employees' })}
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className='grid grid-cols-1 md:grid-cols-7 gap-6'>
                 <div className='col-span-5'>
                     <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
                         <div>
                             <div className='font-bold text-lg md:text-xl'>
-                                {t('get_free_training', { ns: 'announcements' })}
+                                {t('get_free_training', { ns: 'employees' })}
                             </div>
-                            <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'announcements' })}</div>
+                            <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'employees' })}</div>
                             <div className='flex gap-x-5 mt-3 items-center'>
                                 <div
                                     onClick={() => setIsOpen(true)}
                                     className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
                                 >
-                                    {t('submit_an_application', { ns: 'announcements' })}
+                                    {t('submit_an_application', { ns: 'employees' })}
                                 </div>
                                 <a
                                     href='https://www.instagram.com/joltap.kz'
                                     className='block text-white text-sm font-light md:text-sm'
                                 >
-                                    {t('detail', { ns: 'announcements' })}
+                                    {t('detail', { ns: 'employees' })}
                                 </a>
                             </div>
                         </div>
@@ -140,47 +189,33 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                         </div>
                     </div>
-
-                    <FilterSection
-                        className="md:hidden px-5"
-                        searchTerm={searchTerm}
-                        onSearchChange={handleSearchChange}
-                        onSearch={handleSearch}
-                    >
-                        <FilterSelect
-                            name="jobType"
-                            value={filterValues.jobType}
-                            onChange={handleFilterChange}
-                            options={[
-                                { value: 'all', label: t('any_job_default', { ns: 'employees' }) },
-                                { value: 'Ищет работу', label: t('search_job', { ns: 'employees' }) },
-                                { value: 'Ищет заказы', label: t('search_project', { ns: 'employees' }) }
-                            ]}
+                    <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                        <input
+                            type="text"
+                            value={data.search}
+                            onChange={handleSearchChange}
+                            placeholder={t('search', { ns: 'employees' })}
+                            className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
-                        <FilterSelect
-                            name="profession"
-                            value={filterValues.profession}
-                            onChange={handleFilterChange}
-                            options={[
-                                { value: '', label: t('any_work_default', { ns: 'employees' }) },
-                                ...professions.map(prof => ({
-                                    value: prof.id,
-                                    label: i18n.language === 'ru' ? prof.name_ru : prof.name_kz
-                                }))
-                            ]}
-                        />
-                        <FilterSelect
-                            name="graduateStatus"
-                            value={filterValues.graduateStatus}
-                            onChange={handleFilterChange}
-                            options={[
-                                { value: 'all', label: t('any_graduate_default', { ns: 'employees' }) },
-                                { value: 'graduate', label: t('graduate', { ns: 'employees' }) },
-                                { value: 'non-graduate', label: t('non_graduate', { ns: 'employees' }) }
-                            ]}
-                        />
-                    </FilterSection>
-
+                        <button
+                            className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
+                            onClick={handleSearch}
+                        >
+                            {t('search', { ns: 'employees' })}
+                        </button>
+                        <button
+                            className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                            onClick={handleSearch}
+                        >
+                            <IoSearch />
+                        </button>
+                        <div
+                            onClick={() => setIsFilterOpen(true)}
+                            className='text-3xl px-2 border-2 rounded-lg text-blue-500 md:hidden border-blue-500 py-1'
+                        >
+                            <CgArrowsExchangeAltV />
+                        </div>
+                    </div>
                     <div className="space-y-4 mt-6">
                         {employees.data.map((employee, index) => (
                             <Link
@@ -249,47 +284,45 @@ export default function Employees({ auth, employees, professions, filters = {} }
                         </div>
                     </div>
                 </div>
-
-                <div className='col-span-2 hidden md:block'>
-                    <div className="sticky top-5 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                        <FilterSection
-                            searchTerm={searchTerm}
-                            onSearchChange={handleSearchChange}
-                            onSearch={handleSearch}
+                {/* Desktop Filter Sidebar */}
+                <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>
+                    <div>
+                        <div className='font-bold p-3 text-sm border-b border-gray-200'>{t('filters', { ns: 'employees' })}</div>
+                    </div>
+                    <div className='flex px-3 flex-col md:flex-col'>
+                        <div className='text-gray-500 mt-3'>{t('any_work_default', { ns: 'employees' })}</div>
+                        <select
+                            value={profession}
+                            onChange={handleProfessionChange}
+                            className='block mt-1 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
-                            <FilterSelect
-                                name="jobType"
-                                value={filterValues.jobType}
-                                onChange={handleFilterChange}
-                                options={[
-                                    { value: 'all', label: t('any_job_default', { ns: 'employees' }) },
-                                    { value: 'vacancy', label: t('search_job', { ns: 'employees' }) },
-                                    { value: 'project', label: t('search_project', { ns: 'employees' }) }
-                                ]}
-                            />
-                            <FilterSelect
-                                name="profession"
-                                value={filterValues.profession}
-                                onChange={handleFilterChange}
-                                options={[
-                                    { value: '', label: t('any_work_default', { ns: 'employees' }) },
-                                    ...professions.map(prof => ({
-                                        value: prof.id,
-                                        label: i18n.language === 'ru' ? prof.name_ru : prof.name_kz
-                                    }))
-                                ]}
-                            />
-                            <FilterSelect
-                                name="graduateStatus"
-                                value={filterValues.graduateStatus}
-                                onChange={handleFilterChange}
-                                options={[
-                                    { value: 'all', label: t('any_graduate_default', { ns: 'employees' }) },
-                                    { value: 'graduate', label: t('graduate', { ns: 'employees' }) },
-                                    { value: 'non-graduate', label: t('non_graduate', { ns: 'employees' }) }
-                                ]}
-                            />
-                        </FilterSection>
+                            <option value="">{t('select', { ns: 'employees' })}</option>
+                            {professions.map(prof => (
+                                <option key={prof.id} value={prof.id}>
+                                    {prof.name_ru}
+                                </option>
+                            ))}
+                        </select>
+                        <div className='mt-5 flex items-center'>
+                            <div>{t('looking_work', { ns: 'employees' })}</div>
+                            <Switch className='ml-auto' checked={isLookingWork} onChange={handleIsLookingWorkChange} />
+                        </div>
+                        <div className='mt-5 flex items-center'>
+                            <div>{t('with_certificate', { ns: 'employees' })}</div>
+                            <Switch className='ml-auto' checked={withCertificate} onChange={handleWithCertificateChange} />
+                        </div>
+                        <div className='mt-5 flex items-center'>
+                            <div>{t('with_resume', { ns: 'employees' })}</div>
+                            <Switch className='ml-auto' checked={withResume} onChange={handleWithResumeChange} />
+                        </div>
+                        <div className='bottom-10'>
+                            <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
+                                {t('apply', { ns: 'employees' })}
+                            </div>
+                            <div onClick={resetSearch} className='w-full text-blue-500 border-2 border-blue-500 font-semibold py-2 text-center rounded-lg mt-2 cursor-pointer'>
+                                {t('reset', { ns: 'employees' })}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

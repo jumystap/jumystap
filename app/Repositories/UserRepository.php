@@ -9,38 +9,71 @@ class UserRepository
 {
     public function getUsersByRoleName($roleName, $perPage, $filters = [])
     {
-        $query = User::whereHas('role', function($query) use ($roleName) {
+        $query = User::whereHas('role', function ($query) use ($roleName) {
             $query->where('name', $roleName);
         })->with('role');
 
         // Apply filters
         if (!empty($filters['search'])) {
-            $query->where(function($q) use ($filters) {
-                $q->where('name', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('email', 'like', '%' . $filters['search'] . '%');
+            $search = $filters['search'];
+
+            // 🔥 быстрый поиск профессий
+            $professionIdsBySearch = DB::table('professions')
+                ->where('name_ru', 'like', "%$search%")
+                ->orWhere('name_kz', 'like', "%$search%")
+                ->pluck('id');
+
+            $query->where(function($q) use ($search, $professionIdsBySearch) {
+
+                // поиск в users
+                $q->where('name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+
+                // поиск в resumes
+                $q->orWhereHas('resumes', function($r) use ($search) {
+                    $r->where('position', 'like', "%$search%")
+                        ->orWhere('about', 'like', "%$search%");
+                });
+
+                // 🔥 быстрый поиск в professions через pivot
+                if ($professionIdsBySearch->isNotEmpty()) {
+                    $q->orWhereIn('id', function ($sub) use ($professionIdsBySearch) {
+                        $sub->select('user_id')
+                            ->from('user_professions')
+                            ->whereIn('profession_id', $professionIdsBySearch);
+                    });
+                }
+
             });
         }
+
 
         if (!empty($filters['profession'])) {
-            $query->whereHas('professions', function($q) use ($filters) {
-                $q->where('profession_id', $filters['profession']);
-            });
+
+            // Достаём всех пользователей по профессии через pivot (максимально быстро)
+            $userIds = DB::table('user_professions')
+                ->where('profession_id', $filters['profession'])
+                ->pluck('user_id');
+
+            // Если ничего не найдено - сразу возвращаем пустой результат
+            if ($userIds->isEmpty()) {
+                return collect([]); // или empty paginator - как тебе нужно
+            }
+
+            // Фильтруем по id
+            $query->whereIn('id', $userIds);
         }
 
-        if (!empty($filters['jobType'])) {
-            if ($filters['jobType'] === 'vacancy') {
-                $query->where('work_status', 'Ищет работу');
-            } elseif ($filters['jobType'] === 'project') {
-                $query->where('work_status', 'Ищет заказы');
-            }
+        if (!empty($filters['isLookingWork']) && $filters['isLookingWork'] == 'true') {
+            $query->where('status', 'В активном поиске');
         }
 
-        if (!empty($filters['graduateStatus'])) {
-            if ($filters['graduateStatus'] === 'graduate') {
-                $query->where('is_graduate', true);
-            } elseif ($filters['graduateStatus'] === 'non-graduate') {
-                $query->where('is_graduate', false);
-            }
+        if (!empty($filters['withCertificate']) && $filters['withCertificate'] == 'true') {
+            $query->where('is_graduate', true);
+        }
+
+        if (!empty($filters['withResume']) && $filters['withResume'] == 'true') {
+            $query->whereHas('resumes');
         }
 
         $users = $query->paginate($perPage)->withQueryString();
@@ -87,8 +120,8 @@ class UserRepository
     public function addUserProfession($userId, $professionId, $certificateNumber)
     {
         return DB::table('user_professions')->insert([
-            'user_id' => $userId,
-            'profession_id' => $professionId,
+            'user_id'            => $userId,
+            'profession_id'      => $professionId,
             'certificate_number' => $certificateNumber,
         ]);
     }
@@ -105,16 +138,16 @@ class UserRepository
                 ->from('user_professions')
                 ->whereIn('profession_id', $professionIds);
         })
-        ->take($limit)
-        ->get()
-        ->map(function ($user) {
-            $user->professions = DB::table('user_professions')
-                ->join('professions', 'user_professions.profession_id', '=', 'professions.id')
-                ->select('professions.name_ru as profession_name', 'professions.name_kz as professions_name_kz', 'user_professions.certificate_number')
-                ->where('user_professions.user_id', $user->id)
-                ->get();
-            return $user;
-        });
+            ->take($limit)
+            ->get()
+            ->map(function ($user) {
+                $user->professions = DB::table('user_professions')
+                    ->join('professions', 'user_professions.profession_id', '=', 'professions.id')
+                    ->select('professions.name_ru as profession_name', 'professions.name_kz as professions_name_kz', 'user_professions.certificate_number')
+                    ->where('user_professions.user_id', $user->id)
+                    ->get();
+                return $user;
+            });
     }
 }
 

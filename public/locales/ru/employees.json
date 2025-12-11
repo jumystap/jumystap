@@ -13,6 +13,17 @@
     "graduate": "С сертификатом JOLTAP",
     "non_graduate": "Без сертификата JOLTAP",
     "detail": "Подробнее",
-    "search_by_name": "Поиск по имени"
+    "get_free_training": "Пройди бесплатное обучение",
+    "for_blue_collar_jobs": "по рабочим профессиям",
+    "submit_an_application": "Оставить заявку",
+    "filters": "Фильтры",
+    "search_by_name": "Поиск по имени",
+    "select": "Выбрать",
+    "search": "Поиск",
+    "looking_work": "В активном поиске работы",
+    "with_certificate": "Сертификат JOLTAP",
+    "with_resume": "Есть резюме",
+    "apply": "Применить",
+    "reset": "Сбросить"
 }
 

@@ -13,6 +13,17 @@
     "graduate": "JOLTAP түлегі",
     "non_graduate": "JOLTAP түлегі емес",
     "detail": "Толығырақ",
-    "search_by_name": "Есімін енгізіңіз"
+    "get_free_training": "Тегін оқудан өт",
+    "for_blue_collar_jobs": "Жұмысшы мамандықтары бойынша",
+    "submit_an_application": "Өтінім қалдыру",
+    "filters": "Іздеу",
+    "search_by_name": "Есімін енгізіңіз",
+    "select": "Таңдау",
+    "search": "Іздеу",
+    "looking_work": "Белсенді жұмыс іздеп жүрмін",
+    "with_certificate": "JOLTAP сертификатымен",
+    "with_resume": "Түйіндеме бар",
+    "apply": "Іздеу",
+    "reset": "Қалпына келтіру"
 }
 

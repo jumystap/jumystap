@@ -39,8 +39,8 @@ export default function Guest({children}) {
         },
         {
             key: "3",
-            label: t("about_education", {ns: "header"}),
-            onClick: () => router.visit('/about'),
+            label: t("nav_for_about", {ns: "header"}),
+            onClick: () => router.visit('/faq'),
         },
     ];
 
@@ -130,7 +130,7 @@ export default function Guest({children}) {
                                 />
                             </svg>
 
-                            <div className="text-center text-sm">{t("announcements", {ns: "header"})}</div>
+                            <div className="text-center text-sm">{t("nav_for_announcements", {ns: "header"})}</div>
                         </Link>
                         <Link
                             className={`block flex-col text-center ${isActive("/employees") ? "text-red-500" : "text-gray-500"}`}
@@ -144,7 +144,7 @@ export default function Guest({children}) {
                                 />
                             </svg>
 
-                            <div className="text-center text-sm">{t("employees", {ns: "header"})}</div>
+                            <div className="text-center text-sm">{t("nav_for_employers", {ns: "header"})}</div>
                         </Link>
                         <Dropdown
                             menu={{
@@ -221,20 +221,6 @@ export default function Guest({children}) {
                             {t("nav_for_employers", {ns: "header"})}
                         </Link>
                         <Link
-                            className={`flex items-center text-l gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/about") ? "text-black" : "text-gray-500"}`}
-                            href="/about"
-                        >
-                            <svg className="text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M6.5 20C4.98333 20 3.68767 19.475 2.613 18.425C1.53833 17.375 1.00067 16.0917 1 14.575C1 13.275 1.39167 12.1167 2.175 11.1C2.95833 10.0833 3.98333 9.43333 5.25 9.15C5.66667 7.61667 6.5 6.375 7.75 5.425C9 4.475 10.4167 4 12 4C13.95 4 15.6043 4.67933 16.963 6.038C18.3217 7.39667 19.0007 9.05067 19 11C20.15 11.1333 21.1043 11.6293 21.863 12.488C22.6217 13.3467 23.0007 14.3507 23 15.5C23 16.75 22.5627 17.8127 21.688 18.688C20.8133 19.5633 19.7507 20.0007 18.5 20H6.5Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
-
-                            {t("about", {ns: "header"})}
-                        </Link>
-                        <Link
                             className={`flex items-center text-l gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/faq") ? "text-black" : "text-gray-500"}`}
                             href="/faq"
                         >
@@ -250,7 +236,7 @@ export default function Guest({children}) {
                                 />
                             </svg>
 
-                            {t("about_education", {ns: "header"})}
+                            {t("nav_for_about", {ns: "header"})}
                         </Link>
                         <Link
                             className={`flex items-center text-l gap-x-4 mt-2 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/fav") ? "text-black" : "text-gray-500"}`}
