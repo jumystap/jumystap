@@ -22,4 +22,16 @@ class Organization extends Model
     {
         return $this->belongsTo(UserResume::class);
     }
+
+
+    public function getPeriodAttribute($value): string
+    {
+        if (empty($value)) {
+            return $value;
+        }
+
+        $replace = app()->getLocale() === 'ru' ? 'по настоящее время' : 'осы уақытқа дейін';
+
+        return str_replace('until_now', $replace, $value);
+    }
 }

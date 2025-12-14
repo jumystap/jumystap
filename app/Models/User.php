@@ -41,6 +41,7 @@ class User extends Authenticatable
         'password',
         'image_url',
         'role_id',
+        'gender',
         'work_status',
         'work_status_kz',
         'status',

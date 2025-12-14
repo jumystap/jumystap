@@ -9,6 +9,7 @@ use App\Models\Visit;
 use App\Models\UserResume;
 use App\Services\AnnouncementService;
 use App\Services\UserService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -100,7 +101,17 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
             'role' => 'required',
-            'date_of_birth' => 'nullable',
+            'date_of_birth' => [
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $age = Carbon::parse($value)->age;
+
+                    if ($age < 16 || $age > 70) {
+                        $fail('Возраст должен быть от 16 до 70 лет.');
+                    }
+                },
+            ],
             'gender' => 'nullable',
             'description' => 'nullable|string',
             'source' => 'nullable|string',
@@ -164,7 +175,7 @@ class UserController extends Controller
         if($user->role_id != Roles::EMPLOYEE->value){
             return Inertia::render('NotFound');
         }
-        if($user->status === 'В активном поиске' || count($user->response) > 0){
+        if($user->status === 'В активном поиске'){
             $contactShow = true;
         }
 

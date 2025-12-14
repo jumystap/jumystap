@@ -16,6 +16,7 @@ export default function Registration({ errors, professions }) {
     const [step, setStep] = useState(0);
     const [source, setSource] = useState(localStorage.getItem('source'));
     const [phoneCode, setPhoneCode] = useState(false);
+    const [errorCode, setErrorCode] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const { data, setData, post, processing, reset } = useForm({
@@ -66,6 +67,9 @@ export default function Registration({ errors, professions }) {
                     description: result.message,
                 });
             }else{
+                notification.success({
+                    message: result.message,
+                });
                 setPhoneCode(true);
             }
         } catch (error) {
@@ -95,6 +99,7 @@ export default function Registration({ errors, professions }) {
         if (result.success === true) {
             setStep(3);
         } else {
+            setErrorCode(true)
             notification.error({
                 message: t('verification_failed'),
                 description: result.message,
@@ -305,6 +310,20 @@ export default function Registration({ errors, professions }) {
                                         )}
                                     </button>
                                 )}
+                                {errorCode ? (
+                                    <>
+                                        <button
+                                            className='py-2 font-bold w-full inline-block text-white rounded-lg bg-blue-500 mt-5'
+                                            onClick={handlePhoneSubmit}
+                                        >
+                                            {loading ? (
+                                                <Spin indicator={<LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />} />
+                                            ) : (
+                                                t('send_code')
+                                            )}
+                                        </button>
+                                    </>
+                                ) : ''}
                             </div>
                         )}
                         {step === 3 && (
@@ -344,30 +363,68 @@ export default function Registration({ errors, professions }) {
                                 </button>
                             </div>
                         )}
-                        <div className='flex mt-5'>
-                            <div className='flex mx-auto gap-x-5 mt-5'>
-                                {[...Array(4).keys()].map(i => (
-                                    <div key={i} className={`${step === i ? 'px-10 bg-blue-500' : 'px-2 bg-gray-200'} inline-block rounded-full py-1`}></div>
-                                ))}
+                        <div className="flex mt-5">
+                            <div className="flex mx-auto gap-x-5 mt-5">
+                                {[...Array(4).keys()].map((i) => {
+                                    const isActive = step === i;
+                                    const isCompletedOrActive = i <= step;
+
+                                    return (
+                                        <div
+                                            key={i}
+                                            onClick={() => isCompletedOrActive && setStep(i)}
+                                            className={`
+                                                ${isCompletedOrActive ? 'cursor-pointer hover:scale-110' : 'cursor-not-allowed opacity-50'}
+                                                ${isActive ? 'px-10 bg-blue-500' : 'px-2 bg-gray-200'}
+                                                inline-block rounded-full py-1 transition-all duration-200
+                                            `}
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative md:block hidden'>
+                <div className="h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative md:block hidden">
                     {[
                         t('user_type_label'),
                         t('upload_avatar_title'),
                         t('contact_info'),
                         t('additional_info_title'),
-                    ].map((label, i) => (
-                        <div key={i} className='flex items-center gap-x-3 mt-7'>
-                            <FaRegCheckCircle className={`text-2xl ${step === i ? 'text-blue-500' : 'text-gray-300'}`} />
-                            <div>
-                                <div className={`font-semibold ${step === i ? '' : 'text-gray-500'}`}>{label}</div>
-                                <div className='text-sm text-gray-500'>{t('step')} {i + 1}</div>
+                    ].map((label, i) => {
+                        const isActive = step === i;
+                        const isCompleted = i < step;
+                        const isClickable = i <= step; // текущий + пройденные
+
+                        return (
+                            <div
+                                key={i}
+                                onClick={() => isClickable && setStep(i)}
+                                className={`
+          flex items-center gap-x-3 mt-7 transition-all duration-200
+          ${isClickable ? 'cursor-pointer hover:bg-gray-100 -mx-3 px-3 py-2 rounded-lg' : 'cursor-not-allowed opacity-60'}
+        `}
+                            >
+                                <FaRegCheckCircle
+                                    className={`text-2xl flex-shrink-0 transition-colors ${
+                                        isActive || isCompleted ? 'text-blue-500' : 'text-gray-300'
+                                    }`}
+                                />
+                                <div>
+                                    <div
+                                        className={`font-semibold transition-colors ${
+                                            isActive || isCompleted ? 'text-gray-900' : 'text-gray-500'
+                                        }`}
+                                    >
+                                        {label}
+                                    </div>
+                                    <div className="text-sm text-gray-500">
+                                        {t('step')} {i + 1}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </GuestLayout>
