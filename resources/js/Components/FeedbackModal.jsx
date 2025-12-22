@@ -46,7 +46,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
 
         try {
             const combined = '<b>Заявка:</b>\nФИО: ' + name + '\nТелефон: ' + phone + '\nПрофессия: ' + selectedProfessions.join(', ');
-            const response = fetch(`https://api.telegram.org/bot7731242219:AAGjMzLGlp9KZJiUa-zrAzZZLFYzhGJiYVQ/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
+            const response = fetch(`https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
             console.log('SUCCESS!', response);
             onSubmit(templateParams);
             setLoading(false);

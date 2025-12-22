@@ -44,7 +44,7 @@ export default function ScamModal({ isOpen, onClose }) {
 
         try {
             const combined = '<b>Жалоба:</b>\nФИО: ' + name + '\nТелефон: ' + phone + '\nПричина: ' + selectedScams.join(', ') + '\nТекст: ' + reason;
-            const response = fetch(`https://api.telegram.org/bot7731242219:AAGjMzLGlp9KZJiUa-zrAzZZLFYzhGJiYVQ/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
+            const response = fetch(`https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
             console.log('SUCCESS!', response);
             setLoading(false);
             setName('');
