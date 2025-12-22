@@ -42,22 +42,22 @@ export default function Resume({ user, resume }) {
                                         </svg>
                                         <span>{resume.user.email}</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            strokeWidth="2"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M2 5.5C2 4.12 3.12 3 4.5 3h2.55c.7 0 1.33.36 1.7.95l1.15 1.92c.36.59.39 1.33.07 1.95L8.5 9.5c1.1 2.3 2.9 4.1 5.2 5.2l1.68-1.47c.62-.32 1.36-.29 1.95.07l1.92 1.15c.59.37.95 1 .95 1.7V19.5c0 1.38-1.12 2.5-2.5 2.5C7.04 22 2 16.96 2 10.5V5.5z"
-                                            />
-                                        </svg>
-                                        <span>+{resume.phone ?? resume.user.phone ?? ''}</span>
-                                    </div>
+                                    {/*<div className="flex items-center gap-2">*/}
+                                    {/*    <svg*/}
+                                    {/*        className="w-4 h-4"*/}
+                                    {/*        fill="none"*/}
+                                    {/*        strokeWidth="2"*/}
+                                    {/*        stroke="currentColor"*/}
+                                    {/*        viewBox="0 0 24 24"*/}
+                                    {/*    >*/}
+                                    {/*        <path*/}
+                                    {/*            strokeLinecap="round"*/}
+                                    {/*            strokeLinejoin="round"*/}
+                                    {/*            d="M2 5.5C2 4.12 3.12 3 4.5 3h2.55c.7 0 1.33.36 1.7.95l1.15 1.92c.36.59.39 1.33.07 1.95L8.5 9.5c1.1 2.3 2.9 4.1 5.2 5.2l1.68-1.47c.62-.32 1.36-.29 1.95.07l1.92 1.15c.59.37.95 1 .95 1.7V19.5c0 1.38-1.12 2.5-2.5 2.5C7.04 22 2 16.96 2 10.5V5.5z"*/}
+                                    {/*        />*/}
+                                    {/*    </svg>*/}
+                                    {/*    <span>+{resume.phone ?? resume.user.phone ?? ''}</span>*/}
+                                    {/*</div>*/}
                                     <div className="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:gap-3">
                                         {/* Статус */}
                                         <span className="py-1 px-3 rounded-lg text-sm bg-green-100 inline-block text-green-500">
