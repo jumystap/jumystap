@@ -209,6 +209,31 @@ export default function Welcome({
               </div>
             </div>
             <Carousel>
+                <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
+                    <div className="flex">
+                        <div>
+                            <p className="mt-3 font-bold text-3xl text-orange-500">
+                                {t("free_course", { ns: "index" })}
+                            </p>
+                            <p className="mt-4 text-lg md:mt-1">
+                                {t("take_training_with_joltap", { ns: "index" })}
+                            </p>
+                            <div className='flex gap-x-5 mt-6 items-center'>
+                                <div
+                                    onClick={() => setIsOpen(true)}
+                                    className='text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all duration-150'
+                                >
+                                    {t("sign_up_now", { ns: "index" })}
+                                </div>
+                                <img src="/images/logo2.png" className="md:w-[120px] w-[200px]"/>
+                            </div>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/logo_3d.png" className="md:w-[100px] w-[250px]"/>
+                        </div>
+                    </div>
+                </div>
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>
@@ -288,33 +313,6 @@ export default function Welcome({
                 {/*        </div>*/}
                 {/*    </div>*/}
                 {/*</div>*/}
-                <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-orange-500 to-orange-500 mt-2 rounded-lg md:px-10 md:py-7 text-white">
-                    <div className="flex">
-                        <div>
-                            <p className="mt-3 font-bold text-3xl text-white-500">
-                                JOLTAP <div className="mb-3 bg-orange-400 text-white text-base font-bold py-1 px-4 border border-orange-300 rounded-full inline">
-                                26.09 - 30.12
-                            </div>
-                                <br/>
-                                жайлы бөліс
-                            </p>
-                            <p className="mt-3 text-lg md:mt-1 text-white">
-                                Расскажи о JOLTAP
-                            </p>
-                            <a
-                                href={`https://www.instagram.com/p/DPDtJM_iO9p/`}
-                                target="_blank"
-                                className="mt-3 text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-orange-400 hover:text-white transition-all duration-150"
-                            >
-                                {t("more_button", { ns: "index" })}
-                            </a>
-                        </div>
-
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/share_joltap.png" className="md:w-[250px] w-[300px]" alt="malyar" />
-                        </div>
-                    </div>
-                </div>
             </Carousel>
             <div className="flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
                 <a
@@ -345,7 +343,7 @@ export default function Welcome({
                   </div>
                 </div>
                 <div className="px-3 mt-2 text-sm font-light text-gray-500">
-                    {t("free_course", { ns: "index" })}<br />&nbsp;
+                    {t("sign_up_free_course", { ns: "index" })}<br />&nbsp;
                 </div>
               </div>
             </div>

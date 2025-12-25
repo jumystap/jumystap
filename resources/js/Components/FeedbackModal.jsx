@@ -12,13 +12,17 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     const [error, setError] = useState('');
 
     const professions = [
-        t('furniture_making_basics'),
+        t('small_business_accounting_and_taxation'),
+        t('seamstress'),
+        t('fashion_designer_constructor'),
+        t('kaspi_store_trading'),
         t('barista'),
+        t('shoe_repair_and_key_making'),
         t('electric_gas_welder'),
-        t('shoe_repair_workshop'),
-        t('cashier_seller'),
-        t('oil_change_tire_service'),
-        t('painter_for_polymer_powder_coating'),
+        t('sales_manager'),
+        t('cabinet_furniture_manufacturing_basics'),
+        t('interior_design_basics'),
+        t('baker'),
     ];
 
     if (!isOpen) return null;

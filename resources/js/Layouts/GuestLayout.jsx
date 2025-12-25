@@ -92,7 +92,7 @@ export default function Guest({children}) {
                         className={`block ${isActive("/") ? "text-blue-500 font-semibold" : ""}`}
                         href="/"
                     >
-                        <img src="/images/Лого.png" className="w-[150px]"/>
+                        <img src="/images/logo.png" className="w-[150px]"/>
                     </Link>
                     <div className="ml-auto flex gap-x-4 items-center">
                         <div
