@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdController;
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\ResponseController;
@@ -36,6 +37,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
         Route::get('/', [AccountController::class, 'index'])->name('index');
         Route::put('/update', [AccountController::class, 'update'])->name('update');
     });
+    Route::get('users/search', [UserController::class, 'search'])->name('users.search');
+    Route::get('users/info/{user}', [UserController::class, 'info'])->name('users.info');
 
     Route::get('/index', [HomeController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
@@ -47,4 +50,12 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::prefix('responses')->name('responses.')->group(function (){
         Route::get('', [ResponseController::class, 'index'])->name('index');
     });
+
+    Route::resource('ads', AdController::class);
+    Route::post('ads/{ad}/approve', [AdController::class, 'approve'])->name('ads.approve');
+    Route::post('ads/{ad}/reject', [AdController::class, 'reject'])->name('ads.reject');
+    Route::post('ads/bulk-action', [AdController::class, 'bulkAction'])->name('ads.bulk-action');
+    Route::delete('ads/{ad}/photos/{photo}', [AdController::class, 'deletePhoto'])->name('ads.photos.delete');
+
+
 });

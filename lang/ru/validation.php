@@ -148,6 +148,7 @@ return [
         'email'                  => 'Электронная почта',
         'date_of_birth'          => 'Дата рождения',
         'phone'                  => 'Телефон',
+        'use_profile_phone'     => 'Использовать профиль в Телефоне',
         'description'            => 'Описание',
         'password'               => 'Пароль',
         'title'                  => 'Заголовок',
@@ -162,5 +163,6 @@ return [
         'organizations.*'        => 'Опыт работы',
         'organizations.*.period' => 'Период работы',
         'salary_type'            => 'Условия оплаты труда',
+        'photos'                 => 'Фото',
     ],
 ];

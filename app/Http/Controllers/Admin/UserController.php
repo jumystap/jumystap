@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -152,4 +153,43 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index');
     }
+
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('q');
+
+        $users = User::query()
+            ->when($search, function($query) use ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->select('id', 'name', 'email', 'phone')
+            ->limit(20)
+            ->get();
+
+        $results = $users->map(function($user) {
+            return [
+                'id' => $user->id,
+                'text' => $user->name . ' (' . $user->email . ')',
+                'email' => $user->email,
+                'phone' => $user->phone ?? 'Не указан'
+            ];
+        });
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => ['more' => false]
+        ]);
+    }
+
+    public function info(User $user): JsonResponse
+    {
+        return response()->json(
+            $user->only(['id', 'name', 'email', 'phone'])
+        );
+    }
+
 }

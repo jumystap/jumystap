@@ -1,3 +1,4 @@
+<script src="{{ asset('admin/assets/js/plugins/sweetalert2/sweetalert2.js') }}"></script>
 <script src="{{ asset('admin/assets/js/plugins/toastr/toastr.min.js') }}"></script>
 
 @if (session('success'))

@@ -2,8 +2,11 @@
 
 namespace App\Models\Profession;
 
+use App\Models\Ad;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Profession extends Model
 {
@@ -52,5 +55,10 @@ class Profession extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function ads(): HasMany
+    {
+        return $this->hasMany(Ad::class);
     }
 }

@@ -40,7 +40,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.certificates.index') }}" class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-images"></i>
+                            <i class="nav-icon fas fa-file"></i>
                             <p>Сертификаты</p>
                         </a>
                     </li>
@@ -48,6 +48,12 @@
                         <a href="{{ route('admin.analytics.clicks') }}" class="nav-link {{ request()->routeIs('admin.analytics.clicks.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-box"></i>
                             <p>Аналитика по кликам</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.ads.index') }}" class="nav-link {{ request()->routeIs('admin.ads.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-images"></i>
+                            <p>Объявления</p>
                         </a>
                     </li>
                 @endif

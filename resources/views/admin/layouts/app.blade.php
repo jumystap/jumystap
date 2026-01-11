@@ -22,6 +22,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('admin/assets/js/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/js/plugins/sweetalert2/sweetalert2.css') }}">
 
     @stack('stylesheets')
 </head>
@@ -64,7 +65,6 @@
 @include('admin.partials.flash-message')
 
 @stack('scripts')
-
 
 </body>
 </html>

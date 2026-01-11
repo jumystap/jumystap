@@ -227,4 +227,9 @@ class User extends Authenticatable
 
         return $query;
     }
+
+    public function ads(): HasMany
+    {
+        return $this->hasMany(Ad::class);
+    }
 }

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 class UserService
@@ -182,19 +182,30 @@ class UserService
 
     protected function storeAvatar($file)
     {
+        // Если файл не передан
         if (!$file) {
             return 'avatars/default.png';
         }
 
+        // Сохраняем оригинал
         $path = $file->store('avatars', 'public');
-        if ($file->getClientOriginalExtension() === 'heic') {
-            $img     = Image::make(Storage::disk('public')->path($path))->encode('jpg');
+
+        // Конвертация HEIC в JPG через Intervention Image v3
+        if (strtolower($file->getClientOriginalExtension()) === 'heic') {
+            $image = Image::read(Storage::disk('public')->path($path))
+                ->toJpeg(); // v3: encode в jpg
+
             $newPath = str_replace('.heic', '.jpg', $path);
-            Storage::disk('public')->put($newPath, (string)$img);
+
+            Storage::disk('public')->put($newPath, (string)$image);
+
+            // Удаляем оригинал HEIC
             Storage::disk('public')->delete($path);
+
             $path = $newPath;
         }
 
+        // Оптимизация изображения (уменьшение размера без потери качества)
         $optimizerChain = OptimizerChainFactory::create();
         $optimizerChain->optimize(Storage::disk('public')->path($path));
 
