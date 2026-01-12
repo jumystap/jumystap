@@ -4,6 +4,7 @@ namespace App\Models\Profession;
 
 use App\Models\Ad;
 use App\Models\User;
+use App\Traits\Multilingual;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Profession extends Model
 {
     use HasFactory;
+    use Multilingual;
 
     /**
      * The attributes that are mass assignable.

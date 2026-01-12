@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticController;
+use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
@@ -21,10 +22,15 @@ Route::get('/employees', [UserController::class, 'index'])->name('employees');
 //Route::get('/reviews', [ReviewController::class, 'index']);
 //Route::post('/reviews', [ReviewController::class, 'create']);
 Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements');
+Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
+
+Route::get('/ads', [AdController::class, 'index'])->name('ads');
+Route::get('/ad/{id}', [AdController::class, 'show'])->name('ad');
+
+
 Route::get('/profession/{group}', [ProfessionController::class, 'index'])->name('profession');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
 Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);

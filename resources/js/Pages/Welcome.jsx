@@ -334,12 +334,12 @@ export default function Welcome({
                 onClick={() => setIsOpen(true)}
                 className="border border-gray-200 rounded-lg"
               >
-                <div className="w-[300px] px-3 bg-[url('/images/3_in_1.png')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
+                <div className="w-[300px] px-3 bg-[url('/images/3_in_1.jpg')] bg-center bg-cover text-white pb-5 text-lg rounded-t-lg pt-2">
                   <div className="mt-10 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)] font-semibold">
                     <br />
-                      {t("oil_change", { ns: "index" })}<br />
-                      {t("furniture_assembly", { ns: "index" })}<br />
-                      {t("polymer_painter", { ns: "index" })}
+                      {t("baker", { ns: "index" })}<br />
+                      {t("electric_and_gas_welder", { ns: "index" })}<br />
+                      {t("sewing", { ns: "index" })}
                   </div>
                 </div>
                 <div className="px-3 mt-2 text-sm font-light text-gray-500">

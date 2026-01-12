@@ -32,9 +32,6 @@ class Ad extends Model
         'price_type' => PriceType::class,
         'is_remote' => 'boolean',
         'use_profile_phone' => 'boolean',
-        'price_from' => 'decimal:2',
-        'price_to' => 'decimal:2',
-        'price_exact' => 'decimal:2',
         'published_at' => 'datetime',
         'expires_at' => 'datetime',
     ];
