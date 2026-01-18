@@ -30,8 +30,8 @@ return new class extends Migration
             $table->text('description');
 
             // Категории
-            $table->foreignId('category_id')->constrained('professions')->onDelete('restrict');
-            $table->foreignId('subcategory_id')->nullable()->constrained('professions')->onDelete('set null');
+            $table->integer('category_id');
+            $table->integer('subcategory_id')->nullable();
 
             // Локация
             $table->foreignId('city_id')->nullable()->constrained('cities')->onDelete('set null');
@@ -66,7 +66,6 @@ return new class extends Migration
 
             // Индексы для производительности
             $table->index(['type', 'status', 'published_at']);
-            $table->index(['category_id', 'status']);
             $table->index(['city_id', 'status']);
             $table->index('user_id');
             $table->index('status');

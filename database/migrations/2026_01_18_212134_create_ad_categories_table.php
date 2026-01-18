@@ -25,9 +25,7 @@ return new class extends Migration
         });
 
         Schema::table('ads', function (Blueprint $table){
-            $table->dropForeign(['subcategory_id']);
-            $table->dropIndex(['category_id', 'status']);
-            $table->dropColumn(['category_id']);
+            $table->dropColumn(['category_id', 'subcategory_id']);
         });
 
         Schema::table('ads', function (Blueprint $table){
@@ -35,6 +33,7 @@ return new class extends Migration
                 $table->foreignId('category_id')->nullable()->constrained('ad_categories')->onDelete('restrict');
                 $table->foreignId('subcategory_id')->nullable()->constrained('ad_categories')->onDelete('set null');
             });
+            $table->index(['category_id', 'status']);
         });
 
     }
