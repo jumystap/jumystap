@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Enums\AdStatus;
 use App\Models\Ad;
+use App\Models\AdContact;
+use App\Models\AdView;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdRepository
@@ -39,6 +41,18 @@ class AdRepository
     public function getAdById($id): ?Ad
     {
         return Ad::query()->where('id', $id)->with('user.ads', 'user', 'category', 'city', 'photos')->firstOrFail();
+    }
+
+    public function createViews(Ad $ad, array $params): ?AdView
+    {
+        $ad->incrementViews();
+        return $ad->views()->create($params);
+    }
+
+    public function createContact(Ad $ad, array $params): ?AdContact
+    {
+        $ad->incrementContactsShown();
+        return $ad->contacts()->create($params);
     }
 
 }

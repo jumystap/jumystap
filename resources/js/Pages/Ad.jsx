@@ -118,7 +118,7 @@ export default function Ad({auth, ad}) {
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
                                     <>
-                                        <a href={`/connect/${auth.user.id}/${ad.id}`}
+                                        <a href={`/ad/connect/${ad.id}`}
                                            className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                             <span className='font-bold'>{t('contact')}</span>
                                         </a>
@@ -139,15 +139,6 @@ export default function Ad({auth, ad}) {
                                     onClick={handleShare}
                                     className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
                                     <MdIosShare className='text-blue-500 text-xl'/>
-                                </div>
-                                <div
-                                    onClick={handleFavoriteClick}
-                                    className={`border-2 ${isFavorite ? 'border-transparent' : 'border-blue-500'} rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                                    {isFavorite ? (
-                                        <FaHeart className={`text-blue-500 text-xl`}/>
-                                    ) : (
-                                        <FaRegHeart className="text-blue-500 text-xl"/>
-                                    )}
                                 </div>
                             </div>
                         </div>
@@ -174,8 +165,8 @@ export default function Ad({auth, ad}) {
                     <div className='mt-5 rounded-lg border mx-5'>
                         <div className="px-3 mt-2 text-md font-light">
                             <div
-                                className='text-left font-regular text-md text-bold'>Категория: {ad.category.name_ru}</div>
-                            <div className='text-left font-regular text-md text-bold mt-3'>Описание:</div>
+                                className='text-left font-regular text-md text-bold'>{t('category')}: {ad.category.name_ru}</div>
+                            <div className='text-left font-regular text-md text-bold mt-3'>{t('description')}:</div>
                             {ad.description}
                         </div>
 
@@ -299,7 +290,7 @@ export default function Ad({auth, ad}) {
                             ) : ('')}
                             {auth.user ? (
                                 <>
-                                    <a href={`/connect/${auth.user.id}/${ad.id}`}
+                                    <a href={`/ad/connect/${ad.id}`}
                                        className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
                                     </a>

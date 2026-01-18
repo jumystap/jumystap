@@ -187,7 +187,7 @@
                                             {{ $ad->type->label() }}
                                         </span>
                                                 </td>
-                                                <td>{{ $ad->category->name_ru }}</td>
+                                                <td>{{ $ad->category->name_ru ?? '' }}</td>
                                                 <td>{{ $ad->city->title }}</td>
                                                 <td><small>{{ $ad->formatted_price }}</small></td>
                                                 <td>

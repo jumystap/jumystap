@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AdType;
+use App\Models\AdCategory;
 use App\Services\AdService;
 use App\Enums\AdStatus;
 use App\Enums\Roles;
 use App\Models\City;
-use App\Models\Profession\Profession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -31,7 +31,7 @@ class AdController extends Controller
         $ads = $this->adService->getAllActiveAds($filters)->withQueryString();
         return Inertia::render('Ads', [
             'ads'        => $ads,
-            'categories' => Profession::query()->orderBy('id')->pluck('name_ru', 'id')->toArray(),
+            'categories' => AdCategory::query()->orderBy('id')->pluck('name_ru', 'id')->toArray(),
             'types' => AdType::options(),
             'cities'     => City::query()->orderBy('order_id')->pluck('title', 'id')->toArray(),
         ]);
@@ -46,12 +46,41 @@ class AdController extends Controller
             (Auth::check() && Auth::user()->role_id === Roles::ADMIN->value)
         ) {
 
+            $this->adService->createViews($ad, [
+                'user_id' => Auth()->id(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'viewed_at' => now(),
+            ]);
+
             return Inertia::render('Ad', [
                 'ad' => $ad,
             ]);
         }
 
         return redirect('ads');
+    }
+
+    public function connect(int $id): mixed
+    {
+        $ad = $this->adService->getAd($id);
+
+        if($ad->use_profile_phone){
+            $phone = $ad->user->phone;
+        }else{
+            $phone = $ad->phone;
+        }
+
+        $this->adService->createContact($ad, [
+            'user_id' => Auth()->id(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'contacted_at' => now(),
+        ]);
+
+        $whatsappUrl = "https://wa.me/" . $phone . "?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
+
+        return redirect()->away($whatsappUrl);
     }
 
 }

@@ -52,7 +52,7 @@
 
                                 <dt class="col-sm-3">Категория:</dt>
                                 <dd class="col-sm-9">
-                                    {{ $ad->category->name_ru }}
+                                    {{ $ad->category->name_ru ?? '' }}
                                     @if($ad->subcategory)
                                         → {{ $ad->subcategory->name }}
                                     @endif

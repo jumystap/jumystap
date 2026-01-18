@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\AdStatus;
 use App\Enums\AdType;
 use App\Enums\PriceType;
-use App\Models\Profession\Profession;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,12 +67,12 @@ class Ad extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Profession::class);
+        return $this->belongsTo(AdCategory::class);
     }
 
     public function subcategory(): BelongsTo
     {
-        return $this->belongsTo(Profession::class, 'subcategory_id');
+        return $this->belongsTo(AdCategory::class, 'subcategory_id');
     }
 
     public function city(): BelongsTo
@@ -99,6 +98,11 @@ class Ad extends Model
     public function views(): HasMany
     {
         return $this->hasMany(AdView::class);
+    }
+
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(AdContact::class);
     }
 
     public function favoritedBy(): BelongsToMany

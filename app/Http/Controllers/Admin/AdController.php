@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ad;
-use App\Models\Profession\Profession;
+use App\Models\AdCategory;
 use App\Models\City;
 use App\Models\BusinessType;
 use App\Enums\AdStatus;
@@ -62,7 +62,7 @@ class AdController extends Controller
         $ads = $query->paginate(20);
 
         // Данные для фильтров
-        $categories = Profession::all();
+        $categories = AdCategory::all();
         $cities = City::all();
         $statuses = AdStatus::cases();
         $types = AdType::cases();
@@ -72,7 +72,7 @@ class AdController extends Controller
 
     public function create(): View
     {
-        $categories = Profession::all();
+        $categories = AdCategory::all();
         $cities = City::all();
         $businessTypes = BusinessType::all();
         $types = AdType::cases();
@@ -155,7 +155,7 @@ class AdController extends Controller
 
     public function edit(Ad $ad): View
     {
-        $categories = Profession::all();
+        $categories = AdCategory::all();
         $cities = City::all();
         $businessTypes = BusinessType::all();
         $statuses = AdStatus::cases();

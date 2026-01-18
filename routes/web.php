@@ -25,6 +25,7 @@ Route::get('/announcements', [AnnouncementController::class, 'index'])->name('an
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
 
 Route::get('/ads', [AdController::class, 'index'])->name('ads');
+Route::get('/ad/connect/{ad_id}', [AdController::class, 'connect'])->name('ad.connect');
 Route::get('/ad/{id}', [AdController::class, 'show'])->name('ad');
 
 
