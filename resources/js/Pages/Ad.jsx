@@ -101,7 +101,7 @@ export default function Ad({auth, ad, category}) {
                                         </>
                                     ) :
                                         <>
-                                            <span>, {ad.address}.</span>
+                                            <span>{ad.address ? ', ' + ad.address + '.' : ''}</span>
                                         </>
                                     }
                                 </div>
