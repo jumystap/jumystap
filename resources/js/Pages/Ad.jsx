@@ -94,14 +94,14 @@ export default function Ad({auth, ad, category}) {
                             <div className=''>
                                 <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{ad.title}</div>
                                 <div className="mt-2 text-sm font-light">
-                                    {ad.city.title},
+                                    {ad.city.title}
                                     {ad.is_remote ? (
                                         <>
-                                            <span> {t('is_remote')}.</span>
+                                            <span>, {t('is_remote')}.</span>
                                         </>
                                     ) :
                                         <>
-                                            <span>{ad.address}.</span>
+                                            <span>, {ad.address}.</span>
                                         </>
                                     }
                                 </div>
