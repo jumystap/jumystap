@@ -35,7 +35,15 @@ class Ad extends Model
         'expires_at' => 'datetime',
     ];
 
-    protected $appends = ['formatted_price'];
+    protected $appends = [
+        'formatted_price',
+        'type_label'
+    ];
+
+    public function getTypeLabelAttribute(): string
+    {
+        return $this->type?->label() ?? '';
+    }
 
     protected function phone(): Attribute
     {

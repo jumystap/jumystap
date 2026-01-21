@@ -4,11 +4,11 @@ import React, {useState} from "react";  // useEffect больше не нуже�
 import {Link, Head} from "@inertiajs/react";
 import {FaRegHeart, FaHeart} from "react-icons/fa";
 import {useForm} from '@inertiajs/react';
-import {FaLocationDot} from "react-icons/fa6";
+import {FaSquareCheck} from "react-icons/fa6";
 import {MdIosShare} from "react-icons/md";
 import ShareButtons from "@/Components/ShareButtons";
 
-export default function Ad({auth, ad}) {
+export default function Ad({auth, ad, category}) {
     const {t, i18n} = useTranslation('announcements');
     const {post, delete: destroy} = useForm();
     const [isFavorite, setIsFavorite] = useState(ad.is_favorite);
@@ -94,12 +94,16 @@ export default function Ad({auth, ad}) {
                             <div className=''>
                                 <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{ad.title}</div>
                                 <div className="mt-2 text-sm font-light">
-                                    {ad.city.title}. {ad.address}.
+                                    {ad.city.title},
                                     {ad.is_remote ? (
                                         <>
-                                            <div className='text-bold'>Удаленно.</div>
+                                            <span> {t('is_remote')}.</span>
                                         </>
-                                    ) : ('')}
+                                    ) :
+                                        <>
+                                            <span>{ad.address}.</span>
+                                        </>
+                                    }
                                 </div>
                                 <div className='mt-2 text-2xl'>
                                     {ad.price_type === "exact" &&
@@ -130,10 +134,16 @@ export default function Ad({auth, ad}) {
                                         )}
                                     </>
                                 ) : (
-                                    <Link href='/login'
-                                          className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                        <span className='font-bold'>{t('contact')}</span>
-                                    </Link>
+                                    <>
+                                        <Link href='/login'
+                                              className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>{t('contact')}</span>
+                                        </Link>
+                                        <Link href='/login'
+                                              className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>{ad.type_label}</span>
+                                        </Link>
+                                    </>
                                 )}
                                 <div
                                     onClick={handleShare}
@@ -154,8 +164,9 @@ export default function Ad({auth, ad}) {
                             </div>
                             {ad.user.is_graduate ? (
                                 <>
-                                    <div className='text-sm bg-blue-300 text-gray-500 py-1 px-4 rounded-lg'>
-                                        Выпускник JOLTAP
+                                    <div className="flex mt-2 mb-3 text-gray-500 gap-x-1 font-light items-center text-sm">
+                                        <FaSquareCheck className="text-green-600" />
+                                        {t('is_graduate')}
                                     </div>
                                 </>
                             ) : ('')}
@@ -163,17 +174,16 @@ export default function Ad({auth, ad}) {
                     </div>
 
                     <div className='mt-5 rounded-lg border mx-5'>
-                        <div className="px-3 mt-2 text-md font-light">
-                            <div
-                                className='text-left font-regular text-md text-bold'>{t('category')}: {ad.category.name_ru}</div>
-                            <div className='text-left font-regular text-md text-bold mt-3'>{t('description')}:</div>
-                            {ad.description}
+                        <div className="px-3 py-2 mt-2 text-md font-light">
+                            <div className='text-left font-regular text-md text-bold'>
+                                <b>{t('category')}:</b> {category}
+                            </div>
                         </div>
 
                         {/* === Превью изображений (макс. 3) === */}
                         {previewImages.length > 0 && (
                             <div className="mt-6 px-3 pb-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                                     {previewImages.map((image, index) => (
                                         <div
                                             key={index}
@@ -183,7 +193,7 @@ export default function Ad({auth, ad}) {
                                             <img
                                                 src={image.url || image}
                                                 alt={`${ad.title} - изображение ${index + 1}`}
-                                                className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
+                                                className="w-full h-40 object-cover hover:scale-105 transition-transform duration-300"
                                             />
                                             {allImages.length > 3 && index === 2 && (
                                                 <div
@@ -258,6 +268,13 @@ export default function Ad({auth, ad}) {
                             </div>
                         )}
 
+                        <div className="px-3 py-2 text-md font-light">
+                            <div className='text-left font-regular text-md mt-3'>
+                                <b>{t('description')}:</b>
+                            </div>
+                            {ad.description}
+                        </div>
+
                         <p className="px-3 mt-5 py-2 border-gray-200 font-bold flex items-center gap-2">
                             {t('share')}:
                             <ShareButtons
@@ -273,7 +290,10 @@ export default function Ad({auth, ad}) {
                     <div className="col-span-3 border-l h-screen md:block hidden sticky top-0 border-gray-200">
                         <div className='px-5 py-4 border-b border-t border-gray-200'>
                             <div className='text-left font-regular text-xl'>{ad.user.name}</div>
-                            <div className='text-left mt-2 font-light text-gray-500'>
+                            <div className='mt-2 text-left font-regular text-md text-bold'>
+                                <b>{t('business_type')}:</b> {category}
+                            </div>
+                            <div className='text-left mt-2 font-regular'>
                                 {showFullText ? (ad?.user?.description || "") : (ad?.user?.description ? ad.user.description.slice(0, maxLength) : "")}
                                 {isLongText && (
                                     <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
@@ -283,8 +303,9 @@ export default function Ad({auth, ad}) {
                             </div>
                             {ad.user.is_graduate ? (
                                 <>
-                                    <div className='text-md mb-3'>
-                                        Выпускник JOLTAP
+                                    <div className="flex mt-10 mb-3 text-gray-500 gap-x-1 font-light items-center text-sm">
+                                        <FaSquareCheck className="text-green-600" />
+                                        {t('is_graduate')}
                                     </div>
                                 </>
                             ) : ('')}

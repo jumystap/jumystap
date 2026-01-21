@@ -10,8 +10,8 @@ enum AdType: string
     public function label(): string
     {
         return match($this) {
-            self::SERVICE => 'Услуга',
-            self::PRODUCT => 'Товар',
+            self::SERVICE => __('messages.ad_type.service'),
+            self::PRODUCT => __('messages.ad_type.product'),
         };
     }
 

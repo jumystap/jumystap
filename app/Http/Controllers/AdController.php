@@ -55,6 +55,7 @@ class AdController extends Controller
 
             return Inertia::render('Ad', [
                 'ad' => $ad,
+                'category' => $ad->category->name,
             ]);
         }
 

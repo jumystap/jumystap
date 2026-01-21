@@ -60,4 +60,8 @@ return [
         "moderator"    => "Модератор",
         "non_graduate" => "Не выпускник",
     ],
+    'ad_type'         => [
+        "service"     => "Услуга",
+        "product"     => "Товар",
+    ],
 ];
