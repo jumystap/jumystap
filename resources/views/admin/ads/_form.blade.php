@@ -122,7 +122,7 @@ use \App\Enums\PriceType;
                               id="description"
                               class="form-control @error('description') is-invalid @enderror"
                               rows="6"
-                              minlength="100"
+                              minlength="50"
                               maxlength="1000"
                               required
                               placeholder="Подробное описание вашего предложения...">{{ old('description', $ad->description ?? '') }}</textarea>
@@ -677,7 +677,7 @@ use \App\Enums\PriceType;
                 const count = textarea.val().length;
                 charCount.text(count + ' / 1000');
 
-                if (count < 100) {
+                if (count < 50) {
                     charCount.addClass('text-danger').removeClass('text-success');
                 } else if (count > 1000) {
                     charCount.addClass('text-danger').removeClass('text-success');
