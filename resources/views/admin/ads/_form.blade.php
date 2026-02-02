@@ -120,7 +120,7 @@ use \App\Enums\PriceType;
                     <label>Описание <span class="text-danger">*</span></label>
                     <textarea name="description"
                               id="description"
-                              class="form-control @error('description') is-invalid @enderror"
+                              class="editor tinymce-editor form-control @error('description') is-invalid @enderror"
                               rows="6"
                               minlength="50"
                               maxlength="1000"
@@ -863,3 +863,4 @@ use \App\Enums\PriceType;
         }
     </style>
 @endpush
+@include('admin.partials.editor')
