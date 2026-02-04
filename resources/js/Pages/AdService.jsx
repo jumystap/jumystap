@@ -7,6 +7,7 @@ import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
 import {formatDistanceToNow} from "date-fns";
 import {ru} from "date-fns/locale";
+import DOMPurify from 'dompurify';
 
 export default function Ad({auth, ad, category}) {
     const {t, i18n} = useTranslation('announcements');
@@ -152,9 +153,11 @@ export default function Ad({auth, ad, category}) {
 
                             <div className="border-b border-gray-200 px-4 md:px-6 py-4">
                                 <div className="text-base font-semibold">Описание объявления:</div>
-                                <p className="mt-3 text-sm leading-6 text-gray-700 whitespace-pre-line">
-                                    {ad.description}
-                                </p>
+                                <div className="mt-3 text-sm leading-6 text-gray-700 whitespace-pre-line"
+                                    dangerouslySetInnerHTML={{
+                                        __html: DOMPurify.sanitize(ad.description),
+                                    }}
+                                />
                             </div>
 
                             <div className="border-b border-gray-200 px-4 md:px-6 py-4">

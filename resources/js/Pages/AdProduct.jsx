@@ -5,6 +5,7 @@ import {Link, Head} from "@inertiajs/react";
 import {FaInstagram, FaTelegramPlane, FaWhatsapp} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
+import DOMPurify from 'dompurify';
 
 export default function Ad({auth, ad, category}) {
     const {t, i18n} = useTranslation('announcements');
@@ -131,9 +132,11 @@ export default function Ad({auth, ad, category}) {
 
                                     <div>
                                         <div className="text-sm font-semibold">Описание товара:</div>
-                                        <p className="mt-2 text-sm leading-6 text-gray-700 whitespace-pre-line">
-                                            {ad.description}
-                                        </p>
+                                        <div className="mt-3 text-sm leading-6 text-gray-700 whitespace-pre-line"
+                                             dangerouslySetInnerHTML={{
+                                                 __html: DOMPurify.sanitize(ad.description),
+                                             }}
+                                        />
                                     </div>
                                 </div>
                             </div>
