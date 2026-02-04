@@ -53,7 +53,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
         const url = `https://jumystap.kz/ads/${id}`;
         if (navigator.share) {
             navigator.share({
-                title: 'Check out this announcement',
+                title: 'Check out this ad',
                 url: url,
             }).then(() => {
                 console.log('Share was successful.');
@@ -305,7 +305,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                             </a>
                                             {auth.user.email === 'admin@example.com' && (
                                                 <a
-                                                    href={`/announcements/update/${ad.id}`}
+                                                    href={`/admin/ads/${ad.id}/edit`}
                                                     onClick={(e) => e.stopPropagation()}
                                                     className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
                                                     <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
