@@ -53,7 +53,11 @@ class AdController extends Controller
                 'viewed_at' => now(),
             ]);
 
-            return Inertia::render('Ad', [
+            $component = 'AdProduct';
+            if ($ad->type == AdType::SERVICE){
+                $component = 'AdService';
+            }
+            return Inertia::render($component, [
                 'ad' => $ad,
                 'category' => $ad->category->name,
             ]);
