@@ -121,10 +121,6 @@ use \App\Enums\PriceType;
                     <textarea name="description"
                               id="description"
                               class="editor tinymce-editor form-control @error('description') is-invalid @enderror"
-                              rows="6"
-                              minlength="50"
-                              maxlength="1000"
-                              required
                               placeholder="Подробное описание вашего предложения...">{{ old('description', $ad->description ?? '') }}</textarea>
                     @error('description')
                     <span class="invalid-feedback">{{ $message }}</span>
