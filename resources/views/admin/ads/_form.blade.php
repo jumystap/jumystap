@@ -126,10 +126,6 @@ use \App\Enums\PriceType;
                               maxlength="1000"
                               required
                               placeholder="Подробное описание вашего предложения...">{{ old('description', $ad->description ?? '') }}</textarea>
-                    <small class="form-text text-muted">
-                        От 100 до 1000 символов
-                        <span id="charCount" class="float-right">{{ strlen(old('description', $ad->description ?? '')) }} / 1000</span>
-                    </small>
                     @error('description')
                     <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -668,26 +664,6 @@ use \App\Enums\PriceType;
                 }
             });
             @endif
-
-            // Счетчик символов
-            const textarea = $('#description');
-            const charCount = $('#charCount');
-
-            function updateCharCount() {
-                const count = textarea.val().length;
-                charCount.text(count + ' / 1000');
-
-                if (count < 50) {
-                    charCount.addClass('text-danger').removeClass('text-success');
-                } else if (count > 1000) {
-                    charCount.addClass('text-danger').removeClass('text-success');
-                } else {
-                    charCount.addClass('text-success').removeClass('text-danger');
-                }
-            }
-
-            textarea.on('input', updateCharCount);
-            updateCharCount();
 
             // Подкатегории
             const categorySelect = $('#category_id');

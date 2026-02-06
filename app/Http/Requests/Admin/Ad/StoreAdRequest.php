@@ -21,7 +21,7 @@ class StoreAdRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'type' => ['required', new Enum(AdType::class)],
             'title' => 'required|string|max:80',
-            'description' => 'required|string|min:50|max:1000',
+            'description' => 'required|string',
             'category_id' => 'required|exists:professions,id',
             'subcategory_id' => 'nullable|exists:professions,id',
             'city_id' => 'required|exists:cities,id',
