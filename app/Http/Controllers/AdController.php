@@ -26,10 +26,36 @@ class AdController extends Controller
             'type'        => $request->input('type'),
             'category_id' => $request->input('category_id'),
             'city_id'     => $request->input('city_id'),
+            'price_from'  => $request->input('price_from'),
+            'price_to'    => $request->input('price_to'),
+            'is_joltap'   => $request->boolean('is_joltap'),
+            'is_negotiable' => $request->boolean('is_negotiable'),
         ];
 
         $ads = $this->adService->getAllActiveAds($filters)->withQueryString();
         return Inertia::render('Ads', [
+            'ads'        => $ads,
+            'categories' => AdCategory::query()->orderBy('id')->pluck('name_ru', 'id')->toArray(),
+            'types' => AdType::options(),
+            'cities'     => City::query()->orderBy('order_id')->pluck('title', 'id')->toArray(),
+        ]);
+    }
+
+    public function index2(Request $request): Response
+    {
+        $filters = [
+            'keyword'     => $request->input('keyword'),
+            'type'        => $request->input('type'),
+            'category_id' => $request->input('category_id'),
+            'city_id'     => $request->input('city_id'),
+            'price_from'  => $request->input('price_from'),
+            'price_to'    => $request->input('price_to'),
+            'is_joltap'   => $request->boolean('is_joltap'),
+            'is_negotiable' => $request->boolean('is_negotiable'),
+        ];
+
+        $ads = $this->adService->getAllActiveAds($filters)->withQueryString();
+        return Inertia::render('AdsProduct', [
             'ads'        => $ads,
             'categories' => AdCategory::query()->orderBy('id')->pluck('name_ru', 'id')->toArray(),
             'types' => AdType::options(),

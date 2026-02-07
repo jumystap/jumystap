@@ -171,8 +171,8 @@ export default function Guest({children}) {
                 <div className="pb-20">{children}</div>
             </div>
             <div className="md:flex hidden font-regular">
-                <div className="mx-auto min-h-[650px] md:w-[1250px] grid grid-cols-9 px-5">
-                    <div className="sticky top-0 pt-5 items-center col-span-2 h-screen border-r pr-5 border-gray-200">
+                <div className="mx-auto min-h-[650px] md:w-[1350px] grid grid-cols-10 px-5 gap-10">
+                    <div className="sticky top-0 pt-5 items-center col-span-2 h-screen border-r pr-5 border-gray-100">
                         <Link
                             className={`block ${isActive("/") ? "text-blue-500 font-semibold" : ""}`}
                             href="/"

@@ -11,6 +11,8 @@ import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
 import { MdIosShare } from "react-icons/md";
+import { HiOutlineUserCircle } from "react-icons/hi2";
+
 
 const { Option } = Select;
 
@@ -29,7 +31,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
     const { data, setData, get } = useForm({
         keyword: queryKeyword || '',
-        type: '',
+        type: 'product',
         category_id: '',
         city_id: '',
     });
@@ -37,6 +39,15 @@ export default function Ads({auth, ads, types, categories, cities }) {
     const handleTypeChange = (event) => {
         setTypeId(event.target.value);
         setData('type', event.target.value);
+    };
+    const handleTypeToggle = (newType) => {
+        setTypeId(newType);
+        setData('type', newType);
+        get('/ads', {
+            preserveScroll: true,
+            preserveState: true,
+            data: { ...data, type: newType }
+        });
     };
     const handleCategoryChange = (event) => {
         setCategoryId(event.target.value);
@@ -222,6 +233,42 @@ export default function Ads({auth, ads, types, categories, cities }) {
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
+
+                        <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7 border border-gray-100">
+                            <div className="flex">
+                                <div>
+                                    <p className="mt-3 font-bold text-2xl">
+                                        Маркетплейс <br />
+                                        товаров и услуг для <br />
+                                        <span className='text-[#E67E22] uppercase'>выпускников JOLTAP</span>
+                                    </p>
+                                    <p className="mt-4 text-lg md:mt-1">
+                                        Найдите нужную услугу или товар — <br />
+                                        или разместите своё объявление
+                                    </p>
+                                </div>
+
+                                <div className="hidden md:block ml-auto">
+                                    <img src="/images/logo_3d.png" className="md:w-[100px] w-[250px]"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                            <button
+                                onClick={() => handleTypeToggle('product')}
+                                className={`flex-1 md:w-80 py-4 rounded-xl font-semibold transition-all ${data.type === 'product' ? 'bg-[#3B82F6] text-white shadow-lg shadow-blue-200' : 'bg-[#EBF2FF] text-[#6B7280]'}`}
+                            >
+                                Товары
+                            </button>
+                            <button
+                                onClick={() => handleTypeToggle('service')}
+                                className={`flex-1 md:w-80 py-4 rounded-xl font-semibold transition-all ${data.type === 'service' ? 'bg-[#3B82F6] text-white shadow-lg shadow-blue-200' : 'bg-[#EBF2FF] text-[#6B7280]'}`}
+                            >
+                                Услуги
+                            </button>
+                        </div>
+
                         <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
                             <input
                                 type="text"
@@ -249,89 +296,109 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 <CgArrowsExchangeAltV />
                             </div>
                         </div>
-                        {ads.data.map((ad, index) => (
-                            <Link href={`/ad/${ad.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
-                                <div className='flex items-center'>
-                                    <div className={`flex gap-x-1 ${ad.city.title == 'Астана' ? ('text-blue-400'):('text-gray-400')} items-center`}>
-                                        <CiLocationOn />
-                                        <div className='text-[10pt] md:text-sm'>{ad.city.title}</div>
-                                        {ad.is_remote ? (
-                                            <>
-                                                <div className='text-[10pt] md:text-sm ml-10'>Удаленно</div>
-                                            </>
-                                        ) : ('')}
-                                    </div>
-                                    <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
-                                        {i18n.language == 'ru' ? ('Изменено') : ('')} {`${formatDistanceToNow(new Date(ad.updated_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('өзгертілді')}
-                                    </div>
-                                </div>
-                                <div className='mt-5 text-lg font-bold'>
-                                    {ad.title}
-                                </div>
-                                <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
-                                    <div className='md:text-xl text-xl font-regular'>
-                                        {ad.price_type === "exact" &&
-                                            ad.price_exact &&
-                                            `${ad.price_exact.toLocaleString()} ₸ `}
-                                        {ad.price_type === "range" &&
-                                            ad.price_from &&
-                                            ad.price_to &&
-                                            `${i18n?.language === "ru" ? "от " + ad.price_from.toLocaleString() + " ₸ до " + ad.price_to.toLocaleString() + " ₸" :
-                                                ad.price_from.toLocaleString() + " ₸ бастап " + ad.price_to.toLocaleString() + " ₸ дейін"}`
-                                        }
-                                        {ad.price_type === "negotiable" && t("negotiable", { ns: "index" })}
-                                    </div>
-                                </div>
-                                <div className='flex gap-x-2 mt-2'>
-                                    <div className='text-sm bg-gray-100 text-gray-500 py-1 px-4 rounded-lg'>
-                                        {ad.category.name_ru}
-                                    </div>
-                                    {ad.user.is_graduate ? (
-                                        <>
-                                            <div className='text-sm bg-blue-300 text-gray-500 py-1 px-4 rounded-lg'>
-                                                Выпускник JOLTAP
+                        {/* Cards Grid */}
+                        {type === 'service' ? (
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 px-3 md:px-5 md:mb-5 gap-x-2'>
+                                {ads.data.map((ad, index) => (
+                                    <Link href={`/ad/${ad.id}`} key={index} className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+                                        <div className="flex-1">
+                                            <h3 className='text-xl font-bold text-gray-900 leading-tight mb-2'>{ad.title}</h3>
+                                            <div className='text-lg font-medium text-gray-900 mb-4'>
+                                                {ad.price_type === "exact" && ad.price_exact && `${ad.price_exact.toLocaleString()} ₸`}
+                                                {ad.price_type === "range" && ad.price_from && ad.price_to &&
+                                                    (i18n?.language === "ru" ? `от ${ad.price_from.toLocaleString()} ₸ до ${ad.price_to.toLocaleString()} ₸` :
+                                                        `${ad.price_from.toLocaleString()} ₸ бастап ${ad.price_to.toLocaleString()} ₸ дейін`)
+                                                }
+                                                {ad.price_type === "negotiable" && "Договорная цена"}
                                             </div>
-                                        </>
-                                        ) : ('')}
-                                </div>
-                                <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                                    {auth.user ? (
-                                        <>
-                                            <a
-                                                href={`/ad/connect/${ad.id}`}
-                                                onClick={(e) => e.stopPropagation()}
-                                                className='text-blue-500 text-center rounded-lg text-sm text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                            </a>
-                                            {auth.user.email === 'admin@example.com' && (
-                                                <a
-                                                    href={`/admin/ads/${ad.id}/edit`}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                    <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
-                                                </a>
+
+                                            <div className='flex gap-2 mb-6'>
+                                                <div className='text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
+                                                    г. {ad.city.title}
+                                                </div>
+                                                {ad.is_remote && (
+                                                    <div className='text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
+                                                        Удаленно
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className='flex items-center gap-3 mb-6'>
+                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
+                                                    {ad.user.avatar ? (
+                                                        <img src={ad.user.avatar} alt={ad.user.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <HiOutlineUserCircle className="w-full h-full text-gray-300" />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <div className='font-bold text-gray-900 text-lg leading-none mb-1'>{ad.user.name}</div>
+                                                    {ad.user.is_graduate && (
+                                                        <div className='text-sm text-gray-500'>Выпускник JOLTAP</div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className='w-full bg-[#3B82F6] text-white py-3 rounded-xl font-bold text-center transition-colors hover:bg-blue-600'>
+                                            Подробнее
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='grid grid-cols-1 md:grid-cols-3 gap-6 px-3 md:px-5 md:mb-5 gap-x-2'>
+                                {ads.data.map((ad, index) => (
+                                    <Link href={`/ad/${ad.id}`} key={index} className="bg-white group flex flex-col">
+                                        <div className="relative aspect-[4/5] rounded-xl overflow-hidden mb-3 bg-gray-100 border border-gray-100">
+                                            <img
+                                                src={ad.photos && ad.photos.length > 0 ? (ad.photos[0].url || ad.photos[0]) : "/images/image.png"}
+                                                alt={ad.title}
+                                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                            />
+
+                                            {/* Badges */}
+                                            <div className="absolute top-2 left-2 flex flex-col gap-1">
+                                                {ad.is_used && (
+                                                    <span className="bg-[#3B82F6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Б/У</span>
+                                                )}
+                                                {ad.user.is_graduate && (
+                                                    <span className="bg-[#E67E22] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Выпускник</span>
+                                                )}
+                                            </div>
+
+                                            {/* Pagination dots indicator */}
+                                            {ad.photos && ad.photos.length > 1 && (
+                                                <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+                                                    {ad.photos.slice(0, 5).map((_, i) => (
+                                                        <div key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/50'}`}></div>
+                                                    ))}
+                                                </div>
                                             )}
-                                        </>
-                                    ) : (
-                                        <Link
-                                            href='/login'
-                                            onClick={(e) => e.stopPropagation()}
-                                            className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                        </Link>
-                                    )}
-                                    <div
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleShare(ad.id);
-                                        }}
-                                        className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                                        <MdIosShare className='text-blue-500 text-xl' />
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                        <Pagination links={ads.links} keyword={data.keyword} />
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <h3 className='text-base font-bold text-gray-900 leading-tight mb-1 line-clamp-2'>{ad.title}</h3>
+                                            <div className='text-lg font-bold text-gray-900 mb-1'>
+                                                {ad.price_type === "exact" && ad.price_exact && `${ad.price_exact.toLocaleString()} ₸`}
+                                                {ad.price_type === "range" && ad.price_from && ad.price_to && `${ad.price_from.toLocaleString()} ₸ - ${ad.price_to.toLocaleString()} ₸`}
+                                                {ad.price_type === "negotiable" && "Договорная цена"}
+                                            </div>
+                                            <div className="text-xs text-gray-400 flex items-center gap-1 mb-4">
+                                                г. {ad.city.title}{ad.address ? `, ${ad.address}` : ''}
+                                            </div>
+                                        </div>
+
+                                        <div className='w-full bg-[#EBF2FF] text-[#3B82F6] py-2.5 rounded-xl font-bold text-center group-hover:bg-[#3B82F6] group-hover:text-white transition-colors'>
+                                            Подробнее
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
+                        <div className='mt-8'>
+                            <Pagination links={ads.links} keyword={data.keyword} />
+                        </div>
                     </div>
                     {/* Desktop Filter Sidebar */}
                     <div className='col-span-2 border-l border-gray-200 h-screen sticky top-0 md:block hidden'>

@@ -35,6 +35,30 @@ class AdRepository
             $query->where('city_id', $filters['city_id']);
         }
 
+        if (!empty($filters['price_from'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('price_exact', '>=', $filters['price_from'])
+                  ->orWhere('price_from', '>=', $filters['price_from']);
+            });
+        }
+
+        if (!empty($filters['price_to'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('price_exact', '<=', $filters['price_to'])
+                  ->orWhere('price_to', '<=', $filters['price_to']);
+            });
+        }
+
+        if (isset($filters['is_joltap']) && $filters['is_joltap']) {
+            $query->whereHas('user', function ($q) {
+                $q->where('is_graduate', true);
+            });
+        }
+
+        if (isset($filters['is_negotiable']) && $filters['is_negotiable']) {
+            $query->where('price_type', \App\Enums\PriceType::NEGOTIABLE);
+        }
+
         return $query->paginate(10);
     }
 
