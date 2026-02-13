@@ -8,7 +8,7 @@ class UpdateAdRequest extends StoreAdRequest
     {
         $rules = parent::rules();
 
-        $rules['photos'] = 'nullable|array|max:3';
+        $rules['photos'] = 'nullable|array|max:6';
 
         // Комментарий при изменении статуса
         $rules['status_comment'] = 'nullable|string|max:500';

@@ -21,6 +21,7 @@ class Ad extends Model
         'category_id', 'subcategory_id', 'city_id', 'address', 'is_remote',
         'price_from', 'price_to', 'price_exact', 'price_type',
         'phone', 'use_profile_phone',
+        'instagram', 'tiktok', 'twogis', 'site',
         'business_type_id',
         'status', 'published_at', 'expires_at'
     ];

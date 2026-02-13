@@ -36,11 +36,16 @@ class StoreAdRequest extends FormRequest
             'use_profile_phone' => ['nullable', 'boolean'],
             'phone' => ['required_unless:use_profile_phone,1', 'nullable', 'string', 'max:20'],
 
+            'instagram' => 'nullable|string|max:255',
+            'tiktok' => 'nullable|string|max:255',
+            'twogis' => 'nullable|string|max:255',
+            'site' => 'nullable|string|max:255',
+
             'business_type_id' => 'nullable|exists:business_types,id',
 
             'status' => ['nullable', new Enum(AdStatus::class)],
 
-            'photos' => 'required|array|max:3',
+            'photos' => 'required|array|max:6',
             'photos.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
         ];
     }

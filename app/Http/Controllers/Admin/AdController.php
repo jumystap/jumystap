@@ -103,6 +103,10 @@ class AdController extends Controller
                 'price_to' => $request->price_to,
                 'phone' => $request->phone,
                 'use_profile_phone' => $request->boolean('use_profile_phone'),
+                'instagram' => $request->instagram,
+                'tiktok' => $request->tiktok,
+                'twogis' => $request->twogis,
+                'site' => $request->site,
                 'business_type_id' => $request->business_type_id,
                 'status' => $request->status ?? AdStatus::MODERATION,
                 'published_at' => $request->status === AdStatus::ACTIVE->value ? now() : null,
@@ -184,10 +188,10 @@ class AdController extends Controller
                 $currentPhotosCount = $ad->photos()->count();
                 $newPhotosCount = count($request->file('photos'));
 
-                if ($currentPhotosCount + $newPhotosCount <= 3) {
+                if ($currentPhotosCount + $newPhotosCount <= 6) {
                     $this->handlePhotoUploads($ad, $request->file('photos'));
                 } else {
-                    return back()->with('warning', 'Превышен лимит фотографий (максимум 3)');
+                    return back()->with('error', 'Превышен лимит фотографий (максимум 6)');
                 }
             }
 

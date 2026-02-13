@@ -327,6 +327,68 @@ use \App\Enums\PriceType;
                     @enderror
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Instagram</label>
+                            <input type="text"
+                                   name="instagram"
+                                   class="form-control @error('instagram') is-invalid @enderror"
+                                   value="{{ old('instagram', $ad->instagram ?? '') }}"
+                                   maxlength="255"
+                                   placeholder="Ссылка на Instagram">
+                            @error('instagram')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>TikTok</label>
+                            <input type="text"
+                                   name="tiktok"
+                                   class="form-control @error('tiktok') is-invalid @enderror"
+                                   value="{{ old('tiktok', $ad->tiktok ?? '') }}"
+                                   maxlength="255"
+                                   placeholder="Ссылка на TikTok">
+                            @error('tiktok')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>2GIS</label>
+                            <input type="text"
+                                   name="twogis"
+                                   class="form-control @error('twogis') is-invalid @enderror"
+                                   value="{{ old('twogis', $ad->twogis ?? '') }}"
+                                   maxlength="255"
+                                   placeholder="Ссылка на 2GIS">
+                            @error('twogis')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Сайт</label>
+                            <input type="text"
+                                   name="site"
+                                   class="form-control @error('site') is-invalid @enderror"
+                                   value="{{ old('site', $ad->site ?? '') }}"
+                                   maxlength="255"
+                                   placeholder="Ссылка на сайт">
+                            @error('site')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
 {{--                <div class="form-group">--}}
 {{--                    <label>Вид деятельности</label>--}}
 {{--                    <select name="business_type_id"--}}
@@ -382,7 +444,7 @@ use \App\Enums\PriceType;
                 <div class="form-group">
                     <label>
                         {{ isset($ad) && $ad->photos->isNotEmpty() ? 'Добавить новые фото' : 'Загрузить фото' }}
-                        (максимум {{ 3 - (isset($ad) ? $ad->photos->count() : 0) }})
+                        (максимум {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }})
                     </label>
                     <div class="custom-file">
                         <input type="file"
@@ -743,7 +805,7 @@ use \App\Enums\PriceType;
             toggleRemoteField();
 
             // Превью фотографий
-            const maxPhotos = {{ 3 - (isset($ad) ? $ad->photos->count() : 0) }};
+            const maxPhotos = {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }};
 
             $('#photos').on('change', function() {
                 const files = this.files;
