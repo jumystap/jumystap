@@ -126,8 +126,8 @@ export default function Ad({auth, ad, category}) {
                                 )}
                             </div>
                         </div>
-                        <div className="border-b border-gray-200 pt-6 pb-6 md:px-6">
-                            <div className="space-y-3">
+                        <div className="border-b border-gray-200 px-4 pt-6 pb-6 md:px-6">
+                            <div className="space-y-4">
                                 <div className="text-2xl md:text-3xl font-bold leading-tight">{ad.title}</div>
                                 {locationLabel && (
                                     <div className="text-sm text-gray-500">{locationLabel}</div>
@@ -211,7 +211,7 @@ export default function Ad({auth, ad, category}) {
                             </div>
 
                     </div>
-                    <div className="md:col-span-2 border-l border-gray-200 md:block hidden sticky top-0">
+                    <div className="md:col-span-2 border-l border-gray-200 sticky top-0">
                         <div className="border-b border-gray-200 px-6 py-4 text-sm font-semibold">Информация об исполнителе</div>
                         <div className="px-6 py-6 space-y-4">
                             <div className="flex items-center gap-3">

@@ -278,7 +278,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             </button>
                         </div>
 
-                        <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                        <div className='mt-5 flex items-center px-3 md:px-5 mb-5 gap-x-2'>
                             <input
                                 type="text"
                                 value={data.keyword}
@@ -306,12 +306,12 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             </div>
                         </div>
                         {data.type === 'service' ? (
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 px-3 md:px-5 md:mb-5 gap-x-2'>
+                            <div className='grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 px-3 md:px-5 mt-3 md:mt-0 md:mb-5'>
                                 {ads.data.map((ad, index) => (
-                                    <Link href={`/ad/${ad.id}`} key={index} className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+                                    <Link href={`/ad/${ad.id}`} key={index} className="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow">
                                         <div className="flex-1">
-                                            <h3 className='text-xl font-bold text-gray-900 leading-tight mb-2'>{ad.title}</h3>
-                                            <div className='text-lg font-medium text-gray-900 mb-4'>
+                                            <h3 className='text-base md:text-xl font-bold text-gray-900 leading-tight mb-2'>{ad.title}</h3>
+                                            <div className='text-sm md:text-lg font-medium text-gray-900 mb-4'>
                                                 {ad.price_type === "exact" && ad.price_exact && `${ad.price_exact.toLocaleString()} ₸`}
                                                 {ad.price_type === "range" && ad.price_from && ad.price_to &&
                                                     (i18n?.language === "ru" ? `от ${ad.price_from.toLocaleString()} ₸ до ${ad.price_to.toLocaleString()} ₸` :
@@ -330,19 +330,19 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                 {ad.price_type === "negotiable" && "Договорная цена"}
                                             </div>
 
-                                            <div className='flex gap-2 mb-6'>
-                                                <div className='text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
+                                            <div className='flex flex-wrap gap-2 mb-6'>
+                                                <div className='text-[10px] md:text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
                                                     г. {ad.city.title}
                                                 </div>
                                                 {ad.is_remote && (
-                                                    <div className='text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
+                                                    <div className='text-[10px] md:text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
                                                         Удаленно
                                                     </div>
                                                 )}
                                             </div>
 
-                                            <div className='flex items-center gap-3 mb-6'>
-                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
+                                            <div className='flex items-center gap-2 md:gap-3 mb-6'>
+                                                <div className="w-10 h-10 md:w-16 md:h-16 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                                                     {ad.user.avatar ? (
                                                         <img src={ad.user.avatar} alt={ad.user.name} className="w-full h-full object-cover" />
                                                     ) : (
@@ -350,9 +350,9 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <div className='font-bold text-gray-900 text-lg leading-none mb-1'>{ad.user.name}</div>
+                                                    <div className='font-bold text-gray-900 text-sm md:text-lg leading-tight mb-0.5'>{ad.user.name}</div>
                                                     {ad.user.is_graduate && (
-                                                        <div className='text-sm text-gray-500'>Выпускник JOLTAP</div>
+                                                        <div className='text-[10px] md:text-sm text-gray-500'>Выпускник JOLTAP</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -365,7 +365,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 ))}
                             </div>
                         ) : (
-                            <div className='grid grid-cols-1 md:grid-cols-3 gap-6 px-3 md:px-5 md:mb-5 gap-x-2'>
+                            <div className='grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 px-3 md:px-5 mt-3 md:mt-0 md:mb-5'>
                                 {ads.data.map((ad, index) => (
                                     <Link href={`/ad/${ad.id}`} key={index} className="bg-white group flex flex-col">
                                         <div className="relative aspect-[4/5] rounded-xl overflow-hidden mb-3 bg-gray-100 border border-gray-100">

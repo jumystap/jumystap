@@ -103,7 +103,7 @@ export default function Guest({children}) {
                         </div>
                     </div>
                 </div>
-                <div className="fixed bottom-0 left-0 w-full">
+                <div className="fixed bottom-0 left-0 w-full z-50">
                     <div className="bg-white grid grid-cols-4 w-full py-3 px-3">
                         <Link
                             className={`block flex-col text-center ${isActive("/") ? "text-red-500" : "text-gray-500"}`}
