@@ -444,7 +444,7 @@ use \App\Enums\PriceType;
                 <div class="form-group">
                     <label>
                         {{ isset($ad) && $ad->photos->isNotEmpty() ? 'Добавить новые фото' : 'Загрузить фото' }}
-                        (максимум {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }})
+                        <span id="maxPhotosLabel">(максимум {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }})</span>
                     </label>
                     <div class="custom-file">
                         <input type="file"
@@ -591,6 +591,8 @@ use \App\Enums\PriceType;
 @push('scripts')
 
     <script>
+        let maxPhotos = {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }};
+
         $(document).ready(function() {
             $('#phone').inputmask({
                 mask: '+9 (999) 999-99-99',
@@ -805,8 +807,6 @@ use \App\Enums\PriceType;
             toggleRemoteField();
 
             // Превью фотографий
-            const maxPhotos = {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }};
-
             $('#photos').on('change', function() {
                 const files = this.files;
                 const preview = $('#photoPreview');
@@ -872,6 +872,8 @@ use \App\Enums\PriceType;
                             if (response.success) {
                                 $(`#photo_${photoId}`).fadeOut(300, function() {
                                     $(this).remove();
+                                    maxPhotos++;
+                                    $('#maxPhotosLabel').text(`(максимум ${maxPhotos})`);
                                     Swal.fire('Удалено!', 'Фото успешно удалено', 'success');
                                 });
                             }
