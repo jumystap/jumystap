@@ -30,8 +30,8 @@ class StoreAdRequest extends FormRequest
 
             'price_type' => ['required', new Enum(PriceType::class)],
             'price_exact' => 'required_if:price_type,exact|nullable|numeric|min:0',
-            'price_from' => 'required_if:price_type,range|nullable|numeric|min:0',
-            'price_to' => 'required_if:price_type,range|nullable|numeric|min:0|gt:price_from',
+            'price_from' => 'required_without:price_to|nullable|numeric|min:0',
+            'price_to'   => 'required_without:price_from|nullable|numeric|min:0',
 
             'use_profile_phone' => ['nullable', 'boolean'],
             'phone' => ['required_unless:use_profile_phone,1', 'nullable', 'string', 'max:20'],

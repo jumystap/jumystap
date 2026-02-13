@@ -119,6 +119,16 @@ export default function Ad({auth, ad, category}) {
                                                     ? "от " + ad.price_from.toLocaleString() + " ₸ до " + ad.price_to.toLocaleString() + " ₸"
                                                     : ad.price_from.toLocaleString() + " ₸ бастап " + ad.price_to.toLocaleString() + " ₸ дейін"}`
                                             }
+                                            {ad.price_type === "range" && !ad.price_from && ad.price_to &&
+                                                `${i18n?.language === "ru"
+                                                    ? "до " + ad.price_to.toLocaleString() + " ₸"
+                                                    : ad.price_to.toLocaleString() + " ₸ дейін"}`
+                                            }
+                                            {ad.price_type === "range" && ad.price_from && !ad.price_to &&
+                                                `${i18n?.language === "ru"
+                                                    ? "от " + ad.price_from.toLocaleString() + " ₸"
+                                                    : ad.price_from.toLocaleString() + " ₸ бастап"}`
+                                            }
                                             {ad.price_type === "negotiable" && t("negotiable", {ns: "index"})}
                                         </div>
                                     </div>

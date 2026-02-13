@@ -772,7 +772,6 @@ use \App\Enums\PriceType;
                     $('input[name="price_from"], input[name="price_to"]').prop('required', false);
                 } else if (type === 'range') {
                     $('input[name="price_exact"]').prop('required', false);
-                    $('input[name="price_from"], input[name="price_to"]').prop('required', true);
                 } else {
                     $('input[name="price_exact"], input[name="price_from"], input[name="price_to"]').prop('required', false);
                 }

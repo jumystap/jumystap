@@ -23,7 +23,7 @@ class AdController extends Controller
     {
         $filters = [
             'keyword'     => $request->input('keyword'),
-            'type'        => $request->input('type'),
+            'type'        => $request->input('type') ?? 'product',
             'category_id' => $request->input('category_id'),
             'city_id'     => $request->input('city_id'),
             'price_from'  => $request->input('price_from'),

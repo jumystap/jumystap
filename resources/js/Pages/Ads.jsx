@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { CgClose } from "react-icons/cg";
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
@@ -37,24 +37,24 @@ export default function Ads({auth, ads, types, categories, cities }) {
     });
 
     const handleTypeChange = (event) => {
-        setTypeId(event.target.value);
         setData('type', event.target.value);
     };
     const handleTypeToggle = (newType) => {
-        setTypeId(newType);
         setData('type', newType);
-        get('/ads', {
+        router.get('/ads', { ...data, type: newType }, {
             preserveScroll: true,
             preserveState: true,
-            data: { ...data, type: newType }
+            queryStringArrayFormat: 'indices',
         });
     };
+
+    useEffect(() => {
+        setTypeId(data.type);
+    }, [data.type]);
     const handleCategoryChange = (event) => {
-        setCategoryId(event.target.value);
         setData('category_id', event.target.value);
     };
     const handleCityChange = (event) => {
-        setCityId(event.target.value);
         setData('city_id', event.target.value);
     };
 
@@ -84,33 +84,42 @@ export default function Ads({auth, ads, types, categories, cities }) {
         const params = new URLSearchParams(window.location.search);
         const keyword = params.get('keyword');
         const city_id = params.get('city_id');
+        const typeParam = params.get('type');
 
-        if (keyword || city_id) {
+        if (keyword || city_id || typeParam) {
             setData({
-                keyword: keyword || '',
-                city_id: city_id || '',
+                ...data,
+                keyword: keyword || data.keyword,
+                city_id: city_id || data.city_id,
+                type: typeParam || data.type,
             });
-            setCityId(city_id || '');
+            if (city_id) setCityId(city_id);
+            if (typeParam) setTypeId(typeParam);
         }
     }, []);
 
     const handleSearch = () => {
         setIsFilterOpen(false)
-        get('/ads', { preserveScroll: true, preserveState: true });
+        router.get('/ads', data, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     const resetSearch = () => {
-        setData({
+        const resetData = {
             keyword: '',
+            type: 'product',
             category_id: '',
             city_id: '',
-        });
+        };
+        setData(resetData);
         setAdType('all');
         setCategoryId('');
         setCityId('');
-        get('/ads', {
+        router.get('/ads', resetData, {
             preserveScroll: true,
-            preserveState: true
+            preserveState: true,
         });
     };
 
@@ -181,7 +190,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                         <div className='text-gray-500 mt-5'>{t('type', { ns: 'announcements' })}</div>
                         <select
-                            value={type}
+                            value={data.type}
                             onChange={handleTypeChange}
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
@@ -195,7 +204,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                         <div className='text-gray-500 mt-5'>{t('category', { ns: 'announcements' })}</div>
                         <select
-                            value={category_id}
+                            value={data.category_id}
                             onChange={handleCategoryChange}
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
@@ -209,7 +218,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                         <div className='text-gray-500 mt-5'>{t('region', { ns: 'announcements' })}</div>
                         <select
-                            value={city_id}
+                            value={data.city_id}
                             onChange={handleCityChange}
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
@@ -296,8 +305,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 <CgArrowsExchangeAltV />
                             </div>
                         </div>
-                        {/* Cards Grid */}
-                        {type === 'service' ? (
+                        {data.type === 'service' ? (
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-6 px-3 md:px-5 md:mb-5 gap-x-2'>
                                 {ads.data.map((ad, index) => (
                                     <Link href={`/ad/${ad.id}`} key={index} className="bg-white rounded-2xl border border-gray-100 p-6 flex flex-col shadow-sm hover:shadow-md transition-shadow">
@@ -308,6 +316,16 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                 {ad.price_type === "range" && ad.price_from && ad.price_to &&
                                                     (i18n?.language === "ru" ? `от ${ad.price_from.toLocaleString()} ₸ до ${ad.price_to.toLocaleString()} ₸` :
                                                         `${ad.price_from.toLocaleString()} ₸ бастап ${ad.price_to.toLocaleString()} ₸ дейін`)
+                                                }
+                                                {ad.price_type === "range" && !ad.price_from && ad.price_to &&
+                                                    `${i18n?.language === "ru"
+                                                        ? "до " + ad.price_to.toLocaleString() + " ₸"
+                                                        : ad.price_to.toLocaleString() + " ₸ дейін"}`
+                                                }
+                                                {ad.price_type === "range" && ad.price_from && !ad.price_to &&
+                                                    `${i18n?.language === "ru"
+                                                        ? "от " + ad.price_from.toLocaleString() + " ₸"
+                                                        : ad.price_from.toLocaleString() + " ₸ бастап"}`
                                                 }
                                                 {ad.price_type === "negotiable" && "Договорная цена"}
                                             </div>
@@ -382,6 +400,16 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                             <div className='text-lg font-bold text-gray-900 mb-1'>
                                                 {ad.price_type === "exact" && ad.price_exact && `${ad.price_exact.toLocaleString()} ₸`}
                                                 {ad.price_type === "range" && ad.price_from && ad.price_to && `${ad.price_from.toLocaleString()} ₸ - ${ad.price_to.toLocaleString()} ₸`}
+                                                {ad.price_type === "range" && !ad.price_from && ad.price_to &&
+                                                    `${i18n?.language === "ru"
+                                                        ? "до " + ad.price_to.toLocaleString() + " ₸"
+                                                        : ad.price_to.toLocaleString() + " ₸ дейін"}`
+                                                }
+                                                {ad.price_type === "range" && ad.price_from && !ad.price_to &&
+                                                    `${i18n?.language === "ru"
+                                                        ? "от " + ad.price_from.toLocaleString() + " ₸"
+                                                        : ad.price_from.toLocaleString() + " ₸ бастап"}`
+                                                }
                                                 {ad.price_type === "negotiable" && "Договорная цена"}
                                             </div>
                                             <div className="text-xs text-gray-400 flex items-center gap-1 mb-4">
@@ -408,7 +436,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                         <div className='flex px-3 flex-col md:flex-col'>
                             <div className='text-gray-500 mt-5'>{t('type', { ns: 'announcements' })}</div>
                             <select
-                                value={type}
+                                value={data.type}
                                 onChange={handleTypeChange}
                                 className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
@@ -421,7 +449,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             </select>
                             <div className='text-gray-500 mt-5'>{t('category', { ns: 'announcements' })}</div>
                             <select
-                                value={category_id}
+                                value={data.category_id}
                                 onChange={handleCategoryChange}
                                 className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
@@ -434,7 +462,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             </select>
                             <div className='text-gray-500 mt-5'>{t('region', { ns: 'announcements' })}</div>
                             <select
-                                value={city_id}
+                                value={data.city_id}
                                 onChange={handleCityChange}
                                 className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
