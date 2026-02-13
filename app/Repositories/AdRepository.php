@@ -13,7 +13,7 @@ class AdRepository
     public function getAllActiveAds(array $filters = null): LengthAwarePaginator
     {
         $query = Ad::query()->orderBy('published_at', 'desc')
-            ->with('user', 'category', 'city')
+            ->with('user', 'category', 'city', 'photos')
             ->where("status", AdStatus::ACTIVE);
 
         if (!empty($filters['keyword'])) {

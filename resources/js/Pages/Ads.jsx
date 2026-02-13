@@ -370,7 +370,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                     <Link href={`/ad/${ad.id}`} key={index} className="bg-white group flex flex-col">
                                         <div className="relative aspect-[4/5] rounded-xl overflow-hidden mb-3 bg-gray-100 border border-gray-100">
                                             <img
-                                                src={ad.photos && ad.photos.length > 0 ? (ad.photos[0].url || ad.photos[0]) : "/images/image.png"}
+                                                src={ad.photos && ad.photos.length > 0 ? (ad.photos[0].path || ad.photos[0]) : "/images/image.png"}
                                                 alt={ad.title}
                                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
