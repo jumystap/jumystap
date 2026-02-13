@@ -111,7 +111,7 @@ export default function Ad({auth, ad, category}) {
 
                                 <div className="relative space-y-4 pb-12">
                                     <div>
-                                        <div className="text-2xl md:text-3xl font-bold leading-tight">{ad.title}</div>
+                                        <div className="text-2xl md:text-3xl font-bold leading-tight break-words">{ad.title}</div>
                                         <div className="mt-1.5 text-xl md:text-2xl font-semibold">
                                             {ad.price_type === "exact" && ad.price_exact && `${ad.price_exact.toLocaleString()} ₸ `}
                                             {ad.price_type === "range" && ad.price_from && ad.price_to &&
