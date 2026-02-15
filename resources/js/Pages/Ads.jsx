@@ -17,7 +17,7 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 const { Option } = Select;
 
 export default function Ads({auth, ads, types, categories, cities }) {
-    const { t, i18n } = useTranslation();
+    const { t, i18n } = useTranslation(['ads', 'announcements']);
     const [adType, setAdType] = useState('all');
     const [type, setTypeId] = useState('');
     const [category_id, setCategoryId] = useState('');
@@ -164,8 +164,8 @@ export default function Ads({auth, ads, types, categories, cities }) {
     return (
         <>
             <GuestLayout>
-                <Head title="Работа в Казахстане | свежие вакансии и объявления ">
-                    <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
+                <Head title={t('seo_title', { ns: 'ads' })}>
+                    <meta name="description" content={t('seo_description', { ns: 'ads' })} />
                 </Head>
                 <div className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'>
                     <div className='w-[80%] bg-white rounded-lg h-[20%]'></div>
@@ -247,13 +247,11 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             <div className="flex">
                                 <div>
                                     <p className="mt-3 font-bold text-2xl">
-                                        Маркетплейс <br />
-                                        товаров и услуг для <br />
-                                        <span className='text-[#E67E22] uppercase'>выпускников JOLTAP</span>
+                                        {t('marketplace_title', { ns: 'ads' })} <br />
+                                        {t('for_graduates', { ns: 'ads' })}
                                     </p>
                                     <p className="mt-4 text-lg md:mt-1">
-                                        Найдите нужную услугу или товар — <br />
-                                        или разместите своё объявление
+                                        {t('marketplace_subtitle', { ns: 'ads' })}
                                     </p>
                                 </div>
 
@@ -268,13 +266,13 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 onClick={() => handleTypeToggle('product')}
                                 className={`flex-1 md:w-80 py-4 rounded-xl font-semibold transition-all ${data.type === 'product' ? 'bg-[#3B82F6] text-white shadow-lg shadow-blue-200' : 'bg-[#EBF2FF] text-[#6B7280]'}`}
                             >
-                                Товары
+                                {t('products', { ns: 'ads' })}
                             </button>
                             <button
                                 onClick={() => handleTypeToggle('service')}
                                 className={`flex-1 md:w-80 py-4 rounded-xl font-semibold transition-all ${data.type === 'service' ? 'bg-[#3B82F6] text-white shadow-lg shadow-blue-200' : 'bg-[#EBF2FF] text-[#6B7280]'}`}
                             >
-                                Услуги
+                                {t('services', { ns: 'ads' })}
                             </button>
                         </div>
 
@@ -327,16 +325,16 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                         ? "от " + ad.price_from.toLocaleString() + " ₸"
                                                         : ad.price_from.toLocaleString() + " ₸ бастап"}`
                                                 }
-                                                {ad.price_type === "negotiable" && "Договорная цена"}
+                                                {ad.price_type === "negotiable" && t('negotiable', { ns: 'ads' })}
                                             </div>
 
                                             <div className='flex flex-wrap gap-2 mb-6'>
                                                 <div className='text-[10px] md:text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
-                                                    г. {ad.city.title}
+                                                    {t('city_short', { ns: 'ads' })} {ad.city.title}
                                                 </div>
                                                 {ad.is_remote && (
                                                     <div className='text-[10px] md:text-xs bg-gray-50 text-gray-400 py-1.5 px-3 rounded-md border border-gray-100'>
-                                                        Удаленно
+                                                        {t('is_remote', { ns: 'announcements' })}
                                                     </div>
                                                 )}
                                             </div>
@@ -352,14 +350,14 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                 <div>
                                                     <div className='font-bold text-gray-900 text-sm md:text-lg leading-tight mb-0.5'>{ad.user.name}</div>
                                                     {ad.user.is_graduate === 1 && (
-                                                        <div className='text-[10px] md:text-sm text-gray-500'>Выпускник JOLTAP</div>
+                                                        <div className='text-[10px] md:text-sm text-gray-500'>{t('is_graduate', { ns: 'announcements' })}</div>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className='w-full bg-[#3B82F6] text-white py-3 rounded-xl font-bold text-center transition-colors hover:bg-blue-600'>
-                                            Подробнее
+                                            {t('detail', { ns: 'announcements' })}
                                         </div>
                                     </Link>
                                 ))}
@@ -370,7 +368,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                     <Link href={`/ad/${ad.id}`} key={index} className="bg-white group flex flex-col">
                                         <div className="relative aspect-[4/5] rounded-xl overflow-hidden mb-3 bg-gray-100 border border-gray-100">
                                             <img
-                                                src={ad.photos && ad.photos.length > 0 ? (ad.photos[0].url || ad.photos[0]) : "/images/image.png"}
+                                                src={ad.photos && ad.photos.length > 0 ? (ad.photos[0].url || ad.photos[0]) : "/images/default-avatar.png"}
                                                 alt={ad.title}
                                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
@@ -378,10 +376,10 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                             {/* Badges */}
                                             <div className="absolute top-2 left-2 flex flex-col gap-1">
                                                 {ad.is_used && (
-                                                    <span className="bg-[#3B82F6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Б/У</span>
+                                                    <span className="bg-[#3B82F6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">{t('used', { ns: 'ads' })}</span>
                                                 )}
                                                 {ad.user.is_graduate === 1 && (
-                                                    <span className="bg-[#E67E22] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Выпускник</span>
+                                                    <span className="bg-[#E67E22] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">{t('graduate', { ns: 'ads' })}</span>
                                                 )}
                                             </div>
 
@@ -410,15 +408,15 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                         ? "от " + ad.price_from.toLocaleString() + " ₸"
                                                         : ad.price_from.toLocaleString() + " ₸ бастап"}`
                                                 }
-                                                {ad.price_type === "negotiable" && "Договорная цена"}
+                                                {ad.price_type === "negotiable" && t('negotiable', { ns: 'ads' })}
                                             </div>
                                             <div className="text-xs text-gray-400 flex items-center gap-1 mb-4">
-                                                г. {ad.city.title}{ad.address ? `, ${ad.address}` : ''}
+                                                {t('city_short', { ns: 'ads' })} {ad.city.title}{ad.address ? `, ${ad.address}` : ''}
                                             </div>
                                         </div>
 
                                         <div className='w-full bg-[#EBF2FF] text-[#3B82F6] py-2.5 rounded-xl font-bold text-center group-hover:bg-[#3B82F6] group-hover:text-white transition-colors'>
-                                            Подробнее
+                                            {t('detail', { ns: 'announcements' })}
                                         </div>
                                     </Link>
                                 ))}

@@ -62,6 +62,6 @@ return [
     ],
     'ad_type'         => [
         "service"     => "Қызмет",
-        "product"     => "Өнім",
+        "product"     => "Тауар",
     ],
 ];

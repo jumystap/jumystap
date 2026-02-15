@@ -48,7 +48,7 @@
                                 <dd class="col-sm-9"><strong>{{ $ad->title }}</strong></dd>
 
                                 <dt class="col-sm-3">Описание:</dt>
-                                <dd class="col-sm-9">{{ $ad->description }}</dd>
+                                <dd class="col-sm-9">{!! $ad->description !!}</dd>
 
                                 <dt class="col-sm-3">Категория:</dt>
                                 <dd class="col-sm-9">

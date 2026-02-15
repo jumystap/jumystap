@@ -10,7 +10,7 @@ import {ru} from "date-fns/locale";
 import DOMPurify from 'dompurify';
 
 export default function Ad({auth, ad, category}) {
-    const {t, i18n} = useTranslation('announcements');
+    const {t, i18n} = useTranslation(['ads', 'announcements']);
     const [showFullText, setShowFullText] = useState(false);
     const maxLength = 90;
     const isLongText = ad.user.description ? ad.user.description.length > maxLength : false;
@@ -65,15 +65,15 @@ export default function Ad({auth, ad, category}) {
 
     const updatedAt = ad?.updated_at || ad?.published_at || ad?.created_at;
     const updatedAtLabel = updatedAt
-        ? `${i18n.language === 'ru' ? 'Обновлено ' : ''}${formatDistanceToNow(new Date(updatedAt), {
+        ? `${t('updated_at_label', {ns: 'ads'})} ${formatDistanceToNow(new Date(updatedAt), {
             locale: i18n.language === 'ru' ? ru : kz,
             addSuffix: true
-        })}${i18n.language === 'kz' ? ' жаңартылды' : ''}`
+        })}`
         : null;
 
     const cityTitle = ad?.city?.title || ad?.city || '';
     const locationLabel = ad?.is_remote
-        ? (i18n.language === 'ru' ? 'Удаленно' : 'Қашықтан')
+        ? t('is_remote', {ns: 'announcements'})
         : [cityTitle, ad?.address].filter(Boolean).join(', ');
 
     // Открытие лайтбокса
@@ -105,8 +105,8 @@ export default function Ad({auth, ad, category}) {
 
     return (
         <>
-            <Head title={`${ad.title}${cityTitle ? ` в ${cityTitle}` : ''} | Объявление от ${ad.user.name}`}>
-                <meta name="description" content={`Объявление ${ad.title}${cityTitle ? ` в ${cityTitle}` : ''} от ${ad.user.name}.`}/>
+            <Head title={`${ad.title}${cityTitle ? ` ${t('to', {ns: 'ads'})} ${cityTitle}` : ''} | ${t('job', {ns: 'announcements'})} ${t('from', {ns: 'ads'})} ${ad.user.name}`}>
+                <meta name="description" content={`${t('job', {ns: 'announcements'})} ${ad.title}${cityTitle ? ` ${t('to', {ns: 'ads'})} ${cityTitle}` : ''} ${t('from', {ns: 'ads'})} ${ad.user.name}.`}/>
             </Head>
 
             <GuestLayout>
@@ -119,7 +119,7 @@ export default function Ad({auth, ad, category}) {
                                     className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
                                 >
                                     <span>←</span>
-                                    Назад к услугам
+                                    {t('back_to_services', {ns: 'ads'})}
                                 </Link>
                                 {updatedAtLabel && (
                                     <span className="text-xs text-gray-500 font-medium">{updatedAtLabel}</span>
@@ -149,7 +149,7 @@ export default function Ad({auth, ad, category}) {
                                             ? "от " + ad.price_from.toLocaleString() + " ₸"
                                             : ad.price_from.toLocaleString() + " ₸ бастап"}`
                                     }
-                                    {ad.price_type === "negotiable" && t("negotiable", {ns: "index"})}
+                                    {ad.price_type === "negotiable" && t("negotiable", {ns: "ads"})}
                                 </div>
                             </div>
 
@@ -157,12 +157,12 @@ export default function Ad({auth, ad, category}) {
                                 href={auth.user ? `/ad/connect/${ad.id}` : "/login"}
                                 className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
                             >
-                                Связаться по WhatsApp
+                                {t('contact_whatsapp', {ns: 'ads'})}
                             </a>
                         </div>
 
                             <div className="border-b border-gray-200 px-4 md:px-6 py-4">
-                                <div className="text-base font-semibold">Описание объявления:</div>
+                                <div className="text-base font-semibold">{t('ad_description_label', {ns: 'ads'})}</div>
                                 <div className="mt-3 text-sm leading-6 text-gray-700 whitespace-pre-line"
                                     dangerouslySetInnerHTML={{
                                         __html: DOMPurify.sanitize(ad.description),
@@ -171,7 +171,7 @@ export default function Ad({auth, ad, category}) {
                             </div>
 
                             <div className="border-b border-gray-200 px-4 md:px-6 py-4">
-                                <div className="text-base font-semibold">Фото:</div>
+                                <div className="text-base font-semibold">{t('photos_label', {ns: 'ads'})}</div>
                                 {previewImages.length > 0 ? (
                                     <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
                                         {previewImages.map((image, index) => (
@@ -195,7 +195,7 @@ export default function Ad({auth, ad, category}) {
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="mt-3 text-sm text-gray-400">Нет фотографий</div>
+                                    <div className="mt-3 text-sm text-gray-400">{t('no_photos', {ns: 'ads'})}</div>
                                 )}
                             </div>
 
@@ -212,7 +212,7 @@ export default function Ad({auth, ad, category}) {
 
                     </div>
                     <div className="md:col-span-2 border-l border-gray-200 sticky top-0">
-                        <div className="border-b border-gray-200 px-6 py-4 text-sm font-semibold">Информация об исполнителе</div>
+                        <div className="border-b border-gray-200 px-6 py-4 text-sm font-semibold">{t('author_info', {ns: 'ads'})}</div>
                         <div className="px-6 py-6 space-y-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-12 w-12 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
@@ -225,18 +225,18 @@ export default function Ad({auth, ad, category}) {
                                 <div>
                                     <div className="font-semibold">{ad.user.name}</div>
                                 {ad.user.is_graduate === 1 && (
-                                    <div className="text-xs text-gray-500">Выпускник JOLTAP</div>
+                                    <div className="text-xs text-gray-500">{t('is_graduate', {ns: 'announcements'})}</div>
                                 )}
                                 </div>
                             </div>
 
                             <div>
-                                <div className="text-sm text-gray-500">Категория:</div>
+                                <div className="text-sm text-gray-500">{t('category_label', {ns: 'ads'})}</div>
                                 <div className="text-sm font-medium">{category}</div>
                             </div>
 
                             <div>
-                                <div className="text-sm text-gray-500">Адрес:</div>
+                                <div className="text-sm text-gray-500">{t('address_label', {ns: 'ads'})}</div>
                                 <div className="text-sm text-gray-800">
                                     {[cityTitle, ad?.address].filter(Boolean).join(', ')}
                                 </div>
@@ -244,7 +244,7 @@ export default function Ad({auth, ad, category}) {
 
                             { (ad.phone || ad.instagram || ad.tiktok || ad.twogis || ad.site) && (
                                 <div>
-                                    <div className="text-sm text-gray-500">Соц. сети:</div>
+                                    <div className="text-sm text-gray-500">{t('social_networks', {ns: 'ads'})}</div>
                                     <div className="mt-2 flex items-center gap-2">
                                         {ad.phone && (
                                             <a
@@ -306,7 +306,7 @@ export default function Ad({auth, ad, category}) {
                                 {showFullText ? (ad?.user?.description || "") : (ad?.user?.description ? ad.user.description.slice(0, maxLength) : "")}
                                 {isLongText && (
                                     <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer ml-2">
-                                        {showFullText ? t('hide') : t('more_details')}
+                                        {showFullText ? t('hide', {ns: 'announcements'}) : t('more_details', {ns: 'announcements'})}
                                     </span>
                                 )}
                             </div>
