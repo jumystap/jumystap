@@ -266,7 +266,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                     </div>
                                     <div>
                                         <div className='font-bold text-gray-900 text-lg leading-none mb-1'>{ad.user.name}</div>
-                                        {ad.user.is_graduate && (
+                                        {ad.user.is_graduate === 1 && (
                                             <div className='text-sm text-gray-500'>Выпускник JOLTAP</div>
                                         )}
                                     </div>

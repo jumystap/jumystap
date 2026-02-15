@@ -247,7 +247,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                             {ad.is_used && (
                                                 <span className="bg-[#3B82F6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Б/У</span>
                                             )}
-                                            {ad.user.is_graduate && (
+                                            {ad.user.is_graduate === 1 && (
                                                 <span className="bg-[#E67E22] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Выпускник</span>
                                             )}
                                         </div>

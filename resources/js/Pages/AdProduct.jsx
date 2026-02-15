@@ -22,8 +22,11 @@ export default function Ad({auth, ad, category}) {
     // Все изображения объявления (для лайтбокса)
     const allImages = ad.photos || [];
 
-    // Только первые 3 для превью в объявлении
-    const previewImages = allImages.slice(0, 3);
+    // Только первые 4 для превью в объявлении
+    const previewImages = allImages.slice(0, 4);
+
+    const cityTitle = ad?.city?.title || ad?.city || '';
+    const locationLabel = [cityTitle, ad?.address].filter(Boolean).join(', ');
 
     // Открытие лайтбокса
     const openLightbox = (index) => {
@@ -54,8 +57,8 @@ export default function Ad({auth, ad, category}) {
 
     return (
         <>
-            <Head title={`${ad.title} в ${ad.city} | Объявление от ${ad.user.name}`}>
-                <meta name="description" content={`Объявление ${ad.title} в ${ad.city.title} от ${ad.user.name}.`}/>
+            <Head title={`${ad.title}${cityTitle ? ` в ${cityTitle}` : ''} | Объявление от ${ad.user.name}`}>
+                <meta name="description" content={`Объявление ${ad.title}${cityTitle ? ` в ${cityTitle}` : ''} от ${ad.user.name}.`}/>
             </Head>
 
             <GuestLayout>
@@ -72,7 +75,7 @@ export default function Ad({auth, ad, category}) {
                         </div>
                         <div className="border-b border-gray-200 pt-6 px-4 md:px-6 py-5 md:py-6">
                             <div className="block pt-4">
-                                <div className="md:float-left md:w-[320px] md:mr-8 mb-6">
+                                <div className="md:float-left md:w-[320px] md:mr-8 mb-6 relative z-10">
                                     <button
                                         type="button"
                                         onClick={() => allImages.length > 0 && openLightbox(0)}
@@ -85,7 +88,7 @@ export default function Ad({auth, ad, category}) {
                                         />
                                     </button>
                                     {previewImages.length > 0 && (
-                                        <div className="mt-4 grid grid-cols-3 gap-3">
+                                        <div className="mt-4 grid grid-cols-4 gap-3">
                                             {previewImages.map((image, index) => (
                                                 <button
                                                     key={index}
@@ -98,9 +101,9 @@ export default function Ad({auth, ad, category}) {
                                                         alt={`${ad.title} - ${index + 1}`}
                                                         className="h-full w-full object-cover"
                                                     />
-                                                    {allImages.length > 3 && index === 2 && (
+                                                    {allImages.length > 4 && index === 3 && (
                                                         <span className="absolute inset-0 bg-black/50 text-white text-xl font-semibold flex items-center justify-center">
-                                                            +{allImages.length - 3}
+                                                            +{allImages.length - 4}
                                                         </span>
                                                     )}
                                                 </button>
@@ -177,7 +180,9 @@ export default function Ad({auth, ad, category}) {
                                 </div>
                                 <div>
                                     <div className="font-semibold">{ad.user.name}</div>
+                                {ad.user.is_graduate === 1 && (
                                     <div className="text-xs text-gray-500">Выпускник JOLTAP</div>
+                                )}
                                 </div>
                             </div>
 
@@ -189,7 +194,7 @@ export default function Ad({auth, ad, category}) {
                             <div>
                                 <div className="text-sm text-gray-500">Адрес:</div>
                                 <div className="text-sm text-gray-800">
-                                    {ad.city.title}{ad.address ? `, ${ad.address}` : ''}
+                                    {locationLabel}
                                 </div>
                             </div>
 

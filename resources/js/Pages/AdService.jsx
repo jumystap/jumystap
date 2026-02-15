@@ -224,7 +224,9 @@ export default function Ad({auth, ad, category}) {
                                 </div>
                                 <div>
                                     <div className="font-semibold">{ad.user.name}</div>
+                                {ad.user.is_graduate === 1 && (
                                     <div className="text-xs text-gray-500">Выпускник JOLTAP</div>
+                                )}
                                 </div>
                             </div>
 

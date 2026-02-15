@@ -351,7 +351,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                 </div>
                                                 <div>
                                                     <div className='font-bold text-gray-900 text-sm md:text-lg leading-tight mb-0.5'>{ad.user.name}</div>
-                                                    {ad.user.is_graduate && (
+                                                    {ad.user.is_graduate === 1 && (
                                                         <div className='text-[10px] md:text-sm text-gray-500'>Выпускник JOLTAP</div>
                                                     )}
                                                 </div>
@@ -380,7 +380,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                                 {ad.is_used && (
                                                     <span className="bg-[#3B82F6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Б/У</span>
                                                 )}
-                                                {ad.user.is_graduate && (
+                                                {ad.user.is_graduate === 1 && (
                                                     <span className="bg-[#E67E22] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Выпускник</span>
                                                 )}
                                             </div>

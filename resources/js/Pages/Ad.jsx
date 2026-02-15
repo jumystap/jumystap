@@ -162,7 +162,7 @@ export default function Ad({auth, ad, category}) {
                                         </span>
                                 )}
                             </div>
-                            {ad.user.is_graduate ? (
+                            {ad.user.is_graduate === 1 ? (
                                 <>
                                     <div className="flex mt-2 mb-3 text-gray-500 gap-x-1 font-light items-center text-sm">
                                         <FaSquareCheck className="text-green-600" />
@@ -301,7 +301,7 @@ export default function Ad({auth, ad, category}) {
                                     </span>
                                 )}
                             </div>
-                            {ad.user.is_graduate ? (
+                            {ad.user.is_graduate === 1 ? (
                                 <>
                                     <div className="flex mt-10 mb-3 text-gray-500 gap-x-1 font-light items-center text-sm">
                                         <FaSquareCheck className="text-green-600" />
