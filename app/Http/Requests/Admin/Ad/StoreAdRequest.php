@@ -17,7 +17,7 @@ class StoreAdRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'user_id' => 'required|exists:users,id',
             'type' => ['required', new Enum(AdType::class)],
             'title' => 'required|string|max:80',
@@ -30,8 +30,6 @@ class StoreAdRequest extends FormRequest
 
             'price_type' => ['required', new Enum(PriceType::class)],
             'price_exact' => 'required_if:price_type,exact|nullable|numeric|min:0',
-            'price_from' => 'required_without:price_to|nullable|numeric|min:0',
-            'price_to'   => 'required_without:price_from|nullable|numeric|min:0',
 
             'use_profile_phone' => ['nullable', 'boolean'],
             'phone' => ['required_unless:use_profile_phone,1', 'nullable', 'string', 'max:20'],
@@ -45,9 +43,19 @@ class StoreAdRequest extends FormRequest
 
             'status' => ['nullable', new Enum(AdStatus::class)],
 
-            'photos' => 'required|array|max:6',
+            'photos' => 'nullable|array|max:6',
             'photos.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120',
         ];
+
+        if(request('price_type') === 'range'){
+            $rules = array_merge($rules, [
+                'price_from' => 'required_without:price_to|nullable|numeric|min:0',
+                'price_to'   => 'required_without:price_from|nullable|numeric|min:0',
+            ]);
+        }
+
+
+        return $rules;
     }
 
     public function messages(): array

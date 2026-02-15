@@ -2,7 +2,7 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import {useTranslation} from 'react-i18next';
 import React, {useState} from "react";
 import {Link, Head} from "@inertiajs/react";
-import {FaInstagram, FaTelegramPlane, FaWhatsapp} from "react-icons/fa";
+import {FaInstagram, FaWhatsapp, FaGlobe, FaMapMarkerAlt} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
 import {formatDistanceToNow} from "date-fns";
@@ -240,23 +240,65 @@ export default function Ad({auth, ad, category}) {
                                 </div>
                             </div>
 
-                            <div>
-                                <div className="text-sm text-gray-500">Соц. сети:</div>
-                                <div className="mt-2 flex items-center gap-2">
-                                    <span className="h-9 w-9 rounded-lg bg-green-500 text-white flex items-center justify-center">
-                                        <FaWhatsapp />
-                                    </span>
-                                    <span className="h-9 w-9 rounded-lg bg-blue-500 text-white flex items-center justify-center">
-                                        <FaTelegramPlane />
-                                    </span>
-                                    <span className="h-9 w-9 rounded-lg bg-pink-500 text-white flex items-center justify-center">
-                                        <FaInstagram />
-                                    </span>
-                                    <span className="h-9 w-9 rounded-lg bg-black text-white flex items-center justify-center">
-                                        <FaTiktok />
-                                    </span>
+                            { (ad.phone || ad.instagram || ad.tiktok || ad.twogis || ad.site) && (
+                                <div>
+                                    <div className="text-sm text-gray-500">Соц. сети:</div>
+                                    <div className="mt-2 flex items-center gap-2">
+                                        {ad.phone && (
+                                            <a
+                                                href={`https://wa.me/${ad.phone.replace(/\D/g, '')}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="h-9 w-9 rounded-lg bg-green-500 text-white flex items-center justify-center hover:opacity-80 transition-opacity"
+                                            >
+                                                <FaWhatsapp />
+                                            </a>
+                                        )}
+                                        {ad.instagram && (
+                                            <a
+                                                href={ad.instagram.startsWith('http') ? ad.instagram : `https://instagram.com/${ad.instagram.replace('@', '')}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="h-9 w-9 rounded-lg bg-pink-500 text-white flex items-center justify-center hover:opacity-80 transition-opacity"
+                                            >
+                                                <FaInstagram />
+                                            </a>
+                                        )}
+                                        {ad.tiktok && (
+                                            <a
+                                                href={ad.tiktok.startsWith('http') ? ad.tiktok : `https://tiktok.com/@${ad.tiktok.replace('@', '')}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="h-9 w-9 rounded-lg bg-black text-white flex items-center justify-center hover:opacity-80 transition-opacity"
+                                            >
+                                                <FaTiktok />
+                                            </a>
+                                        )}
+                                        {ad.twogis && (
+                                            <a
+                                                href={ad.twogis.startsWith('http') ? ad.twogis : `https://2gis.kz/search/${ad.twogis}`}
+                                                target="_blank"
+                                                title="2Gis"
+                                                rel="noopener noreferrer"
+                                                className="h-9 w-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center hover:opacity-80 transition-opacity"
+                                            >
+                                                <FaMapMarkerAlt />
+                                            </a>
+                                        )}
+
+                                        {ad.site && (
+                                            <a
+                                                href={ad.site.startsWith('http') ? ad.site : `https://${ad.site}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="h-9 w-9 rounded-lg bg-gray-600 text-white flex items-center justify-center hover:opacity-80 transition-opacity"
+                                            >
+                                                <FaGlobe />
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             <div className="text-sm text-gray-600">
                                 {showFullText ? (ad?.user?.description || "") : (ad?.user?.description ? ad.user.description.slice(0, maxLength) : "")}
