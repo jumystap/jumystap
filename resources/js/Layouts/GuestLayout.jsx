@@ -42,6 +42,11 @@ export default function Guest({children}) {
             label: t("nav_for_about", {ns: "header"}),
             onClick: () => router.visit('/faq'),
         },
+        {
+            key: "4",
+            label: t("marketplace", {ns: "header"}),
+            onClick: () => router.visit('/ads'),
+        },
     ];
 
     const changeLanguage = (lng) => {
@@ -178,6 +183,12 @@ export default function Guest({children}) {
                             href="/"
                         >
                             <ApplicationLogo/>
+                        </Link>
+                        <Link
+                            href="/ads"
+                            className="block mt-5 overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02]"
+                        >
+                            <img src="/images/marketplace.png" className="w-full h-auto object-cover"/>
                         </Link>
                         <Link
                             className={`flex items-center text-l gap-x-4 font-regular mt-5 py-2 hover:px-5 hover:bg-gray-100 rounded-full transition-all duration-150 ${isActive("/") ? "text-black" : "text-gray-500"}`}

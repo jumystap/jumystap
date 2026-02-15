@@ -173,7 +173,7 @@ export default function Ad({auth, ad, category}) {
                             <div className="flex items-center gap-3">
                                 <div className="h-12 w-12 rounded-full border border-gray-200 overflow-hidden bg-gray-100">
                                     <img
-                                        src={ad.user.avatar || "/images/default-avatar.png"}
+                                        src={ad.user.image_url ? `/storage/${ad.user.image_url}` : "/images/default-avatar.png"}
                                         alt={ad.user.name}
                                         className="h-full w-full object-cover"
                                     />
