@@ -343,8 +343,8 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                                             <div className='flex items-center gap-2 md:gap-3 mb-6'>
                                                 <div className="w-10 h-10 md:w-16 md:h-16 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                                                    {ad.user.avatar ? (
-                                                        <img src={ad.user.avatar} alt={ad.user.name} className="w-full h-full object-cover" />
+                                                    {ad.user.image_url ? (
+                                                        <img src={ad.user.image_url} alt={ad.user.name} className="w-full h-full object-cover" />
                                                     ) : (
                                                         <HiOutlineUserCircle className="w-full h-full text-gray-300" />
                                                     )}
