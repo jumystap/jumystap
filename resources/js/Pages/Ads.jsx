@@ -247,8 +247,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             <div className="flex">
                                 <div>
                                     <p className="mt-3 font-bold text-2xl">
-                                        {t('marketplace_title', { ns: 'ads' })} <br />
-                                        {t('for_graduates', { ns: 'ads' })}
+                                        {t('marketplace_title', { ns: 'ads' })}
                                     </p>
                                     <p className="mt-4 text-lg md:mt-1">
                                         {t('marketplace_subtitle', { ns: 'ads' })}

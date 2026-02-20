@@ -199,8 +199,8 @@ export default function Ad({auth, ad, category}) {
                                 )}
                             </div>
 
-                            <div className="pt-4 md:px-6 pb-6 flex items-center justify-end gap-3">
-                                <span className="text-sm font-semibold text-gray-700">{t('share')}:</span>
+                            <div className="hidden md:flex pt-4 md:px-6 pb-6 items-center justify-end gap-3">
+                                <span className="text-sm font-semibold text-gray-700">{t('share', {ns: 'announcements'})}:</span>
                                 <ShareButtons
                                     title={
                                         (ad.price_exact ?? ad.price_from)
