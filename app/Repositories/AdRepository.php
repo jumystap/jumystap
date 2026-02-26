@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Enums\AdStatus;
+use App\Enums\AdType;
+use App\Enums\PriceType;
 use App\Models\Ad;
 use App\Models\AdContact;
 use App\Models\AdView;
@@ -12,6 +14,7 @@ class AdRepository
 {
     public function getAllActiveAds(array $filters = null): LengthAwarePaginator
     {
+        $paginate = $filters['type'] === AdType::PRODUCT->value ? 9 : 10;
         $query = Ad::query()->orderBy('published_at', 'desc')
             ->with('user', 'category', 'city', 'photos')
             ->where("status", AdStatus::ACTIVE);
@@ -56,10 +59,10 @@ class AdRepository
         }
 
         if (isset($filters['is_negotiable']) && $filters['is_negotiable']) {
-            $query->where('price_type', \App\Enums\PriceType::NEGOTIABLE);
+            $query->where('price_type', PriceType::NEGOTIABLE);
         }
 
-        return $query->paginate(10);
+        return $query->paginate($paginate);
     }
 
     public function getAdById($id): ?Ad
