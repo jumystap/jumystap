@@ -111,7 +111,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                             target="_blank"
                                                             className="underline"
                                                         >
-                                                            {isRussian ? profession.profession_name : profession.professions_name_kz}
+                                                            {isRussian ? profession.profession_name : profession.profession_name_kz}
                                                         </a>
                                                     </div>
                                                 ))}
