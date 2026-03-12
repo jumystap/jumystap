@@ -42,6 +42,14 @@ export default function Registration({ errors, professions }) {
 
     const handlePhoneSubmit = async (e) => {
         e.preventDefault();
+
+        if (!isValidPhone(data.phone)) {
+            notification.error({
+                message: t('error'),
+                description: t('invalid_phone_number'),
+            });
+            return;
+        }
         setLoading(true);
 
         const payload = new URLSearchParams({
@@ -112,6 +120,58 @@ export default function Registration({ errors, professions }) {
         return cyrillicPattern.test(name.trim());
     };
 
+    const normalizePhone = (value) => value.replace(/[^\d]/g, '');
+
+    const isValidPhone = (value) => {
+        if (!value) return false;
+
+        const digits = normalizePhone(value);
+        if (digits.length !== 11) return false;
+
+        const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
+        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '776', '777', '778'];
+
+        return validCodes.includes(code);
+    }
+    const parseBirthDate = (value) => {
+        if (!value) {
+            return null;
+        }
+        const match = value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (!match) {
+            return null;
+        }
+        const day = Number(match[1]);
+        const month = Number(match[2]);
+        const year = Number(match[3]);
+        const date = new Date(year, month - 1, day);
+        if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+            return null;
+        }
+        return date;
+    };
+
+    const getAge = (birthDate) => {
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age -= 1;
+        }
+        return age;
+    };
+
+    const toIsoDate = (value) => {
+        const parsed = parseBirthDate(value);
+        if (!parsed) {
+            return '';
+        }
+        const yyyy = parsed.getFullYear();
+        const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+        const dd = String(parsed.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
 
     const handleBasicInfoSubmit = (e) => {
         e.preventDefault();
@@ -122,7 +182,36 @@ export default function Registration({ errors, professions }) {
             });
             return;
         }
-        if (!data.name || !data.email) {
+        const isEmployee = data.role === 'employee';
+
+        if (isEmployee && (!data.name || !data.date_of_birth || !data.gender)) {
+            notification.error({
+                message: t('error'),
+                description: t('all_fields_required'),
+            });
+            return;
+        }
+        if (isEmployee) {
+            const birthDate = parseBirthDate(data.date_of_birth);
+            if (!birthDate) {
+                notification.error({
+                    message: t('error'),
+                    description: t('invalid_birth_date'),
+                });
+                return;
+            }
+
+            const age = getAge(birthDate);
+            if (age < 16 || age > 70) {
+                notification.error({
+                    message: t('error'),
+                    description: t('age_must_be_range'),
+                });
+                return;
+            }
+        }
+
+        if (!isEmployee && (!data.name || !data.email)) {
             notification.error({
                 message: t('error'),
                 description: t('all_fields_required'),
@@ -133,8 +222,7 @@ export default function Registration({ errors, professions }) {
     };
 
     const handlePhoneChange = (e) => {
-        const formattedPhone = e.target.value.replace(/[^\d]/g, '');
-        setData('phone', formattedPhone);
+        setData('phone', normalizePhone(e.target.value));
     };
 
     const handleRegistrationSubmit = (e) => {
@@ -148,15 +236,11 @@ export default function Registration({ errors, professions }) {
             return;
         }
 
+        if (data.role === 'employee') {
+            data.email = `${normalizePhone(data.phone)}@noemail.local`
+        }
+
         const formData = new FormData();
-        formData.append('phone', data.phone);
-        formData.append('name', data.name);
-        formData.append('email', data.email);
-        formData.append('password', data.password);
-        formData.append('date_of_birth', data.date_of_birth);
-        formData.append('gender', data.gender);
-        formData.append('avatar', data.avatar);
-        formData.append('source', source);
 
         post('/register', {
             data: formData,
@@ -227,26 +311,39 @@ export default function Registration({ errors, professions }) {
                                     placeholder={data.role === 'employee' ? t('enter_your_full_name') : t('enter_company_name')}
                                 />
                                 {errors.name && <p className='text-red-500 text-sm mt-2'>{errors.name}</p>}
-                                <div className='mt-5 text-sm font-semibold'>{t('email')}</div>
-                                <input
-                                    type='email'
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    className='w-[350px] mt-1 block border-gray-300 rounded-lg'
-                                    placeholder={t('email')}
-                                />
-                                {errors.email && <p className='text-red-500 text-sm mt-2'>{errors.email}</p>}
-                                {data.role == 'employee' && (
+                                {data.role !== 'employee' && (
+                                    <>
+                                        <div className='mt-5 text-sm font-semibold'>{t('email')}</div>
+                                        <input
+                                            type='email'
+                                            value={data.email}
+                                            onChange={(e) => setData('email', e.target.value)}
+                                            className='w-[350px] mt-1 block border-gray-300 rounded-lg'
+                                            placeholder={t('email')}
+                                        />
+                                        {errors.email && <p className='text-red-500 text-sm mt-2'>{errors.email}</p>}
+                                    </>
+                                )}
+                                {data.role === 'employee' && (
                                     <div className='flex w-[350px] gap-x-5'>
                                         <div className='w-[50%]'>
                                             <div className='mt-5 text-sm font-semibold'>{t('date_of_birth')}</div>
-                                            <input
-                                                type='date'
+                                            <InputMask
+                                                mask="99.99.9999"
                                                 value={data.date_of_birth}
                                                 onChange={(e) => setData('date_of_birth', e.target.value)}
-                                                className='w-full mt-1 border-gray-300 rounded-lg'
-                                                placeholder={t('select_date_of_birth')}
-                                            />
+                                                maskChar={null}
+                                            >
+                                                {(inputProps) => (
+                                                    <input
+                                                        {...inputProps}
+                                                        type='text'
+                                                        className='w-full mt-1 border-gray-300 rounded-lg'
+                                                        placeholder='dd.mm.yyyy'
+                                                        inputMode='numeric'
+                                                    />
+                                                )}
+                                            </InputMask>
                                         </div>
                                         <div className='w-[50%]'>
                                             <div className='mt-5 text-sm font-semibold'>{t('sex')}</div>
@@ -255,6 +352,7 @@ export default function Registration({ errors, professions }) {
                                                 onChange={(e) => setData('gender', e.target.value)}
                                                 className='w-full mt-1 block border-gray-300 rounded-lg'
                                             >
+                                                <option value='' disabled>{t('select_option')}</option>
                                                 <option value='м'>{t('male')}</option>
                                                 <option value='ж'>{t('female')}</option>
                                             </select>
@@ -430,4 +528,3 @@ export default function Registration({ errors, professions }) {
         </GuestLayout>
     );
 }
-
