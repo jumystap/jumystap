@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Carbon\Carbon;
 
 class UserService
 {
@@ -31,6 +32,7 @@ class UserService
 
     public function storeUser(array $validatedData)
     {
+        $validatedData['date_of_birth'] = Carbon::parse($validatedData['date_of_birth'])->format('Y-m-d');
         $validatedData['password'] = Hash::make($validatedData['password']);
         $validatedData['role_id']  = DB::table('roles')
             ->where('name', $validatedData['role'])
