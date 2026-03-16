@@ -117,6 +117,10 @@ class UserController extends Controller
             'source' => 'nullable|string',
         ]);
 
+        if (str_contains($validated['email'], '@noemail.local')) {
+            $validated['email'] = 'noemail@noemail.local';
+        }
+
         try {
             $user = $this->userService->storeUser($validated);
             Auth::login($user);
