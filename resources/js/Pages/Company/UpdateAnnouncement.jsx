@@ -62,6 +62,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         is_urgent: announcement.is_urgent || false,
         phone: announcement.phone || '',
     });
+    const isRemoteWork = data.work_time === 'Удаленная работа';
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
@@ -356,6 +357,24 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         setShowOtherCityInput(value === 'Другое');
     };
 
+    const handleWorkTimeChange = (value) => {
+        setData((prevData) => {
+            const nextData = { ...prevData, work_time: value };
+            if (value === 'Удаленная работа') {
+                nextData.city = '';
+                nextData.location = [];
+            } else if (prevData.location.length === 0) {
+                nextData.location = [
+                    { id: null, announcement_id: prevData.announcement_id || announcement.id, adress: "" }
+                ];
+            }
+            return nextData;
+        });
+        if (value === 'Удаленная работа') {
+            setShowOtherCityInput(false);
+        }
+    };
+
     const addLocation = () => {
         setData((prevData) => ({
             ...prevData,
@@ -492,23 +511,25 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 onChange={(value) => setData('specialization_id', value[1])}
                             />
                         </Form.Item>
-                        <Form.Item
-                            label={t('city', { ns: 'createAnnouncement' })}
-                            name="city"
-                        >
-                            <Select
-                                value={data.city}
-                                onChange={handleCityChange}
+                        {!isRemoteWork && (
+                            <Form.Item
+                                label={t('city', { ns: 'createAnnouncement' })}
+                                name="city"
                             >
-                                {kazakhstanCities.map((city) => (
-                                    <Option key={city} value={city}>{city}</Option>
-                                ))}
-                                <Option value="Дистанционное">Дистанционное</Option>
-                                <Option value="Другое">Другое</Option>
-                            </Select>
-                        </Form.Item>
+                                <Select
+                                    value={data.city}
+                                    onChange={handleCityChange}
+                                >
+                                    {kazakhstanCities.map((city) => (
+                                        <Option key={city} value={city}>{city}</Option>
+                                    ))}
+                                    <Option value="Дистанционное">Дистанционное</Option>
+                                    <Option value="Другое">Другое</Option>
+                                </Select>
+                            </Form.Item>
+                        )}
 
-                        {showOtherCityInput && (
+                        {!isRemoteWork && showOtherCityInput && (
                             <Form.Item
                                 label={t('enter_another_city', { ns: 'createAnnouncement' })}
                                 name="other_city"
@@ -522,34 +543,38 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        <div className='mb-4'>
-                            {t('location', { ns: 'createAnnouncement' })}
-                        </div>
-                        {data.location.map((loc, index) => (
-                            <Form.Item
-                                name={`location[${index}].adress`}
-                                className='mt-[-15px]'
-                                validateStatus={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] ? 'error' : ''}
-                                help={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] || null}
-                            >
-                                <input
-                                    key={index}
-                                    type="text"
-                                    className='text-sm w-full rounded py-1 mt-1 border border-gray-300'
-                                    value={loc.adress}
-                                    onChange={(e) => handleLocationChange(index, e)}
-                                />
-                                <div className='text-right'>
-                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                        {!isRemoteWork && (
+                            <>
+                                <div className='mb-4'>
+                                    {t('location', { ns: 'createAnnouncement' })}
                                 </div>
-                            </Form.Item>
-                        ))}
-                        <div
-                            className='text-blue-500 mt-[-15px] mb-2'
-                            onClick={addLocation}
-                        >
-                            {t('add_another_address', { ns: 'createAnnouncement' })}
-                        </div>
+                                {data.location.map((loc, index) => (
+                                    <Form.Item
+                                        name={`location[${index}].adress`}
+                                        className='mt-[-15px]'
+                                        validateStatus={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] ? 'error' : ''}
+                                        help={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] || null}
+                                    >
+                                        <input
+                                            key={index}
+                                            type="text"
+                                            className='text-sm w-full rounded py-1 mt-1 border border-gray-300'
+                                            value={loc.adress}
+                                            onChange={(e) => handleLocationChange(index, e)}
+                                        />
+                                        <div className='text-right'>
+                                            <button type="button" className='text-orange-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                        </div>
+                                    </Form.Item>
+                                ))}
+                                <div
+                                    className='text-blue-500 mt-[-15px] mb-2'
+                                    onClick={addLocation}
+                                >
+                                    {t('add_another_address', { ns: 'createAnnouncement' })}
+                                </div>
+                            </>
+                        )}
                         <div className='grid grid-cols-2 gap-x-5 mt-5'>
                             <Form.Item
                                 label={t('work_time', { ns: 'createAnnouncement' })}
@@ -557,7 +582,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                             >
                                 <Select
                                     value={data.work_time}
-                                    onChange={(value) => setData('work_time', value)}
+                                    onChange={handleWorkTimeChange}
                                 >
                                     <Option value="Полный день">Полный день</Option>
                                     <Option value="Сменный график">Сменный график</Option>
@@ -615,6 +640,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 <Option value="Еженедельная оплата">Еженедельная оплата</Option>
                                 <Option value="Ежемесячная оплата">Ежемесячная оплата</Option>
                                 <Option value="Сдельная оплата">Сдельная оплата</Option>
+                                <Option value="Договорная оплата">Договорная оплата</Option>
                             </Select>
                         </Form.Item>
                         {!isUndefinedSalary && (

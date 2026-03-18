@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, Cascader, notification } from 'antd';
@@ -27,6 +27,10 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const isEdit = announcement !== null;
     const [isExactSalary, setIsExactSalary] = useState(false);
     const [withPhone, setWithPhone] = useState(false);
+    const requirementInputRefs = useRef([]);
+    const responsibilityInputRefs = useRef([]);
+    const conditionInputRefs = useRef([]);
+    const pendingFocusRef = useRef(null);
 
     const handleSalaryTypeChange = (e) => {
         setData(prevData => ({
@@ -82,6 +86,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         cost_max: null,
         phone: '',
     });
+    const isRemoteWork = data.work_time === 'Удаленная работа';
 
     const deleteRequirement = (index) => {
         const newRequirements = [...data.requirement];
@@ -137,6 +142,29 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
 
+    useEffect(() => {
+        if (!pendingFocusRef.current) return;
+        const { type, index } = pendingFocusRef.current;
+        const refsByType = {
+            requirement: requirementInputRefs,
+            responsibility: responsibilityInputRefs,
+            condition: conditionInputRefs,
+        };
+        const inputEl = refsByType[type]?.current?.[index];
+        if (inputEl) {
+            inputEl.focus();
+            const length = inputEl.value?.length ?? 0;
+            if (typeof inputEl.setSelectionRange === 'function') {
+                inputEl.setSelectionRange(length, length);
+            }
+        }
+        pendingFocusRef.current = null;
+    }, [data.requirement.length, data.responsibility.length, data.condition.length]);
+
+    const queueFocus = (type, index) => {
+        pendingFocusRef.current = { type, index };
+    };
+
     const addRequirement = () => {
         setData('requirement', [...data.requirement, '']);
     };
@@ -180,6 +208,22 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     const handleCityChange = (value) => {
         setData('city', value);
         setShowOtherCityInput(value === 'Другое');
+    };
+
+    const handleWorkTimeChange = (value) => {
+        setData((prevData) => {
+            const nextData = { ...prevData, work_time: value };
+            if (value === 'Удаленная работа') {
+                nextData.city = '';
+                nextData.location = [];
+            } else if (prevData.location.length === 0) {
+                nextData.location = [''];
+            }
+            return nextData;
+        });
+        if (value === 'Удаленная работа') {
+            setShowOtherCityInput(false);
+        }
     };
 
     const addLocation = () => {
@@ -314,24 +358,26 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 placeholder={t('select_specialization', { ns: 'createAnnouncement' })}
                             />
                         </Form.Item>
-                        <Form.Item
-                            label={t('city', { ns: 'createAnnouncement' })}
-                            name="city"
-                            rules={[{ required: true, message: t('select_city', { ns: 'createAnnouncement' }) }]}
-                        >
-                            <Select
-                                value={data.city}
-                                onChange={handleCityChange}
+                        {!isRemoteWork && (
+                            <Form.Item
+                                label={t('city', { ns: 'createAnnouncement' })}
+                                name="city"
+                                rules={[{ required: true, message: t('select_city', { ns: 'createAnnouncement' }) }]}
                             >
-                                {kazakhstanCities.map((city) => (
-                                    <Option key={city} value={city}>{city}</Option>
-                                ))}
-                                <Option value="Дистанционное">Дистанционное</Option>
-                                <Option value="Другое">Другое</Option>
-                            </Select>
-                        </Form.Item>
+                                <Select
+                                    value={data.city}
+                                    onChange={handleCityChange}
+                                >
+                                    {kazakhstanCities.map((city) => (
+                                        <Option key={city} value={city}>{city}</Option>
+                                    ))}
+                                    <Option value="Дистанционное">Дистанционное</Option>
+                                    <Option value="Другое">Другое</Option>
+                                </Select>
+                            </Form.Item>
+                        )}
 
-                        {showOtherCityInput && (
+                        {!isRemoteWork && showOtherCityInput && (
                             <Form.Item
                                 label={t('enter_another_city', { ns: 'createAnnouncement' })}
                                 name="city"
@@ -346,40 +392,44 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        <Form.Item label={t('location', { ns: 'createAnnouncement' })}>
-                            {data.location.map((loc, index) => (
-                                <Form.Item
-                                    key={index}
-                                    name={['location', index]}
-                                    rules={[{ required: true, message: t('enter_location', { ns: 'createAnnouncement' }) }]}
-                                    help={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`]}
-                                    validateStatus={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`] ? 'error' : ''}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Input
-                                            type="text"
-                                            className="text-sm rounded py-1 mt-2 border border-gray-300 flex-1"
-                                            value={loc}
-                                            onChange={(e) => handleLocationChange(index, e)}
-                                        />
-                                        <button
-                                            className="text-orange-500 mt-3"
-                                            type="button"
-                                            onClick={() => deleteLocation(index)}
+                        {!isRemoteWork && (
+                            <>
+                                <Form.Item label={t('location', { ns: 'createAnnouncement' })}>
+                                    {data.location.map((loc, index) => (
+                                        <Form.Item
+                                            key={index}
+                                            name={['location', index]}
+                                            rules={[{ required: true, message: t('enter_location', { ns: 'createAnnouncement' }) }]}
+                                            help={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`]}
+                                            validateStatus={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`] ? 'error' : ''}
                                         >
-                                            {t('delete', { ns: 'createAnnouncement' })}
-                                        </button>
-                                    </div>
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    type="text"
+                                                    className="text-sm rounded py-1 mt-2 border border-gray-300 flex-1"
+                                                    value={loc}
+                                                    onChange={(e) => handleLocationChange(index, e)}
+                                                />
+                                                <button
+                                                    className="text-orange-500 mt-3"
+                                                    type="button"
+                                                    onClick={() => deleteLocation(index)}
+                                                >
+                                                    {t('delete', { ns: 'createAnnouncement' })}
+                                                </button>
+                                            </div>
+                                        </Form.Item>
+                                    ))}
                                 </Form.Item>
-                            ))}
-                        </Form.Item>
 
-                        <div
-                            className='text-blue-500 mt-[-15px] mb-2'
-                            onClick={addLocation}
-                        >
-                            {t('add_another_address', { ns: 'createAnnouncement' })}
-                        </div>
+                                <div
+                                    className='text-blue-500 mt-[-15px] mb-2'
+                                    onClick={addLocation}
+                                >
+                                    {t('add_another_address', { ns: 'createAnnouncement' })}
+                                </div>
+                            </>
+                        )}
                         <div className='grid grid-cols-2 gap-x-5'>
                             <Form.Item
                                 label={t('work_time', { ns: 'createAnnouncement' })}
@@ -388,7 +438,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             >
                                 <Select
                                     value={data.work_time}
-                                    onChange={(value) => setData('work_time', value)}
+                                    onChange={handleWorkTimeChange}
                                 >
                                     <Option value="Полный день">Полный день</Option>
                                     <Option value="Сменный график">Сменный график</Option>
@@ -450,6 +500,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 <Option value="Еженедельная оплата">Еженедельная оплата</Option>
                                 <Option value="Ежемесячная оплата">Ежемесячная оплата</Option>
                                 <Option value="Сдельная оплата">Сдельная оплата</Option>
+                                <Option value="Договорная оплата">Договорная оплата</Option>
                             </Select>
                         </Form.Item>
                         {isExactSalary ? (
@@ -560,25 +611,44 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </span>
                             }
                         >
-                            {data.requirement.map((req, index) => (
-                                <Form.Item
-                                    key={index}
-                                    name={['requirement', index]}
-                                    rules={[{ required: true, message: t('fill_requirement', { ns: 'createAnnouncement' })}]}
-                                    help={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`]}
-                                    validateStatus={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`] ? 'error' : ''}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Input
-                                            type="text"
-                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                            value={req}
-                                            onChange={(e) => handleRequirementChange(index, e)}
-                                        />
-                                        <button
-                                            className="text-orange-500 mt-3"
-                                            type="button"
-                                            onClick={() => deleteRequirement(index)}
+                        {data.requirement.map((req, index) => (
+                            <Form.Item
+                                key={index}
+                                name={['requirement', index]}
+                                rules={[{ required: true, message: t('fill_requirement', { ns: 'createAnnouncement' })}]}
+                                help={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`]}
+                                validateStatus={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`] ? 'error' : ''}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        ref={(el) => {
+                                            requirementInputRefs.current[index] = el;
+                                        }}
+                                        type="text"
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={req}
+                                        onChange={(e) => handleRequirementChange(index, e)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                const currentText = e.target.value ?? '';
+                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
+                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                                const textAfterCursor = currentText.substring(cursorPosition);
+                                                setData((prevData) => {
+                                                    const next = [...prevData.requirement];
+                                                    next[index] = textBeforeCursor;
+                                                    next.splice(index + 1, 0, textAfterCursor);
+                                                    return { ...prevData, requirement: next };
+                                                });
+                                                queueFocus('requirement', index + 1);
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        className="text-orange-500 mt-3"
+                                        type="button"
+                                        onClick={() => deleteRequirement(index)}
                                         >
                                             {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
@@ -602,25 +672,44 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </span>
                             }
                         >
-                            {data.responsibility.map((resp, index) => (
-                                <Form.Item
-                                    key={index}
-                                    name={['responsibility', index]}
-                                    rules={[{ required: true, message: t('fill_responsibility', { ns: 'createAnnouncement' }) }]}
-                                    help={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`]}
-                                    validateStatus={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`] ? 'error' : ''}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Input
-                                            type="text"
-                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                            value={resp}
-                                            onChange={(e) => handleResponsibilityChange(index, e)}
-                                        />
-                                        <button
-                                            className="text-orange-500 mt-3"
-                                            type="button"
-                                            onClick={() => deleteResponsibility(index)}
+                        {data.responsibility.map((resp, index) => (
+                            <Form.Item
+                                key={index}
+                                name={['responsibility', index]}
+                                rules={[{ required: true, message: t('fill_responsibility', { ns: 'createAnnouncement' }) }]}
+                                help={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`]}
+                                validateStatus={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`] ? 'error' : ''}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        ref={(el) => {
+                                            responsibilityInputRefs.current[index] = el;
+                                        }}
+                                        type="text"
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={resp}
+                                        onChange={(e) => handleResponsibilityChange(index, e)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                const currentText = e.target.value ?? '';
+                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
+                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                                const textAfterCursor = currentText.substring(cursorPosition);
+                                                setData((prevData) => {
+                                                    const next = [...prevData.responsibility];
+                                                    next[index] = textBeforeCursor;
+                                                    next.splice(index + 1, 0, textAfterCursor);
+                                                    return { ...prevData, responsibility: next };
+                                                });
+                                                queueFocus('responsibility', index + 1);
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        className="text-orange-500 mt-3"
+                                        type="button"
+                                        onClick={() => deleteResponsibility(index)}
                                         >
                                             {t('delete', { ns: 'createAnnouncement' })}
                                         </button>
@@ -644,25 +733,44 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </span>
                             }
                         >
-                            {data.condition.map((cond, index) => (
-                                <Form.Item
-                                    key={index}
-                                    name={['condition', index]}
-                                    rules={[{ required: true, message: t('fill_condition', { ns: 'createAnnouncement' }) }]}
-                                    help={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`]}
-                                    validateStatus={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`] ? 'error' : ''}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Input
-                                            type="text"
-                                            className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                            value={cond}
-                                            onChange={(e) => handleConditionChange(index, e)}
-                                        />
-                                        <button
-                                            className="text-orange-500 mt-3"
-                                            type="button"
-                                            onClick={() => deleteCondition(index)}
+                        {data.condition.map((cond, index) => (
+                            <Form.Item
+                                key={index}
+                                name={['condition', index]}
+                                rules={[{ required: true, message: t('fill_condition', { ns: 'createAnnouncement' }) }]}
+                                help={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`]}
+                                validateStatus={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`] ? 'error' : ''}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        ref={(el) => {
+                                            conditionInputRefs.current[index] = el;
+                                        }}
+                                        type="text"
+                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
+                                        value={cond}
+                                        onChange={(e) => handleConditionChange(index, e)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                const currentText = e.target.value ?? '';
+                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
+                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
+                                                const textAfterCursor = currentText.substring(cursorPosition);
+                                                setData((prevData) => {
+                                                    const next = [...prevData.condition];
+                                                    next[index] = textBeforeCursor;
+                                                    next.splice(index + 1, 0, textAfterCursor);
+                                                    return { ...prevData, condition: next };
+                                                });
+                                                queueFocus('condition', index + 1);
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        className="text-orange-500 mt-3"
+                                        type="button"
+                                        onClick={() => deleteCondition(index)}
                                         >
                                             {t('delete', { ns: 'createAnnouncement' })}
                                         </button>

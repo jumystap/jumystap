@@ -237,7 +237,7 @@ export default function Dashboard({ user }) {
                         </div>
                         <div className='flex mt-2 text-gray-500 gap-x-1 font-light items-center text-sm'>
                             <FaLocationDot className='text-blue-500' />
-                            {anonce.city}
+                            {anonce.city ?? t('is_remote', { ns: 'announcements' })}
                         </div>
                         <div className='text-sm font-light text-gray-500 mt-2'>
                             {anonce.status === 1 && (

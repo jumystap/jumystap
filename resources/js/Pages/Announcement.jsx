@@ -138,7 +138,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className=''>
                                 <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
                                 <div className="mt-2 text-sm font-light">
-                                    {announcement.city}
+                                    {announcement.city ?? t('is_remote', { ns: 'announcements' })}
                                      {announcement.location}
                                     {announcement.address && announcement.address.length > 0 && (
                                         <span>

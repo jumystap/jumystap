@@ -23,7 +23,7 @@ class AnnouncementCreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'type_kz' => 'required|string|max:255',
             'type_ru' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -51,5 +51,14 @@ class AnnouncementCreateRequest extends FormRequest
             'condition.*' => 'string|max:2000', // Validate each requirement item
             'phone' => 'nullable|digits:11',
         ];
+
+        if(request('work_time') === 'Удаленная работа'){
+            return array_merge($rules, [
+                'location' => 'nullable|array',
+                'location.*' => 'nullable|string|max:255',
+            ]);
+        }
+
+        return $rules;
     }
 }

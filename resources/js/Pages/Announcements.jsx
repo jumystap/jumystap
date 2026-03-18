@@ -376,7 +376,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 <div className='flex items-center'>
                                     <div className={`flex gap-x-1 ${anonce.city == 'Астана' ? ('text-blue-400'):('text-gray-400')} items-center`}>
                                         <CiLocationOn />
-                                        <div className='text-[10pt] md:text-sm'>{anonce.city}</div>
+                                        <div className='text-[10pt] md:text-sm'>{anonce.city ?? t('is_remote', { ns: 'announcements' })}</div>
                                     </div>
                                     <div className='ml-auto md:text-sm text-[10pt] text-right text-gray-500'>
                                         {i18n.language == 'ru' ? ('Изменено') : ('')} {`${formatDistanceToNow(new Date(anonce.updated_at), { locale: i18n.language === 'ru' ? ru : kz, addSuffix: true })}`} {i18n.language == 'kz' && ('өзгертілді')}
