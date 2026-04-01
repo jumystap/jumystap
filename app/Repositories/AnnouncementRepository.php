@@ -10,6 +10,7 @@ use App\Models\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AnnouncementRepository
 {
@@ -17,6 +18,7 @@ class AnnouncementRepository
     {
         $query = Announcement::orderBy('published_at', 'desc')
             ->with('user')
+            ->where('updated_at', '>=', Carbon::now()->subMonths(6))
             ->where("status", AnnouncementStatus::ACTIVE->value);
 
         if (!empty($filters['searchKeyword'])) {

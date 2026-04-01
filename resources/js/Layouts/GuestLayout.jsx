@@ -138,7 +138,7 @@ export default function Guest({children}) {
                             <div className="text-center text-sm">{t("nav_for_announcements", {ns: "header"})}</div>
                         </Link>
                         <Link
-                            className={`block flex-col text-center ${isActive("/employees") ? "text-red-500" : "text-gray-500"}`}
+                            className={`block flex-col text-center ${isActive("/ads") ? "text-red-500" : "text-gray-500"}`}
                             href="/ads"
                         >
                             <svg
