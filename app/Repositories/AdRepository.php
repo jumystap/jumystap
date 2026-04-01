@@ -15,7 +15,7 @@ class AdRepository
     public function getAllActiveAds(array $filters = null): LengthAwarePaginator
     {
         $paginate = $filters['type'] === AdType::PRODUCT->value ? 9 : 10;
-        $query = Ad::query()->orderBy('published_at', 'desc')
+        $query = Ad::query()->orderBy('created_at', 'desc')
             ->with('user', 'category', 'city', 'photos')
             ->where("status", AdStatus::ACTIVE);
 
