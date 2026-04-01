@@ -284,12 +284,6 @@ export default function Registration({ errors, professions }) {
                                         >
                                             {t('employee_seeker_option', { ns: 'register' })}
                                         </button>
-                                        <button
-                                            onClick={() => handleRoleSubmit('company')}
-                                            className="border-gray-300 w-full mt-4 block text-gray-400 border-2 hover:bg-blue-500 transition-all duration-200 hover:text-white hover:border-blue-500 font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                                        >
-                                            {t('freelancer_option', { ns: 'register' })}
-                                        </button>
                                         <a href='/terms' className='mt-10 block'>{t('by_continuing_you_accept')} <span className='text-blue-500'>{t('user_agreement')}</span></a>
                                     </div>
                                 </div>
