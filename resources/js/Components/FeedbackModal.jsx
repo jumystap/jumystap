@@ -86,65 +86,67 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     };
 
     return (
-        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-hidden">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[95vh] flex flex-col">
-                <div className="mb-4">{t('submit_application', { ns: 'header' })}</div>
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                        placeholder={t('your_name', { ns: 'header' })}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="tel"
-                        className="w-full p-2 border border-gray-300 rounded-lg"
-                        placeholder={t('your_phone_number', { ns: 'header' })}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                    />
+        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[95vh] flex flex-col overflow-hidden">
+                <div className="overflow-y-auto">
+                    <div className="mb-4">{t('submit_application', { ns: 'header' })}</div>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            placeholder={t('your_name', { ns: 'header' })}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="tel"
+                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            placeholder={t('your_phone_number', { ns: 'header' })}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                        />
 
-                    <div>
-                        <div className='mb-2 text-gray-500'>{t('select_desired_skills', { ns: 'header' })}:</div>
-                        <ConfigProvider
-                            theme={{
-                                token: {
-                                    fontSize: '16px',
-                                },
-                            }}
-                        >
-                            <Checkbox.Group
-                                options={professions}
-                                value={selectedProfessions}
-                                onChange={handleProfessionChange}
-                                className='checkbox-group-custom'
-                                style={{ display: 'flex', flexDirection: 'column' }}
-                            />
-                        </ConfigProvider>
-                        {error && <div className="text-red-500 mt-2">{error}</div>} {/* Display error if no profession is selected */}
-                    </div>
+                        <div>
+                            <div className='mb-2 text-gray-500'>{t('select_desired_skills', { ns: 'header' })}:</div>
+                            <ConfigProvider
+                                theme={{
+                                    token: {
+                                        fontSize: '16px',
+                                    },
+                                }}
+                            >
+                                <Checkbox.Group
+                                    options={professions}
+                                    value={selectedProfessions}
+                                    onChange={handleProfessionChange}
+                                    className='checkbox-group-custom'
+                                    style={{ display: 'flex', flexDirection: 'column' }}
+                                />
+                            </ConfigProvider>
+                            {error && <div className="text-red-500 mt-2">{error}</div>} {/* Display error if no profession is selected */}
+                        </div>
 
-                    <Checkbox className='mt-5' required>
-                        {t('confirm_astana_residence', { ns: 'header' })}
-                    </Checkbox>
+                        <Checkbox className='mt-5' required>
+                            {t('confirm_astana_residence', { ns: 'header' })}
+                        </Checkbox>
 
-                    <div className="flex justify-end mt-4">
-                        <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
-                            {t('cancel', { ns: 'header' })}
-                        </Button>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                            className="bg-[#F36706] hover:bg-orange-500 text-white rounded-lg"
-                        >
-                            {t('send', { ns: 'header' })}
-                        </Button>
-                    </div>
-                </form>
+                        <div className="flex justify-end mt-4">
+                            <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
+                                {t('cancel', { ns: 'header' })}
+                            </Button>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={loading}
+                                className="bg-[#F36706] hover:bg-orange-500 text-white rounded-lg"
+                            >
+                                {t('send', { ns: 'header' })}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
