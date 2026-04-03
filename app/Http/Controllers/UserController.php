@@ -55,37 +55,31 @@ class UserController extends Controller
     public function auth(Request $request): SymfonyRedirectResponse
     {
         $credentials = $request->validate([
-            'phone' => ['required'],
-            'password' => ['required'],
+            'phone' => 'required',
+            'password' => 'required'
         ]);
 
-        if (!Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            if($user->is_blocked){
+                Auth::logout();
+                return redirect()
+                    ->back()
+                    ->withErrors([
+                        'error' => __('messages.errors.account_is_blocked')
+                    ])
+                    ->withInput();
+            }else{
+                return redirect()->back();
+            }
+        } else {
             return redirect()
                 ->back()
                 ->withErrors([
-                    'error' => __('messages.errors.incorrect_login_or_password'),
+                    'error' => __('messages.errors.incorrect_login_or_password')
                 ])
                 ->withInput();
         }
-
-        $request->session()->regenerate();
-
-        $user = Auth::user();
-
-        if ($user->is_blocked) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()
-                ->back()
-                ->withErrors([
-                    'error' => __('messages.errors.account_is_blocked'),
-                ])
-                ->withInput();
-        }
-
-        return redirect()->intended('/profile');
     }
 
     public function register(): mixed

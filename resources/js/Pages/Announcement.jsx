@@ -204,9 +204,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         )}
                                     </>
                                 ) : (
-                                    <Link
-                                        href='/login'
-                                        data={{ redirect: window.location.pathname }}
+                                    <Link href='/login'
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
                                     </Link>
