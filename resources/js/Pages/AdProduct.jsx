@@ -137,7 +137,7 @@ export default function Ad({auth, ad, category}) {
                                     </div>
 
                                     <a
-                                        href={auth.user ? `/ad/connect/${ad.id}` : "/login"}
+                                        href={`/ad/connect/${ad.id}`}
                                         className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
                                     >
                                         {t('contact_whatsapp', {ns: 'ads'})}
