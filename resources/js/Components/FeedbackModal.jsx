@@ -151,7 +151,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                             {t('confirm_astana_residence', { ns: 'header' })}
                         </Checkbox>
 
-                        <div className="flex justify-end gap-2 mt-4 sticky bottom-0 bg-white pt-3">
+                        <div className="flex justify-end gap-2 mt-4">
                             <Button
                                 type="button"
                                 className="px-4 py-2 bg-gray-300 rounded-lg"
