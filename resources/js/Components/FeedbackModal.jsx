@@ -86,8 +86,8 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
     };
 
     return (
-        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4 sm:mx-auto">
+        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center p-4 overflow-hidden">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[95vh] flex flex-col">
                 <div className="mb-4">{t('submit_application', { ns: 'header' })}</div>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <input
