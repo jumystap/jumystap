@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 // import emails from 'emailjs-com';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
@@ -24,6 +24,21 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('baker'),
     ];
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const originalOverflow = document.body.style.overflow;
+        const originalTouchAction = document.body.style.touchAction;
+
+        document.body.style.overflow = 'hidden';
+        document.body.style.touchAction = 'none';
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            document.body.style.touchAction = originalTouchAction;
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleProfessionChange = (checkedValues) => {
@@ -31,7 +46,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
@@ -48,15 +63,23 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         };
 
         try {
-            const combined = '<b>Заявка:</b>\nФИО: ' + name + '\nТелефон: ' + phone + '\nПрофессия: ' + selectedProfessions.join(', ');
-            const response = fetch(`https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
-            console.log('SUCCESS!', response);
+            const combined =
+                '<b>Заявка:</b>\n' +
+                'ФИО: ' + name + '\n' +
+                'Телефон: ' + phone + '\n' +
+                'Профессия: ' + selectedProfessions.join(', ');
+
+            await fetch(
+                `https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`
+            );
+
             onSubmit(templateParams);
             setLoading(false);
             setName('');
             setPhone('');
             setSelectedProfessions([]);
             onClose();
+
             notification.success({
                 message: t('success'),
                 description: t('your_application_has_been_successfully_submitted'),
@@ -65,32 +88,20 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
             console.log('FAILED...', error);
             setLoading(false);
         }
-
-        // emails.send('service_gemcvsd', 'template_3p0vezb', templateParams, '2aHWUXyiS63MSOUf3')
-        //     .then((response) => {
-        //         console.log('SUCCESS!', response.status, response.text);
-        //         onSubmit(templateParams);
-        //         setLoading(false);
-        //         setName('');
-        //         setPhone('');
-        //         setSelectedProfessions([]);
-        //         onClose();
-        //         notification.success({
-        //             message: 'Успех',
-        //             description: 'Ваша заявка успешно отправлена!',
-        //         });
-        //     }, (error) => {
-        //         console.log('FAILED...', error);
-        //         setLoading(false);
-        //     });
     };
 
     return (
-        <div className="fixed inset-0 z-40 font-regular bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[95vh] flex flex-col overflow-hidden">
-                <div className="overflow-y-auto">
-                    <div className="mb-4">{t('submit_application', { ns: 'header' })}</div>
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="fixed inset-0 z-[100] font-regular bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[90vh] flex flex-col overflow-hidden">
+                <div className="overflow-y-auto overscroll-contain p-6 pb-24">
+                    <div className="mb-4">
+                        {t('submit_application', { ns: 'header' })}
+                    </div>
+
+                    <form
+                        onSubmit={handleSubmit}
+                        className="flex flex-col gap-4"
+                    >
                         <input
                             type="text"
                             className="w-full p-2 border border-gray-300 rounded-lg"
@@ -99,6 +110,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                             onChange={(e) => setName(e.target.value)}
                             required
                         />
+
                         <input
                             type="tel"
                             className="w-full p-2 border border-gray-300 rounded-lg"
@@ -109,33 +121,45 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                         />
 
                         <div>
-                            <div className='mb-2 text-gray-500'>{t('select_desired_skills', { ns: 'header' })}:</div>
+                            <div className="mb-2 text-gray-500">
+                                {t('select_desired_skills', { ns: 'header' })}:
+                            </div>
+
                             <ConfigProvider
                                 theme={{
                                     token: {
-                                        fontSize: '16px',
+                                        fontSize: 16,
                                     },
                                 }}
                             >
-                                <Checkbox.Group
-                                    options={professions}
-                                    value={selectedProfessions}
-                                    onChange={handleProfessionChange}
-                                    className='checkbox-group-custom'
-                                    style={{ display: 'flex', flexDirection: 'column' }}
-                                />
+                                <div className="max-h-48 overflow-y-auto overscroll-contain pr-2">
+                                    <Checkbox.Group
+                                        options={professions}
+                                        value={selectedProfessions}
+                                        onChange={handleProfessionChange}
+                                        className="checkbox-group-custom flex flex-col"
+                                    />
+                                </div>
                             </ConfigProvider>
-                            {error && <div className="text-red-500 mt-2">{error}</div>} {/* Display error if no profession is selected */}
+
+                            {error && (
+                                <div className="text-red-500 mt-2">{error}</div>
+                            )}
                         </div>
 
-                        <Checkbox className='mt-5' required>
+                        <Checkbox className="mt-2" required>
                             {t('confirm_astana_residence', { ns: 'header' })}
                         </Checkbox>
 
-                        <div className="flex justify-end mt-4">
-                            <Button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded-lg" onClick={onClose}>
+                        <div className="flex justify-end gap-2 mt-4 sticky bottom-0 bg-white pt-3">
+                            <Button
+                                type="button"
+                                className="px-4 py-2 bg-gray-300 rounded-lg"
+                                onClick={onClose}
+                            >
                                 {t('cancel', { ns: 'header' })}
                             </Button>
+
                             <Button
                                 type="primary"
                                 htmlType="submit"
@@ -151,4 +175,3 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         </div>
     );
 }
-
