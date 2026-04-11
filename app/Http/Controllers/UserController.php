@@ -70,7 +70,7 @@ class UserController extends Controller
                     ])
                     ->withInput();
             }else{
-                return redirect('/profile');
+                return redirect()->back();
             }
         } else {
             return redirect()

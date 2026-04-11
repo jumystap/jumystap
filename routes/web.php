@@ -26,14 +26,12 @@ Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name(
 
 Route::get('/ads', [AdController::class, 'index'])->name('ads');
 Route::get('/ads2', [AdController::class, 'index2'])->name('ads2');
-Route::get('/ad/connect/{ad_id}', [AdController::class, 'connect'])->name('ad.connect');
 Route::get('/ad/{id}', [AdController::class, 'show'])->name('ad');
 
 
 Route::get('/profession/{group}', [ProfessionController::class, 'index'])->name('profession');
 Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
@@ -84,7 +82,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('{id}', [AnnouncementController::class, 'delete'])->name('delete');
     });
     Route::get('/chat', [HomeController::class, 'chat']);
-
+    Route::get('/ad/connect/{ad_id}', [AdController::class, 'connect'])->name('ad.connect');
+    Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
 });
 
 
