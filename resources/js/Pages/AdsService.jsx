@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { CgClose } from "react-icons/cg";
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -12,6 +11,7 @@ import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
 import { MdIosShare } from "react-icons/md";
 import { HiOutlineUserCircle } from "react-icons/hi2";
+import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 const { Option } = Select;
 
@@ -397,15 +397,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                 {/* Mobile Filter Modal */}
                 {isFilterOpen && (
-                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-[60] px-5 py-7 overflow-y-auto'>
-                        <div className='flex w-full items-center mb-8'>
-                            <div className='text-xl font-bold'>Фильтры</div>
-                            <CgClose
-                                onClick={() => setIsFilterOpen(false)}
-                                className='ml-auto text-2xl cursor-pointer'
-                            />
-                        </div>
-
+                    <MobileFilterSheet title="Фильтры" onClose={() => setIsFilterOpen(false)}>
                         <div className='mb-6'>
                             <label className='text-gray-400 text-sm mb-2 block'>Категория</label>
                             <Select
@@ -489,7 +481,7 @@ export default function Ads({auth, ads, types, categories, cities }) {
                         >
                             Сбросить
                         </button>
-                    </div>
+                    </MobileFilterSheet>
                 )}
 
                 <style dangerouslySetInnerHTML={{ __html: `

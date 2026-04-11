@@ -7,7 +7,8 @@ import { RiVerifiedBadgeFill, RiSearch2Line } from "react-icons/ri";
 import FeedbackModal from "@/Components/FeedbackModal.jsx";
 import {Select, Switch} from "antd";
 import {IoSearch} from "react-icons/io5";
-import {CgArrowsExchangeAltV, CgClose} from "react-icons/cg";
+import {CgArrowsExchangeAltV} from "react-icons/cg";
+import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 export default function Employees({ auth, employees, professions, filters = {} }) {
     const { t, i18n } = useTranslation();
@@ -119,14 +120,10 @@ export default function Employees({ auth, employees, professions, filters = {} }
             <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
             {/* Mobile Filter Modal */}
             {isFilterOpen && (
-                <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
-                    <div className='flex w-full items-center'>
-                        <div className='text-xl font-bold'>{t('filters', { ns: 'employees' })}</div>
-                        <CgClose
-                            onClick={() => setIsFilterOpen(false)}
-                            className='ml-auto text-2xl inline-block cursor-pointer'
-                        />
-                    </div>
+                <MobileFilterSheet
+                    title={t('filters', { ns: 'employees' })}
+                    onClose={() => setIsFilterOpen(false)}
+                >
                     <div className='text-gray-500 mt-3'>{t('any_work_default', { ns: 'employees' })}</div>
                     <select
                         value={profession}
@@ -160,7 +157,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             {t('reset', { ns: 'employees' })}
                         </div>
                     </div>
-                </div>
+                </MobileFilterSheet>
             )}
             <div className='grid grid-cols-1 md:grid-cols-7 gap-6'>
                 <div className='col-span-5'>

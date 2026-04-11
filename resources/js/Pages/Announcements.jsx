@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { CgClose } from "react-icons/cg";
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -12,6 +11,7 @@ import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
 import { MdIosShare } from "react-icons/md";
+import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 const { Option } = Select;
 
@@ -232,20 +232,16 @@ export default function Announcements({ auth, announcements, specializationCateg
                 </div>
                 {/* Mobile Filter Modal */}
                 {isFilterOpen && (
-                    <div className='fixed top-0 left-0 w-full h-screen bg-white z-40 px-5 py-7'>
-                        <div className='flex w-full items-center'>
-                            <div className='text-xl font-bold'>{t('filters', { ns: 'announcements' })}</div>
-                            <CgClose
-                                onClick={() => setIsFilterOpen(false)}
-                                className='ml-auto text-2xl inline-block cursor-pointer'
-                            />
-                        </div>
+                    <MobileFilterSheet
+                        title={t('filters', { ns: 'announcements' })}
+                        onClose={() => setIsFilterOpen(false)}
+                    >
                         <input
                             type="text"
                             value={data.searchKeyword}
                             onChange={handleSearchKeywordChange}
                             placeholder={t('search', { ns: 'announcements' })}
-                            className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                            className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
                         <div className='text-gray-500 mt-5'>{t('specialization_category', { ns: 'announcements' })}</div>
                         <Select
@@ -315,7 +311,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 {t('reset', { ns: 'announcements' })}
                             </div>
                         </div>
-                    </div>
+                    </MobileFilterSheet>
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>

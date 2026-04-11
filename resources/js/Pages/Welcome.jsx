@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link, Head, usePage, useForm} from "@inertiajs/react";
+import {Link, Head, router, usePage, useForm} from "@inertiajs/react";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from "react-i18next";
 import { SiFireship } from "react-icons/si";
@@ -14,8 +14,8 @@ import ScamModal from "@/Components/ScamModal";
 import Carousel from "@/Components/Carousel";
 import InfoModal from "@/Components/InfoModal";
 import {IoSearch} from "react-icons/io5";
-import {CgArrowsExchangeAltV} from "react-icons/cg";
 import {CiLocationOn} from "react-icons/ci";
+import MobileWelcomeHome from "@/Components/Welcome/MobileWelcomeHome";
 
 export default function Welcome({
   specializations,
@@ -55,8 +55,26 @@ export default function Welcome({
         get('/', {preserveScroll: true, preserveState: true });
     };
 
-    const handleSearchAnnouncements = () => {
+  const handleSearchAnnouncements = () => {
         get('/announcements', {preserveScroll: true, preserveState: true });
+    };
+
+    const handleShare = (id) => {
+        const url = `https://jumystap.kz/announcement/${id}`;
+
+        if (navigator.share) {
+            navigator
+                .share({
+                    title: "Check out this announcement",
+                    url,
+                })
+                .catch((error) => {
+                    console.error("Sharing failed:", error);
+                });
+            return;
+        }
+
+        alert(`Share this link: ${url}`);
     };
 
     const handleButtonClick = (e, link, parameter_id) => {
@@ -178,6 +196,48 @@ export default function Welcome({
       });
   };
 
+  const changeLanguage = (lng) => {
+      i18n.changeLanguage(lng);
+      localStorage.setItem("i18nextLng", lng);
+      const locale = lng === "kz" ? "kk" : lng;
+
+      document.querySelector('meta[name="locale"]')?.setAttribute("content", locale);
+      document.cookie = `locale=${locale}; path=/; SameSite=Lax`;
+      window.axios.defaults.headers.common["X-Locale"] = locale;
+
+      router.get(window.location.pathname, {}, {
+          headers: {"X-Locale": lng},
+          replace: true,
+          preserveScroll: true,
+          preserveState: false,
+      });
+  };
+
+  const urgentAnnouncementItems = Array.isArray(urgent_announcements) ? urgent_announcements : [];
+  const topAnnouncementItems = Array.isArray(top_announcements) ? top_announcements : [];
+  const defaultAnnouncementItems = Array.isArray(announcements?.data) ? announcements.data : [];
+  const mobileFeaturedAnnouncements = [];
+  const seenMobileAnnouncementIds = new Set();
+
+  [
+      ...urgentAnnouncementItems.map((announcement) => ({
+          ...announcement,
+          mobileBadge: "urgent",
+      })),
+      ...topAnnouncementItems.map((announcement) => ({
+          ...announcement,
+          mobileBadge: "top",
+      })),
+      ...defaultAnnouncementItems,
+  ].forEach((announcement) => {
+      if (!announcement?.id || seenMobileAnnouncementIds.has(announcement.id)) {
+          return;
+      }
+
+      seenMobileAnnouncementIds.add(announcement.id);
+      mobileFeaturedAnnouncements.push(announcement);
+  });
+
   return (
     <>
       <FeedbackModal
@@ -194,14 +254,30 @@ export default function Welcome({
         onClose={() => setIsInfoOpen(false)}
         specializations={specializations}
       />
-      <GuestLayout>
+      <GuestLayout
+          hideMobileHeader
+          hideMobileBottomNav
+          mobileContentClassName="jt-mobile-page-shell--flush"
+      >
         <Head title="Работа и вакансии в Казахстане | Биржа труда - Жумыстап">
           <meta
             name="description"
             content="Жумыстап – биржа труда в Казахстане. Удобный поиск работы и вакансий, размещение резюме. Тысячи актуальных предложений для соискателей и работодателей"
           />
         </Head>
-        <div className="grid md:grid-cols-7 grid-cols-1 z-20">
+        <MobileWelcomeHome
+            auth={auth}
+            featuredAnnouncements={mobileFeaturedAnnouncements.slice(0, 5)}
+            i18n={i18n}
+            onLanguageToggle={() => changeLanguage(i18n.language === "ru" ? "kz" : "ru")}
+            onOpenFeedback={() => setIsOpen(true)}
+            onPromoCtaClick={() => setIsOpen(true)}
+            onSearchAnnouncements={handleSearchAnnouncements}
+            onSearchKeywordChange={handleSearchKeywordChange}
+            searchKeyword={data.searchKeyword}
+            t={t}
+        />
+        <div className="hidden md:grid md:grid-cols-7 z-20">
           <div className="col-span-5">
             <div className="flex border-b md:sticky md:top-0 z-20 bg-white bg-opacity-50 backdrop-blur-md border-gray-200">
               <div className="cursor-pointer hover:bg-gray-100 transition-all duration-150 font-semibold p-4 border-b-2 text-sm border-blue-500">

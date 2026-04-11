@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
+import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function FAQ() {
     const { t, i18n } = useTranslation();
@@ -139,25 +140,27 @@ export default function FAQ() {
     return (
         <GuestLayout>
             <div className='grid grid-cols-1 md:grid-cols-7'>
-                <div className="col-span-5 mx-auto p-10">
-                    <h1 className="text-2xl md:text-xl font-bold text-center mb-4">{t('title', { ns: 'faq' })}</h1>
-                    {faqData.map((item, index) => (
-                        <div key={index} className="mb-4">
-                            <button
-                                onClick={() => toggleQuestion(index)}
-                                className="w-full text-left p-4 bg-gray-100 text-gray-500 rounded-md focus:outline-none focus:ring"
-                            >
-                                <span className="font-semibold">{item.question}</span>
-                            </button>
-                            {openQuestion === index && (
-                                <div className="mt-2 p-4 bg-white border rounded-md shadow-md">
-                                    {item.answers.map((answer, i) => (
-                                        <p key={i} dangerouslySetInnerHTML={{ __html: answer }}></p>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                <div className="col-span-5 mx-auto p-0 md:p-10">
+                    <MobileSurface className="md:bg-transparent md:shadow-none md:border-0 md:p-0">
+                        <h1 className="text-2xl md:text-xl font-bold text-center mb-4">{t('title', { ns: 'faq' })}</h1>
+                        {faqData.map((item, index) => (
+                            <div key={index} className="mb-4">
+                                <button
+                                    onClick={() => toggleQuestion(index)}
+                                    className="w-full text-left p-4 bg-gray-100 text-gray-500 rounded-md focus:outline-none focus:ring"
+                                >
+                                    <span className="font-semibold">{item.question}</span>
+                                </button>
+                                {openQuestion === index && (
+                                    <div className="mt-2 p-4 bg-white border rounded-md shadow-md">
+                                        {item.answers.map((answer, i) => (
+                                            <p key={i} dangerouslySetInnerHTML={{ __html: answer }}></p>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </MobileSurface>
                 </div>
                 <div className='h-screen sticky md:block hidden top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
                     <div className='pr-10'>
@@ -175,4 +178,3 @@ export default function FAQ() {
         </GuestLayout>
     );
 }
-

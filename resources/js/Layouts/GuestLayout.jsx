@@ -17,8 +17,15 @@ import {Button, Dropdown, Space} from "antd";
 import {HiOutlineDotsCircleHorizontal} from "react-icons/hi";
 
 import {FaInstagram, FaYoutube, FaTelegram} from "react-icons/fa";
+import MobileHeader from "@/Components/Welcome/MobileHeader";
+import MobileBottomNav from "@/Components/Welcome/MobileBottomNav";
 
-export default function Guest({children}) {
+export default function Guest({
+    children,
+    hideMobileHeader = false,
+    hideMobileBottomNav = false,
+    mobileContentClassName = "",
+}) {
     const {t, i18n} = useTranslation();
     const {auth, url} = usePage().props;
     const [showDropdown, setShowDropdown] = useState(false);
@@ -84,101 +91,39 @@ export default function Guest({children}) {
         });
     };
 
-    const currentPath = new URL(url, window.location.origin);
-    // console.log(window.location.pathname);
-    // console.log(currentPath);
+    const currentPath =
+        typeof window !== "undefined"
+            ? window.location.pathname
+            : new URL(url, "https://jumystap.kz").pathname;
 
-    const isActive = (path) => window.location.pathname === path;
+    const isActive = (path) => currentPath === path;
+
+    const mobileContentClasses = [
+        "jt-mobile-page-shell",
+        hideMobileBottomNav ? "jt-mobile-page-shell--no-nav" : "",
+        mobileContentClassName,
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     return (<>
-            <div className="md:hidden block">
-                <div className="sticky top-0 bg-white z-20 flex py-5 px-3 items-center">
-                    <Link
-                        className={`block ${isActive("/") ? "text-blue-500 font-semibold" : ""}`}
-                        href="/"
-                    >
-                        <img src="/images/logo.png" className="w-[150px]"/>
-                    </Link>
-                    <div className="ml-auto flex gap-x-4 items-center">
-                        <div
-                            className="items-center gap-1 px-5 py-2 text-sm border rounded-full text-gray-500 border-gray-300 transition-all duration-300 hover:border-blue-500 hover:text-blue-500 cursor-pointer"
-                            onClick={() => changeLanguage(i18n.language === "ru" ? "kz" : "ru")}
-                        >
-                            {i18n.language == "ru" ? "Tілді өзгерту" : "Поменять язык"}
-                        </div>
-                    </div>
+            <div className="jt-mobile-app md:hidden">
+                <div className="jt-mobile-app__inner">
+                    {!hideMobileHeader ? (
+                        <MobileHeader
+                            auth={auth}
+                            language={i18n.language}
+                            onLanguageToggle={() =>
+                                changeLanguage(i18n.language === "ru" ? "kz" : "ru")
+                            }
+                            t={t}
+                        />
+                    ) : null}
+                    <div className={mobileContentClasses}>{children}</div>
                 </div>
-                <div className="fixed bottom-0 left-0 w-full z-50">
-                    <div className="bg-white grid grid-cols-4 w-full py-3 px-3">
-                        <Link
-                            className={`block flex-col text-center ${isActive("/") ? "text-red-500" : "text-gray-500"}`}
-                            href="/"
-                        >
-                            <svg className="text-center text-2xl mx-auto" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M4 19V10C4 9.68333 4.071 9.38333 4.213 9.1C4.355 8.81667 4.55067 8.58333 4.8 8.4L10.8 3.9C11.15 3.63333 11.55 3.5 12 3.5C12.45 3.5 12.85 3.63333 13.2 3.9L19.2 8.4C19.45 8.58333 19.646 8.81667 19.788 9.1C19.93 9.38333 20.0007 9.68333 20 10V19C20 19.55 19.804 20.021 19.412 20.413C19.02 20.805 18.5493 21.0007 18 21H15C14.7167 21 14.4793 20.904 14.288 20.712C14.0967 20.52 14.0007 20.2827 14 20V15C14 14.7167 13.904 14.4793 13.712 14.288C13.52 14.0967 13.2827 14.0007 13 14H11C10.7167 14 10.4793 14.096 10.288 14.288C10.0967 14.48 10.0007 14.7173 10 15V20C10 20.2833 9.904 20.521 9.712 20.713C9.52 20.905 9.28267 21.0007 9 21H6C5.45 21 4.97933 20.8043 4.588 20.413C4.19667 20.0217 4.00067 19.5507 4 19Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
-                            <div className="text-center text-sm">{t("home", {ns: "header"})}</div>
-                        </Link>
-                        <Link
-                            className={`block flex-col text-center ${isActive("/announcements") ? "text-red-500" : "text-gray-500"}`}
-                            href="/announcements"
-                        >
-                            <svg className="mx-auto text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7H5C3.9 7 3 7.9 3 9V18C3 19.1 3.9 20 5 20H19C20.1 20 21 19.1 21 18V9C21 7.9 20.1 7 19 7H16ZM14 7H10V5H14V7Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
-
-                            <div className="text-center text-sm">{t("nav_for_announcements", {ns: "header"})}</div>
-                        </Link>
-                        <Link
-                            className={`block flex-col text-center ${isActive("/ads") ? "text-red-500" : "text-gray-500"}`}
-                            href="/ads"
-                        >
-                            <svg
-                                className="mx-auto text-2xl" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M8 7V6C8 3.79086 9.79086 2 12 2C14.2091 2 16 3.79086 16 6V7H18.5C19.3284 7 20 7.67157 20 8.5V18C20 19.6569 18.6569 21 17 21H7C5.34315 21 4 19.6569 4 18V8.5C4 7.67157 4.67157 7 5.5 7H8ZM10 7H14V6C14 4.89543 13.1046 4 12 4C10.8954 4 10 4.89543 10 6V7Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M9 11C9.55228 11 10 11.4477 10 12V12.5C10 13.6046 10.8954 14.5 12 14.5C13.1046 14.5 14 13.6046 14 12.5V12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12V12.5C16 14.7091 14.2091 16.5 12 16.5C9.79086 16.5 8 14.7091 8 12.5V12C8 11.4477 8.44772 11 9 11Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
-
-                            <div className="text-center text-sm">{t("marketplace", {ns: "header"})}</div>
-                        </Link>
-                        <Dropdown
-                            menu={{
-                                items,
-                            }}
-                            placement="bottomRight"
-                            className={`cursor-pointer block flex-col text-center text-gray-500`}
-                        >
-                            <div>
-                                <svg className="text-2xl mx-auto" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        fillRule="evenodd"
-                                        clipRule="evenodd"
-                                        d="M21 12C21 16.9707 16.9707 21 12 21C7.0293 21 3 16.9707 3 12C3 7.0293 7.0293 3 12 3C16.9707 3 21 7.0293 21 12ZM8.4 12.9C8.63869 12.9 8.86761 12.8052 9.0364 12.6364C9.20518 12.4676 9.3 12.2387 9.3 12C9.3 11.7613 9.20518 11.5324 9.0364 11.3636C8.86761 11.1948 8.63869 11.1 8.4 11.1C8.16131 11.1 7.93239 11.1948 7.7636 11.3636C7.59482 11.5324 7.5 11.7613 7.5 12C7.5 12.2387 7.59482 12.4676 7.7636 12.6364C7.93239 12.8052 8.16131 12.9 8.4 12.9ZM12 12.9C12.2387 12.9 12.4676 12.8052 12.6364 12.6364C12.8052 12.4676 12.9 12.2387 12.9 12C12.9 11.7613 12.8052 11.5324 12.6364 11.3636C12.4676 11.1948 12.2387 11.1 12 11.1C11.7613 11.1 11.5324 11.1948 11.3636 11.3636C11.1948 11.5324 11.1 11.7613 11.1 12C11.1 12.2387 11.1948 12.4676 11.3636 12.6364C11.5324 12.8052 11.7613 12.9 12 12.9ZM15.6 12.9C15.8387 12.9 16.0676 12.8052 16.2364 12.6364C16.4052 12.4676 16.5 12.2387 16.5 12C16.5 11.7613 16.4052 11.5324 16.2364 11.3636C16.0676 11.1948 15.8387 11.1 15.6 11.1C15.3613 11.1 15.1324 11.1948 14.9636 11.3636C14.7948 11.5324 14.7 11.7613 14.7 12C14.7 12.2387 14.7948 12.4676 14.9636 12.6364C15.1324 12.8052 15.3613 12.9 15.6 12.9Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                                <div className="text-center text-sm">{t("more", {ns: "header"})}</div>
-                            </div>
-                        </Dropdown>
-                    </div>
-                </div>
-                <div className="pb-20">{children}</div>
+                {!hideMobileBottomNav ? (
+                    <MobileBottomNav currentPath={currentPath} t={t} />
+                ) : null}
             </div>
             <div className="md:flex hidden font-regular">
                 <div className="mx-auto min-h-[650px] md:w-[1350px] grid grid-cols-10 px-5 gap-10">

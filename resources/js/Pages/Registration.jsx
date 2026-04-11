@@ -7,6 +7,7 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { FaRegCheckCircle } from "react-icons/fa";
 import InputMask from 'react-input-mask';
+import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function Registration({ errors, professions }) {
     const { t, i18n } = useTranslation('register');
@@ -262,9 +263,9 @@ export default function Registration({ errors, professions }) {
 
     return (
         <GuestLayout>
-            <div className='w-full md:h-screen h-[700px] grid md:grid-cols-7 grid-cols-1 px-5 md:px-[0px]'>
+            <div className='w-full md:h-screen min-h-[calc(100vh-140px)] grid md:grid-cols-7 grid-cols-1 gap-4 px-0 md:px-[0px]'>
                 <div className='flex col-span-5'>
-                    <div className='mx-auto my-auto'>
+                    <MobileSurface className='jt-mobile-auth-card mx-auto my-0 w-full max-w-md md:my-auto md:bg-transparent md:shadow-none md:border-0 md:p-0'>
                         {step === 0 && (
                             <>
                                 <div className="font-semibold text-xl text-center">{t('select_user_type_title', { ns: 'register' })}</div>
@@ -301,7 +302,7 @@ export default function Registration({ errors, professions }) {
                                     type='text'
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
-                                    className='w-[350px] mt-1 block border-gray-300 rounded-lg'
+                                    className='w-full max-w-[350px] mt-1 block border-gray-300 rounded-lg'
                                     placeholder={data.role === 'employee' ? t('enter_your_full_name') : t('enter_company_name')}
                                 />
                                 {errors.name && <p className='text-red-500 text-sm mt-2'>{errors.name}</p>}
@@ -312,14 +313,14 @@ export default function Registration({ errors, professions }) {
                                             type='email'
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
-                                            className='w-[350px] mt-1 block border-gray-300 rounded-lg'
+                                            className='w-full max-w-[350px] mt-1 block border-gray-300 rounded-lg'
                                             placeholder={t('email')}
                                         />
                                         {errors.email && <p className='text-red-500 text-sm mt-2'>{errors.email}</p>}
                                     </>
                                 )}
                                 {data.role === 'employee' && (
-                                    <div className='flex w-[350px] gap-x-5'>
+                                    <div className='flex w-full max-w-[350px] gap-x-5'>
                                         <div className='w-[50%]'>
                                             <div className='mt-5 text-sm font-semibold'>{t('date_of_birth')}</div>
                                             <InputMask
@@ -362,7 +363,7 @@ export default function Registration({ errors, professions }) {
                             </>
                         )}
                         {step === 2 && (
-                            <div className='w-[350px]'>
+                            <div className='w-full max-w-[350px]'>
                                 <div className="mb-10 font-semibold text-xl text-center">{t('confirm_phone_number')}</div>
                                 <InputMask
                                   mask="+7 999 999 99 99"
@@ -419,7 +420,7 @@ export default function Registration({ errors, professions }) {
                             </div>
                         )}
                         {step === 3 && (
-                            <div className='w-[350px]'>
+                            <div className='w-full max-w-[350px]'>
                                 <div className='mt-5 text-sm font-semibold'>{t('create_password')}</div>
                                 <input
                                     type='password'
@@ -475,9 +476,9 @@ export default function Registration({ errors, professions }) {
                                 })}
                             </div>
                         </div>
-                    </div>
+                    </MobileSurface>
                 </div>
-                <div className="h-full bg-[#F9FAFC] rounded-lg col-span-2 p-5 md:relative md:block hidden">
+                <MobileSurface className="jt-mobile-info-card h-full bg-[#F9FAFC] col-span-2 p-5 md:relative md:block hidden md:shadow-none">
                     {[
                         t('user_type_label'),
                         t('upload_avatar_title'),
@@ -517,7 +518,7 @@ export default function Registration({ errors, professions }) {
                             </div>
                         );
                     })}
-                </div>
+                </MobileSurface>
             </div>
         </GuestLayout>
     );

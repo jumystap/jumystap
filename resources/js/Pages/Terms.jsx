@@ -1,9 +1,10 @@
 import GuestLayout from "@/Layouts/GuestLayout";
+import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function Terms() {
     return (
         <GuestLayout>
-            <div className="terms-container gap-y-3 pt-6 pb-6">
+            <MobileSurface className="jt-mobile-readable-card terms-container gap-y-3 mt-4 pt-6 pb-6 md:bg-transparent md:shadow-none md:border-0 md:p-0">
                 <h1 className="text-center"><strong>ПУБЛИЧНАЯ ОФЕРТА</strong></h1>
                 <p className="text-center indent-8"><span>о предоставлении услуг по размещению вакансий и резюме на портале </span><a href="https://jumystap.kz"><span>Jumystap.kz</span></a></p>
                 <p className="indent-8">&nbsp;</p>
@@ -164,8 +165,7 @@ export default function Terms() {
                 <p className="indent-8"><span>6.13. В случае получения жалоб, претензий либо требований государственных органов Оператор вправе использовать и передавать персональные данные Пользователей в объеме, необходимом для защиты своих прав и законных интересов, а также для исполнения требований законодательства.</span></p>
                 <p className="indent-8"><span>6.14. Отзыв согласия на обработку персональных данных или удаление Учетной записи может повлечь ограничение либо прекращение доступа Пользователя к функционалу Портала, если дальнейшее использование Портала невозможно без обработки таких данных. В случае удаления Учетной записи либо отзыва согласия резюме Соискателя удаляется из публичного доступа Портала. При этом Оператор вправе хранить такие данные в объеме и сроки, предусмотренные законодательством Республики Казахстан, а также в целях защиты своих прав и законных интересов.</span></p>
                 <p className="indent-8"><span>6.15. Оператор вправе хранить технические данные о действиях Пользователя (IP-адрес, cookies, идентификаторы сессий, технические журналы) в целях обеспечения безопасности, предотвращения и расследования инцидентов, выполнения требований законодательства Республики Казахстан.</span></p>
-            </div>
+            </MobileSurface>
         </GuestLayout>
     );
 }
-

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { notification, Modal, Input } from 'antd';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
+import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function Login({ errors }) {
     const { t, i18n } = useTranslation();
@@ -36,8 +37,9 @@ export default function Login({ errors }) {
     return (
         <>
             <GuestLayout>
-                <div className="flex grid md:grid-cols-7 md:grid-cols-1 w-full h-screen">
-                    <div className="mx-auto my-auto col-span-5 w-full max-w-md p-5">
+                <div className="grid grid-cols-1 md:grid-cols-7 w-full min-h-[calc(100vh-140px)] gap-4">
+                    <div className="col-span-5 flex">
+                        <MobileSurface className="jt-mobile-auth-card mx-auto my-0 w-full max-w-md md:my-auto md:bg-transparent md:shadow-none md:border-0 md:p-0">
                         <div className="font-bold text-4xl text-center">{t('title', { ns: 'login' })}</div>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4 mt-8">
@@ -86,8 +88,9 @@ export default function Login({ errors }) {
                         <Link href="/forgot_password" className="text-center mt-3 block">
                             {t('forgot_password', { ns: 'login' })} <span className="font-bold text-blue-500">{t('forgot_password_span', { ns: 'login' })}</span>
                         </Link>
+                        </MobileSurface>
                     </div>
-                    <div className='md:h-full bg-[#F9FAFC] rounded-lg w-full md:col-span-2 p-5 md:relative'>
+                    <MobileSurface className='jt-mobile-info-card w-full md:col-span-2 md:h-full md:bg-[#F9FAFC] md:shadow-none'>
                         <div className='md:absolute md:bottom-5 md:pr-10'>
                             <div className='text-lg'>
                                 {t('login_issues', { ns: 'login' })}
@@ -100,7 +103,7 @@ export default function Login({ errors }) {
                                 <div className='ml-auto'>janamumkindik@gmail.com</div>
                             </div>
                         </div>
-                    </div>
+                    </MobileSurface>
                 </div>
             </GuestLayout>
         </>

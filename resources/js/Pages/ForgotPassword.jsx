@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import {notification} from "antd";
+import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function ForgotPassword() {
     const { data, setData, post, processing, reset } = useForm({
@@ -91,8 +92,8 @@ export default function ForgotPassword() {
 
     return (
         <GuestLayout>
-            <div className="flex w-full h-[650px]">
-                <div className="mx-auto my-auto w-full max-w-md p-5">
+            <div className="flex w-full min-h-[calc(100vh-140px)]">
+                <MobileSurface className="jt-mobile-auth-card mx-auto my-0 w-full max-w-md md:my-auto md:bg-transparent md:shadow-none md:border-0 md:p-0">
                     {step == 1 && (
                         <>
                             <div className="font-bold text-4xl text-center">{t('recovery_account_title', { ns: 'register' })}</div>
@@ -183,7 +184,7 @@ export default function ForgotPassword() {
                             </form>
                         </>
                     )}
-                </div>
+                </MobileSurface>
             </div>
         </GuestLayout>
     );
