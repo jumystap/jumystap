@@ -3,7 +3,8 @@
 return [
     'errors'        => [
         'incorrect_login_or_password' => 'Логин немесе құпия сөз қате. Қайталап көріңіз.',
-        'account_is_blocked'          => 'Есептік жазбаңыз бұғатталған.'
+        'account_is_blocked'          => 'Есептік жазбаңыз бұғатталған.',
+        'resume_creation_not_available' => 'Резюме жасау тек жұмыс іздеушілерге қолжетімді.',
     ],
     'announcements' => [
         'errors' => [

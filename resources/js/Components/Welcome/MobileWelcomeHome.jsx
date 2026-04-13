@@ -17,21 +17,59 @@ export default function MobileWelcomeHome({
     i18n,
     onLanguageToggle,
     onOpenFeedback,
+    onOpenScam,
     onPromoCtaClick,
     onSearchAnnouncements,
     onSearchKeywordChange,
     searchKeyword,
+    supportHref,
     t,
 }) {
     const [activePromo, setActivePromo] = useState(0);
     const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+    const canCreateResume = !auth?.user || auth.user.role?.name === "employee";
 
     const promoSlides = [
         {
             key: "free-course",
             title: t("free_course", { ns: "index" }).replace("курс!", "курсы!"),
             description: t("take_training_with_joltap", { ns: "index" }),
-            ctaLabel: t("sign_up_now", { ns: "index" }),
+            primaryAction: {
+                label: t("sign_up_now", { ns: "index" }),
+                onClick: onPromoCtaClick,
+            },
+            imageSrc: "/images/logo.png",
+            imageAlt: "JUMYSTAP",
+        },
+        {
+            key: "scam-alert",
+            title: t("beware_of_scammers", { ns: "index" }),
+            description: t("scam_report", { ns: "index" }),
+            containerClassName:
+                "relative overflow-hidden rounded-[24px] border border-[#14315f] bg-gradient-to-r from-[#102454] to-[#0a1d45] px-4 py-4 shadow-[0_14px_32px_rgba(10,29,69,0.28)]",
+            accentClassName:
+                "pointer-events-none absolute -right-8 top-2 h-24 w-24 rounded-full bg-[rgba(255,255,255,0.14)] blur-2xl",
+            titleClassName: "text-[18px] font-bold leading-5 text-white",
+            descriptionClassName: "mt-2 text-[13px] leading-4 text-[#d7e3ff]",
+            primaryAction: {
+                label: t("write_whatsapp", { ns: "index" }),
+                href: supportHref,
+                target: "_blank",
+                rel: "noopener noreferrer",
+            },
+            primaryActionClassName:
+                "inline-flex min-h-[48px] items-center rounded-[18px] bg-[#ef4444] px-4 py-3 text-left text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(239,68,68,0.28)] transition-opacity hover:opacity-95",
+            secondaryAction: {
+                label: t("write_site", { ns: "index" }),
+                onClick: onOpenScam,
+            },
+            secondaryActionClassName:
+                "inline-flex min-h-[48px] items-center rounded-[18px] bg-white px-4 py-3 text-left text-[13px] font-semibold leading-4 text-[#ef4444] shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-opacity hover:opacity-95",
+            imageSrc: "/images/scam.png",
+            imageAlt: "Scam alert",
+            imageWrapperClassName:
+                "shrink-0 rounded-[18px] bg-[rgba(255,255,255,0.08)] px-2 py-2",
+            imageClassName: "h-10 w-auto object-contain",
         },
     ];
 
@@ -45,15 +83,22 @@ export default function MobileWelcomeHome({
         {
             key: "support",
             label: t("mobile_support", { ns: "index" }),
-            href:  "https://api.whatsapp.com/send?phone=+77072213131&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%20%D0%BF%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20JUMYSTAP",
+            href: supportHref,
+            external: true,
+            target: "_blank",
+            rel: "noopener noreferrer",
             icon: RiCustomerService2Line,
         },
-        {
-            key: "resume",
-            label: t("mobile_create_resume", { ns: "index" }),
-            href: auth?.user ? "/resumes/create" : "/login",
-            icon: HiOutlineDocumentText,
-        },
+        ...(canCreateResume
+            ? [
+                  {
+                      key: "resume",
+                      label: t("mobile_create_resume", { ns: "index" }),
+                      href: auth?.user ? "/resumes/create" : "/login",
+                      icon: HiOutlineDocumentText,
+                  },
+              ]
+            : []),
         {
             key: "vacancy",
             label: t("mobile_post_vacancy", { ns: "index" }),
@@ -101,7 +146,6 @@ export default function MobileWelcomeHome({
                         onNext={() =>
                             setActivePromo((current) => (current + 1) % promoSlides.length)
                         }
-                        onCtaClick={onPromoCtaClick}
                     />
 
                     <PrimaryActionButton

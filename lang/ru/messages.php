@@ -3,7 +3,8 @@
 return [
     'errors'        => [
         'incorrect_login_or_password' => 'Неверный логин или пароль. Пожалуйста, попробуйте снова.',
-        'account_is_blocked'          => 'Ваш аккаунт заблокирован.'
+        'account_is_blocked'          => 'Ваш аккаунт заблокирован.',
+        'resume_creation_not_available' => 'Создание резюме доступно только соискателям.',
     ],
     'announcements' => [
         'errors' => [

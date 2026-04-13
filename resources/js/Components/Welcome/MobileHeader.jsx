@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Drawer } from "antd";
 import { CgMenuRight, CgShoppingBag } from "react-icons/cg";
 import { HiOutlineHome, HiOutlineUserCircle, HiOutlineUserGroup } from "react-icons/hi2";
-import { MdOutlineWorkOutline } from "react-icons/md";
+import { MdOutlineLogout, MdOutlineWorkOutline } from "react-icons/md";
 import { RiQuestionLine } from "react-icons/ri";
 
 const matchesPath = (currentPath, prefixes) =>
@@ -18,6 +18,13 @@ export default function MobileHeader({ auth, language, onLanguageToggle, t }) {
     const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
     const languageLabel = language === "ru" ? "Тілді өзгерту" : "Поменять язык";
     const openMenuLabel = language === "ru" ? "Открыть меню" : "Мәзірді ашу";
+
+    const handleLogout = () => {
+        setIsMenuOpen(false);
+        router.post("/logout", {}, {
+            onSuccess: () => window.location.reload(),
+        });
+    };
 
     const menuItems = [
         {
@@ -164,12 +171,23 @@ export default function MobileHeader({ auth, language, onLanguageToggle, t }) {
                             <Link
                                 href="/login"
                                 onClick={() => setIsMenuOpen(false)}
-                                className="rounded-full border border-[#d7e2ff] bg-white px-4 py-3 text-center text-sm font-semibold text-[#3052c8]"
+                                className="rounded-full border border-[#d7e2ff] bg-white px-4 py-5 text-center text-sm font-semibold text-[#3052c8]"
                             >
                                 {t("login", { ns: "header" })}
                             </Link>
                         </div>
-                    ) : null}
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="flex w-full items-center gap-3 rounded-[18px] border border-[#fde2e2] bg-white px-4 py-3 text-[#d92d20] transition-colors hover:bg-[#fff5f5]"
+                        >
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fff1f1] text-[20px] text-[#d92d20]">
+                                <MdOutlineLogout />
+                            </div>
+                            <span className="text-sm font-medium">{t("logout", { ns: "header" })}</span>
+                        </button>
+                    )}
                 </div>
             </Drawer>
         </>

@@ -16,6 +16,20 @@ function QuickActionCard({ item }) {
     );
 
     if (item.href) {
+        if (item.target || item.rel || item.external) {
+            return (
+                <a
+                    href={item.href}
+                    target={item.target}
+                    rel={item.rel}
+                    className={classes}
+                    aria-label={item.label}
+                >
+                    {content}
+                </a>
+            );
+        }
+
         return (
             <Link href={item.href} className={classes} aria-label={item.label}>
                 {content}
@@ -31,8 +45,10 @@ function QuickActionCard({ item }) {
 }
 
 export default function QuickActionGrid({ items }) {
+    const gridClasses = items.length === 3 ? "grid-cols-3" : "grid-cols-4";
+
     return (
-        <section className="grid grid-cols-4 gap-2">
+        <section className={`grid ${gridClasses} gap-2`}>
             {items.map((item) => (
                 <QuickActionCard key={item.key} item={item} />
             ))}

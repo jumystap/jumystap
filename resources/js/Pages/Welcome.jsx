@@ -34,6 +34,8 @@ export default function Welcome({
   const [isScamOpen, setIsScamOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const { searchKeyword: querySearchKeyword } = usePage().props;
+  const supportWhatsAppHref =
+      "https://wa.me/77072213131?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%BF%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20JUMYSTAP";
 
     const { data, setData, get } = useForm({
         searchKeyword: querySearchKeyword || '',
@@ -271,10 +273,12 @@ export default function Welcome({
             i18n={i18n}
             onLanguageToggle={() => changeLanguage(i18n.language === "ru" ? "kz" : "ru")}
             onOpenFeedback={() => setIsOpen(true)}
+            onOpenScam={() => setIsScamOpen(true)}
             onPromoCtaClick={() => setIsOpen(true)}
             onSearchAnnouncements={handleSearchAnnouncements}
             onSearchKeywordChange={handleSearchKeywordChange}
             searchKeyword={data.searchKeyword}
+            supportHref={supportWhatsAppHref}
             t={t}
         />
         <div className="hidden md:grid md:grid-cols-7 z-20">
@@ -328,8 +332,9 @@ export default function Welcome({
 
                     <div className="flex gap-x-5 mt-3 items-center">
                         <a
-                            href="https://api.whatsapp.com/send?phone=+77072213131&amp;text=Здравствуйте"
+                            href={supportWhatsAppHref}
                             target="_blank"
+                            rel="noopener noreferrer"
                             className="text-center px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all duration-150 hover:text-white"
                         >
                             {t("write_whatsapp", { ns: "index" })}

@@ -1,10 +1,9 @@
 import GuestLayout from "@/Layouts/GuestLayout";
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useForm, usePage } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
-import { notification, Modal, Input } from 'antd';
-import 'react-phone-input-2/lib/style.css';
-import PhoneInput from 'react-phone-input-2';
+import { notification, Input } from 'antd';
+import InputMask from 'react-input-mask';
 import MobileSurface from "@/Components/Mobile/MobileSurface";
 
 export default function Login({ errors }) {
@@ -15,6 +14,12 @@ export default function Login({ errors }) {
     });
     const { props } = usePage();
     const backendErrors = props.errors;
+
+    const normalizePhone = (value) => value.replace(/[^\d]/g, '');
+
+    const handlePhoneChange = (e) => {
+        setData('phone', normalizePhone(e.target.value));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -46,19 +51,23 @@ export default function Login({ errors }) {
                                 <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="phone">
                                     {t('phone_label', { ns: 'login' })}
                                 </label>
-                                <PhoneInput
-                                    country={'kz'}
-                                    onlyCountries={['kz']}
+                                <InputMask
+                                    mask="+7 999 999 99 99"
                                     value={data.phone}
-                                    onChange={phone => setData('phone', phone)}
-                                    inputStyle={{
-                                        width: '100%',
-                                        padding: '20px',
-                                        paddingLeft: '50px',
-                                        borderRadius: '5px',
-                                        border: '1px solid #ccc',
-                                    }}
-                                />
+                                    onChange={handlePhoneChange}
+                                    maskChar={null}
+                                >
+                                    {(inputProps) => (
+                                        <Input
+                                            {...inputProps}
+                                            id="phone"
+                                            type="tel"
+                                            inputMode="tel"
+                                            className="block w-full mt-1 border-gray-300 rounded-lg"
+                                            placeholder="+7 700 000 00 00"
+                                        />
+                                    )}
+                                </InputMask>
                             </div>
                             <div className="mb-6">
                                 <label className="block text-gray-500 text-sm font-bold mb-2" htmlFor="password">

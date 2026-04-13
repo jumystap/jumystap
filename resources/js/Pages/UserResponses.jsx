@@ -109,9 +109,11 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
                                     </div>
                                 </div>
                                 <div className='px-5 mt-5'>
-                                    <Link href='/resumes/create' className='px-7 py-2 mr-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
-                                        {t('create_resume', { ns: 'profile' })}
-                                    </Link>
+                                    {user.role_id === 2 && (
+                                        <Link href='/resumes/create' className='px-7 py-2 mr-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
+                                            {t('create_resume', { ns: 'profile' })}
+                                        </Link>
+                                    )}
                                     <Link href='/my-responses' className='px-7 py-2 bg-blue-500 text-white text-sm font-semibold inline-block rounded-lg'>
                                         {t('my_responses', { ns: 'profile' })}
                                     </Link>
@@ -223,4 +225,3 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
         </>
     );
 }
-

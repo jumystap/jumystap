@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Roles;
 use App\Enums\DrivingLicenseCategory;
 use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
@@ -15,6 +16,20 @@ use Inertia\Inertia;
 
 class UserResumeController extends Controller
 {
+    private function ensureResumeCreationIsAvailable()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->hasRole(Roles::EMPLOYEE)) {
+            return redirect('/profile')
+                ->withErrors([
+                    'error' => __('messages.errors.resume_creation_not_available'),
+                ]);
+        }
+
+        return null;
+    }
+
     public function index()
     {
         $resumes = UserResume::with('organizations', 'languages')->get();
@@ -23,6 +38,10 @@ class UserResumeController extends Controller
 
     public function create()
     {
+        if ($redirect = $this->ensureResumeCreationIsAvailable()) {
+            return $redirect;
+        }
+
         $workSchedules   = WorkSchedule::options();
         $employmentTypes = EmploymentType::options();
         $drivingLicenses = DrivingLicenseCategory::options();
@@ -39,6 +58,10 @@ class UserResumeController extends Controller
 
     public function store(Request $request)
     {
+        if ($redirect = $this->ensureResumeCreationIsAvailable()) {
+            return $redirect;
+        }
+
         $data = $request->validate([
             'email'                            => 'nullable|email',
             'phone'                            => 'required|max:20',
