@@ -7,6 +7,7 @@ import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
 import { Switch, Select } from 'antd'; // Import Select from Ant Design
 import InfoModal from '@/Components/InfoModal';
+import FeedbackModal from '@/Components/FeedbackModal.jsx';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
@@ -28,6 +29,7 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [publicTime, setPublicTime] = useState('');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 
@@ -116,6 +118,14 @@ export default function Announcements({ auth, announcements, specializationCateg
 
     const handleSearchKeywordChange = (event) => {
         setData('searchKeyword', event.target.value);
+    };
+
+    const handleFeedbackSubmit = (feedback) => {
+        axios.post('/send-feedback', { feedback }).then(() => {
+            console.log(t('feedback_sent', { ns: 'header' }));
+        }).catch((error) => {
+            console.error(error);
+        });
     };
 
     useEffect(() => {
@@ -226,6 +236,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                 <Head title="Работа в Казахстане | свежие вакансии и объявления ">
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
+                <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
                 <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializationCategories} />
                 <div className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'>
                     <div className='w-[80%] bg-white rounded-lg h-[20%]'></div>
@@ -235,6 +246,24 @@ export default function Announcements({ auth, announcements, specializationCateg
                     <MobileFilterSheet
                         title={t('filters', { ns: 'announcements' })}
                         onClose={() => setIsFilterOpen(false)}
+                        footer={
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={handleSearch}
+                                    className='w-full rounded-xl bg-blue-600 py-3 text-center font-semibold text-white shadow-sm'
+                                >
+                                    {t('apply', { ns: 'announcements' })}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={resetSearch}
+                                    className='mt-3 w-full rounded-xl border-2 border-blue-500 py-3 text-center font-semibold text-blue-500'
+                                >
+                                    {t('reset', { ns: 'announcements' })}
+                                </button>
+                            </>
+                        }
                     >
                         <input
                             type="text"
@@ -295,21 +324,13 @@ export default function Announcements({ auth, announcements, specializationCateg
                             placeholder={t('income_level_from', { ns: 'announcements' })}
                             className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
-                        <div className='mt-5 flex items-center'>
-                            <div>{t('specified_income', { ns: 'announcements' })}</div>
-                            <Switch className='ml-auto' checked={isSalary} onChange={handleIsSalaryChange} />
+                        <div className='jt-mobile-filter-toggle'>
+                            <div className='jt-mobile-filter-toggle__label'>{t('specified_income', { ns: 'announcements' })}</div>
+                            <Switch checked={isSalary} onChange={handleIsSalaryChange} />
                         </div>
-                        <div className='mt-5 flex items-center'>
-                            <div>{t('no_experience', { ns: 'announcements' })}</div>
-                            <Switch className='ml-auto' checked={noExperience} onChange={handleNoExperienceChange} />
-                        </div>
-                        <div className='bottom-10'>
-                            <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
-                                {t('apply', { ns: 'announcements' })}
-                            </div>
-                            <div onClick={resetSearch} className='w-full text-blue-500 border-2 border-blue-500 font-semibold py-2 text-center rounded-lg mt-2 cursor-pointer'>
-                                {t('reset', { ns: 'announcements' })}
-                            </div>
+                        <div className='jt-mobile-filter-toggle'>
+                            <div className='jt-mobile-filter-toggle__label'>{t('no_experience', { ns: 'announcements' })}</div>
+                            <Switch checked={noExperience} onChange={handleNoExperienceChange} />
                         </div>
                     </MobileFilterSheet>
                 )}

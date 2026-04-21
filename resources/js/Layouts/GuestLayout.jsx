@@ -125,9 +125,10 @@ export default function Guest({
                     <MobileBottomNav currentPath={currentPath} t={t} />
                 ) : null}
             </div>
-            <div className="md:flex hidden font-regular">
-                <div className="mx-auto min-h-[650px] md:w-[1350px] grid grid-cols-10 px-5 gap-10">
-                    <div className="sticky top-0 pt-5 items-center col-span-2 h-screen border-r pr-5 border-gray-100">
+            <div className="jt-desktop-shell hidden md:flex font-regular">
+                <div className="jt-desktop-shell__grid mx-auto grid w-full max-w-[1350px] grid-cols-10 gap-10 px-5">
+                    <aside className="jt-desktop-sidebar col-span-2 border-r border-gray-100 pr-5">
+                        <div className="jt-desktop-sidebar__scroll">
                         <Link
                             className={`block ${isActive("/") ? "text-blue-500 font-semibold" : ""}`}
                             href="/"
@@ -279,14 +280,14 @@ export default function Guest({
                                     {t("logout", {ns: "header"})}
                                 </button>
                             </>)}
-                        <div></div>
-                        <div className="md:absolute md:bottom-5 text-md text-gray-500">
+                        </div>
+                        <div className="jt-desktop-sidebar__footer space-y-2 text-sm text-gray-500">
                             <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer"
                                className="flex justify-start">
                                 <FaTelegram className="text-xl"/> <span
                                 className="ml-1">Получайте вакансии в Telegram!</span>
                             </a>
-                            <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
+                            <a href="tel:+77072213131" className="block hover:underline">+7 707 221 31 31</a>
                             <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer"
                                className="flex justify-start">
                                 <FaInstagram className="text-xl"/> <span className="ml-1">Instagram JOLTAP</span>
@@ -299,8 +300,8 @@ export default function Guest({
                                 <FaYoutube className="text-xl"/> <span className="ml-1">Youtube канал</span>
                             </a>
                         </div>
-                    </div>
-                    <div className="col-span-7">{children}</div>
+                    </aside>
+                    <main className="jt-desktop-main col-span-7">{children}</main>
                 </div>
             </div>
         </>);

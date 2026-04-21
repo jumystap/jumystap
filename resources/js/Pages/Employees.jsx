@@ -123,6 +123,24 @@ export default function Employees({ auth, employees, professions, filters = {} }
                 <MobileFilterSheet
                     title={t('filters', { ns: 'employees' })}
                     onClose={() => setIsFilterOpen(false)}
+                    footer={
+                        <>
+                            <button
+                                type="button"
+                                onClick={handleSearch}
+                                className='w-full rounded-xl bg-blue-600 py-3 text-center font-semibold text-white shadow-sm'
+                            >
+                                {t('apply', { ns: 'employees' })}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={resetSearch}
+                                className='mt-3 w-full rounded-xl border-2 border-blue-500 py-3 text-center font-semibold text-blue-500'
+                            >
+                                {t('reset', { ns: 'employees' })}
+                            </button>
+                        </>
+                    }
                 >
                     <div className='text-gray-500 mt-3'>{t('any_work_default', { ns: 'employees' })}</div>
                     <select
@@ -137,25 +155,17 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             </option>
                         ))}
                     </select>
-                    <div className='mt-5 flex items-center'>
-                        <div>{t('looking_work', { ns: 'employees' })}</div>
-                        <Switch className='ml-auto' checked={isLookingWork} onChange={handleIsLookingWorkChange} />
+                    <div className='jt-mobile-filter-toggle'>
+                        <div className='jt-mobile-filter-toggle__label'>{t('looking_work', { ns: 'employees' })}</div>
+                        <Switch checked={isLookingWork} onChange={handleIsLookingWorkChange} />
                     </div>
-                    <div className='mt-5 flex items-center'>
-                        <div>{t('with_certificate', { ns: 'employees' })}</div>
-                        <Switch className='ml-auto' checked={withCertificate} onChange={handleWithCertificateChange} />
+                    <div className='jt-mobile-filter-toggle'>
+                        <div className='jt-mobile-filter-toggle__label'>{t('with_certificate', { ns: 'employees' })}</div>
+                        <Switch checked={withCertificate} onChange={handleWithCertificateChange} />
                     </div>
-                    <div className='mt-5 flex items-center'>
-                        <div>{t('with_resume', { ns: 'employees' })}</div>
-                        <Switch className='ml-auto' checked={withResume} onChange={handleWithResumeChange} />
-                    </div>
-                    <div className='bottom-10'>
-                        <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
-                            {t('apply', { ns: 'employees' })}
-                        </div>
-                        <div onClick={resetSearch} className='w-full text-blue-500 border-2 border-blue-500 font-semibold py-2 text-center rounded-lg mt-2 cursor-pointer'>
-                            {t('reset', { ns: 'employees' })}
-                        </div>
+                    <div className='jt-mobile-filter-toggle'>
+                        <div className='jt-mobile-filter-toggle__label'>{t('with_resume', { ns: 'employees' })}</div>
+                        <Switch checked={withResume} onChange={handleWithResumeChange} />
                     </div>
                 </MobileFilterSheet>
             )}
