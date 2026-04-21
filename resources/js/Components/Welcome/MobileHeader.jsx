@@ -13,7 +13,7 @@ const matchesPath = (currentPath, prefixes) =>
             : currentPath === prefix || currentPath.startsWith(`${prefix}/`)
     );
 
-export default function MobileHeader({ auth, language, onLanguageToggle, t }) {
+export default function MobileHeader({ auth, language, onLanguageToggle, t, sticky = false }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
     const languageLabel = language === "ru" ? "Тілді өзгерту" : "Поменять язык";
@@ -66,7 +66,11 @@ export default function MobileHeader({ auth, language, onLanguageToggle, t }) {
 
     return (
         <>
-            <div className="sticky top-0 z-30 bg-[#f7f8fc]/95 px-3 pb-4 pt-4 backdrop-blur">
+            <div
+                className={`z-30 bg-[#f7f8fc]/95 px-3 pb-4 pt-4 backdrop-blur ${
+                    sticky ? "sticky top-0" : ""
+                }`}
+            >
                 <div className="flex items-center gap-2">
                     <Link
                         href="/"
