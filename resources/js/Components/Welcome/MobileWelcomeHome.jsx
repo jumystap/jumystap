@@ -48,7 +48,7 @@ export default function MobileWelcomeHome({
                 "overflow-hidden rounded-[24px] border border-[#e5e8f0] bg-white p-0 shadow-[0_14px_32px_rgba(15,23,42,0.07)]",
             customContent: (
                 <a
-                    href="https://web.telegram.org/k/#@jumystapjobs"
+                    href="https://t.me/jumystapjobs"
                     aria-label={t("go_to_channel", { ns: "index" })}
                     className="group block h-full px-5 py-4"
                 >
