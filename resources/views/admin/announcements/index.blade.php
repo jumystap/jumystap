@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 @php
+    use App\Enums\AnnouncementStatus;
+
     $title = 'Вакансии';
+    $isRecentActiveAnnouncements = ($search['recent_active_announcements'] ?? null) === 'on';
 @endphp
 @section('title', $title)
 
@@ -89,12 +92,14 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="status">{{ __('Статус') }}</label>
-                                        <select name="search[status]" id="status" class="form-control">
+                                        <select name="search[status]" id="status" class="form-control"
+                                                @disabled($isRecentActiveAnnouncements)>
                                             <option value>{{ __('Выберите') }}</option>
                                             @if($statuses)
                                                 @foreach ($statuses as $key => $value)
                                                     <option value="{{ $key }}"
-                                                            @if (isset($search['status']) && $search['status'] == $key && $search['status'] != null) selected="selected" @endif>
+                                                            @if ($isRecentActiveAnnouncements && (string)$key === (string)AnnouncementStatus::ACTIVE->value) selected="selected"
+                                                            @elseif (isset($search['status']) && $search['status'] == $key && $search['status'] != null) selected="selected" @endif>
                                                         {{ $value }}
                                                     </option>
                                                 @endforeach
@@ -128,6 +133,12 @@
                                         @else
                                             <input type="checkbox" name="search[with_salary]">
                                         @endif
+                                    </div>
+                                    <div class="col-md-6">
+                                        <br/>
+                                        <label for="recent_active_announcements">{{ __('Только активные вакансии за последние 6 месяцев') }}</label>
+                                        <input type="checkbox" id="recent_active_announcements" name="search[recent_active_announcements]"
+                                            @checked($isRecentActiveAnnouncements)>
                                     </div>
                                     <div class="col-md-12 mt-4">
                                         <button type="submit" class="btn btn-primary">
@@ -169,6 +180,9 @@
     <script>
         var startDate,
             endDate,
+            recentActiveAnnouncementsCheckbox = document.getElementById('recent_active_announcements'),
+            statusSelect = document.getElementById('status'),
+            activeStatusValue = @json((string) AnnouncementStatus::ACTIVE->value),
             updateStartDate = function () {
                 startPicker.setStartRange(startDate);
                 endPicker.setStartRange(startDate);
@@ -178,6 +192,19 @@
                 startPicker.setEndRange(endDate);
                 startPicker.setMaxDate(endDate);
                 endPicker.setEndRange(endDate);
+            },
+            syncAnnouncementStatusFilter = function () {
+                if (!recentActiveAnnouncementsCheckbox || !statusSelect) {
+                    return;
+                }
+
+                if (recentActiveAnnouncementsCheckbox.checked) {
+                    statusSelect.value = activeStatusValue;
+                    statusSelect.setAttribute('disabled', 'disabled');
+                    return;
+                }
+
+                statusSelect.removeAttribute('disabled');
             },
             startPicker = new Pikaday({
                 field: document.getElementById('start_date'),
@@ -206,6 +233,12 @@
         if (_endDate) {
             endDate = _endDate;
             updateEndDate();
+        }
+
+        syncAnnouncementStatusFilter();
+
+        if (recentActiveAnnouncementsCheckbox) {
+            recentActiveAnnouncementsCheckbox.addEventListener('change', syncAnnouncementStatusFilter);
         }
     </script>
 @endpush

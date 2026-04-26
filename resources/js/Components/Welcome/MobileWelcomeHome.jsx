@@ -120,7 +120,7 @@ export default function MobileWelcomeHome({
         },
         {
             key: "support",
-            label: t("mobile_support", { ns: "index" }),
+            label: t("technical_support", { ns: "index" }),
             href: supportHref,
             external: true,
             target: "_blank",

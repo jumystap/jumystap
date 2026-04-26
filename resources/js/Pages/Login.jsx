@@ -4,13 +4,15 @@ import { Link, useForm, usePage } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
 import { notification, Input } from 'antd';
 import InputMask from 'react-input-mask';
+import AuthSupportCard from "@/Components/AuthSupportCard";
 import MobileSurface from "@/Components/Mobile/MobileSurface";
 
-export default function Login({ errors }) {
+export default function Login({ errors, redirect }) {
     const { t, i18n } = useTranslation();
     const { data, setData, post, processing, reset } = useForm({
         phone: '',
         password: '',
+        redirect: redirect || '',
     });
     const { props } = usePage();
     const backendErrors = props.errors;
@@ -42,8 +44,8 @@ export default function Login({ errors }) {
     return (
         <>
             <GuestLayout>
-                <div className="grid grid-cols-1 md:grid-cols-7 w-full min-h-[calc(100vh-140px)] gap-4">
-                    <div className="col-span-5 flex">
+                <div className="w-full md:h-screen min-h-[calc(100vh-140px)] grid md:grid-cols-7 grid-cols-1 gap-4 px-0 md:px-[0px]">
+                    <div className="flex md:col-span-5">
                         <MobileSurface className="jt-mobile-auth-card mx-auto my-0 w-full max-w-md md:my-auto md:bg-transparent md:shadow-none md:border-0 md:p-0">
                         <div className="font-bold text-4xl text-center">{t('title', { ns: 'login' })}</div>
                         <form onSubmit={handleSubmit}>
@@ -91,7 +93,7 @@ export default function Login({ errors }) {
                                 </button>
                             </div>
                         </form>
-                        <Link href="/register" className="text-center mt-10 block">
+                        <Link href={redirect ? `/register?redirect=${encodeURIComponent(redirect)}` : '/register'} className="text-center mt-10 block">
                             {t('register_prompt', { ns: 'login' })} <span className="font-bold text-blue-500">{t('register_prompt_span', { ns: 'login' })}</span>
                         </Link>
                         <Link href="/forgot_password" className="text-center mt-3 block">
@@ -99,20 +101,10 @@ export default function Login({ errors }) {
                         </Link>
                         </MobileSurface>
                     </div>
-                    <MobileSurface className='jt-mobile-info-card w-full md:col-span-2 md:h-full md:bg-[#F9FAFC] md:shadow-none'>
-                        <div className='md:absolute md:bottom-5 md:pr-10'>
-                            <div className='text-lg'>
-                                {t('login_issues', { ns: 'login' })}
-                            </div>
-                            <div className='text-sm font-light text-gray-500'>
-                                {t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'login' })}
-                            </div>
-                            <div className='mt-10 text-sm'>
-                                <div>+7 707 221 31 31</div>
-                                <div className='ml-auto'>janamumkindik@gmail.com</div>
-                            </div>
-                        </div>
-                    </MobileSurface>
+                    <AuthSupportCard
+                        title={t('login_issues', { ns: 'faq' })}
+                        description={t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
+                    />
                 </div>
             </GuestLayout>
         </>

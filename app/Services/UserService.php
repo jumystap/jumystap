@@ -32,7 +32,12 @@ class UserService
 
     public function storeUser(array $validatedData)
     {
-        $validatedData['date_of_birth'] = Carbon::parse($validatedData['date_of_birth'])->format('Y-m-d');
+        if(!is_null($validatedData['date_of_birth'])){
+            $dateOfBirth = Carbon::parse($validatedData['date_of_birth']);
+            $validatedData['date_of_birth'] = $dateOfBirth->format('Y-m-d');
+            $validatedData['age'] = $dateOfBirth->age;
+        }
+
         $validatedData['password'] = Hash::make($validatedData['password']);
         $validatedData['role_id']  = DB::table('roles')
             ->where('name', $validatedData['role'])

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
 use App\Helpers\TextHelper;
 use App\Http\Controllers\Controller;
@@ -51,10 +50,10 @@ class HomeController extends Controller
             ->get();
 
         $announcementsByCities = Announcement::select('city', DB::raw('count(*) as total'))
+            ->active()
             ->whereIn('city', ["Алматы", "Астана", "Шымкент", "Актау", "Атырау", "Жезказган", "Караганда", "Косшы",
                                "Костанай", "Кызылорда", "Павлодар", "Петропавловск", "Рудный", "Семей", "Талдыкорган",
                                "Тараз", "Темиртау", "Туркестан", "Уральск", "Усть-Каменогорск", "Щучинск", "Экибастуз"])
-            ->where('status', 1)
             ->groupBy('city')
             ->orderBy('total', 'DESC')
             ->get();
@@ -107,7 +106,12 @@ class HomeController extends Controller
             'registeredTodayCount'  => User::whereNotIn('role_id', $excludedRoles)
                 ->whereDate('created_at', today())
                 ->count(),
-            'announcementsCount'    => Announcement::all()->tap($filterByDate)->count(),
+            'announcementsCount'    => Announcement::query()->active()
+                ->tap($filterByDate)->count(),
+            'activeAnnouncementsCount'    => Announcement::query()
+                ->recentActive()
+                ->tap($filterByDate)
+                ->count(),
             'responsesCount'        => Response::whereNotNull('announcement_id')->tap($filterByDate)->count(),
             'responsesTodayCount'   => Response::whereNotNull('announcement_id')
                 ->whereDate('created_at', today())

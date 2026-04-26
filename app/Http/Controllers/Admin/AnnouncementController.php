@@ -29,28 +29,33 @@ class AnnouncementController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search');
+        $search = array_merge([
+            'city'                        => null,
+            'specialization_category_id' => null,
+            'no_experience'              => null,
+            'with_salary'                => null,
+            'type'                       => null,
+            'company_name'               => null,
+            'title'                      => null,
+            'user_id'                    => null,
+            'status'                     => null,
+            'start_date'                 => null,
+            'end_date'                   => null,
+            'recent_active_announcements' => null,
+        ], $request->get('search', []));
 
-        if (!$search) {
-            $search = [
-                'city'                       => null,
-                'specialization_category_id' => null,
-                'no_experience'              => null,
-                'with_salary'                => null,
-                'type'                       => null,
-                'company_name'               => null,
-                'title'                      => null,
-                'user_id'                    => null,
-                'status'                     => null,
-                'start_date'    => null,
-                'end_date'      => null,
-            ];
+        if (($search['recent_active_announcements'] ?? null) === 'on') {
+            $search['status'] = (string) AnnouncementStatus::ACTIVE->value;
         }
 
         Session::put('announcements_url', request()->fullUrl());
 
         return view('admin.announcements.index')
-            ->with('announcements', Announcement::search($search)->select('announcements.*')->orderBy('announcements.updated_at', 'DESC')->paginate(100)->appends(request()->query()))
+            ->with('announcements', Announcement::search($search)
+                ->select('announcements.*')
+                ->orderBy('announcements.updated_at', 'DESC')
+                ->paginate(100)
+                ->appends(request()->query()))
             ->with('roles', Role::query()->whereIn('id', [Roles::COMPANY->value, Roles::EMPLOYER->value])->get())
             ->with('specializationCategories', SpecializationCategory::all())
             ->with('cities', City::all())

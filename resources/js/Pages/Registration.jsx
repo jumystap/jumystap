@@ -7,9 +7,10 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { FaRegCheckCircle } from "react-icons/fa";
 import InputMask from 'react-input-mask';
+import AuthSupportCard from "@/Components/AuthSupportCard";
 import MobileSurface from "@/Components/Mobile/MobileSurface";
 
-export default function Registration({ errors, professions }) {
+export default function Registration({ errors, professions, redirect }) {
     const { t, i18n } = useTranslation('register');
     const { props } = usePage();
     const backendErrors = props.errors;
@@ -33,6 +34,7 @@ export default function Registration({ errors, professions }) {
         role: '',
         description: ' ',
         source: source,
+        redirect: redirect || '',
     });
     const phones = data.phone;
 
@@ -264,7 +266,7 @@ export default function Registration({ errors, professions }) {
     return (
         <GuestLayout>
             <div className='w-full md:h-screen min-h-[calc(100vh-140px)] grid md:grid-cols-7 grid-cols-1 gap-4 px-0 md:px-[0px]'>
-                <div className='flex col-span-5'>
+                <div className='flex md:col-span-5'>
                     <MobileSurface className='jt-mobile-auth-card mx-auto my-0 w-full max-w-md md:my-auto md:bg-transparent md:shadow-none md:border-0 md:p-0'>
                         {step === 0 && (
                             <>
@@ -478,7 +480,10 @@ export default function Registration({ errors, professions }) {
                         </div>
                     </MobileSurface>
                 </div>
-                <MobileSurface className="jt-mobile-info-card h-full bg-[#F9FAFC] col-span-2 p-5 md:relative md:block hidden md:shadow-none">
+                <AuthSupportCard
+                    title={t('login_issues', { ns: 'faq' })}
+                    description={t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
+                >
                     {[
                         t('user_type_label'),
                         t('upload_avatar_title'),
@@ -487,16 +492,16 @@ export default function Registration({ errors, professions }) {
                     ].map((label, i) => {
                         const isActive = step === i;
                         const isCompleted = i < step;
-                        const isClickable = i <= step; // текущий + пройденные
+                        const isClickable = i <= step;
 
                         return (
                             <div
                                 key={i}
                                 onClick={() => isClickable && setStep(i)}
                                 className={`
-          flex items-center gap-x-3 mt-7 transition-all duration-200
-          ${isClickable ? 'cursor-pointer hover:bg-gray-100 -mx-3 px-3 py-2 rounded-lg' : 'cursor-not-allowed opacity-60'}
-        `}
+              flex items-center gap-x-3 mt-7 transition-all duration-200
+              ${isClickable ? 'cursor-pointer hover:bg-gray-100 -mx-3 px-3 py-2 rounded-lg' : 'cursor-not-allowed opacity-60'}
+            `}
                             >
                                 <FaRegCheckCircle
                                     className={`text-2xl flex-shrink-0 transition-colors ${
@@ -518,7 +523,7 @@ export default function Registration({ errors, professions }) {
                             </div>
                         );
                     })}
-                </MobileSurface>
+                </AuthSupportCard>
             </div>
         </GuestLayout>
     );

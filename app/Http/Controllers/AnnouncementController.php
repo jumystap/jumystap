@@ -55,7 +55,22 @@ class AnnouncementController extends Controller
         ];
 
         $announcements      = $this->announcementService->getAllActiveAnnouncements($filters)->withQueryString();
-        $specializationCategories    = SpecializationCategory::with('specialization')->get();
+
+        $activeSpecializationIds = Announcement::query()
+            ->recentActive()
+            ->whereNotNull('specialization_id')
+            ->pluck('specialization_id')
+            ->unique()
+            ->toArray();
+
+        $specializationCategories = SpecializationCategory::with(['specialization' => function ($query) use ($activeSpecializationIds) {
+            $query->whereIn('id', $activeSpecializationIds);
+        }])
+        ->whereHas('specialization', function ($query) use ($activeSpecializationIds) {
+            $query->whereIn('id', $activeSpecializationIds);
+        })
+        ->get();
+
         $specializationCategoriesData = [];
         foreach ($specializationCategories as $key => $category) {
             $specializationCategoriesData[$key] = [
@@ -76,7 +91,16 @@ class AnnouncementController extends Controller
             'announcements'      => $announcements,
             'specializationCategories'    => $specializationCategories,
             'specializationCategoriesData' => $specializationCategoriesData,
-            'cities'             => City::query()->orderBy('order_id')->pluck('title'),
+            'cities'             => City::query()
+                ->orderBy('order_id')
+                ->whereIn('title', Announcement::query()
+                    ->recentActive()
+                    ->whereNotNull('city')
+                    ->where('city', '!=', '')
+                    ->pluck('city')
+                    ->unique()
+                    ->toArray())
+                ->pluck('title'),
         ]);
     }
 
@@ -413,4 +437,3 @@ class AnnouncementController extends Controller
         return redirect()->away($whatsappUrl);
     }
 }
-

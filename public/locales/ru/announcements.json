@@ -1,4 +1,6 @@
 {
+    "back_to_announcements": "Назад к вакансиям",
+    "updated_at_label": "Обновлено",
     "choose": "Выберите подходящую вакансию или заказ",
     "annonce_type": "Тип",
     "annonce_type_default": "Любое",

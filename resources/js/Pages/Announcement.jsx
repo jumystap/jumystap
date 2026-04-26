@@ -13,12 +13,61 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import { notification } from 'antd';
 import ShareButtons from "@/Components/ShareButtons";
+import { formatDistanceToNow } from "date-fns";
+import { ru } from "date-fns/locale";
 
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation('announcements');
+
+    const kz = {
+        ...ru,
+        formatDistance: (token, count, options) => {
+            const formatDistanceLocale = {
+                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
+                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
+                halfAMinute: 'жарты минут',
+                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
+                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
+                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
+                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
+                xDays: { one: 'Бір күн', other: '{{count}} күн' },
+                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
+                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
+                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
+                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
+                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
+                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
+                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
+                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
+            };
+            const result = formatDistanceLocale[token];
+            if (typeof result === 'string') return result;
+            const form = count === 1 ? result.one : result.other.replace('{{count}}', count);
+            if (options?.addSuffix) {
+                return options.comparison > 0 ? form + ' кейін' : form + ' бұрын';
+            }
+            return form;
+        }
+    };
+
+    const updatedAt = announcement?.updated_at || announcement?.published_at || announcement?.created_at;
+    const updatedAtLabel = updatedAt
+        ? `${t('updated_at_label')} ${formatDistanceToNow(new Date(updatedAt), {
+            locale: i18n.language === 'ru' ? ru : kz,
+            addSuffix: true,
+        })}`
+        : null;
+
     const [ws, setWs] = useState(null);
     const [isResponse, setIsResponse] = useState(false)
     const { post, delete: destroy } = useForm();
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('connect') === 'true' && auth.user) {
+            window.location.href = `/connect/${auth.user.id}/${announcement.id}`;
+        }
+    }, []);
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
     const userId = null
@@ -132,8 +181,22 @@ export default function Announcement({ auth, announcement, more_announcement, ur
             </Head>
             <GuestLayout>
                 <div className='grid grid-cols-1 md:grid-cols-9'>
-                    <div className="md:col-span-6 pt-5">
-                        <div className='md:mb-5 mb-2 px-5'>
+                    <div className="md:col-span-6">
+                        <div className="border-b border-gray-200 px-4 md:px-6 py-4">
+                            <div className="flex items-center justify-between gap-3 text-sm">
+                                <Link
+                                    href="/announcements"
+                                    className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
+                                >
+                                    <span>←</span>
+                                    {t('back_to_announcements')}
+                                </Link>
+                                {updatedAtLabel && (
+                                    <span className="text-xs text-gray-500 font-medium">{updatedAtLabel}</span>
+                                )}
+                            </div>
+                        </div>
+                        <div className='md:mb-5 mb-2 mt-3 px-5'>
                             <div className='p-5 rounded-lg border border-gray-200'>
                             <div className=''>
                                 <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
@@ -204,7 +267,8 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                         )}
                                     </>
                                 ) : (
-                                    <Link href='/login'
+                                    <Link
+                                        href={`/login?redirect=${encodeURIComponent(`/announcement/${announcement.id}?connect=true`)}`}
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
                                     </Link>

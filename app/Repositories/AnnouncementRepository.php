@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\AnnouncementStatus;
 use App\Models\Announcement;
 use App\Models\Specialization;
 use App\Models\Favorite;
@@ -10,16 +9,15 @@ use App\Models\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class AnnouncementRepository
 {
     public function getAllActiveAnnouncements(array $filters = null)
     {
-        $query = Announcement::orderBy('published_at', 'desc')
-            ->with('user')
-            ->where('updated_at', '>=', Carbon::now()->subMonths(6))
-            ->where("status", AnnouncementStatus::ACTIVE->value);
+        $query = Announcement::query()
+            ->recentActive()
+            ->orderBy('published_at', 'desc')
+            ->with('user');
 
         if (!empty($filters['searchKeyword'])) {
             $keyword = $filters['searchKeyword'];
@@ -73,20 +71,22 @@ class AnnouncementRepository
 
     public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)
     {
-        $query = Announcement::orderBy('published_at', 'desc')
+        $query = Announcement::query()
+            ->active()
+            ->orderBy('published_at', 'desc')
             ->with('user')
             ->where('id', '!=', $id)
-            ->where('specialization_id', $specializationId)
-            ->where("status", AnnouncementStatus::ACTIVE->value);
+            ->where('specialization_id', $specializationId);
 
         return $query->limit(6)->get();
     }
 
     public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
     {
-        return Announcement::query()->orderBy('published_at', 'desc')
+        return Announcement::query()
+            ->active()
+            ->orderBy('published_at', 'desc')
             ->with('user')
-            ->where("status", AnnouncementStatus::ACTIVE->value)
             ->whereIn('id', $ids)
             ->paginate(10);
     }
@@ -135,4 +135,3 @@ class AnnouncementRepository
             ->exists();
     }
 }
-

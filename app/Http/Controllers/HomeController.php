@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\AnnouncementStatus;
 use App\Models\Announcement;
 use App\Models\Profession\Profession;
 use App\Models\Resume;
@@ -71,8 +70,9 @@ class HomeController extends Controller
                     ->whereIn("category_id", $specializationCategories)
                     ->pluck("id");
 
-                $matchedBySpecialization = Announcement::whereIn("specialization_id", $resumeSpecializations)
-                    ->where("status", AnnouncementStatus::ACTIVE->value)
+                $matchedBySpecialization = Announcement::query()
+                    ->active()
+                    ->whereIn("specialization_id", $resumeSpecializations)
                     ->when($searchKeyword, function ($query, $keyword) {
                         $query->where(function ($q) use ($keyword) {
                             $q->where("title", "like", "%{$keyword}%")
@@ -82,8 +82,9 @@ class HomeController extends Controller
                     ->orderBy("created_at", "desc")
                     ->get();
 
-                $matchedByCategory = Announcement::whereIn("specialization_id", $relatedSpecializationIds)
-                    ->where("status", AnnouncementStatus::ACTIVE->value)
+                $matchedByCategory = Announcement::query()
+                    ->active()
+                    ->whereIn("specialization_id", $relatedSpecializationIds)
                     ->whereNotIn("id", $matchedBySpecialization->pluck("id"))
                     ->when($searchKeyword, function ($query, $keyword) {
                         $query->where(function ($q) use ($keyword) {
@@ -94,7 +95,8 @@ class HomeController extends Controller
                     ->orderBy("created_at", "desc")
                     ->get();
 
-                $otherAnnouncements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
+                $otherAnnouncements = Announcement::query()
+                    ->active()
                     ->whereNotIn("id", $matchedBySpecialization->pluck("id")->merge($matchedByCategory->pluck("id")))
                     ->when($searchKeyword, function ($query, $keyword) {
                         $query->where(function ($q) use ($keyword) {
@@ -124,7 +126,8 @@ class HomeController extends Controller
 
         // Гости и пользователи без резюме
         if (empty($announcements)) {
-            $announcements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
+            $announcements = Announcement::query()
+                ->active()
                 ->when($searchKeyword, function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where("title", "like", "%{$keyword}%")
@@ -137,13 +140,15 @@ class HomeController extends Controller
         }
 
         // Доп. объявления
-        $urgent_announcements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
+        $urgent_announcements = Announcement::query()
+            ->active()
             ->where("is_urgent", 1)
             ->inRandomOrder()
             ->take(3)
             ->get();
 
-        $top_announcements = Announcement::where("status", AnnouncementStatus::ACTIVE->value)
+        $top_announcements = Announcement::query()
+            ->active()
             ->where("is_top", 1)
             ->whereNotIn("id", $urgent_announcements->pluck("id"))
             ->inRandomOrder()

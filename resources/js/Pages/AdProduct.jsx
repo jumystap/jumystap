@@ -1,6 +1,6 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import {useTranslation} from 'react-i18next';
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Link, Head} from "@inertiajs/react";
 import {FaInstagram, FaWhatsapp, FaGlobe, FaMapMarkerAlt} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
@@ -27,6 +27,13 @@ export default function Ad({auth, ad, category}) {
 
     const cityTitle = ad?.city?.title || ad?.city || '';
     const locationLabel = [cityTitle, ad?.address].filter(Boolean).join(', ');
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('connect') === 'true' && auth.user) {
+            window.location.href = `/ad/connect/${ad.id}`;
+        }
+    }, []);
 
     // Открытие лайтбокса
     const openLightbox = (index) => {
@@ -137,7 +144,7 @@ export default function Ad({auth, ad, category}) {
                                     </div>
 
                                     <a
-                                        href={auth.user ? `/ad/connect/${ad.id}` : "/login"}
+                                        href={auth.user ? `/ad/connect/${ad.id}` : `/login?redirect=${encodeURIComponent(`/ad/${ad.id}?connect=true`)}`}
                                         className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
                                     >
                                         {t('contact_whatsapp', {ns: 'ads'})}

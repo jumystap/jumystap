@@ -2,7 +2,6 @@
 @php
     use App\Helpers\TextHelper;
     use App\Enums\Roles;
-    use App\Enums\AnnouncementStatus;
     $title = 'Главная';
 @endphp
 @section('content')
@@ -105,7 +104,9 @@
                                     <a href="{{ route('admin.announcements.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
-                                                <small>Количество активных вакансий</small>
+                                                <small>Количество активных вакансий за  посл. 6 мес.</small>
+                                                <h3>{{ TextHelper::numberFormat($data['activeAnnouncementsCount']) }}</h3>
+                                                <small>Количество вакансий со статусом активный</small>
                                                 <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
                                             </div>
                                             <div class="icon">

@@ -16,7 +16,7 @@ import {IoSchoolOutline} from "react-icons/io5";
 import {Button, Dropdown, Space} from "antd";
 import {HiOutlineDotsCircleHorizontal} from "react-icons/hi";
 
-import {FaInstagram, FaYoutube, FaTelegram} from "react-icons/fa";
+import {FaInstagram, FaYoutube, FaTelegram, FaWhatsapp} from "react-icons/fa";
 import MobileHeader from "@/Components/Welcome/MobileHeader";
 import MobileBottomNav from "@/Components/Welcome/MobileBottomNav";
 
@@ -285,9 +285,13 @@ export default function Guest({
                             <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer"
                                className="flex justify-start">
                                 <FaTelegram className="text-xl"/> <span
-                                className="ml-1">Получайте вакансии в Telegram!</span>
+                                className="ml-1">{t("telegram_vacancy", { ns: "index" })}</span>
                             </a>
-                            <a href="tel:+77072213131" className="block hover:underline">+7 707 221 31 31</a>
+                            <a href="https://api.whatsapp.com/send?phone=+77072213131&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%20%D0%BF%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20JUMYSTAP" target="_blank" rel="noopener noreferrer"
+                               className="flex justify-start">
+                                <FaWhatsapp className="text-xl"/> <span
+                                className="ml-1">{t("technical_support", { ns: "index" })}</span>
+                            </a>
                             <a href="https://www.instagram.com/joltap.kz/" target="_blank" rel="noopener noreferrer"
                                className="flex justify-start">
                                 <FaInstagram className="text-xl"/> <span className="ml-1">Instagram JOLTAP</span>

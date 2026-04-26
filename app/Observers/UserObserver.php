@@ -22,7 +22,7 @@ class UserObserver
     {
         if($user->isDirty('is_blocked')){
             $user->announcement()
-                ->where('status', AnnouncementStatus::ACTIVE->value)
+                ->active()
                 ->update(['status' => AnnouncementStatus::ARCHIVED->value]);
         }
     }

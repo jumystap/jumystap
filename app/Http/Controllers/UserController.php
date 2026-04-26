@@ -49,7 +49,9 @@ class UserController extends Controller
         if (Auth::check()) {
             return redirect('/');
         }
-        return Inertia::render('Login');
+        return Inertia::render('Login', [
+            'redirect' => request()->input('redirect'),
+        ]);
     }
 
     public function auth(Request $request): SymfonyRedirectResponse
@@ -70,6 +72,10 @@ class UserController extends Controller
                     ])
                     ->withInput();
             }else{
+                $redirectTo = $request->input('redirect');
+                if ($redirectTo && str_starts_with($redirectTo, '/')) {
+                    return redirect($redirectTo);
+                }
                 return redirect()->back();
             }
         } else {
@@ -88,6 +94,7 @@ class UserController extends Controller
 
         return Inertia::render('Registration', [
             'professions' => $professions,
+            'redirect'    => request()->input('redirect'),
         ]);
     }
 
@@ -125,6 +132,10 @@ class UserController extends Controller
             $user = $this->userService->storeUser($validated);
             Auth::login($user);
 
+            $redirectTo = $request->input('redirect');
+            if ($redirectTo && str_starts_with($redirectTo, '/')) {
+                return redirect($redirectTo);
+            }
             return redirect('/profile');
         } catch (\Exception $e) {
             Log::error('Error creating user', ['exception' => $e]);

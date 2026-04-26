@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AuthSupportCard from "@/Components/AuthSupportCard";
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import MobileSurface from "@/Components/Mobile/MobileSurface";
 
@@ -162,18 +163,11 @@ export default function FAQ() {
                         ))}
                     </MobileSurface>
                 </div>
-                <div className='h-screen sticky md:block hidden top-0 border-l border-gray-200 pt-10 col-span-2 p-5'>
-                    <div className='pr-10'>
-                        <div className='text-lg'>{t('login_issues', { ns: 'faq' })}</div>
-                        <div className='text-sm font-light text-gray-500'>
-                            {t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
-                        </div>
-                        <div className='mt-10 text-sm'>
-                            <a href="tel:+77072213131" className="hover:underline">+7 707 221 31 31</a>
-                            <div className='mt-3'>janamumkindik@gmail.com</div>
-                        </div>
-                    </div>
-                </div>
+                <AuthSupportCard
+                    className="hidden md:block md:sticky md:top-0 md:h-screen md:pt-10"
+                    title={t('login_issues', { ns: 'faq' })}
+                    description={t('if_you_experience_difficulties_you_can_contact_us_using_these_details', { ns: 'faq' })}
+                />
             </div>
         </GuestLayout>
     );

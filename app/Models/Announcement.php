@@ -16,6 +16,8 @@ class Announcement extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const RECENT_ACTIVE_MONTHS = 6;
+
     protected $table = 'announcements';
 
     /**
@@ -100,6 +102,20 @@ class Announcement extends Model
         return $this->belongsTo(Specialization::class);
     }
 
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where($query->qualifyColumn('status'), AnnouncementStatus::ACTIVE->value);
+    }
+
+    public function scopeRecentActive(Builder $query): Builder
+    {
+        return $query->active()
+            ->where(
+                $query->qualifyColumn('updated_at'),
+                '>=',
+                Carbon::now()->subMonths(self::RECENT_ACTIVE_MONTHS)
+            );
+    }
 
     public static function search(array $attributes): Builder
     {
@@ -135,6 +151,10 @@ class Announcement extends Model
 
         if (array_key_exists('status', $attributes) && strlen($attributes['status'])) {
             $query->where('announcements.status', $attributes['status']);
+        }
+
+        if (array_key_exists('recent_active_announcements', $attributes) && $attributes['recent_active_announcements'] === 'on') {
+            $query->recentActive();
         }
 
         if (array_key_exists('with_salary', $attributes) && $attributes['with_salary'] == 'on') {
