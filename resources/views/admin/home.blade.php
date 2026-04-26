@@ -106,7 +106,7 @@
                                             <div class="inner">
                                                 <small>Количество активных вакансий за  посл. 6 мес.</small>
                                                 <h3>{{ TextHelper::numberFormat($data['activeAnnouncementsCount']) }}</h3>
-                                                <small>Количество вакансий со статусом активный</small>
+                                                <small>Количество вакансий</small>
                                                 <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
                                             </div>
                                             <div class="icon">
