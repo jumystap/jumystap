@@ -51,6 +51,7 @@ class AnnouncementController extends Controller
             'minSalary'                => $request->input('minSalary'),
             'isSalary'                 => $request->input('isSalary'),
             'noExperience'             => $request->input('noExperience'),
+            'paymentType'              => $request->input('paymentType'),
             'publicTime'               => $request->input('publicTime'),
         ];
 
@@ -59,8 +60,8 @@ class AnnouncementController extends Controller
         $activeSpecializationIds = Announcement::query()
             ->recentActive()
             ->whereNotNull('specialization_id')
+            ->distinct()
             ->pluck('specialization_id')
-            ->unique()
             ->toArray();
 
         $specializationCategories = SpecializationCategory::with(['specialization' => function ($query) use ($activeSpecializationIds) {
@@ -97,8 +98,8 @@ class AnnouncementController extends Controller
                     ->recentActive()
                     ->whereNotNull('city')
                     ->where('city', '!=', '')
+                    ->distinct()
                     ->pluck('city')
-                    ->unique()
                     ->toArray())
                 ->pluck('title'),
         ]);
@@ -115,8 +116,8 @@ class AnnouncementController extends Controller
             $announcement->status->value === AnnouncementStatus::ACTIVE->value ||
             (Auth::check() && Auth::user()->role_id === Roles::ADMIN->value)
         ) {
-            $top_announcement    = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'top')->first();
-            $urgent_announcement = $this->announcementService->getAllActiveAnnouncements()->where('payment_status', 'urgent')->first();
+            $top_announcement    = $this->announcementService->getFeaturedActiveAnnouncement('top', $announcement->id);
+            $urgent_announcement = $this->announcementService->getFeaturedActiveAnnouncement('urgent', $announcement->id);
             $more_announcement   = $this->announcementService->getAllActiveAnnouncementsWithout($announcement->id, $announcement->specialization_id);
 
             return Inertia::render('Announcement', [

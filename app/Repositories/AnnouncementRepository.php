@@ -8,7 +8,6 @@ use App\Models\Favorite;
 use App\Models\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class AnnouncementRepository
 {
@@ -16,8 +15,20 @@ class AnnouncementRepository
     {
         $query = Announcement::query()
             ->recentActive()
-            ->orderBy('published_at', 'desc')
-            ->with('user');
+            ->select([
+                'id',
+                'title',
+                'city',
+                'salary_type',
+                'cost',
+                'cost_min',
+                'cost_max',
+                'experience',
+                'work_time',
+                'updated_at',
+                'published_at',
+            ])
+            ->orderBy('published_at', 'desc');
 
         if (!empty($filters['searchKeyword'])) {
             $keyword = $filters['searchKeyword'];
@@ -69,12 +80,43 @@ class AnnouncementRepository
         return $query->paginate(10);
     }
 
+    public function getFeaturedActiveAnnouncement(string $paymentStatus, ?int $excludeId = null): ?Announcement
+    {
+        return Announcement::query()
+            ->recentActive()
+            ->select([
+                'id',
+                'title',
+                'description',
+                'salary_type',
+                'cost',
+                'cost_min',
+                'cost_max',
+                'payment_status',
+                'published_at',
+            ])
+            ->where('payment_status', $paymentStatus)
+            ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
+            ->orderByDesc('published_at')
+            ->first();
+    }
+
     public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)
     {
         $query = Announcement::query()
             ->active()
+            ->select([
+                'id',
+                'title',
+                'city',
+                'salary_type',
+                'cost',
+                'cost_min',
+                'cost_max',
+                'work_time',
+                'published_at',
+            ])
             ->orderBy('published_at', 'desc')
-            ->with('user')
             ->where('id', '!=', $id)
             ->where('specialization_id', $specializationId);
 
@@ -94,17 +136,22 @@ class AnnouncementRepository
 
     public function getAnnouncementById($id): ?Announcement
     {
-        $announcement = Announcement::where('id', $id)->with('user.announcement', 'address', 'conditions', 'requirements', 'responsibilities')->first();
+        $announcement = Announcement::query()
+            ->where('id', $id)
+            ->with([
+                'user:id,name,description',
+                'specialization:id,name_ru,name_kz',
+                'address:id,announcement_id,adress',
+                'conditions:id,announcement_id,condition',
+                'requirements:id,announcement_id,requirement',
+                'responsibilities:id,announcement_id,responsibility',
+            ])
+            ->withCount('responses')
+            ->first();
 
         if ($announcement) {
-            $is_favorite                  = Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->exists();
+            $is_favorite                  = Auth::check() && Favorite::where('user_id', Auth::id())->where('announcement_id', $announcement->id)->exists();
             $announcement->is_favorite    = $is_favorite;
-            $announcement->specialization = Specialization::find($announcement->specialization_id);
-
-            $announcement->responses_count = Response::where('announcement_id', $announcement->id)->count();
-            $announcement->visits_count    = DB::table('visits')
-                ->where('url', "https://jumystap.kz/announcement/{$announcement->id}")
-                ->count();
         }
 
         return $announcement;

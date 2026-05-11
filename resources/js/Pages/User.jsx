@@ -99,9 +99,6 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                         <h1 className="text-2xl font-bold text-gray-900 mb-1">
                                             {user.name}
                                         </h1>
-                                        <p className="text-gray-500 mb-3">
-                                            @{user.email.split('@')[0]}
-                                        </p>
                                         {userProfessions.length > 0 && (
                                             <>
                                                 {userProfessions.map((profession, index) => (

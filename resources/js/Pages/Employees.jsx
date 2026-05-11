@@ -252,10 +252,6 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             )}
                                         </div>
 
-                                        <div className="text-gray-500">
-                                            @{employee.email.split('@')[0]}
-                                        </div>
-
                                         {employee.professions.length > 0 && (
                                             <div className="mt-2 text-sm text-gray-600">
                                                 {employee.professions.map((profession, index) => (

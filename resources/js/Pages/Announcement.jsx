@@ -7,11 +7,9 @@ import { FaStar } from "react-icons/fa";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { useForm } from '@inertiajs/react';
 import { HiOutlineUserGroup } from "react-icons/hi2";
-import { MdOutlineRemoveRedEye, MdOutlineWorkOutline, MdAccessTime } from "react-icons/md";
-import { useInternalMessage } from "antd/es/message/useMessage";
+import { MdAccessTime } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
-import { notification } from 'antd';
 import ShareButtons from "@/Components/ShareButtons";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -58,8 +56,6 @@ export default function Announcement({ auth, announcement, more_announcement, ur
         })}`
         : null;
 
-    const [ws, setWs] = useState(null);
-    const [isResponse, setIsResponse] = useState(false)
     const { post, delete: destroy } = useForm();
 
     useEffect(() => {
@@ -70,63 +66,10 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     }, []);
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
-    const userId = null
-    if(auth.user) {
-        const userId = auth.user.id
-    }
     const toggleShowFullText = () => setShowFullText(!showFullText);
-        useEffect(() => {
-        const socket = new WebSocket(`wss://api.jumystap.kz/api/v1/ws?user_id=${auth?.user?.id}`);
-
-        socket.onopen = () => {
-            console.log('WebSocket is open now.');
-        };
-
-        socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-        };
-
-        socket.onclose = () => {
-            console.log('WebSocket is closed now.');
-        };
-
-        setWs(socket);
-
-        return () => {
-            socket.close();
-        };
-    }, []);
-
-    const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        const message = {
-            sender_id: auth.user.id,
-            receiver_id: announcement.user.id,
-            content: `/user/${auth.user.id}`,
-            created_at: new Date().toISOString()
-        };
-        try {
-            ws.send(JSON.stringify(message));
-            notification.success({
-                message: t('success'),
-                description: t('response_sent'),
-                placement: 'topRight',
-                duration: 3
-            });
-            setIsResponse(true);
-        } catch (error) {
-            console.error("WebSocket send error:", error);
-        }
-    } else {
-        console.error("WebSocket is not open. Ready state:", ws.readyState);
-    }
-};
-
-
     const maxLength = 90;
-    const isLongText = announcement.user.description.length > maxLength;
-    const displayedText = showFullText ? announcement.user.description : `${announcement.user.description.slice(0, maxLength)}`;
+    const userDescription = announcement?.user?.description || "";
+    const isLongText = userDescription.length > maxLength;
 
     const handleFavoriteClick = () => {
         if (isFavorite) {
@@ -157,11 +100,6 @@ export default function Announcement({ auth, announcement, more_announcement, ur
             alert(`Share this link: ${url}`);
         }
     };
-
-    const vacancyCount = announcement.user.announcement.filter(anonce => anonce && announcement.type_ru === 'Вакансия').length;
-    const orderCount = announcement.user.announcement.filter(anonce => anonce && announcement.type_ru === t('order')).length;
-    console.log(announcement.user.announcement)
-
 
     let salary = t('negotiable');
     if (announcement.salary_type === 'exact') {
@@ -298,7 +236,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='md:hidden mt-5 px-5 py-4 rounded-lg border border-gray-200'>
                                 <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
                                 <div className='text-left mt-2 font-light text-gray-500'>
-                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                    {showFullText ? userDescription : userDescription.slice(0, maxLength)}
                                     {isLongText && (
                                         <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
                                             {showFullText ? t('hide') :  t('more_details')}
@@ -487,7 +425,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='px-5 py-4 border-b border-t border-gray-200'>
                                 <div className='text-left font-regular text-xl'>{announcement.user.name}</div>
                                 <div className='text-left mt-2 font-light text-gray-500'>
-                                    {showFullText ? (announcement?.user?.description || "") : (announcement?.user?.description ? announcement.user.description.slice(0, maxLength) : "")}
+                                    {showFullText ? userDescription : userDescription.slice(0, maxLength)}
                                     {isLongText && (
                                         <span onClick={toggleShowFullText} className="text-blue-500 cursor-pointer">
                                             {showFullText ? t('hide') : t('more_details')}
@@ -527,41 +465,41 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='uppercase text-white text-xs px-2 bg-red-600 font-bold rounded'>{t('urgent')}</div>
                                     <div className='flex items-center font-bold gap-x-2 text-sm ml-auto'>
                                         <SiFireship className='text-red-600 text-lg' />
-                                        {announcement.salary_type === "exact" &&
-                                            announcement.cost &&
-                                            `${announcement.cost.toLocaleString()} ₸ `}
-                                        {announcement?.salary_type === "min" && announcement.cost_min &&
-                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸" : announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                        {urgent_announcement.salary_type === "exact" &&
+                                            urgent_announcement.cost &&
+                                            `${urgent_announcement.cost.toLocaleString()} ₸ `}
+                                        {urgent_announcement?.salary_type === "min" && urgent_announcement.cost_min &&
+                                            `${i18n?.language === "ru" ? "от " + urgent_announcement.cost_min.toLocaleString() + " ₸" : urgent_announcement.cost_min.toLocaleString() + " ₸ бастап"}`
                                         }
-                                        {announcement.salary_type === "max" && announcement.cost_max &&
-                                            `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸" : announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        {urgent_announcement.salary_type === "max" && urgent_announcement.cost_max &&
+                                            `${i18n?.language === "ru" ? "до " + urgent_announcement.cost_max.toLocaleString() + " ₸" : urgent_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                         }
-                                        {announcement.salary_type === "diapason" &&
-                                            announcement.cost_min &&
-                                            announcement.cost_max &&
-                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸" :
-                                                announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        {urgent_announcement.salary_type === "diapason" &&
+                                            urgent_announcement.cost_min &&
+                                            urgent_announcement.cost_max &&
+                                            `${i18n?.language === "ru" ? "от " + urgent_announcement.cost_min.toLocaleString() + " ₸ до " + urgent_announcement.cost_max.toLocaleString() + " ₸" :
+                                                urgent_announcement.cost_min.toLocaleString() + " ₸ бастап " + urgent_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                         }
-                                        {announcement.salary_type === "undefined" && t("negotiable", { ns: "index" })}
-                                        {announcement.salary_type === "za_smenu" && (
+                                        {urgent_announcement.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                        {urgent_announcement.salary_type === "za_smenu" && (
                                             <>
-                                                {announcement.cost &&
-                                                    `${announcement.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                {urgent_announcement.cost &&
+                                                    `${urgent_announcement.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
                                                 }
-                                                {announcement.cost_min &&
-                                                    !announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                {urgent_announcement.cost_min &&
+                                                    !urgent_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + urgent_announcement.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + urgent_announcement.cost_min.toLocaleString() + " ₸ бастап"}`
                                                 }
-                                                {!announcement.cost_min &&
-                                                    announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                {!urgent_announcement.cost_min &&
+                                                    urgent_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "до " + urgent_announcement.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + urgent_announcement.cost_max.toLocaleString() + " ₸ / дейін"}`
                                                 }
-                                                {announcement.cost_min &&
-                                                    announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                {urgent_announcement.cost_min &&
+                                                    urgent_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + urgent_announcement.cost_min.toLocaleString() + " ₸ до " + urgent_announcement.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                        t("per_shift", { ns: "index" }) + " " + urgent_announcement.cost_min.toLocaleString() + " ₸ бастап " + urgent_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                                 }
                                             </>
                                         )}
@@ -583,41 +521,41 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='uppercase text-white text-xs px-2 bg-blue-500 font-bold rounded'>{t('top')}</div>
                                     <div className='flex gap-x-2 items-center font-bold text-sm ml-auto'>
                                         <FaStar className='text-blue-500 text-lg'/>
-                                        {announcement.salary_type === "exact" &&
-                                            announcement.cost &&
-                                            `${announcement.cost.toLocaleString()} ₸ `}
-                                        {announcement?.salary_type === "min" && announcement.cost_min &&
-                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸" : announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                        {top_announcement.salary_type === "exact" &&
+                                            top_announcement.cost &&
+                                            `${top_announcement.cost.toLocaleString()} ₸ `}
+                                        {top_announcement?.salary_type === "min" && top_announcement.cost_min &&
+                                            `${i18n?.language === "ru" ? "от " + top_announcement.cost_min.toLocaleString() + " ₸" : top_announcement.cost_min.toLocaleString() + " ₸ бастап"}`
                                         }
-                                        {announcement.salary_type === "max" && announcement.cost_max &&
-                                            `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸" : announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        {top_announcement.salary_type === "max" && top_announcement.cost_max &&
+                                            `${i18n?.language === "ru" ? "до " + top_announcement.cost_max.toLocaleString() + " ₸" : top_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                         }
-                                        {announcement.salary_type === "diapason" &&
-                                            announcement.cost_min &&
-                                            announcement.cost_max &&
-                                            `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸" :
-                                                announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                        {top_announcement.salary_type === "diapason" &&
+                                            top_announcement.cost_min &&
+                                            top_announcement.cost_max &&
+                                            `${i18n?.language === "ru" ? "от " + top_announcement.cost_min.toLocaleString() + " ₸ до " + top_announcement.cost_max.toLocaleString() + " ₸" :
+                                                top_announcement.cost_min.toLocaleString() + " ₸ бастап " + top_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                         }
-                                        {announcement.salary_type === "undefined" && t("negotiable", { ns: "index" })}
-                                        {announcement.salary_type === "za_smenu" && (
+                                        {top_announcement.salary_type === "undefined" && t("negotiable", { ns: "index" })}
+                                        {top_announcement.salary_type === "za_smenu" && (
                                             <>
-                                                {announcement.cost &&
-                                                    `${announcement.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
+                                                {top_announcement.cost &&
+                                                    `${top_announcement.cost.toLocaleString()} ₸ / ` + t("per_shift", { ns: "index" })
                                                 }
-                                                {announcement.cost_min &&
-                                                    !announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап"}`
+                                                {top_announcement.cost_min &&
+                                                    !top_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + top_announcement.cost_min.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + top_announcement.cost_min.toLocaleString() + " ₸ бастап"}`
                                                 }
-                                                {!announcement.cost_min &&
-                                                    announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "до " + announcement.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_max.toLocaleString() + " ₸ / дейін"}`
+                                                {!top_announcement.cost_min &&
+                                                    top_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "до " + top_announcement.cost_max.toLocaleString() + " ₸ / " + t("per_shift", { ns: "index" }) :
+                                                        t("per_shift", { ns: "index" }) + " " + top_announcement.cost_max.toLocaleString() + " ₸ / дейін"}`
                                                 }
-                                                {announcement.cost_min &&
-                                                    announcement.cost_max &&
-                                                    `${i18n?.language === "ru" ? "от " + announcement.cost_min.toLocaleString() + " ₸ до " + announcement.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
-                                                        t("per_shift", { ns: "index" }) + " " + announcement.cost_min.toLocaleString() + " ₸ бастап " + announcement.cost_max.toLocaleString() + " ₸ дейін"}`
+                                                {top_announcement.cost_min &&
+                                                    top_announcement.cost_max &&
+                                                    `${i18n?.language === "ru" ? "от " + top_announcement.cost_min.toLocaleString() + " ₸ до " + top_announcement.cost_max.toLocaleString() + " ₸ " + t("per_shift", { ns: "index" }):
+                                                        t("per_shift", { ns: "index" }) + " " + top_announcement.cost_min.toLocaleString() + " ₸ бастап " + top_announcement.cost_max.toLocaleString() + " ₸ дейін"}`
                                                 }
                                             </>
                                         )}

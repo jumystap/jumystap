@@ -25,6 +25,11 @@ class AnnouncementService
         return $this->announcementRepository->getAllActiveAnnouncementsWithout($id, $specializationId);
     }
 
+    public function getFeaturedActiveAnnouncement(string $paymentStatus, ?int $excludeId = null): ?Announcement
+    {
+        return $this->announcementRepository->getFeaturedActiveAnnouncement($paymentStatus, $excludeId);
+    }
+
     public function getAllActiveAnnouncementsByIds(array $ids): LengthAwarePaginator
     {
         return $this->announcementRepository->getAllActiveAnnouncementsByIds($ids);
@@ -50,4 +55,3 @@ class AnnouncementService
         return $this->announcementRepository->deleteAnnouncement($id);
     }
 }
-

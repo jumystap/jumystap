@@ -15,17 +15,26 @@ class TrackVisits
         $userId = Auth::check() ? Auth::id() : null;
         $agent = new Agent();
         $deviceType = $agent->isMobile() ? 'mobile' : 'desktop';
+        $url = $request->fullUrl();
+        $ip = $request->ip();
 
-        Visit::create([
-            'user_id' => $userId,
-            'url' => $request->fullUrl(),
-            'ip_address' => $request->ip(),
-            'device_type' => $deviceType,
-        ]);
+        $response = $next($request);
+
+        app()->terminating(function () use ($userId, $url, $ip, $deviceType) {
+            try {
+                Visit::create([
+                    'user_id' => $userId,
+                    'url' => $url,
+                    'ip_address' => $ip,
+                    'device_type' => $deviceType,
+                ]);
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        });
 
 //        TrackVisitJob::dispatch($user, $request->fullUrl(), $request->ip(), $deviceType);
 
-        return $next($request);
+        return $response;
     }
 }
-
