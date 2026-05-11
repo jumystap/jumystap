@@ -218,7 +218,9 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 />
                                 <div
                                     onClick={() => setIsFilterOpen(true)}
-                                    className='absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-blue-500 md:hidden cursor-pointer'
+                                    className='absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg p-0 text-2xl leading-none text-blue-500 md:hidden cursor-pointer'
+                                    role="button"
+                                    aria-label="Фильтры"
                                 >
                                     <CgArrowsExchangeAltV />
                                 </div>

@@ -207,14 +207,17 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             {t('search', { ns: 'employees' })}
                         </button>
                         <button
-                            className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-500 p-0 text-2xl leading-none text-white md:hidden'
                             onClick={handleSearch}
+                            aria-label={t('search', { ns: 'employees' })}
                         >
                             <IoSearch />
                         </button>
                         <div
                             onClick={() => setIsFilterOpen(true)}
-                            className='text-3xl px-2 border-2 rounded-lg text-blue-500 md:hidden border-blue-500 py-1'
+                            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 border-blue-500 p-0 text-3xl leading-none text-blue-500 md:hidden'
+                            role="button"
+                            aria-label={t('filters', { ns: 'employees' })}
                         >
                             <CgArrowsExchangeAltV />
                         </div>

@@ -444,8 +444,9 @@ export default function Welcome({
                       {t('search', { ns: 'announcements' })}
                   </button>
                   <button
-                      className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                      className='flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-500 p-0 text-2xl leading-none text-white md:hidden'
                       onClick={handleSearchAnnouncements}
+                      aria-label={t('search', { ns: 'announcements' })}
                   >
                       <IoSearch />
                   </button>
@@ -708,8 +709,11 @@ export default function Welcome({
                                   e.stopPropagation(); // Prevents click propagation to Link
                                   handleShare(anonce.id);
                               }}
-                              className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                              <MdIosShare className='text-blue-500 text-xl' />
+                              className='flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-blue-500 p-0 text-xl leading-none cursor-pointer transition-all duration-150'
+                              role="button"
+                              aria-label="Share announcement"
+                          >
+                              <MdIosShare className='text-blue-500' />
                           </div>
                       </div>
                   </Link>

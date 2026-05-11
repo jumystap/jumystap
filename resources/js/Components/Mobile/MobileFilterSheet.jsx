@@ -2,7 +2,7 @@ import { CgClose } from "react-icons/cg";
 
 export default function MobileFilterSheet({ title, onClose, children, footer = null }) {
     return (
-        <div className="jt-mobile-sheet fixed inset-0 z-40 flex h-screen w-full flex-col bg-white md:hidden">
+        <div className="jt-mobile-sheet fixed inset-0 z-[1100] flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-white md:hidden">
             <div className="flex items-center px-5 pb-4 pt-7">
                 <div className="text-xl font-bold text-[#1f2937]">{title}</div>
                 <button
@@ -14,7 +14,7 @@ export default function MobileFilterSheet({ title, onClose, children, footer = n
                     <CgClose />
                 </button>
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5">
+            <div className="jt-mobile-sheet__body min-h-0 flex-1 overflow-y-auto px-5 pb-5">
                 <div className="space-y-4 pb-4">{children}</div>
             </div>
             {footer ? (

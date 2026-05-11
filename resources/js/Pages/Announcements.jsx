@@ -376,14 +376,17 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 {t('search', { ns: 'announcements' })}
                             </button>
                             <button
-                                className='md:hidden block text-white text-2xl rounded-lg bg-blue-500 py-2 px-4'
+                                className='flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-500 p-0 text-2xl leading-none text-white md:hidden'
                                 onClick={handleSearch}
+                                aria-label={t('search', { ns: 'announcements' })}
                             >
                                 <IoSearch />
                             </button>
                             <div
                                 onClick={() => setIsFilterOpen(true)}
-                                className='text-3xl px-2 border-2 rounded-lg text-blue-500 md:hidden border-blue-500 py-1'
+                                className='flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border-2 border-blue-500 p-0 text-3xl leading-none text-blue-500 md:hidden'
+                                role="button"
+                                aria-label={t('filters', { ns: 'announcements' })}
                             >
                                 <CgArrowsExchangeAltV />
                             </div>
@@ -483,8 +486,11 @@ export default function Announcements({ auth, announcements, specializationCateg
                                             e.stopPropagation();
                                             handleShare(anonce.id);
                                         }}
-                                        className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                                        <MdIosShare className='text-blue-500 text-xl' />
+                                        className='flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-blue-500 p-0 text-xl leading-none cursor-pointer transition-all duration-150'
+                                        role="button"
+                                        aria-label="Share announcement"
+                                    >
+                                        <MdIosShare className='text-blue-500' />
                                     </div>
                                 </div>
                             </Link>

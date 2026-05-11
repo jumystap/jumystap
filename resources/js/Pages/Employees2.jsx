@@ -38,7 +38,8 @@ const FilterSection = memo(({ children, className = "", searchTerm, onSearchChan
                 />
                 <button
                     onClick={onSearch}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
+                    className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg p-0 text-gray-400 transition-colors hover:text-blue-500"
+                    aria-label={t("search_by_name")}
                 >
                     <RiSearch2Line className="text-xl" />
                 </button>

@@ -205,8 +205,11 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
                                                         e.stopPropagation(); // Prevents click propagation to Link
                                                         handleShare(anonce.id);
                                                     }}
-                                                    className={`border-2 border-blue-500 rounded-lg inline-block px-3 py-2 cursor-pointer transition-all duration-150`}>
-                                                    <MdIosShare className='text-blue-500 text-xl' />
+                                                    className='flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-blue-500 p-0 text-xl leading-none cursor-pointer transition-all duration-150'
+                                                    role="button"
+                                                    aria-label="Share announcement"
+                                                >
+                                                    <MdIosShare className='text-blue-500' />
                                                 </div>
                                             </div>
                                         </Link>
