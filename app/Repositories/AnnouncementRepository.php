@@ -54,9 +54,29 @@ class AnnouncementRepository
             $query->where('city', $filters['city']);
         }
 
-        // Filter by minimum salary
-        if (!empty($filters['minSalary'])) {
-            $query->where('cost', '>=', $filters['minSalary']);
+        // Filter by salary value, including exact salaries and salary ranges.
+        if (isset($filters['minSalary']) && $filters['minSalary'] !== '' && is_numeric($filters['minSalary'])) {
+            $salary = (int) $filters['minSalary'];
+
+            $query->where(function ($query) use ($salary) {
+                $query->where('cost', '>=', $salary)
+                    ->orWhere(function ($query) use ($salary) {
+                        $query->whereNotNull('cost_min')
+                            ->whereNotNull('cost_max')
+                            ->where('cost_min', '<=', $salary)
+                            ->where('cost_max', '>=', $salary);
+                    })
+                    ->orWhere(function ($query) use ($salary) {
+                        $query->whereNotNull('cost_min')
+                            ->whereNull('cost_max')
+                            ->where('cost_min', '<=', $salary);
+                    })
+                    ->orWhere(function ($query) use ($salary) {
+                        $query->whereNull('cost_min')
+                            ->whereNotNull('cost_max')
+                            ->where('cost_max', '>=', $salary);
+                    });
+            });
         }
 
         // Filter announcements with a salary
