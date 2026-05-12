@@ -232,7 +232,7 @@ export default function Announcements({ auth, announcements, specializationCateg
 
     return (
         <>
-            <GuestLayout>
+            <GuestLayout hideMobileBottomNav={isFilterOpen}>
                 <Head title="Работа в Казахстане | свежие вакансии и объявления ">
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>

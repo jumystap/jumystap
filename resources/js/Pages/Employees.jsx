@@ -113,7 +113,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
     }, []);
 
     return (
-        <GuestLayout>
+        <GuestLayout hideMobileBottomNav={isFilterOpen}>
             <Head title="Биржа фрилансеров в Астане | Поиск работы и услуг фрилансеров">
                 <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
             </Head>
