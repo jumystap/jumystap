@@ -51,7 +51,7 @@ class AnnouncementController extends Controller
             'minSalary'                => $request->input('minSalary'),
             'isSalary'                 => $request->input('isSalary'),
             'noExperience'             => $request->input('noExperience'),
-            'paymentType'              => $request->input('paymentType'),
+            'paymentType'              => $request->input('paymentType', $request->input('payment_type')),
             'publicTime'               => $request->input('publicTime'),
         ];
 

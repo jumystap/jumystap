@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
@@ -16,6 +16,89 @@ import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 const { Option } = Select;
 
+const PAYMENT_TYPE_DAILY = 'Ежедневная оплата';
+const PAYMENT_TYPE_OPTIONS = [
+    { value: PAYMENT_TYPE_DAILY, labelKey: 'daily_payment' },
+    { value: 'Еженедельная оплата', labelKey: 'weekly_payment' },
+    { value: 'Ежемесячная оплата', labelKey: 'monthly_payment' },
+];
+const PAYMENT_TYPE_ALIASES = {
+    daily: 'Ежедневная оплата',
+    weekly: 'Еженедельная оплата',
+    monthly: 'Ежемесячная оплата',
+    'ежедневная оплата': 'Ежедневная оплата',
+    'еженедельная оплата': 'Еженедельная оплата',
+    'ежемесячная оплата': 'Ежемесячная оплата',
+};
+
+const EMPTY_FILTERS = {
+    searchKeyword: '',
+    specializationCategories: [],
+    specializations: [],
+    city: '',
+    minSalary: '',
+    isSalary: false,
+    noExperience: false,
+    paymentType: '',
+    publicTime: '',
+};
+
+const buildFilterPayload = (filters) => Object.entries(filters).reduce((payload, [key, value]) => {
+    if (Array.isArray(value)) {
+        if (value.length > 0) {
+            payload[key] = value;
+        }
+        return payload;
+    }
+
+    if (typeof value === 'boolean') {
+        if (value) {
+            payload[key] = value;
+        }
+        return payload;
+    }
+
+    if (value !== null && value !== undefined && value !== '') {
+        payload[key] = value;
+    }
+
+    return payload;
+}, {});
+
+const getArrayParam = (params, key) => {
+    const directValue = params.get(key);
+
+    if (directValue) {
+        return directValue.split(',');
+    }
+
+    return Array.from(params.entries())
+        .filter(([paramKey]) => paramKey === `${key}[]` || paramKey.startsWith(`${key}[`))
+        .map(([, value]) => value);
+};
+
+const isTruthyParam = (value) => value === 'true' || value === '1';
+
+const normalizePaymentTypeValue = (value) => {
+    if (!value) {
+        return '';
+    }
+
+    const trimmedValue = value.trim();
+
+    return PAYMENT_TYPE_ALIASES[trimmedValue.toLowerCase()] || trimmedValue;
+};
+
+const filterSelectOptionByLabel = (input, option) => {
+    const label = String(option?.label ?? option?.children ?? '').toLowerCase();
+
+    return label.includes(input.trim().toLowerCase());
+};
+
+const getMobileSelectPopupContainer = (triggerNode) => (
+    triggerNode.closest('.jt-mobile-sheet__body') || triggerNode.parentElement || document.body
+);
+
 export default function Announcements({ auth, announcements, specializationCategories, specializationCategoriesData, cities }) {
     const { t, i18n } = useTranslation();
     const [announcementType, setAnnouncementType] = useState('all');
@@ -26,6 +109,9 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [minSalary, setMinSalary] = useState('');
     const [isSalary, setIsSalary] = useState(false);
     const [noExperience, setNoExperience] = useState(false);
+    const [paymentType, setPaymentType] = useState('');
+    const [mobileCategorySearch, setMobileCategorySearch] = useState('');
+    const [mobileSpecializationSearch, setMobileSpecializationSearch] = useState('');
     const [publicTime, setPublicTime] = useState('');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -37,14 +123,9 @@ export default function Announcements({ auth, announcements, specializationCateg
 
     const cityArray = Object.entries(cities).map(([id, name]) => ({ id, name }));
 
-    const { data, setData, get } = useForm({
+    const { data, setData } = useForm({
+        ...EMPTY_FILTERS,
         searchKeyword: querySearchKeyword || '',
-        specializationCategories: [], // Store selected specializationCategories
-        specializations: [], // Store selected specializations
-        city: '',
-        minSalary: '',
-        isSalary: false,
-        noExperience: false,
     });
 
     // Compute specialization options based on selected specializationCategories
@@ -75,9 +156,20 @@ export default function Announcements({ auth, announcements, specializationCateg
         setData('specializations', []); // Reset specializations in form data
     };
 
+    const handleMobileSpecializationCategoryChange = (values) => {
+        handleSpecializationCategoryChange(values);
+        setMobileCategorySearch('');
+        setMobileSpecializationSearch('');
+    };
+
     const handleSpecializationChange = (values) => {
         setSelectedSpecializations(values);
         setData('specializations', values);
+    };
+
+    const handleMobileSpecializationChange = (values) => {
+        handleSpecializationChange(values);
+        setMobileSpecializationSearch('');
     };
 
     const handleShare = (id) => {
@@ -111,6 +203,12 @@ export default function Announcements({ auth, announcements, specializationCateg
         setData('noExperience', checked);
     };
 
+    const handlePaymentTypeChange = (value) => {
+        const nextPaymentType = normalizePaymentTypeValue(value);
+        setPaymentType(nextPaymentType);
+        setData('paymentType', nextPaymentType);
+    };
+
     const handlePublicTimeChange = (value) => {
         setPublicTime(value);
         setData('publicTime', value);
@@ -133,55 +231,106 @@ export default function Announcements({ auth, announcements, specializationCateg
         const searchKeyword = params.get('searchKeyword');
         const isSalary = params.get('isSalary');
         const noExperience = params.get('noExperience');
+        const paymentType = normalizePaymentTypeValue(params.get('paymentType') || params.get('payment_type'));
+        const publicTime = params.get('publicTime');
         const city = params.get('city');
         const minSalary = params.get('minSalary');
-        const specializationCategories = params.get('specializationCategories') ? params.get('specializationCategories').split(',') : [];
-        const specializations = params.get('specializations') ? params.get('specializations').split(',') : [];
+        const specializationCategories = getArrayParam(params, 'specializationCategories');
+        const specializations = getArrayParam(params, 'specializations');
 
-        if (searchKeyword || isSalary || noExperience || city || minSalary || specializationCategories.length || specializations.length) {
+        if (searchKeyword || isSalary || noExperience || paymentType || publicTime || city || minSalary || specializationCategories.length || specializations.length) {
             setData({
                 searchKeyword: searchKeyword || '',
                 specializationCategories: specializationCategories,
                 specializations: specializations,
                 city: city || '',
                 minSalary: minSalary || '',
-                isSalary: isSalary === 'true',
-                noExperience: noExperience === 'true',
+                isSalary: isTruthyParam(isSalary),
+                noExperience: isTruthyParam(noExperience),
+                paymentType: paymentType,
+                publicTime: publicTime || '',
             });
             setCity(city || '');
             setMinSalary(minSalary || '');
-            setIsSalary(isSalary === 'true');
-            setNoExperience(noExperience === 'true');
+            setIsSalary(isTruthyParam(isSalary));
+            setNoExperience(isTruthyParam(noExperience));
+            setPaymentType(paymentType);
+            setPublicTime(publicTime || '');
             setSelectedSpecializationCategories(specializationCategories);
             setSelectedSpecializations(specializations);
         }
     }, []);
 
-    const handleSearch = () => {
-        setIsFilterOpen(false)
-        get('/announcements', { preserveScroll: true, preserveState: true });
+    const submitFilters = (filters) => {
+        setIsFilterOpen(false);
+        router.get('/announcements', buildFilterPayload(filters), {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
-    const resetSearch = () => {
-        setData({
-            searchKeyword: '',
-            specializationCategories: [],
-            specializations: [],
-            city: '',
-            minSalary: '',
-            isSalary: false,
-            noExperience: false,
-        });
+    const handleSearch = () => {
+        submitFilters(data);
+    };
+
+    const applyQuickFilter = (changes) => {
+        const nextData = {
+            ...data,
+            ...changes,
+        };
+
+        setData(nextData);
+
+        if (Object.prototype.hasOwnProperty.call(changes, 'isSalary')) {
+            setIsSalary(changes.isSalary);
+        }
+
+        if (Object.prototype.hasOwnProperty.call(changes, 'noExperience')) {
+            setNoExperience(changes.noExperience);
+        }
+
+        if (Object.prototype.hasOwnProperty.call(changes, 'paymentType')) {
+            setPaymentType(changes.paymentType);
+        }
+
+        submitFilters(nextData);
+    };
+
+    const quickFilterClassName = (isActive) => [
+        'jt-announcements-quick-filter shrink-0 rounded-full border px-3 text-sm font-semibold transition-all duration-150',
+        isActive
+            ? 'border-blue-500 bg-blue-50 text-blue-600'
+            : 'border-gray-200 bg-white text-gray-600',
+    ].join(' ');
+
+    const paymentTypeOptions = PAYMENT_TYPE_OPTIONS.map(option => ({
+        ...option,
+        label: t(option.labelKey, { ns: 'announcements' }),
+    }));
+
+    const isDailyPaymentSelected = paymentType === PAYMENT_TYPE_DAILY;
+
+    const resetLocalFilters = () => {
         setAnnouncementType('all');
         setSearchCity('');
         setSelectedSpecializationCategories([]);
         setSelectedSpecializations([]);
+        setMobileCategorySearch('');
+        setMobileSpecializationSearch('');
         setCity('');
         setMinSalary('');
         setIsSalary(false);
         setNoExperience(false);
+        setPaymentType('');
         setPublicTime('');
-        get('/announcements', {
+    };
+
+    const resetSearch = () => {
+        const nextData = { ...EMPTY_FILTERS };
+        setData(nextData);
+        resetLocalFilters();
+        setIsFilterOpen(false);
+        router.get('/announcements', {}, {
             preserveScroll: true,
             preserveState: true
         });
@@ -275,14 +424,25 @@ export default function Announcements({ auth, announcements, specializationCateg
                         <div className='text-gray-500 mt-5'>{t('specialization_category', { ns: 'announcements' })}</div>
                         <Select
                             mode="multiple"
+                            showSearch
                             placeholder={t('select_specialization_category', { ns: 'announcements' })}
                             value={selectedSpecializationCategories}
-                            onChange={handleSpecializationCategoryChange}
-                            className="block mt-2 w-full text-base"
-                            maxTagCount={3}
+                            searchValue={mobileCategorySearch}
+                            onSearch={setMobileCategorySearch}
+                            onChange={handleMobileSpecializationCategoryChange}
+                            filterOption={filterSelectOptionByLabel}
+                            optionFilterProp="label"
+                            getPopupContainer={getMobileSelectPopupContainer}
+                            popupClassName="jt-mobile-select-dropdown"
+                            className="jt-mobile-filter-select block mt-2 w-full"
+                            maxTagCount="responsive"
                         >
                             {specializationCategoryData.map(specialization_category => (
-                                <Option key={specialization_category.value} value={specialization_category.value}>
+                                <Option
+                                    key={specialization_category.value}
+                                    value={specialization_category.value}
+                                    label={specialization_category.label}
+                                >
                                     {specialization_category.label}
                                 </Option>
                             ))}
@@ -290,16 +450,27 @@ export default function Announcements({ auth, announcements, specializationCateg
                         <div className='text-gray-500 mt-5'>{t('specialization', { ns: 'announcements' })}</div>
                         <Select
                             mode="multiple"
+                            showSearch
                             placeholder={t('select_specialization', { ns: 'announcements' })}
                             value={selectedSpecializations}
-                            onChange={handleSpecializationChange}
-                            className="block mt-2 w-full text-base"
+                            searchValue={mobileSpecializationSearch}
+                            onSearch={setMobileSpecializationSearch}
+                            onChange={handleMobileSpecializationChange}
+                            filterOption={filterSelectOptionByLabel}
+                            optionFilterProp="label"
+                            getPopupContainer={getMobileSelectPopupContainer}
+                            popupClassName="jt-mobile-select-dropdown"
+                            className="jt-mobile-filter-select block mt-2 w-full"
                             disabled={selectedSpecializationCategories.length === 0}
                             notFoundContent={t('no_specializations', { ns: 'announcements' })}
-                            maxTagCount={3}
+                            maxTagCount="responsive"
                         >
                             {specializationOptions.map(specialization => (
-                                <Option key={specialization.value} value={specialization.value}>
+                                <Option
+                                    key={specialization.value}
+                                    value={specialization.value}
+                                    label={specialization.label}
+                                >
                                     {specialization.label}
                                 </Option>
                             ))}
@@ -332,11 +503,27 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='jt-mobile-filter-toggle__label'>{t('no_experience', { ns: 'announcements' })}</div>
                             <Switch checked={noExperience} onChange={handleNoExperienceChange} />
                         </div>
+                        <div className='text-gray-500 mt-5'>{t('payment_type', { ns: 'announcements' })}</div>
+                        <Select
+                            allowClear
+                            placeholder={t('select_payment_type', { ns: 'announcements' })}
+                            value={paymentType || undefined}
+                            onChange={handlePaymentTypeChange}
+                            getPopupContainer={getMobileSelectPopupContainer}
+                            popupClassName="jt-mobile-select-dropdown"
+                            className="jt-mobile-filter-select block mt-2 w-full"
+                        >
+                            {paymentTypeOptions.map(option => (
+                                <Option key={option.value} value={option.value}>
+                                    {option.label}
+                                </Option>
+                            ))}
+                        </Select>
                     </MobileFilterSheet>
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
-                        <div className='block flex bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:px-10 md:py-7 text-white'>
+                        <div className='hidden bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:flex md:px-10 md:py-7 text-white'>
                             <div>
                                 <div className='font-bold text-lg md:text-xl'>
                                     {t('get_free_training', { ns: 'employees' })}
@@ -361,7 +548,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
                             </div>
                         </div>
-                        <div className='mt-5 flex items-center px-3 md:px-5 md:mb-5 gap-x-2'>
+                        <div className='mt-3 flex items-center px-0 md:mt-5 md:px-5 md:mb-5 gap-x-2'>
                             <input
                                 type="text"
                                 value={data.searchKeyword}
@@ -390,6 +577,29 @@ export default function Announcements({ auth, announcements, specializationCateg
                             >
                                 <CgArrowsExchangeAltV />
                             </div>
+                        </div>
+                        <div className='mt-2 flex gap-2 overflow-x-auto px-0 pb-1 md:hidden'>
+                            <button
+                                type="button"
+                                onClick={() => applyQuickFilter({ noExperience: !noExperience })}
+                                className={quickFilterClassName(noExperience)}
+                            >
+                                {t('quick_no_experience', { ns: 'announcements' })}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => applyQuickFilter({ isSalary: !isSalary })}
+                                className={quickFilterClassName(isSalary)}
+                            >
+                                {t('with_salary', { ns: 'announcements' })}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => applyQuickFilter({ paymentType: isDailyPaymentSelected ? '' : PAYMENT_TYPE_DAILY })}
+                                className={quickFilterClassName(isDailyPaymentSelected)}
+                            >
+                                {t('daily_payment', { ns: 'announcements' })}
+                            </button>
                         </div>
                         {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
@@ -506,14 +716,20 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='text-gray-500 mt-5'>{t('specialization_category', { ns: 'announcements' })}</div>
                             <Select
                                 mode="multiple"
+                                showSearch
                                 placeholder={t('select_specialization_category', { ns: 'announcements' })}
                                 value={selectedSpecializationCategories}
                                 onChange={handleSpecializationCategoryChange}
+                                filterOption={filterSelectOptionByLabel}
                                 className="block mt-2 w-full text-base"
                                 maxTagCount={3}
                             >
                                 {specializationCategoryData.map(specialization_category => (
-                                    <Option key={specialization_category.value} value={specialization_category.value}>
+                                    <Option
+                                        key={specialization_category.value}
+                                        value={specialization_category.value}
+                                        label={specialization_category.label}
+                                    >
                                         {specialization_category.label}
                                     </Option>
                                 ))}
@@ -521,16 +737,22 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='text-gray-500 mt-5'>{t('specialization', { ns: 'announcements' })}</div>
                             <Select
                                 mode="multiple"
+                                showSearch
                                 placeholder={t('select_specialization', { ns: 'announcements' })}
                                 value={selectedSpecializations}
                                 onChange={handleSpecializationChange}
+                                filterOption={filterSelectOptionByLabel}
                                 className="block mt-2 w-full text-base"
                                 disabled={selectedSpecializationCategories.length === 0}
                                 notFoundContent={t('no_specializations', { ns: 'announcements' })}
                                 maxTagCount={3}
                             >
                                 {specializationOptions.map(specialization => (
-                                    <Option key={specialization.value} value={specialization.value}>
+                                    <Option
+                                        key={specialization.value}
+                                        value={specialization.value}
+                                        label={specialization.label}
+                                    >
                                         {specialization.label}
                                     </Option>
                                 ))}
@@ -539,7 +761,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <select
                                 value={city}
                                 onChange={handleCityChange}
-                                className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
+                                className='block mt-2 h-8 w-full rounded-md border-gray-300 px-3 py-1 text-sm leading-5'
                             >
                                 <option value="">{t('select_city', { ns: 'announcements' })}</option>
                                 {cityArray.map(city => (
@@ -553,7 +775,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 value={minSalary}
                                 onChange={handleMinSalaryChange}
                                 placeholder={t('income_level_from', { ns: 'announcements' })}
-                                className='block mt-5 border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                                className='block mt-5 h-8 w-full rounded-md border border-gray-300 px-3 py-1 text-sm leading-5'
                             />
                             <div className='mt-5 flex items-center'>
                                 <div>{t('specified_income', { ns: 'announcements' })}</div>
@@ -563,6 +785,20 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 <div>{t('no_experience', { ns: 'announcements' })}</div>
                                 <Switch className='ml-auto' checked={noExperience} onChange={handleNoExperienceChange} />
                             </div>
+                            <div className='mt-5'>{t('payment_type', { ns: 'announcements' })}</div>
+                            <Select
+                                allowClear
+                                placeholder={t('select_payment_type', { ns: 'announcements' })}
+                                value={paymentType || undefined}
+                                onChange={handlePaymentTypeChange}
+                                className="block mt-2 w-full text-base"
+                            >
+                                {paymentTypeOptions.map(option => (
+                                    <Option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </Option>
+                                ))}
+                            </Select>
                             <div className='bottom-10'>
                                 <div onClick={handleSearch} className='w-full bg-blue-600 text-white font-semibold py-2 text-center rounded-lg mt-10 cursor-pointer'>
                                     {t('apply', { ns: 'announcements' })}

@@ -8,9 +8,19 @@ use App\Models\Favorite;
 use App\Models\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AnnouncementRepository
 {
+    private const PAYMENT_TYPE_ALIASES = [
+        'daily' => 'Ежедневная оплата',
+        'weekly' => 'Еженедельная оплата',
+        'monthly' => 'Ежемесячная оплата',
+        'ежедневная оплата' => 'Ежедневная оплата',
+        'еженедельная оплата' => 'Еженедельная оплата',
+        'ежемесячная оплата' => 'Ежемесячная оплата',
+    ];
+
     public function getAllActiveAnnouncements(array $filters = null)
     {
         $query = Announcement::query()
@@ -23,6 +33,7 @@ class AnnouncementRepository
                 'cost',
                 'cost_min',
                 'cost_max',
+                'payment_type',
                 'experience',
                 'work_time',
                 'updated_at',
@@ -80,15 +91,19 @@ class AnnouncementRepository
         }
 
         // Filter announcements with a salary
-        if (!empty($filters['isSalary'])) {
-            if ($filters['isSalary'] == 'true') {
-                $query->where('salary_type', '!=', 'undefined');
-            }
+        if ($this->filterIsEnabled($filters['isSalary'] ?? false)) {
+            $query->where('salary_type', '!=', 'undefined');
         }
 
-        if (!empty($filters['noExperience'])) {
-            if ($filters['noExperience'] == 'true') {
-                $query->where('experience', 'Без опыта работы');
+        if ($this->filterIsEnabled($filters['noExperience'] ?? false)) {
+            $query->where('experience', 'Без опыта работы');
+        }
+
+        if (!empty($filters['paymentType'])) {
+            $paymentType = $this->normalizePaymentType($filters['paymentType']);
+
+            if ($paymentType !== null) {
+                $query->where('payment_type', $paymentType);
             }
         }
 
@@ -200,5 +215,34 @@ class AnnouncementRepository
         return Announcement::query()
             ->where(['id' => $id, 'user_id' => $userId])
             ->exists();
+    }
+
+    private function normalizePaymentType(mixed $paymentType): ?string
+    {
+        if (is_array($paymentType)) {
+            return null;
+        }
+
+        $paymentType = trim((string) $paymentType);
+        $normalizedKey = (string) Str::of($paymentType)->lower();
+
+        return self::PAYMENT_TYPE_ALIASES[$normalizedKey] ?? null;
+    }
+
+    private function filterIsEnabled(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_int($value)) {
+            return $value === 1;
+        }
+
+        if (!is_string($value)) {
+            return false;
+        }
+
+        return in_array(strtolower($value), ['true', '1', 'on'], true);
     }
 }
