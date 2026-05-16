@@ -446,18 +446,20 @@ use \App\Enums\PriceType;
                         {{ isset($ad) && $ad->photos->isNotEmpty() ? 'Добавить новые фото' : 'Загрузить фото' }}
                         <span id="maxPhotosLabel">(максимум {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }})</span>
                     </label>
-                    <div class="custom-file">
+                    <div class="custom-file" id="photoDropZone" style="cursor: pointer; border: 2px dashed #ccc; border-radius: 4px; padding: 20px; text-align: center; transition: all 0.3s ease; background-color: #f8f9fa;">
                         <input type="file"
                                class="custom-file-input @error('photos') is-invalid @enderror"
                                id="photos"
                                name="photos[]"
                                multiple
-                               accept="image/jpeg,image/jpg,image/png,image/webp">
-                        <label class="custom-file-label" for="photos">Выберите файлы</label>
+                               accept="image/jpeg,image/jpg,image/png,image/webp"
+                               style="display: none;">
+                        <label class="custom-file-label d-block mb-0" for="photos" style="cursor: pointer; user-select: none;">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2" style="display: block;"></i>
+                            <span style="font-weight: 500;">Выберите файлы или перетащите их сюда</span><br>
+                            <small class="text-muted">Форматы: JPEG, PNG, WEBP. Максимальный размер: 5 МБ</small>
+                        </label>
                     </div>
-                    <small class="form-text text-muted">
-                        Форматы: JPEG, PNG, WEBP. Максимальный размер: 5 МБ
-                    </small>
                     @error('photos')
                     <span class="invalid-feedback d-block">{{ $message }}</span>
                     @enderror
@@ -591,8 +593,6 @@ use \App\Enums\PriceType;
 @push('scripts')
 
     <script>
-        let maxPhotos = {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }};
-
         $(document).ready(function() {
             $('#phone').inputmask({
                 mask: '+9 (999) 999-99-99',
@@ -805,47 +805,148 @@ use \App\Enums\PriceType;
             typeInputs.on('change', toggleRemoteField);
             toggleRemoteField();
 
+            // Drag-and-drop для фотографий
+            const dropZone = $('#photoDropZone');
+            const photoInput = $('#photos');
+
+            dropZone.on('click', function() {
+                photoInput.click();
+            });
+
+            // Предотвращение стандартного поведения при drag-over
+            dropZone.on('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.css({
+                    backgroundColor: '#e8f4f8',
+                    borderColor: '#007bff'
+                });
+            });
+
+            dropZone.on('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.css({
+                    backgroundColor: '#f8f9fa',
+                    borderColor: '#ccc'
+                });
+            });
+
+            dropZone.on('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.css({
+                    backgroundColor: '#f8f9fa',
+                    borderColor: '#ccc'
+                });
+
+                const files = e.originalEvent.dataTransfer.files;
+                photoInput[0].files = files;
+                photoInput.trigger('change');
+            });
+
             // Превью фотографий
-            $('#photos').on('change', function() {
-                const files = this.files;
+            let maxPhotosInitial = {{ 6 - (isset($ad) ? $ad->photos->count() : 0) }};
+            let selectedFilesMap = new Map(); // Для отслеживания выбранных файлов
+
+            function updatePhotoPreview() {
                 const preview = $('#photoPreview');
+                const totalSelected = selectedFilesMap.size;
+
+                // Обновляем счётчик
+                const remaining = maxPhotosInitial - totalSelected;
+                const forms = remaining === 1 ? 'фотография' : remaining > 4 ? 'фотографий' : 'фотографии';
+                $('#maxPhotosLabel').text(`(загружено: ${totalSelected}, осталось: ${remaining} ${forms})`);
+
+                // Очищаем превью и перестраиваем его
                 preview.empty();
 
-                if (files.length > maxPhotos) {
-                    Swal.fire('Внимание', `Максимум ${maxPhotos} фотографии`, 'warning');
+                selectedFilesMap.forEach((fileData, fileIndex) => {
+                    const col = $('<div>').addClass('col-md-4 mb-3').attr('data-file-index', fileIndex);
+                    const card = $('<div>').addClass('card position-relative');
+                    const img = $('<img>').attr('src', fileData.preview)
+                        .addClass('card-img-top')
+                        .css({height: '200px', objectFit: 'cover', cursor: 'pointer'})
+                        .on('click', function() {
+                            $('#modalImage').attr('src', fileData.preview);
+                            $('#imageModal').modal('show');
+                        });
+
+                    const body = $('<div>').addClass('card-body p-2')
+                        .append($('<small>').addClass('text-muted text-break').text(fileData.name));
+
+                    const deleteBtn = $('<button>')
+                        .attr('type', 'button')
+                        .addClass('btn btn-danger btn-sm btn-block')
+                        .html('<i class="fas fa-trash"></i> Удалить')
+                        .on('click', function(e) {
+                            e.preventDefault();
+                            selectedFilesMap.delete(fileIndex);
+                            updatePhotoPreview();
+                            updateInputFiles();
+                        });
+
+                    card.append(img).append(body);
+                    const footer = $('<div>').addClass('card-footer p-2').append(deleteBtn);
+                    card.append(footer);
+                    col.append(card);
+                    preview.append(col);
+                });
+            }
+
+            function updateInputFiles() {
+                const photoInput = $('#photos')[0];
+                const dataTransfer = new DataTransfer();
+
+                selectedFilesMap.forEach((fileData) => {
+                    dataTransfer.items.add(fileData.file);
+                });
+
+                photoInput.files = dataTransfer.files;
+            }
+
+            $('#photos').on('change', function() {
+                const files = this.files;
+                const newFilesCount = files.length;
+                const currentCount = selectedFilesMap.size;
+
+                // Проверяем лимит
+                if (currentCount + newFilesCount > maxPhotosInitial) {
+                    const remaining = maxPhotosInitial - currentCount;
+                    const forms = remaining === 1 ? 'фотография' : remaining > 4 ? 'фотографий' : 'фотографии';
+                    Swal.fire('Внимание', `Вы можете добавить еще только ${remaining} ${forms}`, 'warning');
                     this.value = '';
                     return;
                 }
 
-                Array.from(files).forEach((file, index) => {
+                // Добавляем новые файлы
+                Array.from(files).forEach((file) => {
                     if (file.size > 5242880) { // 5MB
-                        Swal.fire('Ошибка', 'Размер файла не должен превышать 5 МБ', 'error');
+                        Swal.fire('Ошибка', `Файл "${file.name}" превышает максимальный размер 5 МБ`, 'error');
                         return;
                     }
 
-                    if (file.type.match('image.*')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const col = $('<div>').addClass('col-md-4 mb-3');
-                            const card = $('<div>').addClass('card');
-                            const img = $('<img>').attr('src', e.target.result)
-                                .addClass('card-img-top')
-                                .css({height: '200px', objectFit: 'cover'});
-                            const body = $('<div>').addClass('card-body p-2')
-                                .append($('<small>').addClass('text-muted').text(file.name));
-
-                            card.append(img).append(body);
-                            col.append(card);
-                            preview.append(col);
-                        };
-                        reader.readAsDataURL(file);
+                    if (!file.type.match('image.*')) {
+                        Swal.fire('Ошибка', `Файл "${file.name}" не является изображением`, 'error');
+                        return;
                     }
+
+                    const fileIndex = Date.now() + Math.random(); // Уникальный ID для файла
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        selectedFilesMap.set(fileIndex, {
+                            file: file,
+                            name: file.name,
+                            preview: e.target.result
+                        });
+                        updatePhotoPreview();
+                        updateInputFiles();
+                    };
+                    reader.readAsDataURL(file);
                 });
 
-                // Обновляем label
-                const label = $(this).next('.custom-file-label');
-                const count = files.length;
-                label.text(count === 1 ? files[0].name : `${count} файл(ов) выбрано`);
+                // Очищаем input для возможности выбрать те же файлы еще раз
+                this.value = '';
             });
         });
 
