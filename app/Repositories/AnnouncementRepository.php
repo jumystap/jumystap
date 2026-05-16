@@ -39,9 +39,7 @@ class AnnouncementRepository
                 'is_permanent',
                 'updated_at',
                 'published_at',
-            ])
-            ->orderByDesc('updated_at')
-            ->orderByDesc('id');
+            ]);
 
         if (!empty($filters['searchKeyword'])) {
             $keyword = $filters['searchKeyword'];
@@ -117,6 +115,12 @@ class AnnouncementRepository
         if (!empty($filters['publicTime'])) {
             $query->where('created_at', '>=', $filters['publicTime']);
         }
+
+        if ($this->filterIsEnabled($filters['updatedLast30Days'] ?? false)) {
+            $query->where('updated_at', '>=', now()->subDays(30));
+        }
+
+        $this->applyAnnouncementSort($query, $filters['sort'] ?? null);
 
         return $query->paginate(10);
     }
@@ -254,5 +258,21 @@ class AnnouncementRepository
         }
 
         return in_array(strtolower($value), ['true', '1', 'on'], true);
+    }
+
+    private function applyAnnouncementSort($query, ?string $sort): void
+    {
+        if ($sort === 'salary_high') {
+            $query
+                ->orderByRaw('GREATEST(COALESCE(cost, 0), COALESCE(cost_min, 0), COALESCE(cost_max, 0)) DESC')
+                ->orderByDesc('updated_at')
+                ->orderByDesc('id');
+
+            return;
+        }
+
+        $query
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id');
     }
 }

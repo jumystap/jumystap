@@ -54,6 +54,8 @@ class AnnouncementController extends Controller
             'isPermanent'              => $request->input('isPermanent', $request->input('is_permanent')),
             'paymentType'              => $request->input('paymentType', $request->input('payment_type')),
             'publicTime'               => $request->input('publicTime'),
+            'updatedLast30Days'        => $request->input('updatedLast30Days'),
+            'sort'                     => $request->input('sort'),
         ];
 
         $announcements      = $this->announcementService->getAllActiveAnnouncements($filters)->withQueryString();

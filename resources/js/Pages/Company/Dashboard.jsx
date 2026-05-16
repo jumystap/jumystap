@@ -7,7 +7,7 @@ import { LuPhone } from "react-icons/lu";
 import { FaLocationDot } from "react-icons/fa6";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import {Button, message, Modal, Radio, Tabs} from 'antd';
+import {Button, message, Modal, Radio} from 'antd';
 
 export default function Dashboard({ user }) {
     // const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -15,6 +15,7 @@ export default function Dashboard({ user }) {
     const [isArchiveModalVisible, setIsArchiveModalVisible] = useState(false);
     const [employeeFound, setEmployeeFound] = useState(null); // null, 'yes', or 'no'
     const [announcementId, setAnnouncementId] = useState(null);
+    const [activeAnnouncementTab, setActiveAnnouncementTab] = useState('all');
 
     const { processing } = useForm();
     // const openCreateAnnouncementModal = () => {
@@ -134,6 +135,7 @@ export default function Dashboard({ user }) {
         { key: '2', label: t('blocked', { ns: 'dashboard' }), status: 2 },
         { key: '3', label: t('archived', { ns: 'dashboard' }), status: 3 },
     ];
+    const activeStatusTab = statusTabs.find(tab => tab.key === activeAnnouncementTab) || statusTabs[0];
 
     const handleRepublish = (id) => {
         router.post(`/announcements/republish`, {
@@ -326,16 +328,33 @@ export default function Dashboard({ user }) {
                         </div>
                     </div>
                     <div className='p-3 font-semibold'>{t('your_announcements', { ns: 'dashboard' })}</div>
-                    <div className='rounded-lg'>
-                        <Tabs
-                            className='ml-1'
-                            defaultActiveKey="all"
-                            items={statusTabs.map(tab => ({
-                                key: tab.key,
-                                label: tab.label,
-                                children: renderAnnouncements(tab.status),
-                            }))}
-                        />
+                    <div className='rounded-lg min-w-0'>
+                        <div className='jt-dashboard-tabs-scroll overflow-x-auto border-b border-gray-200 px-3'>
+                            <div className='flex min-w-max gap-6'>
+                                {statusTabs.map(tab => {
+                                    const isActive = tab.key === activeAnnouncementTab;
+
+                                    return (
+                                        <button
+                                            key={tab.key}
+                                            type="button"
+                                            onClick={() => setActiveAnnouncementTab(tab.key)}
+                                            className={`relative shrink-0 appearance-none whitespace-nowrap border-0 bg-transparent px-0 pb-3 pt-1 text-base transition-colors focus:outline-none focus-visible:outline-none ${
+                                                isActive
+                                                    ? 'text-blue-500'
+                                                    : 'text-gray-700'
+                                            }`}
+                                        >
+                                            {tab.label}
+                                            {isActive && (
+                                                <span className="absolute bottom-0 left-0 h-0.5 w-full bg-blue-500" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        {renderAnnouncements(activeStatusTab.status)}
                     </div>
                 </div>
                 <div className='md:block hidden col-span-2 border-l border-gray-200 pt-5 h-screen sticky top-0'>

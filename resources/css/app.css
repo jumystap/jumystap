@@ -79,6 +79,15 @@ body::-webkit-resizer {
   background-color: transparent; /* Track background */
 }
 
+.jt-dashboard-tabs-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.jt-dashboard-tabs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .font-thin {
   font-family: "Inter", sans-serif;
   font-weight: 100;

@@ -22,6 +22,10 @@ const PAYMENT_TYPE_OPTIONS = [
     { value: 'Еженедельная оплата', labelKey: 'weekly_payment' },
     { value: 'Ежемесячная оплата', labelKey: 'monthly_payment' },
 ];
+const SORT_OPTIONS = [
+    { value: 'newest', labelKey: 'sort_newest' },
+    { value: 'salary_high', labelKey: 'sort_salary_high' },
+];
 const PAYMENT_TYPE_ALIASES = {
     daily: 'Ежедневная оплата',
     weekly: 'Еженедельная оплата',
@@ -42,6 +46,8 @@ const EMPTY_FILTERS = {
     isPermanent: false,
     paymentType: '',
     publicTime: '',
+    updatedLast30Days: false,
+    sort: 'newest',
 };
 
 const buildFilterPayload = (filters) => Object.entries(filters).reduce((payload, [key, value]) => {
@@ -80,6 +86,10 @@ const getArrayParam = (params, key) => {
 
 const isTruthyParam = (value) => value === 'true' || value === '1';
 
+const normalizeSortValue = (value) => (
+    SORT_OPTIONS.some(option => option.value === value) ? value : EMPTY_FILTERS.sort
+);
+
 const normalizePaymentTypeValue = (value) => {
     if (!value) {
         return '';
@@ -115,6 +125,8 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [mobileCategorySearch, setMobileCategorySearch] = useState('');
     const [mobileSpecializationSearch, setMobileSpecializationSearch] = useState('');
     const [publicTime, setPublicTime] = useState('');
+    const [updatedLast30Days, setUpdatedLast30Days] = useState(false);
+    const [sort, setSort] = useState(EMPTY_FILTERS.sort);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -221,6 +233,17 @@ export default function Announcements({ auth, announcements, specializationCateg
         setData('publicTime', value);
     };
 
+    const handleUpdatedLast30DaysChange = (checked) => {
+        setUpdatedLast30Days(checked);
+        setData('updatedLast30Days', checked);
+    };
+
+    const handleSortChange = (value) => {
+        const nextSort = normalizeSortValue(value);
+        setSort(nextSort);
+        setData('sort', nextSort);
+    };
+
     const handleSearchKeywordChange = (event) => {
         setData('searchKeyword', event.target.value);
     };
@@ -241,12 +264,14 @@ export default function Announcements({ auth, announcements, specializationCateg
         const isPermanent = params.get('isPermanent') || params.get('is_permanent');
         const paymentType = normalizePaymentTypeValue(params.get('paymentType') || params.get('payment_type'));
         const publicTime = params.get('publicTime');
+        const updatedLast30Days = params.get('updatedLast30Days');
+        const sort = normalizeSortValue(params.get('sort'));
         const city = params.get('city');
         const minSalary = params.get('minSalary');
         const specializationCategories = getArrayParam(params, 'specializationCategories');
         const specializations = getArrayParam(params, 'specializations');
 
-        if (searchKeyword || isSalary || noExperience || isPermanent || paymentType || publicTime || city || minSalary || specializationCategories.length || specializations.length) {
+        if (searchKeyword || isSalary || noExperience || isPermanent || paymentType || publicTime || updatedLast30Days || sort !== EMPTY_FILTERS.sort || city || minSalary || specializationCategories.length || specializations.length) {
             setData({
                 searchKeyword: searchKeyword || '',
                 specializationCategories: specializationCategories,
@@ -258,6 +283,8 @@ export default function Announcements({ auth, announcements, specializationCateg
                 isPermanent: isTruthyParam(isPermanent),
                 paymentType: paymentType,
                 publicTime: publicTime || '',
+                updatedLast30Days: isTruthyParam(updatedLast30Days),
+                sort: sort,
             });
             setCity(city || '');
             setMinSalary(minSalary || '');
@@ -266,6 +293,8 @@ export default function Announcements({ auth, announcements, specializationCateg
             setIsPermanent(isTruthyParam(isPermanent));
             setPaymentType(paymentType);
             setPublicTime(publicTime || '');
+            setUpdatedLast30Days(isTruthyParam(updatedLast30Days));
+            setSort(sort);
             setSelectedSpecializationCategories(specializationCategories);
             setSelectedSpecializations(specializations);
         }
@@ -307,6 +336,14 @@ export default function Announcements({ auth, announcements, specializationCateg
             setPaymentType(changes.paymentType);
         }
 
+        if (Object.prototype.hasOwnProperty.call(changes, 'updatedLast30Days')) {
+            setUpdatedLast30Days(changes.updatedLast30Days);
+        }
+
+        if (Object.prototype.hasOwnProperty.call(changes, 'sort')) {
+            setSort(changes.sort);
+        }
+
         submitFilters(nextData);
     };
 
@@ -318,6 +355,11 @@ export default function Announcements({ auth, announcements, specializationCateg
     ].join(' ');
 
     const paymentTypeOptions = PAYMENT_TYPE_OPTIONS.map(option => ({
+        ...option,
+        label: t(option.labelKey, { ns: 'announcements' }),
+    }));
+
+    const sortOptions = SORT_OPTIONS.map(option => ({
         ...option,
         label: t(option.labelKey, { ns: 'announcements' }),
     }));
@@ -338,6 +380,8 @@ export default function Announcements({ auth, announcements, specializationCateg
         setIsPermanent(false);
         setPaymentType('');
         setPublicTime('');
+        setUpdatedLast30Days(false);
+        setSort(EMPTY_FILTERS.sort);
     };
 
     const resetSearch = () => {
@@ -436,6 +480,24 @@ export default function Announcements({ auth, announcements, specializationCateg
                             placeholder={t('search', { ns: 'announcements' })}
                             className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
                         />
+                        <div className='text-gray-500 mt-5'>{t('sort', { ns: 'announcements' })}</div>
+                        <Select
+                            value={sort}
+                            onChange={handleSortChange}
+                            getPopupContainer={getMobileSelectPopupContainer}
+                            popupClassName="jt-mobile-select-dropdown"
+                            className="jt-mobile-filter-select block mt-2 w-full"
+                        >
+                            {sortOptions.map(option => (
+                                <Option key={option.value} value={option.value}>
+                                    {option.label}
+                                </Option>
+                            ))}
+                        </Select>
+                        <div className='jt-mobile-filter-toggle'>
+                            <div className='jt-mobile-filter-toggle__label'>{t('updated_last_30_days', { ns: 'announcements' })}</div>
+                            <Switch checked={updatedLast30Days} onChange={handleUpdatedLast30DaysChange} />
+                        </div>
                         <div className='text-gray-500 mt-5'>{t('specialization_category', { ns: 'announcements' })}</div>
                         <Select
                             mode="multiple"
@@ -697,7 +759,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                                     </div>
                                 </div>
                                 <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                                    <span className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                    <span className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('detail', { ns: 'announcements' })}</span>
                                     </span>
                                     {auth.user?.email === 'admin@example.com' && (
@@ -730,6 +792,22 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='font-bold p-3 text-sm border-b border-gray-200'>{t('filters', { ns: 'announcements' })}</div>
                         </div>
                         <div className='flex px-3 flex-col md:flex-col'>
+                            <div className='text-gray-500 mt-5'>{t('sort', { ns: 'announcements' })}</div>
+                            <Select
+                                value={sort}
+                                onChange={handleSortChange}
+                                className="block mt-2 w-full text-base"
+                            >
+                                {sortOptions.map(option => (
+                                    <Option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </Option>
+                                ))}
+                            </Select>
+                            <div className='mt-5 flex items-center'>
+                                <div>{t('updated_last_30_days', { ns: 'announcements' })}</div>
+                                <Switch className='ml-auto' checked={updatedLast30Days} onChange={handleUpdatedLast30DaysChange} />
+                            </div>
                             <div className='text-gray-500 mt-5'>{t('specialization_category', { ns: 'announcements' })}</div>
                             <Select
                                 mode="multiple"
