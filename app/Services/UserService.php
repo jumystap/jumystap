@@ -228,26 +228,38 @@ class UserService
 
     public function determineUserStatuses(array $validated): array
     {
-        $ip_status      = $validated['ipStatus1'] == 'no' ? "Нет ИП" : "Есть ИП";
-        $ip_status_kz   = $validated['ipStatus1'] == 'no' ? "ЖК жоқ" : "ЖК бар";
-        $status         = $validated['ipStatus2'] == 'no' ? "Не в активном поиске" : "В активном поиске";
-        $status_kz      = $validated['ipStatus2'] == 'no' ? "Жұмыс іздеп жүрген жоқпын" : "Жұмыс іздеп жүрмін";
-        $work_status    = $validated['ipStatus3'] == 'no' ? "Ищет заказы" : "Ищет работу";
-        $work_status_kz = $validated['ipStatus3'] == 'no' ? "Тапсырыс орындаушы" : "Мен тұрақты жұмыс іздеймін";
-
-        return [
-            'ip'             => $ip_status,
-            'ip_kz'          => $ip_status_kz,
-            'status'         => $status,
-            'status_kz'      => $status_kz,
-            'work_status'    => $work_status,
-            'work_status_kz' => $work_status_kz,
+        $mappings = [
+            'ipStatus1' => [
+                'no'  => ['ip' => 'Нет ИП', 'ip_kz' => 'ЖК жоқ'],
+                'yes' => ['ip' => 'Есть ИП', 'ip_kz' => 'ЖК бар'],
+            ],
+            'ipStatus2' => [
+                'no'  => ['status' => 'Не в активном поиске', 'status_kz' => 'Жұмыс іздеп жүрген жоқпын'],
+                'yes' => ['status' => 'В активном поиске', 'status_kz' => 'Жұмыс іздеп жүрмін'],
+            ],
+            'ipStatus3' => [
+                'no'  => ['work_status' => 'Ищет заказы', 'work_status_kz' => 'Тапсырыс орындаушы'],
+                'yes' => ['work_status' => 'Ищет работу', 'work_status_kz' => 'Мен тұрақты жұмыс іздеймін'],
+            ],
         ];
+
+        $statuses = [];
+        foreach ($mappings as $field => $values) {
+            $selectedValue = $validated[$field] ?? null;
+            if (isset($values[$selectedValue])) {
+                $statuses = array_merge($statuses, $values[$selectedValue]);
+            }
+        }
+
+        return $statuses;
     }
 
     public function getAllProfessions()
     {
-        return Profession::all();
+        return Profession::query()
+            ->select('id', 'name_ru', 'name_kz')
+            ->orderBy('name_ru')
+            ->get();
     }
 
     public function getUserWithProfessionsAndPortfolio($userId)
@@ -293,4 +305,3 @@ class UserService
         throw new \Exception("User not found");
     }
 }
-

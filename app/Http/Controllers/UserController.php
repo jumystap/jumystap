@@ -36,11 +36,10 @@ class UserController extends Controller
         $filters = $request->only(['search', 'profession', 'isLookingWork', 'withCertificate', 'withResume']);
 
         $employees = $this->userService->getEmployees($filters);
-        $professions = $this->userService->getAllProfessions();
 
         return Inertia::render('Employees', [
             'employees' => $employees,
-            'professions' => $professions,
+            'professions' => fn () => $this->userService->getAllProfessions(),
             'filters' => $filters
         ]);
     }
@@ -123,11 +122,16 @@ class UserController extends Controller
             'gender' => 'nullable',
             'description' => 'nullable|string',
             'source' => 'nullable|string',
+            'ipStatus1' => 'nullable|in:no,yes',
+            'ipStatus2' => 'nullable|in:no,yes',
+            'ipStatus3' => 'nullable|in:no,yes',
         ]);
 
         if (str_contains($validated['email'], '@noemail.local')) {
             $validated['email'] = 'noemail@noemail.local';
         }
+        $validated = array_merge($validated, $this->userService->determineUserStatuses($validated));
+        unset($validated['ipStatus1'], $validated['ipStatus2'], $validated['ipStatus3']);
 
         try {
             $user = $this->userService->storeUser($validated);
@@ -166,10 +170,9 @@ class UserController extends Controller
         $validated = $request->validated();
 
         try {
-            if (!empty($validated['ipStatus1'])) {
-                $statuses = $this->userService->determineUserStatuses($validated);
-                $validated = array_merge($validated, $statuses);
-            }
+            $statuses = $this->userService->determineUserStatuses($validated);
+            $validated = array_merge($validated, $statuses);
+            unset($validated['ipStatus1'], $validated['ipStatus2'], $validated['ipStatus3']);
 
             $this->userService->updateUser($user, $validated);
 

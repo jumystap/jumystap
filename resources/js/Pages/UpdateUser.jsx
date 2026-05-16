@@ -9,15 +9,48 @@ import {UploadOutlined} from '@ant-design/icons';
 const UpdateUser = ({user, roles}) => {
     const {t} = useTranslation();
     const employeeRole = 2;
+    const getIpStatusValue = (value) => {
+        if (value === 'Нет ИП') {
+            return 'no';
+        }
+
+        if (value === 'Есть ИП') {
+            return 'yes';
+        }
+
+        return '';
+    };
+    const getSearchStatusValue = (value) => {
+        if (value === 'Не в активном поиске') {
+            return 'no';
+        }
+
+        if (value === 'В активном поиске') {
+            return 'yes';
+        }
+
+        return '';
+    };
+    const getWorkStatusValue = (value) => {
+        if (value === 'Ищет заказы') {
+            return 'no';
+        }
+
+        if (value === 'Ищет работу') {
+            return 'yes';
+        }
+
+        return '';
+    };
 
     const {data, setData, post, processing, errors, clearErrors} = useForm({
         name: user.name || '',
         email: user.email || '',
         date_of_birth: user.date_of_birth || '',
         phone: user.phone || '',
-        ipStatus1: user.ip === 'Есть ИП' ? 'yes' : 'no',
-        ipStatus2: user.status === 'В активном поиске' ? 'yes' : 'no',
-        ipStatus3: user.work_status === 'Ищет работу' ? 'yes' : 'no',
+        ipStatus1: getIpStatusValue(user.ip),
+        ipStatus2: getSearchStatusValue(user.status),
+        ipStatus3: getWorkStatusValue(user.work_status),
         avatar: null,
         description: user.description || '',
         is_graduate: user.is_graduate,
@@ -165,6 +198,7 @@ const UpdateUser = ({user, roles}) => {
                                         onChange={e => setData('ipStatus1', e.target.value)}
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     >
+                                        <option value="" disabled>{t('select_option', {ns: 'register'})}</option>
                                         <option value="no">{t('option1', {ns: 'register'})}</option>
                                         <option value="yes">{t('option2', {ns: 'register'})}</option>
                                     </select>
@@ -180,6 +214,7 @@ const UpdateUser = ({user, roles}) => {
                                         onChange={e => setData('ipStatus2', e.target.value)}
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     >
+                                        <option value="" disabled>{t('select_option', {ns: 'register'})}</option>
                                         <option value="no">{t('option3', {ns: 'register'})}</option>
                                         <option value="yes">{t('option4', {ns: 'register'})}</option>
                                     </select>
@@ -195,6 +230,7 @@ const UpdateUser = ({user, roles}) => {
                                         onChange={e => setData('ipStatus3', e.target.value)}
                                         className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     >
+                                        <option value="" disabled>{t('select_option', {ns: 'register'})}</option>
                                         <option value="no">{t('option5', {ns: 'register'})}</option>
                                         <option value="yes">{t('option6', {ns: 'register'})}</option>
                                     </select>
@@ -282,4 +318,3 @@ const UpdateUser = ({user, roles}) => {
 };
 
 export default UpdateUser;
-

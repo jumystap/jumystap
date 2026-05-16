@@ -29,9 +29,9 @@ class ProfileUpdateRequest extends FormRequest
         ];
         if ((int)request('role_id') === Roles::EMPLOYEE->value) {
             $additional = [
-                'ipStatus1'     => 'nullable|string',
-                'ipStatus2'     => 'nullable|string',
-                'ipStatus3'     => 'nullable|string',
+                'ipStatus1'     => 'nullable|in:no,yes',
+                'ipStatus2'     => 'nullable|in:no,yes',
+                'ipStatus3'     => 'nullable|in:no,yes',
                 'date_of_birth' => [
                     'required',
                     'date',
