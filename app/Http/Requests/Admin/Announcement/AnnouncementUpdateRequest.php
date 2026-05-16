@@ -29,6 +29,7 @@ class AnnouncementUpdateRequest extends FormRequest
             'publish' => 'nullable',
             'is_top' => 'nullable',
             'is_urgent' => 'nullable',
+            'is_permanent' => 'nullable|boolean',
         ];
     }
 

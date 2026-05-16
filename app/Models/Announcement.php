@@ -35,6 +35,7 @@ class Announcement extends Model
         'cost',
         'is_top',
         'is_urgent',
+        'is_permanent',
         'is_employee_found',
         'status',
         'published_at',
@@ -57,6 +58,7 @@ class Announcement extends Model
 
     protected $casts = [
         'status' => AnnouncementStatus::class,
+        'is_permanent' => 'boolean',
     ];
 
     /**
@@ -155,6 +157,10 @@ class Announcement extends Model
 
         if (array_key_exists('recent_active_announcements', $attributes) && $attributes['recent_active_announcements'] === 'on') {
             $query->recentActive();
+        }
+
+        if (array_key_exists('is_permanent', $attributes) && $attributes['is_permanent'] == 'on') {
+            $query->where('announcements.is_permanent', true);
         }
 
         if (array_key_exists('with_salary', $attributes) && $attributes['with_salary'] == 'on') {

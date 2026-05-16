@@ -685,30 +685,16 @@ export default function Welcome({
                           </div>
                       </div>
                       <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                          {auth.user ? (
-                              <>
-                                  <a
-                                      href={`/connect/${auth.user.id}/${anonce.id}`}
-                                      onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                      className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                      <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                  </a>
-                                  {auth.user.email === 'admin@example.com' && (
-                                      <a
-                                          href={`/announcements/update/${anonce.id}`}
-                                          onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
-                                          className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                          <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
-                                      </a>
-                                  )}
-                              </>
-                          ) : (
-                              <Link
-                                  href='/login'
+                          <span className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                              <span className='font-bold'>{t('detail', { ns: 'announcements' })}</span>
+                          </span>
+                          {auth.user?.email === 'admin@example.com' && (
+                              <a
+                                  href={`/announcements/update/${anonce.id}`}
                                   onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
                                   className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                  <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                              </Link>
+                                  <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
+                              </a>
                           )}
                           <div
                               onClick={(e) => {

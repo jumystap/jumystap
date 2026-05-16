@@ -39,6 +39,7 @@ const EMPTY_FILTERS = {
     minSalary: '',
     isSalary: false,
     noExperience: false,
+    isPermanent: false,
     paymentType: '',
     publicTime: '',
 };
@@ -109,6 +110,7 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [minSalary, setMinSalary] = useState('');
     const [isSalary, setIsSalary] = useState(false);
     const [noExperience, setNoExperience] = useState(false);
+    const [isPermanent, setIsPermanent] = useState(false);
     const [paymentType, setPaymentType] = useState('');
     const [mobileCategorySearch, setMobileCategorySearch] = useState('');
     const [mobileSpecializationSearch, setMobileSpecializationSearch] = useState('');
@@ -203,6 +205,11 @@ export default function Announcements({ auth, announcements, specializationCateg
         setData('noExperience', checked);
     };
 
+    const handleIsPermanentChange = (checked) => {
+        setIsPermanent(checked);
+        setData('isPermanent', checked);
+    };
+
     const handlePaymentTypeChange = (value) => {
         const nextPaymentType = normalizePaymentTypeValue(value);
         setPaymentType(nextPaymentType);
@@ -231,6 +238,7 @@ export default function Announcements({ auth, announcements, specializationCateg
         const searchKeyword = params.get('searchKeyword');
         const isSalary = params.get('isSalary');
         const noExperience = params.get('noExperience');
+        const isPermanent = params.get('isPermanent') || params.get('is_permanent');
         const paymentType = normalizePaymentTypeValue(params.get('paymentType') || params.get('payment_type'));
         const publicTime = params.get('publicTime');
         const city = params.get('city');
@@ -238,7 +246,7 @@ export default function Announcements({ auth, announcements, specializationCateg
         const specializationCategories = getArrayParam(params, 'specializationCategories');
         const specializations = getArrayParam(params, 'specializations');
 
-        if (searchKeyword || isSalary || noExperience || paymentType || publicTime || city || minSalary || specializationCategories.length || specializations.length) {
+        if (searchKeyword || isSalary || noExperience || isPermanent || paymentType || publicTime || city || minSalary || specializationCategories.length || specializations.length) {
             setData({
                 searchKeyword: searchKeyword || '',
                 specializationCategories: specializationCategories,
@@ -247,6 +255,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                 minSalary: minSalary || '',
                 isSalary: isTruthyParam(isSalary),
                 noExperience: isTruthyParam(noExperience),
+                isPermanent: isTruthyParam(isPermanent),
                 paymentType: paymentType,
                 publicTime: publicTime || '',
             });
@@ -254,6 +263,7 @@ export default function Announcements({ auth, announcements, specializationCateg
             setMinSalary(minSalary || '');
             setIsSalary(isTruthyParam(isSalary));
             setNoExperience(isTruthyParam(noExperience));
+            setIsPermanent(isTruthyParam(isPermanent));
             setPaymentType(paymentType);
             setPublicTime(publicTime || '');
             setSelectedSpecializationCategories(specializationCategories);
@@ -289,6 +299,10 @@ export default function Announcements({ auth, announcements, specializationCateg
             setNoExperience(changes.noExperience);
         }
 
+        if (Object.prototype.hasOwnProperty.call(changes, 'isPermanent')) {
+            setIsPermanent(changes.isPermanent);
+        }
+
         if (Object.prototype.hasOwnProperty.call(changes, 'paymentType')) {
             setPaymentType(changes.paymentType);
         }
@@ -321,6 +335,7 @@ export default function Announcements({ auth, announcements, specializationCateg
         setMinSalary('');
         setIsSalary(false);
         setNoExperience(false);
+        setIsPermanent(false);
         setPaymentType('');
         setPublicTime('');
     };
@@ -503,6 +518,10 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='jt-mobile-filter-toggle__label'>{t('no_experience', { ns: 'announcements' })}</div>
                             <Switch checked={noExperience} onChange={handleNoExperienceChange} />
                         </div>
+                        <div className='jt-mobile-filter-toggle'>
+                            <div className='jt-mobile-filter-toggle__label'>{t('permanent_hiring', { ns: 'announcements' })}</div>
+                            <Switch checked={isPermanent} onChange={handleIsPermanentChange} />
+                        </div>
                         <div className='text-gray-500 mt-5'>{t('payment_type', { ns: 'announcements' })}</div>
                         <Select
                             allowClear
@@ -600,6 +619,13 @@ export default function Announcements({ auth, announcements, specializationCateg
                             >
                                 {t('daily_payment', { ns: 'announcements' })}
                             </button>
+                            <button
+                                type="button"
+                                onClick={() => applyQuickFilter({ isPermanent: !isPermanent })}
+                                className={quickFilterClassName(isPermanent)}
+                            >
+                                {t('permanent_hiring', { ns: 'announcements' })}
+                            </button>
                         </div>
                         {announcements.data.map((anonce, index) => (
                             <Link href={`/announcement/${anonce.id}`} key={index} className={`block px-5 py-5 border rounded-lg hover:border-blue-500 transition-all duration-150 border-gray-200 md:mx-5 mx-3 mt-3`}>
@@ -615,6 +641,11 @@ export default function Announcements({ auth, announcements, specializationCateg
                                 <div className='mt-5 text-lg font-bold'>
                                     {anonce.title}
                                 </div>
+                                {anonce.is_permanent && (
+                                    <div className='mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700'>
+                                        {t('permanent_hiring', { ns: 'announcements' })}
+                                    </div>
+                                )}
                                 <div className='flex md:mt-2 mt-2 gap-x-3 items-center'>
                                     <div className='md:text-xl text-xl font-regular'>
                                         {anonce.salary_type === "exact" &&
@@ -666,30 +697,16 @@ export default function Announcements({ auth, announcements, specializationCateg
                                     </div>
                                 </div>
                                 <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
-                                    {auth.user ? (
-                                        <>
-                                            <a
-                                                href={`/connect/${auth.user.id}/${anonce.id}`}
-                                                onClick={(e) => e.stopPropagation()}
-                                                className='text-blue-500 text-center rounded-lg text-sm text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                            </a>
-                                            {auth.user.email === 'admin@example.com' && (
-                                                <a
-                                                    href={`/announcements/update/${anonce.id}`}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                                    <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
-                                                </a>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <Link
-                                            href='/login'
+                                    <span className='text-blue-500 text-center rounded-lg text-sm items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                        <span className='font-bold'>{t('detail', { ns: 'announcements' })}</span>
+                                    </span>
+                                    {auth.user?.email === 'admin@example.com' && (
+                                        <a
+                                            href={`/announcements/update/${anonce.id}`}
                                             onClick={(e) => e.stopPropagation()}
-                                            className='text-blue-500 text-center rounded-lg text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                        </Link>
+                                            className='text-blue-500 text-center rounded-lg items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
+                                            <span className='font-bold'>{t('edit', { ns: 'announcements' })}</span>
+                                        </a>
                                     )}
                                     <div
                                         onClick={(e) => {
@@ -784,6 +801,10 @@ export default function Announcements({ auth, announcements, specializationCateg
                             <div className='mt-5 flex items-center'>
                                 <div>{t('no_experience', { ns: 'announcements' })}</div>
                                 <Switch className='ml-auto' checked={noExperience} onChange={handleNoExperienceChange} />
+                            </div>
+                            <div className='mt-5 flex items-center'>
+                                <div>{t('permanent_hiring', { ns: 'announcements' })}</div>
+                                <Switch className='ml-auto' checked={isPermanent} onChange={handleIsPermanentChange} />
                             </div>
                             <div className='mt-5'>{t('payment_type', { ns: 'announcements' })}</div>
                             <Select

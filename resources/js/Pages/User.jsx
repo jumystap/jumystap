@@ -13,11 +13,17 @@ const formatCreatedAt = (createdAt) => {
     return formatDistanceToNow(date, { locale: ru, addSuffix: true });
 };
 
-export default function User({ auth, user, contactShow, employees, userProfessions, resumes }) {
+export default function User({ auth, user, contactShow, employees, userProfessions, resumes, roles = {} }) {
     const { t, i18n } = useTranslation('profile');
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const isRussian = i18n.language === 'ru';
+    const currentUserRoleId = Number(auth?.user?.role?.id);
+    const employerRoleIds = [
+        Number(roles.employer),
+        Number(roles.company),
+    ];
+    const isEmployer = employerRoleIds.includes(currentUserRoleId);
 
     const openImageModal = (index) => {
         setCurrentImageIndex(index);
@@ -122,7 +128,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                     <div className="md:ml-auto">
                                         {auth.user == null ? (
                                             <Link
-                                                href="/login"
+                                                href={`/login?redirect=${encodeURIComponent(`/user/${user.id}`)}`}
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
                                                 {t("contact", { ns: "profile" })}
@@ -134,7 +140,13 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
                                             >
                                                 {t("contact", { ns: "profile" })}
-                                            </a> : ''
+                                            </a> : (
+                                                isEmployer && (
+                                                    <div className="max-w-xs rounded-lg bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
+                                                        {t("approved_announcement_required", { ns: "profile" })}
+                                                    </div>
+                                                )
+                                            )
                                         )}
                                     </div>
                                 </div>

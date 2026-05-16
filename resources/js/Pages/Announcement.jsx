@@ -138,6 +138,11 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='p-5 rounded-lg border border-gray-200'>
                             <div className=''>
                                 <div className='text-xl md:text-2xl mt-1 font-bold max-w-[700px]'>{announcement.title}</div>
+                                {announcement.is_permanent && (
+                                    <div className='mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700'>
+                                        {t('permanent_hiring')}
+                                    </div>
+                                )}
                                 <div className="mt-2 text-sm font-light">
                                     {announcement.city ?? t('is_remote', { ns: 'announcements' })}
                                      {announcement.location}
@@ -296,6 +301,12 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <div className='text-sm text-gray-500'>{t('education')}</div>
                                 <div>{announcement.education}</div>
                             </div>
+                            {announcement.is_permanent && (
+                                <div>
+                                    <div className='text-sm text-gray-500'>{t('permanent_hiring')}</div>
+                                    <div>{t('yes')}</div>
+                                </div>
+                            )}
                         </div>
                         <div className='mt-5 rounded-lg border mx-5'>
                             <div className='mx-5'>

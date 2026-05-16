@@ -76,10 +76,21 @@ class UserRepository
             $query->whereHas('resumes');
         }
 
+        $query->leftJoinSub(
+            DB::table('user_resumes')
+                ->select('user_id', DB::raw('COALESCE(MAX(updated_at), MAX(created_at)) as latest_resume_date'))
+                ->groupBy('user_id'),
+            'latest_resumes',
+            'users.id',
+            '=',
+            'latest_resumes.user_id'
+        )->orderByDesc('latest_resume_date');
+
         $users = $query->paginate($perPage)->withQueryString();
 
         $users->transform(function ($user) {
             $user->professions = $this->getUserWithProfessions($user->id);
+            $user->makeHidden(['email', 'phone']);
             return $user;
         });
 
@@ -146,8 +157,8 @@ class UserRepository
                     ->select('professions.name_ru as profession_name', 'professions.name_kz as professions_name_kz', 'user_professions.certificate_number')
                     ->where('user_professions.user_id', $user->id)
                     ->get();
+                $user->makeHidden(['email', 'phone']);
                 return $user;
             });
     }
 }
-

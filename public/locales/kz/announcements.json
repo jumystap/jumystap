@@ -20,6 +20,7 @@
     "specified_income": "Тек жалақысы көрсетілген",
     "with_salary": "Жалақымен",
     "no_experience": "Жұмыс тәжірибесі қажет емес",
+    "permanent_hiring": "Тұрақты қабылдау",
     "quick_no_experience": "Тәжірибесіз",
     "apply": "Іздеу",
     "detail": "Толығырақ",
@@ -69,5 +70,6 @@
     "select_category": "Санатын таңдаңыз",
     "business_type": "Қызмет түрі",
     "is_graduate": "JOLTAP түлегі",
-    "is_remote": "Қашықтықтан"
+    "is_remote": "Қашықтықтан",
+    "yes": "Иә"
 }

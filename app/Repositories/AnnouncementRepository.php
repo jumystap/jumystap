@@ -36,6 +36,7 @@ class AnnouncementRepository
                 'payment_type',
                 'experience',
                 'work_time',
+                'is_permanent',
                 'updated_at',
                 'published_at',
             ])
@@ -99,6 +100,10 @@ class AnnouncementRepository
             $query->where('experience', 'Без опыта работы');
         }
 
+        if ($this->filterIsEnabled($filters['isPermanent'] ?? false)) {
+            $query->where('is_permanent', true);
+        }
+
         if (!empty($filters['paymentType'])) {
             $paymentType = $this->normalizePaymentType($filters['paymentType']);
 
@@ -149,6 +154,7 @@ class AnnouncementRepository
                 'cost_min',
                 'cost_max',
                 'work_time',
+                'is_permanent',
                 'published_at',
             ])
             ->orderBy('published_at', 'desc')

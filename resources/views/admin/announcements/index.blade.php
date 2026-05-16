@@ -134,9 +134,18 @@
                                             <input type="checkbox" name="search[with_salary]">
                                         @endif
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <br/>
-                                        <label for="recent_active_announcements">{{ __('Только активные вакансии за последние 6 месяцев') }}</label>
+                                        <label for="is_permanent">{{ __('Постоянный набор') }}</label>
+                                        @if (isset($search['is_permanent']) && $search['is_permanent'] == 'on')
+                                            <input type="checkbox" id="is_permanent" name="search[is_permanent]" checked>
+                                        @else
+                                            <input type="checkbox" id="is_permanent" name="search[is_permanent]">
+                                        @endif
+                                    </div>
+                                    <div class="col-md-3">
+                                        <br/>
+                                        <label for="recent_active_announcements">{{ __('Активные вакансии за последние 6 мес') }}</label>
                                         <input type="checkbox" id="recent_active_announcements" name="search[recent_active_announcements]"
                                             @checked($isRecentActiveAnnouncements)>
                                     </div>

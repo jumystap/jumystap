@@ -49,6 +49,17 @@
             <input type="checkbox" name="is_urgent" {{ old('is_urgent') ? 'checked' : '' }} value="1">
         @endif
     </div>
+    <div class="form-group">
+        <label for="is_permanent">{{ __('Постоянный набор') }}</label>
+        <input type="hidden" name="is_permanent" value="0">
+        <input
+            type="checkbox"
+            name="is_permanent"
+            id="is_permanent"
+            {{ old('is_permanent', $announcement->is_permanent ?? false) ? 'checked' : '' }}
+            value="1"
+        >
+    </div>
     @if(count($announcement->history))
         <table class="table table-bordered">
             <thead>

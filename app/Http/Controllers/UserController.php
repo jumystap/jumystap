@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Roles;
+use App\Enums\AnnouncementStatus;
 use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Models\Announcement;
 use App\Models\Visit;
@@ -184,15 +185,18 @@ class UserController extends Controller
 
     public function show($id): mixed
     {
-        $contactShow = false;
         $user = $this->userService->getUserWithProfessionsAndPortfolio($id);
 
         if($user->role_id != Roles::EMPLOYEE->value){
             return Inertia::render('NotFound');
         }
-//        if($user->status === 'В активном поиске'){
-//            $contactShow = true;
-//        }
+
+        $contactShow = $this->canAuthenticatedUserContactEmployee();
+        $user->makeHidden('email');
+
+        if (! $contactShow) {
+            $user->makeHidden('phone');
+        }
 
         $userProfessions = $this->userService->getUserProfessions($id);
 
@@ -202,13 +206,17 @@ class UserController extends Controller
         $resumes = UserResume::where('user_id', $id)
             ->with(['organizations', 'languages'])
             ->get()
-            ->map(function ($resume) {
+            ->map(function ($resume) use ($contactShow) {
                 $resume->desired_field_name = $this->getSpecializationName($resume->desired_field);
 
                 $resume->organizations = $resume->organizations->map(function ($organization) {
                     $organization->position_name = $this->getSpecializationName($organization->position_id);
                     return $organization;
                 });
+
+                if (! $contactShow) {
+                    $resume->makeHidden(['email', 'phone']);
+                }
 
                 return $resume;
             });
@@ -219,7 +227,29 @@ class UserController extends Controller
             'employees' => $employees,
             'userProfessions' => $userProfessions,
             'resumes' => $resumes,
+            'roles' => [
+                'employer' => Roles::EMPLOYER->value,
+                'company' => Roles::COMPANY->value,
+            ],
         ]);
+    }
+
+    private function canAuthenticatedUserContactEmployee(): bool
+    {
+        $currentUser = Auth::user();
+        $employerRoleIds = collect([
+            Roles::EMPLOYER->value,
+            Roles::COMPANY->value,
+        ]);
+
+        if (! $currentUser || ! $employerRoleIds->contains((int) $currentUser->role_id)) {
+            return false;
+        }
+
+        return Announcement::query()
+            ->where('user_id', $currentUser->id)
+            ->where('status', AnnouncementStatus::ACTIVE->value)
+            ->exists();
     }
 
     public function profile(): mixed
@@ -350,4 +380,3 @@ class UserController extends Controller
         return redirect('/');
     }
 }
-

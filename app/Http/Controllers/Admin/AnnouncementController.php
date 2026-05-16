@@ -34,6 +34,7 @@ class AnnouncementController extends Controller
             'specialization_category_id' => null,
             'no_experience'              => null,
             'with_salary'                => null,
+            'is_permanent'               => null,
             'type'                       => null,
             'company_name'               => null,
             'title'                      => null,
@@ -82,6 +83,7 @@ class AnnouncementController extends Controller
         }
         $validated['is_top'] = $validated['is_top'] ?? 0;
         $validated['is_urgent'] = $validated['is_urgent'] ?? 0;
+        $validated['is_permanent'] = $validated['is_permanent'] ?? 0;
 
         $updated = $announcement->update($validated);
 

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
 use App\Enums\DrivingLicenseCategory;
 use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
 use App\Enums\WorkSchedule;
+use App\Models\Announcement;
 use App\Models\UserResume;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -115,9 +117,42 @@ class UserResumeController extends Controller
         $resume = UserResume::where('id', $id)
             ->with(['organizations', 'languages', 'user'])
             ->first();
+
+        if ($resume && ! $this->canAuthenticatedUserViewResumeContact($resume)) {
+            $resume->makeHidden(['email', 'phone']);
+            $resume->user?->makeHidden(['email', 'phone']);
+        }
+
         return Inertia::render('Resume', [
             'resume' => $resume,
         ]);
+    }
+
+    private function canAuthenticatedUserViewResumeContact(UserResume $resume): bool
+    {
+        $currentUser = Auth::user();
+
+        if (! $currentUser) {
+            return false;
+        }
+
+        if ($resume->user_id === $currentUser->id) {
+            return true;
+        }
+
+        $employerRoleIds = collect([
+            Roles::EMPLOYER->value,
+            Roles::COMPANY->value,
+        ]);
+
+        if (! $employerRoleIds->contains((int) $currentUser->role_id)) {
+            return false;
+        }
+
+        return Announcement::query()
+            ->where('user_id', $currentUser->id)
+            ->where('status', AnnouncementStatus::ACTIVE->value)
+            ->exists();
     }
 
     private function getSpecializationName($id)

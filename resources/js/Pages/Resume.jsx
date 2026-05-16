@@ -36,12 +36,14 @@ export default function Resume({ user, resume }) {
                                         <MapPin className="w-4 h-4" />
                                         <span>{resume.city}{resume.city == 'Астана' && resume.district && `, район ${resume.district}`}</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <svg className="w-4 h-4" fill="none" strokeWidth="2" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
-                                        </svg>
-                                        <span>{resume.user.email}</span>
-                                    </div>
+                                    {resume.user.email && (
+                                        <div className="flex items-center gap-2">
+                                            <svg className="w-4 h-4" fill="none" strokeWidth="2" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+                                            </svg>
+                                            <span>{resume.user.email}</span>
+                                        </div>
+                                    )}
                                     {/*<div className="flex items-center gap-2">*/}
                                     {/*    <svg*/}
                                     {/*        className="w-4 h-4"*/}

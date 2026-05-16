@@ -20,6 +20,7 @@
     "specified_income": "Указан доход",
     "with_salary": "С зарплатой",
     "no_experience": "Без опыта работы",
+    "permanent_hiring": "Постоянный набор",
     "quick_no_experience": "Без опыта",
     "apply": "Применить",
     "detail": "Подробнее",
@@ -69,5 +70,6 @@
     "select_category": "Выберите Категорию",
     "business_type": "Вид деятельности",
     "is_graduate": "Выпускник JOLTAP",
-    "is_remote": "Удаленно"
+    "is_remote": "Удаленно",
+    "yes": "Да"
 }
