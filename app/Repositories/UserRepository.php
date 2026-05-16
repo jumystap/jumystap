@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\Roles;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -9,87 +10,83 @@ class UserRepository
 {
     public function getUsersByRoleName($roleName, $perPage, $filters = [])
     {
-        $query = User::whereHas('role', function ($query) use ($roleName) {
-            $query->where('name', $roleName);
-        })->with('role');
+        $roleId = $this->getRoleId($roleName);
 
-        // Apply filters
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
+        if (!$roleId) {
+            return User::query()->whereRaw('1 = 0')->paginate($perPage)->withQueryString();
+        }
 
-            // 🔥 быстрый поиск профессий
-            $professionIdsBySearch = DB::table('professions')
-                ->where('name_ru', 'like', "%$search%")
-                ->orWhere('name_kz', 'like', "%$search%")
-                ->pluck('id');
+        $query = User::query()
+            ->select('users.*')
+            ->where('users.role_id', $roleId);
 
-            $query->where(function($q) use ($search, $professionIdsBySearch) {
+        $search = trim($filters['search'] ?? '');
+        if ($search !== '') {
+            $like = '%' . $this->escapeLike($search) . '%';
 
-                // поиск в users
-                $q->where('name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%");
-
-                // поиск в resumes
-                $q->orWhereHas('resumes', function($r) use ($search) {
-                    $r->where('position', 'like', "%$search%")
-                        ->orWhere('about', 'like', "%$search%");
-                });
-
-                // 🔥 быстрый поиск в professions через pivot
-                if ($professionIdsBySearch->isNotEmpty()) {
-                    $q->orWhereIn('id', function ($sub) use ($professionIdsBySearch) {
-                        $sub->select('user_id')
+            $query->where(function ($q) use ($like) {
+                $q->where('users.name', 'like', $like)
+                    ->orWhere('users.email', 'like', $like)
+                    ->orWhereExists(function ($sub) use ($like) {
+                        $sub->selectRaw('1')
+                            ->from('user_resumes')
+                            ->whereColumn('user_resumes.user_id', 'users.id')
+                            ->where(function ($resumeQuery) use ($like) {
+                                $resumeQuery->where('user_resumes.position', 'like', $like)
+                                    ->orWhere('user_resumes.about', 'like', $like);
+                            });
+                    })
+                    ->orWhereExists(function ($sub) use ($like) {
+                        $sub->selectRaw('1')
                             ->from('user_professions')
-                            ->whereIn('profession_id', $professionIdsBySearch);
+                            ->join('professions', 'professions.id', '=', 'user_professions.profession_id')
+                            ->whereColumn('user_professions.user_id', 'users.id')
+                            ->where(function ($professionQuery) use ($like) {
+                                $professionQuery->where('professions.name_ru', 'like', $like)
+                                    ->orWhere('professions.name_kz', 'like', $like);
+                            });
                     });
-                }
-
             });
         }
 
-
         if (!empty($filters['profession'])) {
-
-            // Достаём всех пользователей по профессии через pivot (максимально быстро)
-            $userIds = DB::table('user_professions')
-                ->where('profession_id', $filters['profession'])
-                ->pluck('user_id');
-
-            // Если ничего не найдено - сразу возвращаем пустой результат
-            if ($userIds->isEmpty()) {
-                return collect([]); // или empty paginator - как тебе нужно
-            }
-
-            // Фильтруем по id
-            $query->whereIn('id', $userIds);
+            $query->whereExists(function ($sub) use ($filters) {
+                $sub->selectRaw('1')
+                    ->from('user_professions')
+                    ->whereColumn('user_professions.user_id', 'users.id')
+                    ->where('user_professions.profession_id', $filters['profession']);
+            });
         }
 
         if (!empty($filters['isLookingWork']) && $filters['isLookingWork'] == 'true') {
-            $query->where('status', 'В активном поиске');
+            $query->where('users.status', 'В активном поиске');
         }
 
         if (!empty($filters['withCertificate']) && $filters['withCertificate'] == 'true') {
-            $query->where('is_graduate', true);
+            $query->where('users.is_graduate', true);
         }
 
         if (!empty($filters['withResume']) && $filters['withResume'] == 'true') {
-            $query->whereHas('resumes');
+            $query->whereExists(function ($sub) {
+                $sub->selectRaw('1')
+                    ->from('user_resumes')
+                    ->whereColumn('user_resumes.user_id', 'users.id');
+            });
         }
 
-        $query->leftJoinSub(
-            DB::table('user_resumes')
-                ->select('user_id', DB::raw('COALESCE(MAX(updated_at), MAX(created_at)) as latest_resume_date'))
-                ->groupBy('user_id'),
-            'latest_resumes',
-            'users.id',
-            '=',
-            'latest_resumes.user_id'
-        )->orderByDesc('latest_resume_date');
+        $latestResumeDate = DB::table('user_resumes')
+            ->selectRaw('COALESCE(MAX(updated_at), MAX(created_at))')
+            ->whereColumn('user_resumes.user_id', 'users.id');
+
+        $query->selectSub($latestResumeDate, 'latest_resume_date')
+            ->orderByDesc('latest_resume_date')
+            ->orderByDesc('users.id');
 
         $users = $query->paginate($perPage)->withQueryString();
 
-        $users->transform(function ($user) {
-            $user->professions = $this->getUserWithProfessions($user->id);
+        $professionsByUser = $this->getProfessionsForUsers($users->getCollection()->pluck('id'));
+        $users->getCollection()->transform(function ($user) use ($professionsByUser) {
+            $user->professions = $professionsByUser->get($user->id, collect())->values();
             $user->makeHidden(['email', 'phone']);
             return $user;
         });
@@ -104,6 +101,43 @@ class UserRepository
             ->select('professions.id as profession_id', 'professions.name_ru as profession_name', 'professions.name_kz as profession_name_kz', 'user_professions.certificate_number', 'user_professions.certificate_link')
             ->where('user_professions.user_id', $userId)
             ->get();
+    }
+
+    private function getRoleId(string $roleName): ?int
+    {
+        return match ($roleName) {
+            'employee' => Roles::EMPLOYEE->value,
+            'employer' => Roles::EMPLOYER->value,
+            'company' => Roles::COMPANY->value,
+            default => DB::table('roles')->where('name', $roleName)->value('id'),
+        };
+    }
+
+    private function escapeLike(string $value): string
+    {
+        return addcslashes($value, '\%_');
+    }
+
+    private function getProfessionsForUsers($userIds)
+    {
+        if ($userIds->isEmpty()) {
+            return collect();
+        }
+
+        return DB::table('user_professions')
+            ->join('professions', 'user_professions.profession_id', '=', 'professions.id')
+            ->select(
+                'user_professions.user_id',
+                'professions.id as profession_id',
+                'professions.name_ru as profession_name',
+                'professions.name_kz as profession_name_kz',
+                'user_professions.certificate_number',
+                'user_professions.certificate_link'
+            )
+            ->whereIn('user_professions.user_id', $userIds)
+            ->orderBy('professions.name_ru')
+            ->get()
+            ->groupBy('user_id');
     }
 
     public function getUserProfessionIds($userId)

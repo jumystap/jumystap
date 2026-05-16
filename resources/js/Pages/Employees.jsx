@@ -1,4 +1,4 @@
-import React, {useCallback, useState, memo, useEffect} from 'react';
+import React, {useCallback, useState, memo} from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import {Head, Link, router, useForm} from '@inertiajs/react';
@@ -12,21 +12,31 @@ import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 export default function Employees({ auth, employees, professions, filters = {} }) {
     const { t, i18n } = useTranslation();
+    const toBoolean = (value) => value === true || value === 'true';
+    const initialFilters = {
+        search: filters.search || '',
+        profession: filters.profession || '',
+        isLookingWork: toBoolean(filters.isLookingWork),
+        withCertificate: toBoolean(filters.withCertificate),
+        withResume: toBoolean(filters.withResume),
+    };
     const [isOpen, setIsOpen] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [search, setSearch] = useState('');
-    const [profession, setProfession] = useState('');
-    const [isLookingWork, setIsLookingWork] = useState(false);
-    const [withCertificate, setWithCertificate] = useState(false);
-    const [withResume, setWithResume] = useState(false);
+    const [profession, setProfession] = useState(initialFilters.profession);
+    const [isLookingWork, setIsLookingWork] = useState(initialFilters.isLookingWork);
+    const [withCertificate, setWithCertificate] = useState(initialFilters.withCertificate);
+    const [withResume, setWithResume] = useState(initialFilters.withResume);
 
-    const { data, setData, get } = useForm({
-        search: '',
-        profession: '',
-        isLookingWork: false,
-        withCertificate: false,
-        withResume: false,
-    });
+    const { data, setData } = useForm(initialFilters);
+
+    const reloadEmployees = (params = data) => {
+        router.get('/employees', params, {
+            preserveScroll: true,
+            preserveState: true,
+            replace: true,
+            only: ['employees', 'filters'],
+        });
+    };
 
     const handleFeedbackSubmit = (feedback) => {
         axios.post('/send-feedback', { feedback }).then((response) => {
@@ -38,30 +48,27 @@ export default function Employees({ auth, employees, professions, filters = {} }
 
     const handleSearch = () => {
         setIsFilterOpen(false)
-        get('/employees', { preserveScroll: true, preserveState: true });
+        reloadEmployees();
     };
 
     const resetSearch = () => {
-        setData({
+        const emptyFilters = {
             search: '',
             profession: '',
             isLookingWork: false,
             withCertificate: false,
             withResume: false,
-        });
-        setSearch('');
+        };
+
+        setData(emptyFilters);
         setProfession('');
         setIsLookingWork(false);
         setWithResume(false);
         setWithCertificate(false);
-        get('/employees', {
-            preserveScroll: true,
-            preserveState: true
-        });
+        reloadEmployees(emptyFilters);
     };
 
     const handleSearchChange = (event) => {
-        setSearch(event.target.value);
         setData('search', event.target.value);
     };
     const handleProfessionChange = (event) => {
@@ -83,29 +90,6 @@ export default function Employees({ auth, employees, professions, filters = {} }
         setWithResume(checked);
         setData('withResume', checked);
     };
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get('search');
-        const profession = params.get('profession');
-        const isLookingWork = params.get('isLookingWork');
-        const withCertificate = params.get('withCertificate');
-        const withResume = params.get('withResume');
-        if (search || profession || isLookingWork || withCertificate || withResume) {
-            setData({
-                search: search || '',
-                profession: profession || '',
-                isLookingWork: isLookingWork === 'true',
-                withCertificate: withCertificate === 'true',
-                withResume: withResume === 'true',
-            });
-            setSearch(search || '');
-            setProfession(profession || '');
-            setIsLookingWork(isLookingWork === 'true');
-            setWithCertificate(withCertificate === 'true');
-            setWithResume(withResume === 'true');
-        }
-    }, []);
 
     const toDoubleString = useCallback((value) => {
         const number = parseFloat(value);
@@ -282,7 +266,11 @@ export default function Employees({ auth, employees, professions, filters = {} }
                         ))}
 
                         <div className="mt-6">
-                            <Pagination links={employees.links} />
+                            <Pagination
+                                links={employees.links}
+                                only={['employees', 'filters']}
+                                preserveState
+                            />
                         </div>
                     </div>
                 </div>

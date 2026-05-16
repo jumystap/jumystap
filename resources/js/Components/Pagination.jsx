@@ -2,7 +2,16 @@ import React from 'react';
 import { Link } from '@inertiajs/react';
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const Pagination = ({ links, searchKeyword }) => {
+const Pagination = ({
+    links = [],
+    searchKeyword,
+    only,
+    preserveState = false,
+}) => {
+    if (!links.length) {
+        return null;
+    }
+
     const filteredLinks = links.filter(link =>
         !link.label.includes('Previous') && !link.label.includes('Next')
     );
@@ -38,6 +47,9 @@ const Pagination = ({ links, searchKeyword }) => {
                     <Link
                         href={appendSearchToUrl(links.find(link => link.label.includes('Previous')).url)}
                         className='block px-2'
+                        only={only}
+                        preserveState={preserveState}
+                        preserveScroll
                     >
                         <IoIosArrowBack />
                     </Link>
@@ -48,6 +60,9 @@ const Pagination = ({ links, searchKeyword }) => {
                         <Link
                             href={appendSearchToUrl(filteredLinks[0].url)}
                             className="block px-3 py-1 rounded-full text-gray-400"
+                            only={only}
+                            preserveState={preserveState}
+                            preserveScroll
                         >
                             {filteredLinks[0].label}
                         </Link>
@@ -64,6 +79,9 @@ const Pagination = ({ links, searchKeyword }) => {
                                 ? 'bg-gray-200 text-gray-700 font-bold'
                                 : 'text-gray-400 hover:text-gray-600'
                         }`}
+                        only={only}
+                        preserveState={preserveState}
+                        preserveScroll
                     >
                         {link.label}
                     </Link>
@@ -75,6 +93,9 @@ const Pagination = ({ links, searchKeyword }) => {
                         <Link
                             href={appendSearchToUrl(filteredLinks[totalPages - 1].url)}
                             className="block px-3 py-1 rounded-full text-gray-400"
+                            only={only}
+                            preserveState={preserveState}
+                            preserveScroll
                         >
                             {filteredLinks[totalPages - 1].label}
                         </Link>
@@ -85,6 +106,9 @@ const Pagination = ({ links, searchKeyword }) => {
                     <Link
                         href={appendSearchToUrl(links.find(link => link.label.includes('Next')).url)}
                         className='block px-2'
+                        only={only}
+                        preserveState={preserveState}
+                        preserveScroll
                     >
                         <IoIosArrowForward />
                     </Link>
