@@ -40,7 +40,8 @@ class AnnouncementRepository
                 'updated_at',
                 'published_at',
             ])
-            ->orderBy('published_at', 'desc');
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id');
 
         if (!empty($filters['searchKeyword'])) {
             $keyword = $filters['searchKeyword'];
@@ -156,8 +157,10 @@ class AnnouncementRepository
                 'work_time',
                 'is_permanent',
                 'published_at',
+                'updated_at',
             ])
-            ->orderBy('published_at', 'desc')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
             ->where('id', '!=', $id)
             ->where('specialization_id', $specializationId);
 
@@ -168,7 +171,8 @@ class AnnouncementRepository
     {
         return Announcement::query()
             ->active()
-            ->orderBy('published_at', 'desc')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
             ->with('user')
             ->whereIn('id', $ids)
             ->paginate(10);

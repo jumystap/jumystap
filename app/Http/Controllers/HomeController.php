@@ -18,6 +18,9 @@ class HomeController extends Controller
     public function index(): mixed
     {
         $searchKeyword = request()->input('searchKeyword');
+        $orderAnnouncementsByUpdate = fn ($query) => $query
+            ->orderByDesc("updated_at")
+            ->orderByDesc("id");
 
         $getUserProfessions = function ($userId) {
             return DB::table("user_professions")
@@ -79,7 +82,7 @@ class HomeController extends Controller
                                 ->orWhere("description", "like", "%{$keyword}%");
                         });
                     })
-                    ->orderBy("created_at", "desc")
+                    ->tap($orderAnnouncementsByUpdate)
                     ->get();
 
                 $matchedByCategory = Announcement::query()
@@ -92,7 +95,7 @@ class HomeController extends Controller
                                 ->orWhere("description", "like", "%{$keyword}%");
                         });
                     })
-                    ->orderBy("created_at", "desc")
+                    ->tap($orderAnnouncementsByUpdate)
                     ->get();
 
                 $otherAnnouncements = Announcement::query()
@@ -104,7 +107,7 @@ class HomeController extends Controller
                                 ->orWhere("description", "like", "%{$keyword}%");
                         });
                     })
-                    ->orderBy("created_at", "desc")
+                    ->tap($orderAnnouncementsByUpdate)
                     ->get();
 
                 $allAnnouncements = $matchedBySpecialization
@@ -134,7 +137,7 @@ class HomeController extends Controller
                             ->orWhere("description", "like", "%{$keyword}%");
                     });
                 })
-                ->orderBy("created_at", "desc")
+                ->tap($orderAnnouncementsByUpdate)
                 ->paginate(10)
                 ->withQueryString();
         }
