@@ -85,8 +85,10 @@ class UserRepository
         $users = $query->paginate($perPage)->withQueryString();
 
         $professionsByUser = $this->getProfessionsForUsers($users->getCollection()->pluck('id'));
-        $users->getCollection()->transform(function ($user) use ($professionsByUser) {
+        $resumesByUser = $this->getResumesForUsers($users->getCollection()->pluck('id'));
+        $users->getCollection()->transform(function ($user) use ($professionsByUser, $resumesByUser) {
             $user->professions = $professionsByUser->get($user->id, collect())->values();
+            $user->resume_position = $resumesByUser->get($user->id);
             $user->makeHidden(['email', 'phone']);
             return $user;
         });
@@ -194,5 +196,20 @@ class UserRepository
                 $user->makeHidden(['email', 'phone']);
                 return $user;
             });
+    }
+
+    private function getResumesForUsers($userIds)
+    {
+        if ($userIds->isEmpty()) {
+            return collect();
+        }
+
+        return DB::table('user_resumes')
+            ->select('user_id', 'position')
+            ->whereIn('user_id', $userIds)
+            ->orderByDesc('updated_at')
+            ->get()
+            ->unique('user_id')
+            ->pluck('position', 'user_id');
     }
 }

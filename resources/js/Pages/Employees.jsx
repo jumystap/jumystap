@@ -221,9 +221,11 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             alt=""
                                             className="w-14 h-14 object-cover rounded-full ring-2 ring-gray-100"
                                         />
-                                        <div className="mt-1 px-2 py-0.5 text-sm font-medium text-gray-600 bg-gray-100 rounded">
-                                            {toDoubleString(employee.rating)}
-                                        </div>
+                                        {parseFloat(employee.rating) > 0 && (
+                                            <div className="mt-1 px-2 py-0.5 text-sm font-medium text-gray-600 bg-gray-100 rounded">
+                                                {toDoubleString(employee.rating)}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="flex-grow">
@@ -231,10 +233,18 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             <h2 className="font-bold text-gray-900">
                                                 {employee.name}
                                             </h2>
-                                            {employee.is_graduate === 1 && (
+                                            {employee.is_graduate === 1 ? (
                                                 <RiVerifiedBadgeFill className="text-xl text-blue-500" />
+                                            ) : (
+                                                <span className="text-xs font-medium text-gray-500">невыпускник</span>
                                             )}
                                         </div>
+
+                                        {employee.resume_position && (
+                                            <div className="mt-1 text-sm font-medium text-gray-700">
+                                                {employee.resume_position}
+                                            </div>
+                                        )}
 
                                         {employee.professions.length > 0 && (
                                             <div className="mt-2 text-sm text-gray-600">
