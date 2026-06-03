@@ -5,8 +5,6 @@ import {Link, Head} from "@inertiajs/react";
 import {FaInstagram, FaWhatsapp, FaGlobe, FaMapMarkerAlt} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
-import {formatDistanceToNow} from "date-fns";
-import {ru} from "date-fns/locale";
 import DOMPurify from 'dompurify';
 
 export default function Ad({auth, ad, category}) {
@@ -26,50 +24,6 @@ export default function Ad({auth, ad, category}) {
 
     // Только первые 4 для превью в объявлении
     const previewImages = allImages.slice(0, 4);
-
-    const kz = {
-        ...ru,
-        formatDistance: (token, count, options) => {
-            const formatDistanceLocale = {
-                lessThanXSeconds: { one: 'Бірнеше секунд', other: 'Секунд' },
-                xSeconds: { one: 'Бір секунд', other: '{{count}} секунд' },
-                halfAMinute: 'жарты минут',
-                lessThanXMinutes: { one: 'Бірнеше минут', other: 'Минут' },
-                xMinutes: { one: 'Бір минут', other: '{{count}} минут' },
-                aboutXHours: { one: 'Шамамен бір сағат', other: 'Шамамен {{count}} сағат' },
-                xHours: { one: 'Бір сағат', other: '{{count}} сағат' },
-                xDays: { one: 'Бір күн', other: '{{count}} күн' },
-                aboutXWeeks: { one: 'Шамамен бір апта', other: 'Шамамен {{count}} апта' },
-                xWeeks: { one: 'Бір апта', other: '{{count}} апта' },
-                aboutXMonths: { one: 'Шамамен бір ай', other: 'Шамамен {{count}} ай' },
-                xMonths: { one: 'Бір ай', other: '{{count}} ай' },
-                aboutXYears: { one: 'Шамамен бір жыл', other: 'Шамамен {{count}} жыл' },
-                xYears: { one: 'Бір жыл', other: '{{count}} жыл' },
-                overXYears: { one: 'Бір жылдан астам', other: '{{count}} жылдан астам' },
-                almostXYears: { one: 'Бір жылға жуық', other: '{{count}} жылға жуық' },
-            };
-            const result = formatDistanceLocale[token];
-            if (typeof result === 'string') {
-                return result;
-            }
-            const form = count === 1 ? result.one : result.other.replace('{{count}}', count);
-            if (options?.addSuffix) {
-                if (options?.comparison > 0) {
-                    return form + ' кейін';
-                }
-                return form + ' бұрын';
-            }
-            return form;
-        }
-    };
-
-    const updatedAt = ad?.updated_at || ad?.published_at || ad?.created_at;
-    const updatedAtLabel = updatedAt
-        ? `${t('updated_at_label', {ns: 'ads'})} ${formatDistanceToNow(new Date(updatedAt), {
-            locale: i18n.language === 'ru' ? ru : kz,
-            addSuffix: true
-        })}`
-        : null;
 
     const cityTitle = ad?.city?.title || ad?.city || '';
     const locationLabel = ad?.is_remote
@@ -120,18 +74,13 @@ export default function Ad({auth, ad, category}) {
                 <div className="grid md:grid-cols-7 grid-cols-1">
                     <div className="md:col-span-5">
                         <div className="border-b border-gray-200 px-4 md:px-6 py-4">
-                            <div className="flex items-center justify-between gap-3 text-sm">
-                                <Link
-                                    href="/ads"
-                                    className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
-                                >
-                                    <span>←</span>
-                                    {t('back_to_services', {ns: 'ads'})}
-                                </Link>
-                                {updatedAtLabel && (
-                                    <span className="text-xs text-gray-500 font-medium">{updatedAtLabel}</span>
-                                )}
-                            </div>
+                            <Link
+                                href="/ads"
+                                className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
+                            >
+                                <span>←</span>
+                                {t('back_to_services', {ns: 'ads'})}
+                            </Link>
                         </div>
                         <div className="border-b border-gray-200 px-4 pt-6 pb-6 md:px-6">
                             <div className="space-y-4">
