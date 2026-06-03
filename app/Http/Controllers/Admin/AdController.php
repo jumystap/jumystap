@@ -63,7 +63,7 @@ class AdController extends Controller
 
         // Данные для фильтров
         $categories = AdCategory::all();
-        $cities = City::all();
+        $cities = City::orderBy('order_id')->get();
         $statuses = AdStatus::cases();
         $types = AdType::cases();
 
@@ -73,7 +73,7 @@ class AdController extends Controller
     public function create(): View
     {
         $categories = AdCategory::all();
-        $cities = City::all();
+        $cities = City::orderBy('order_id')->get();
         $businessTypes = BusinessType::all();
         $types = AdType::cases();
         // Удаляем передачу всех пользователей - теперь используем AJAX поиск
@@ -160,7 +160,7 @@ class AdController extends Controller
     public function edit(Ad $ad): View
     {
         $categories = AdCategory::all();
-        $cities = City::all();
+        $cities = City::orderBy('order_id')->get();
         $businessTypes = BusinessType::all();
         $statuses = AdStatus::cases();
         $types = AdType::cases();

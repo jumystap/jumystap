@@ -59,7 +59,7 @@ class AnnouncementController extends Controller
                 ->appends(request()->query()))
             ->with('roles', Role::query()->whereIn('id', [Roles::COMPANY->value, Roles::EMPLOYER->value])->get())
             ->with('specializationCategories', SpecializationCategory::all())
-            ->with('cities', City::all())
+            ->with('cities', City::orderBy('order_id')->get())
             ->with('types', ['Вакансия', 'Заказ'])
             ->with('statuses', AnnouncementStatus::list())
             ->with('search', $search);
