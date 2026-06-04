@@ -22,6 +22,51 @@ const kazakhstanCities = [
     "Усть-Каменогорск", "Щучинск", "Экибастуз"
 ];
 
+const WORK_TIME_VALUES = {
+    FULL_DAY: 'Полный день',
+    SHIFT: 'Сменный график',
+    FLEXIBLE: 'Гибкий график',
+    REMOTE: 'Удаленная работа',
+    ROTATION: 'Вахта',
+};
+
+const CITY_VALUES = {
+    REMOTE: 'Дистанционное',
+    OTHER: 'Другое',
+};
+
+const EMPLOYMENT_VALUES = {
+    FULL: 'Полная занятость',
+    PART: 'Частичная занятость',
+    PART_TIME: 'Подработка',
+    PROJECT: 'Проектная работа/заказ',
+};
+
+const PAYMENT_VALUES = {
+    DAILY: 'Ежедневная оплата',
+    WEEKLY: 'Еженедельная оплата',
+    MONTHLY: 'Ежемесячная оплата',
+    PIECEWORK: 'Сдельная оплата',
+    NEGOTIABLE: 'Договорная оплата',
+};
+
+const EXPERIENCE_VALUES = {
+    NONE: 'Без опыта работы',
+    THREE_TO_SIX_MONTHS: 'От 3 мес. до 6 мес.',
+    SIX_MONTHS_TO_ONE_YEAR: 'От 6 мес. до 1 года.',
+    ONE_TO_THREE_YEARS: 'От 1 года до 3 лет.',
+    THREE_TO_SIX_YEARS: 'От 3 лет до 6 лет.',
+    MORE_THAN_SIX_YEARS: 'Более 6 лет',
+};
+
+const EDUCATION_VALUES = {
+    NOT_REQUIRED: 'Не требуется',
+    SECONDARY: 'Среднее',
+    HIGHER: 'Высшее',
+    SPECIAL: 'Среднее-специальное',
+    JOLTAP: 'Сертификат Joltap',
+};
+
 const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const { t } = useTranslation();
     const isEdit = true;
@@ -62,7 +107,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         is_urgent: announcement.is_urgent || false,
         phone: announcement.phone || '',
     });
-    const isRemoteWork = data.work_time === 'Удаленная работа';
+    const isRemoteWork = data.work_time === WORK_TIME_VALUES.REMOTE;
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
@@ -174,10 +219,10 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
 
     const cascaderData = specializations.map(category => ({
         value: category.id,
-        label: category.name_ru,
+        label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
         children: category.specialization.map(spec => ({
             value: spec.id,
-            label: spec.name_ru
+            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
         }))
     }));
 
@@ -354,13 +399,13 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
 
     const handleCityChange = (value) => {
         setData('city', value);
-        setShowOtherCityInput(value === 'Другое');
+        setShowOtherCityInput(value === CITY_VALUES.OTHER);
     };
 
     const handleWorkTimeChange = (value) => {
         setData((prevData) => {
             const nextData = { ...prevData, work_time: value };
-            if (value === 'Удаленная работа') {
+            if (value === WORK_TIME_VALUES.REMOTE) {
                 nextData.city = '';
                 nextData.location = [];
             } else if (prevData.location.length === 0) {
@@ -370,7 +415,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             }
             return nextData;
         });
-        if (value === 'Удаленная работа') {
+        if (value === WORK_TIME_VALUES.REMOTE) {
             setShowOtherCityInput(false);
         }
     };
@@ -523,8 +568,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     {kazakhstanCities.map((city) => (
                                         <Option key={city} value={city}>{city}</Option>
                                     ))}
-                                    <Option value="Дистанционное">Дистанционное</Option>
-                                    <Option value="Другое">Другое</Option>
+                                    <Option value={CITY_VALUES.REMOTE}>{t('city_remote', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={CITY_VALUES.OTHER}>{t('city_other', { ns: 'createAnnouncement' })}</Option>
                                 </Select>
                             </Form.Item>
                         )}
@@ -584,11 +629,11 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     value={data.work_time}
                                     onChange={handleWorkTimeChange}
                                 >
-                                    <Option value="Полный день">Полный день</Option>
-                                    <Option value="Сменный график">Сменный график</Option>
-                                    <Option value="Гибкий график">Гибкий график</Option>
-                                    <Option value="Удаленная работа">Удаленная работа</Option>
-                                    <Option value="Вахта">Вахта</Option>
+                                    <Option value={WORK_TIME_VALUES.FULL_DAY}>{t('work_time_full_day', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={WORK_TIME_VALUES.SHIFT}>{t('work_time_shift', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={WORK_TIME_VALUES.FLEXIBLE}>{t('work_time_flexible', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={WORK_TIME_VALUES.REMOTE}>{t('work_time_remote', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={WORK_TIME_VALUES.ROTATION}>{t('work_time_rotation', { ns: 'createAnnouncement' })}</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item
@@ -600,10 +645,10 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     value={data.employment_type}
                                     onChange={(value) => setData('employment_type', value)}
                                 >
-                                    <Option value="Полная занятость">Полная занятость</Option>
-                                    <Option value="Частичная занятость">Частичная занятость </Option>
-                                    <Option value="Подработка">Подработка</Option>
-                                    <Option value="Проектная работа/зака">Проектная работа/заказ</Option>
+                                    <Option value={EMPLOYMENT_VALUES.FULL}>{t('employment_full', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EMPLOYMENT_VALUES.PART}>{t('employment_part', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EMPLOYMENT_VALUES.PART_TIME}>{t('employment_part_time', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EMPLOYMENT_VALUES.PROJECT}>{t('employment_project', { ns: 'createAnnouncement' })}</Option>
                                 </Select>
                             </Form.Item>
                         </div>
@@ -636,11 +681,11 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 value={data.payment_type}
                                 onChange={(value) => setData('payment_type', value)}
                             >
-                                <Option value="Ежедневная оплата">Ежедневная оплата</Option>
-                                <Option value="Еженедельная оплата">Еженедельная оплата</Option>
-                                <Option value="Ежемесячная оплата">Ежемесячная оплата</Option>
-                                <Option value="Сдельная оплата">Сдельная оплата</Option>
-                                <Option value="Договорная оплата">Договорная оплата</Option>
+                                <Option value={PAYMENT_VALUES.DAILY}>{t('payment_daily', { ns: 'createAnnouncement' })}</Option>
+                                <Option value={PAYMENT_VALUES.WEEKLY}>{t('payment_weekly', { ns: 'createAnnouncement' })}</Option>
+                                <Option value={PAYMENT_VALUES.MONTHLY}>{t('payment_monthly', { ns: 'createAnnouncement' })}</Option>
+                                <Option value={PAYMENT_VALUES.PIECEWORK}>{t('payment_piecework', { ns: 'createAnnouncement' })}</Option>
+                                <Option value={PAYMENT_VALUES.NEGOTIABLE}>{t('payment_negotiable', { ns: 'createAnnouncement' })}</Option>
                             </Select>
                         </Form.Item>
                         {!isUndefinedSalary && (
@@ -737,12 +782,12 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     value={data.experience}
                                     onChange={(value) => setData('experience', value)}
                                 >
-                                    <Option value="Без опыта работы">Без опыта работы</Option>
-                                    <Option value="От 3 мес. до 6 мес.">От 3 мес. до 6 мес.</Option>
-                                    <Option value="От 6 мес. до 1 года.">От 6 мес. до 1 года.</Option>
-                                    <Option value="От 1 года до 3 лет.">От 1 года до 3 лет.</Option>
-                                    <Option value="От 3 лет до 6 лет.">От 3 лет до 6 лет.</Option>
-                                    <Option value="Более 6 лет">Более 6 лет</Option>
+                                    <Option value={EXPERIENCE_VALUES.NONE}>{t('experience_none', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EXPERIENCE_VALUES.THREE_TO_SIX_MONTHS}>{t('experience_3to6months', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EXPERIENCE_VALUES.SIX_MONTHS_TO_ONE_YEAR}>{t('experience_6months_to_1year', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EXPERIENCE_VALUES.ONE_TO_THREE_YEARS}>{t('experience_1to3years', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EXPERIENCE_VALUES.THREE_TO_SIX_YEARS}>{t('experience_3to6years', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EXPERIENCE_VALUES.MORE_THAN_SIX_YEARS}>{t('experience_more_6years', { ns: 'createAnnouncement' })}</Option>
                                 </Select>
                             </Form.Item>
                             <Form.Item
@@ -753,11 +798,11 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     value={data.education}
                                     onChange={(value) => setData('education', value)}
                                 >
-                                    <Option value="Необязательно">Необязательно</Option>
-                                    <Option value="Среднее">Среднее</Option>
-                                    <Option value="Высшее">Высшее</Option>
-                                    <Option value="Среднее-специальное">Среднее-специальное</Option>
-                                    <Option value="Сертификат Joltap">Сертификат Joltap</Option>
+                                    <Option value={EDUCATION_VALUES.NOT_REQUIRED}>{t('education_not_required', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EDUCATION_VALUES.SECONDARY}>{t('education_secondary', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EDUCATION_VALUES.HIGHER}>{t('education_higher', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EDUCATION_VALUES.SPECIAL}>{t('education_special', { ns: 'createAnnouncement' })}</Option>
+                                    <Option value={EDUCATION_VALUES.JOLTAP}>{t('education_joltap', { ns: 'createAnnouncement' })}</Option>
                                 </Select>
                             </Form.Item>
                         </div>
