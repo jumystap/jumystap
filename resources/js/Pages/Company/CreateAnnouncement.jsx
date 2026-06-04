@@ -68,7 +68,7 @@ const EDUCATION_VALUES = {
 };
 
 const CreateAnnouncement = ({ announcement = null, specializations }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const isEdit = announcement !== null;
     const [isExactSalary, setIsExactSalary] = useState(false);
     const [withPhone, setWithPhone] = useState(false);

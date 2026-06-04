@@ -68,7 +68,7 @@ const EDUCATION_VALUES = {
 };
 
 const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const isEdit = true;
     const [salaryType, setSalaryType] = useState(announcement.salary_type || 'min');
     const [isTop, setIsTop] = useState(announcement.is_top);
