@@ -110,3 +110,5 @@ Telegram bot integration uses `defstudio/telegraph`. Webhook endpoint is `POST /
 ### Testing
 
 Pest with the Laravel plugin. `phpunit.xml` forces an in-memory test env: `DB_DATABASE=testing`, `CACHE_STORE=array`, `QUEUE_CONNECTION=sync`, `SESSION_DRIVER=array`. Tests live under `tests/Feature/{Auth,Controllers}` and `tests/Unit/{Repositories,Services}` — keep that split when adding tests (HTTP/Inertia interactions go in Feature, isolated class tests in Unit).
+
+Read also AGENTS.md

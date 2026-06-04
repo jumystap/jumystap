@@ -7,7 +7,7 @@
 
 | Каталог | Назначение |
 |---------|-----------|
-| `agents/` | Роли агентов: ответственность, область, ограничения, workflow, checklist |
+| `agents/` | Роли агентов: Codex guide, ответственность, область, ограничения, workflow, checklist |
 | `skills/` | Пошаговые навыки (CRUD, API, тесты, рефакторинг, оптимизация, багфикс, ревью) |
 | `prompts/` | Готовые шаблоны промптов (feature/bugfix/refactor/migration/code-review/performance) |
 | `context/` | Сжатый контекст: бизнес-правила, БД, API, фронтенд, безопасность |
@@ -21,7 +21,7 @@
 4. После значимого решения/находки — обнови `memory/*`.
 
 ## Файлы
-- agents: backend-laravel, frontend-react, database, qa-review, devops, code-review
+- agents: codex, backend-laravel, frontend-react, database, qa-review, devops, code-review
 - skills: create-crud, create-api-endpoint, write-tests, refactor-module, optimize-query, fix-bug, review-code
 - prompts: feature, bugfix, refactor, migration, code-review, performance
 - context: business-rules, database, api-rules, frontend-rules, security-rules
