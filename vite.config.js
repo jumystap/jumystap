@@ -3,6 +3,9 @@ import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+    define: {
+        __APP_VERSION__: JSON.stringify(Date.now().toString()),
+    },
     plugins: [
         laravel({
             input: 'resources/js/app.jsx',
