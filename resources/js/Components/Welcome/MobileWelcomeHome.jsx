@@ -32,6 +32,24 @@ export default function MobileWelcomeHome({
 
     const promoSlides = [
         {
+            key: "freelance",
+            title: t("freelance_banner_title", { ns: "index" }),
+            description: t("freelance_banner_desc", { ns: "index" }),
+            textContainerClassName: "max-w-[210px]",
+            titleClassName: "text-[20px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#3778e5]",
+            descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#475467]",
+            primaryAction: {
+                label: t("freelance_banner_button", { ns: "index" }),
+                href: "/announcements/create",
+            },
+            primaryActionClassName:
+                "inline-flex min-h-[48px] items-center rounded-[18px] bg-gradient-to-r from-[#3b82f6] to-[#4f46e5] px-5 py-3 text-center text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(55,120,229,0.28)] transition-opacity hover:opacity-95",
+            imageSrc: "/images/freelance_illustration.png",
+            imageAlt: t("freelance_banner_title", { ns: "index" }),
+            imageWrapperClassName: "shrink-0",
+            imageClassName: "h-20 w-auto object-contain",
+        },
+        {
             key: "free-course",
             title: t("free_course", { ns: "index" }).replace("курс!", "курсы!"),
             description: t("take_training_with_joltap", { ns: "index" }),
