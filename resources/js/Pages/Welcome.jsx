@@ -289,30 +289,11 @@ export default function Welcome({
               </div>
             </div>
             <Carousel>
-                <Link href="/announcements/create" className="z-10 md:mx-5 mx-3 mt-2 block rounded-lg bg-white">
-                    <div className="flex items-center md:px-10 md:py-7 p-5">
-                        <div className="max-w-[480px]">
-                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-blue-600">
-                                {t("freelance_banner_title", { ns: "index" })}
-                            </p>
-                            <p className="mt-3 text-base text-gray-700">
-                                {t("freelance_banner_desc", { ns: "index" })}
-                            </p>
-                            <span className="mt-6 inline-block text-center md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 transition-all duration-150">
-                                {t("freelance_banner_button", { ns: "index" })}
-                            </span>
-                        </div>
-
-                        <div className="hidden md:block ml-auto">
-                            <img src="/images/freelance_illustration.png" className="w-[300px]" alt="" />
-                        </div>
-                    </div>
-                </Link>
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex">
                         <div>
                             <p className="mt-3 font-bold text-3xl text-orange-500">
-                                {t("free_course", { ns: "index" })}
+                                {t("free_courses", { ns: "index" })}
                             </p>
                             <p className="mt-4 text-lg md:mt-1">
                                 {t("take_training_with_joltap", { ns: "index" })}
@@ -333,6 +314,25 @@ export default function Welcome({
                         </div>
                     </div>
                 </div>
+                <Link href="/announcements/create" className="z-10 md:mx-5 mx-3 mt-2 block rounded-lg bg-white">
+                    <div className="flex items-center md:px-10 md:py-7 p-5">
+                        <div className="max-w-[480px]">
+                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-blue-600">
+                                {t("freelance_banner_title", { ns: "index" })}
+                            </p>
+                            <p className="mt-3 text-base text-gray-700">
+                                {t("freelance_banner_desc", { ns: "index" })}
+                            </p>
+                            <span className="mt-6 inline-block text-center md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 transition-all duration-150">
+                                {t("freelance_banner_button", { ns: "index" })}
+                            </span>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/freelance_illustration.png" className="w-[300px]" alt="" />
+                        </div>
+                    </div>
+                </Link>
                 <div className="z-10 md:mx-5 mx-3 p-5 bg-gradient-to-r from-blue-950 to-blue-950 mt-2 rounded-lg md:px-10 md:py-7 text-white">
                     <div className="flex">
                         <div>

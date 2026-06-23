@@ -32,6 +32,17 @@ export default function MobileWelcomeHome({
 
     const promoSlides = [
         {
+            key: "free-course",
+            title: t("free_courses", { ns: "index" }),
+            description: t("take_training_with_joltap", { ns: "index" }),
+            primaryAction: {
+                label: t("sign_up_now", { ns: "index" }),
+                onClick: onPromoCtaClick,
+            },
+            imageSrc: "/images/logo.png",
+            imageAlt: "JUMYSTAP",
+        },
+        {
             key: "freelance",
             title: t("freelance_banner_title", { ns: "index" }),
             description: t("freelance_banner_desc", { ns: "index" }),
@@ -48,17 +59,6 @@ export default function MobileWelcomeHome({
             imageAlt: t("freelance_banner_title", { ns: "index" }),
             imageWrapperClassName: "shrink-0",
             imageClassName: "h-20 w-auto object-contain",
-        },
-        {
-            key: "free-course",
-            title: t("free_course", { ns: "index" }).replace("курс!", "курсы!"),
-            description: t("take_training_with_joltap", { ns: "index" }),
-            primaryAction: {
-                label: t("sign_up_now", { ns: "index" }),
-                onClick: onPromoCtaClick,
-            },
-            imageSrc: "/images/logo.png",
-            imageAlt: "JUMYSTAP",
         },
         {
             key: "telegram-channel",
