@@ -259,11 +259,20 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                             </div>
                                         )}
 
-                                        <div className="mt-3">
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
-                                                {employee.status}
-                                            </span>
-                                        </div>
+                                        {(!employee.has_resume || employee.status === 'В активном поиске') && (
+                                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                                                {!employee.has_resume && (
+                                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
+                                                        {t('no_resume', { ns: 'employees' })}
+                                                    </span>
+                                                )}
+                                                {employee.status === 'В активном поиске' && (
+                                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                                                        {i18n.language === 'ru' ? employee.status : (employee.status_kz || employee.status)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="hidden md:block">

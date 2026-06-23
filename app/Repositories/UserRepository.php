@@ -89,6 +89,7 @@ class UserRepository
         $users->getCollection()->transform(function ($user) use ($professionsByUser, $resumesByUser) {
             $user->professions = $professionsByUser->get($user->id, collect())->values();
             $user->resume_position = $resumesByUser->get($user->id);
+            $user->has_resume = $resumesByUser->has($user->id);
             $user->makeHidden(['email', 'phone']);
             return $user;
         });
