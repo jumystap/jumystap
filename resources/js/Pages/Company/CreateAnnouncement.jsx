@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
-import { Input, Button, Select, Form, Typography, Cascader, notification } from 'antd';
+import { Input, Button, Select, Form, Typography, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 import PhoneInput from 'react-phone-input-2';
@@ -97,14 +97,32 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         }));
     };
 
-    const cascaderData = specializations.map(category => ({
+    const [form] = Form.useForm();
+
+    const findCategoryId = (specId) => {
+        if (!specId) return null;
+        const category = specializations.find(cat => cat.specialization.some(spec => spec.id === specId));
+        return category ? category.id : null;
+    };
+
+    const [categoryId, setCategoryId] = useState(() => findCategoryId(announcement?.specialization_id));
+
+    const categoryOptions = specializations.map(category => ({
         value: category.id,
         label: i18n.language === 'ru' ? category.name_ru : category.name_kz,
-        children: category.specialization.map(spec => ({
-            value: spec.id,
-            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz
-        }))
     }));
+
+    const specializationOptions = (specializations.find(cat => cat.id === categoryId)?.specialization || [])
+        .map(spec => ({
+            value: spec.id,
+            label: i18n.language === 'ru' ? spec.name_ru : spec.name_kz,
+        }));
+
+    const handleCategoryChange = (value) => {
+        setCategoryId(value);
+        setData('specialization_id', null);
+        form.setFieldValue('specialization_id', undefined);
+    };
 
     const { data, setData, post, put, processing, errors } = useForm({
         type_kz: 'Тапсырыс',
@@ -369,7 +387,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                     <Title level={3} className="">
                         {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
                     </Title>
-                    <Form onFinish={handleSubmit} layout="vertical">
+                    <Form form={form} onFinish={handleSubmit} layout="vertical">
                         <Form.Item
                             label={
                                 <span>
@@ -393,14 +411,31 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             />
                         </Form.Item>
                         <Form.Item
+                            label={t('industry', { ns: 'createAnnouncement' })}
+                            name="category_id"
+                            initialValue={categoryId}
+                            rules={[{ required: true, message: t('please_select_industry', { ns: 'createAnnouncement' }) }]}
+                        >
+                            <Select
+                                options={categoryOptions}
+                                onChange={handleCategoryChange}
+                                placeholder={t('select_industry', { ns: 'createAnnouncement' })}
+                                showSearch
+                                optionFilterProp="label"
+                            />
+                        </Form.Item>
+                        <Form.Item
                             label={t('specialization', { ns: 'createAnnouncement' })}
                             name="specialization_id"
                             rules={[{ required: true, message: t('please_select_specialization', { ns: 'createAnnouncement' }) }]}
                         >
-                            <Cascader
-                                options={cascaderData}
-                                onChange={(value) => setData('specialization_id', value[1])}
+                            <Select
+                                options={specializationOptions}
+                                onChange={(value) => setData('specialization_id', value)}
                                 placeholder={t('select_specialization', { ns: 'createAnnouncement' })}
+                                disabled={!categoryId}
+                                showSearch
+                                optionFilterProp="label"
                             />
                         </Form.Item>
                         {!isRemoteWork && (
