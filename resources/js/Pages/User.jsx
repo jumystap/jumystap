@@ -91,6 +91,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                     <div className="relative group">
                                         <img
                                             src={user.image_url ? `/storage/${user.image_url}` : '/images/default-avatar.png'}
+                                            onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
                                             className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-50 transition-transform duration-300 group-hover:scale-105"
                                             alt={user.name}
                                         />
