@@ -5,6 +5,7 @@ import {Link, Head} from "@inertiajs/react";
 import {FaInstagram, FaWhatsapp, FaGlobe, FaMapMarkerAlt} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
+import BackToSearch from "@/Components/BackToSearch";
 import DOMPurify from 'dompurify';
 
 export default function Ad({auth, ad, category}) {
@@ -71,7 +72,7 @@ export default function Ad({auth, ad, category}) {
             <GuestLayout>
                 <div className="grid md:grid-cols-7 grid-cols-1">
                     <div className="md:col-span-5">
-                        <div className="border-b border-gray-200 px-4 md:px-6 py-4 text-sm font-semibold">
+                        <div className="border-b border-gray-200 px-4 md:px-6 py-4 text-sm font-semibold flex items-center gap-4">
                             <Link
                                 href="/ads"
                                 className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2"
@@ -79,6 +80,7 @@ export default function Ad({auth, ad, category}) {
                                 <span>←</span>
                                 {t('back_to_products', {ns: 'ads'})}
                             </Link>
+                            <BackToSearch section="ads" />
                         </div>
                         <div className="border-b border-gray-200 pt-6 px-4 md:px-6 py-5 md:py-6">
                             <div className="block pt-4">

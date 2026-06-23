@@ -5,6 +5,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
+import { rememberSearch } from '@/utils/lastSearch';
 import { Switch, Select } from 'antd'; // Import Select from Ant Design
 import InfoModal from '@/Components/InfoModal';
 import FeedbackModal from '@/Components/FeedbackModal.jsx';
@@ -132,6 +133,11 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [isOpen, setIsOpen] = useState(false);
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
+
+    const { url } = usePage();
+    useEffect(() => {
+        rememberSearch('announcements', url);
+    }, [url]);
 
     const specializationCategoryData = specializationCategoriesData;
 

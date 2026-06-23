@@ -2,6 +2,7 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from "react";
 import { Link, Head } from "@inertiajs/react";
+import BackToSearch from "@/Components/BackToSearch";
 import { SiFireship } from "react-icons/si";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
@@ -122,13 +123,16 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                     <div className="md:col-span-6">
                         <div className="border-b border-gray-200 px-4 md:px-6 py-4">
                             <div className="flex items-center justify-between gap-3 text-sm">
-                                <Link
-                                    href="/announcements"
-                                    className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
-                                >
-                                    <span>←</span>
-                                    {t('back_to_announcements')}
-                                </Link>
+                                <div className="flex items-center gap-4">
+                                    <Link
+                                        href="/announcements"
+                                        className="text-sm text-gray-500 hover:text-gray-800 inline-flex items-center gap-2 font-semibold"
+                                    >
+                                        <span>←</span>
+                                        {t('back_to_announcements')}
+                                    </Link>
+                                    <BackToSearch section="announcements" />
+                                </div>
                                 {updatedAtLabel && (
                                     <span className="text-xs text-gray-500 font-medium">{updatedAtLabel}</span>
                                 )}

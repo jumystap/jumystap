@@ -37,7 +37,7 @@ class AdController extends Controller
             'ads'        => $ads,
             'categories' => AdCategory::query()->orderBy('id')->pluck('name_ru', 'id')->toArray(),
             'types' => AdType::options(),
-            'cities'     => City::query()->orderBy('order_id')->pluck('title', 'id')->toArray(),
+            'cities'     => City::query()->orderBy('order_id')->get(['id', 'title']),
         ]);
     }
 

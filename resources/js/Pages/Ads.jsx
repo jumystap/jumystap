@@ -5,12 +5,12 @@ import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
+import { rememberSearch } from '@/utils/lastSearch';
 import { Switch, Select } from 'antd'; // Import Select from Ant Design
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
 import { MdIosShare } from "react-icons/md";
-import { HiOutlineUserCircle } from "react-icons/hi2";
 import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
 
@@ -25,6 +25,11 @@ export default function Ads({auth, ads, types, categories, cities }) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const { keyword: queryKeyword } = usePage().props;
+
+    const { url } = usePage();
+    useEffect(() => {
+        rememberSearch('ads', url);
+    }, [url]);
 
     // const cityArray = Object.entries(cities).map(([id, title]) => ({ id, title }));
     // const typeArray = Object.entries(types).map(([value, label]) => ({ value, label }));
@@ -85,16 +90,19 @@ export default function Ads({auth, ads, types, categories, cities }) {
         const keyword = params.get('keyword');
         const city_id = params.get('city_id');
         const typeParam = params.get('type');
+        const categoryId = params.get('category_id');
 
-        if (keyword || city_id || typeParam) {
+        if (keyword || city_id || typeParam || categoryId) {
             setData({
                 ...data,
                 keyword: keyword || data.keyword,
                 city_id: city_id || data.city_id,
                 type: typeParam || data.type,
+                category_id: categoryId || data.category_id,
             });
             if (city_id) setCityId(city_id);
             if (typeParam) setTypeId(typeParam);
+            if (categoryId) setCategoryId(categoryId);
         }
     }, []);
 
@@ -219,9 +227,9 @@ export default function Ads({auth, ads, types, categories, cities }) {
                             className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                         >
                             <option value="">{t('select_city', { ns: 'announcements' })}</option>
-                            {Object.entries(cities).map(([id, title]) => (
-                                <option key={id} value={id}>
-                                    {title}
+                            {cities.map((city) => (
+                                <option key={city.id} value={city.id}>
+                                    {city.title}
                                 </option>
                             ))}
                         </select>
@@ -339,11 +347,12 @@ export default function Ads({auth, ads, types, categories, cities }) {
 
                                             <div className='flex items-center gap-2 md:gap-3 mb-6'>
                                                 <div className="w-10 h-10 md:w-16 md:h-16 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                                                    {ad.user.image_url ? (
-                                                        <img src={`/storage/${ad.user.image_url}`} alt={ad.user.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <HiOutlineUserCircle className="w-full h-full text-gray-300" />
-                                                    )}
+                                                    <img
+                                                        src={ad.user.image_url ? `/storage/${ad.user.image_url}` : '/images/default-avatar.png'}
+                                                        onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
+                                                        alt={ad.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 </div>
                                                 <div>
                                                     <div className='font-bold text-gray-900 text-sm md:text-lg leading-tight mb-0.5'>{ad.user.name}</div>
@@ -463,9 +472,9 @@ export default function Ads({auth, ads, types, categories, cities }) {
                                 className='block mt-2 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
                             >
                                 <option value="">{t('select_city', { ns: 'announcements' })}</option>
-                                {Object.entries(cities).map(([id, title]) => (
-                                    <option key={id} value={id}>
-                                        {title}
+                                {cities.map((city) => (
+                                    <option key={city.id} value={city.id}>
+                                        {city.title}
                                     </option>
                                 ))}
                             </select>

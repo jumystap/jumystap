@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "@inertiajs/react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import BackToSearch from "@/Components/BackToSearch";
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { motion } from 'framer-motion';
@@ -84,6 +85,9 @@ export default function User({ auth, user, contactShow, employees, userProfessio
         <GuestLayout>
             <div className="min-h-screen bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="mb-4">
+                        <BackToSearch section="employees" />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-7 gap-8">
                         <div className="col-span-5">
                             <div className="bg-white rounded-2xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">

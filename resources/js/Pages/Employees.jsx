@@ -1,7 +1,8 @@
-import React, {useCallback, useState, memo} from 'react';
+import React, {useCallback, useEffect, useState, memo} from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
-import {Head, Link, router, useForm} from '@inertiajs/react';
+import {Head, Link, router, useForm, usePage} from '@inertiajs/react';
+import { rememberSearch } from '@/utils/lastSearch';
 import Pagination from '@/Components/Pagination.jsx';
 import { RiVerifiedBadgeFill, RiSearch2Line, RiStarFill } from "react-icons/ri";
 import FeedbackModal from "@/Components/FeedbackModal.jsx";
@@ -28,6 +29,11 @@ export default function Employees({ auth, employees, professions, filters = {} }
     const [withResume, setWithResume] = useState(initialFilters.withResume);
 
     const { data, setData } = useForm(initialFilters);
+
+    const { url } = usePage();
+    useEffect(() => {
+        rememberSearch('employees', url);
+    }, [url]);
 
     const reloadEmployees = (params = data) => {
         router.get('/employees', params, {
