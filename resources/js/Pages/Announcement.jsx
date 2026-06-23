@@ -301,12 +301,6 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <div className='text-sm text-gray-500'>{t('education')}</div>
                                 <div>{announcement.education}</div>
                             </div>
-                            {announcement.is_permanent && (
-                                <div>
-                                    <div className='text-sm text-gray-500'>{t('permanent_hiring')}</div>
-                                    <div>{t('yes')}</div>
-                                </div>
-                            )}
                         </div>
                         <div className='mt-5 rounded-lg border mx-5'>
                             <div className='mx-5'>
