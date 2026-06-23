@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import {Head, Link, router, useForm} from '@inertiajs/react';
 import Pagination from '@/Components/Pagination.jsx';
-import { RiVerifiedBadgeFill, RiSearch2Line } from "react-icons/ri";
+import { RiVerifiedBadgeFill, RiSearch2Line, RiStarFill } from "react-icons/ri";
 import FeedbackModal from "@/Components/FeedbackModal.jsx";
 import {Select, Switch} from "antd";
 import {IoSearch} from "react-icons/io5";
@@ -214,34 +214,35 @@ export default function Employees({ auth, employees, professions, filters = {} }
                                 className="block bg-white hover:bg-gray-50 rounded-lg shadow-sm transition-all duration-200"
                             >
                                 <div className="p-6 flex items-start gap-4">
-                                    <div className="flex flex-col items-center">
-                                        <img
-                                            src={employee.image_url ? `/storage/${employee.image_url}` : '/images/default-avatar.png'}
-                                            onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
-                                            alt=""
-                                            className="w-14 h-14 object-cover rounded-full ring-2 ring-gray-100"
-                                        />
-                                        {parseFloat(employee.rating) > 0 && (
-                                            <div className="mt-1 px-2 py-0.5 text-sm font-medium text-gray-600 bg-gray-100 rounded">
-                                                {toDoubleString(employee.rating)}
-                                            </div>
-                                        )}
-                                    </div>
+                                    <img
+                                        src={employee.image_url ? `/storage/${employee.image_url}` : '/images/default-avatar.png'}
+                                        onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
+                                        alt=""
+                                        className="w-14 h-14 object-cover rounded-full ring-2 ring-gray-100 shrink-0"
+                                    />
 
                                     <div className="flex-grow">
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 flex-wrap">
                                             <h2 className="font-bold text-gray-900">
                                                 {employee.name}
                                             </h2>
                                             {employee.is_graduate === 1 ? (
                                                 <RiVerifiedBadgeFill className="text-xl text-blue-500" />
                                             ) : (
-                                                <span className="text-xs font-medium text-gray-500">невыпускник</span>
+                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                                                    {t('non_graduate_label', { ns: 'employees' })}
+                                                </span>
+                                            )}
+                                            {parseFloat(employee.rating) > 0 && (
+                                                <span className="inline-flex items-center gap-0.5 text-sm font-medium text-amber-500">
+                                                    <RiStarFill className="text-base" />
+                                                    {toDoubleString(employee.rating)}
+                                                </span>
                                             )}
                                         </div>
 
                                         {employee.resume_position && (
-                                            <div className="mt-1 text-sm font-medium text-gray-700">
+                                            <div className="mt-1 text-base font-medium text-gray-800">
                                                 {employee.resume_position}
                                             </div>
                                         )}
