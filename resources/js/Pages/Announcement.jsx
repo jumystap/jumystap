@@ -15,8 +15,43 @@ import ShareButtons from "@/Components/ShareButtons";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
+// Maps the Russian values stored in announcement dictionary columns to
+// createAnnouncement translation keys so they re-translate on language switch.
+const DICTIONARY_KEYS = {
+    'Полный день': 'work_time_full_day',
+    'Сменный график': 'work_time_shift',
+    'Гибкий график': 'work_time_flexible',
+    'Удаленная работа': 'work_time_remote',
+    'Вахта': 'work_time_rotation',
+    'Полная занятость': 'employment_full',
+    'Частичная занятость': 'employment_part',
+    'Подработка': 'employment_part_time',
+    'Проектная работа/заказ': 'employment_project',
+    'Ежедневная оплата': 'payment_daily',
+    'Еженедельная оплата': 'payment_weekly',
+    'Ежемесячная оплата': 'payment_monthly',
+    'Сдельная оплата': 'payment_piecework',
+    'Договорная оплата': 'payment_negotiable',
+    'Без опыта работы': 'experience_none',
+    'От 3 мес. до 6 мес.': 'experience_3to6months',
+    'От 6 мес. до 1 года.': 'experience_6months_to_1year',
+    'От 1 года до 3 лет.': 'experience_1to3years',
+    'От 3 лет до 6 лет.': 'experience_3to6years',
+    'Более 6 лет': 'experience_more_6years',
+    'Не требуется': 'education_not_required',
+    'Среднее': 'education_secondary',
+    'Высшее': 'education_higher',
+    'Среднее-специальное': 'education_special',
+    'Сертификат Joltap': 'education_joltap',
+};
+
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation('announcements');
+
+    const dictionaryLabel = (value) => {
+        const key = DICTIONARY_KEYS[value];
+        return key ? t(key, { ns: 'createAnnouncement' }) : value;
+    };
 
     const kz = {
         ...ru,
@@ -283,11 +318,11 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                         <div className='p-5 rounded-lg mx-5 border border-gray-200 gap-5 mt-5 grid md:grid-cols-3 grid-cols-2'>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('work_experience')}</div>
-                                <div>{announcement.experience}</div>
+                                <div>{dictionaryLabel(announcement.experience)}</div>
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('payment_type')}</div>
-                                <div>{announcement.payment_type}</div>
+                                <div>{dictionaryLabel(announcement.payment_type)}</div>
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('work_days_hours')}</div>
@@ -295,15 +330,15 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('work_schedule')}</div>
-                                <div>{announcement.work_time}</div>
+                                <div>{dictionaryLabel(announcement.work_time)}</div>
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('employment_type')}</div>
-                                <div>{announcement.employment_type}</div>
+                                <div>{dictionaryLabel(announcement.employment_type)}</div>
                             </div>
                             <div>
                                 <div className='text-sm text-gray-500'>{t('education')}</div>
-                                <div>{announcement.education}</div>
+                                <div>{dictionaryLabel(announcement.education)}</div>
                             </div>
                         </div>
                         <div className='mt-5 rounded-lg border mx-5'>
