@@ -106,37 +106,9 @@
                                             <div class="inner">
                                                 <small>Количество активных вакансий за  посл. 6 мес.</small>
                                                 <h3>{{ TextHelper::numberFormat($data['activeAnnouncementsCount']) }}</h3>
-                                                <small>Количество вакансий</small>
-                                                <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-star"></i>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
-                                        <div class="small-box">
-                                            <div class="inner">
-                                                <small>Новые пользователи на сегодня</small>
-                                                <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
-                                            </div>
-                                            <div class="icon">
-                                                <i class="ion ion-person-add"></i>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYEE], 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
-                                        <div class="small-box">
-                                            <div class="inner">
-                                                <small>Количество соискателей</small>
-                                                <h3>{{ TextHelper::numberFormat($data['allEmployeesCount']) }}</h3>
-                                            </div>
-                                            <div class="icon">
-                                                <i class="ion ion-person"></i>
                                             </div>
                                         </div>
                                     </a>
@@ -155,6 +127,32 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
+                                    <a href="{{ route('admin.announcements.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество вакансий</small>
+                                                <h3>{{ TextHelper::numberFormat($data['announcementsCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-star"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.users.index', ['search' => ['roles_id' => [Roles::EMPLOYEE], 'start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Количество соискателей</small>
+                                                <h3>{{ TextHelper::numberFormat($data['allEmployeesCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
                                     <a href="{{ route('admin.responses.index', ['search' => ['start_date' => $search['start_date'], 'end_date' => $search['end_date']]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
@@ -163,6 +161,19 @@
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-stats-bars"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Новые пользователи на сегодня</small>
+                                                <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person-add"></i>
                                             </div>
                                         </div>
                                     </a>
