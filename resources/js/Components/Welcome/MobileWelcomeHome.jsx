@@ -213,12 +213,12 @@ export default function MobileWelcomeHome({
                         {t("nav_for_announcements", { ns: "header" })}
                     </PrimaryActionButton>
 
-                    <VacancySearch
-                        value={searchKeyword}
-                        onChange={onSearchKeywordChange}
-                        onSearch={onSearchAnnouncements}
-                        t={t}
-                    />
+                    {/*<VacancySearch*/}
+                    {/*    value={searchKeyword}*/}
+                    {/*    onChange={onSearchKeywordChange}*/}
+                    {/*    onSearch={onSearchAnnouncements}*/}
+                    {/*    t={t}*/}
+                    {/*/>*/}
 
                     <QuickActionGrid items={quickActions} />
 

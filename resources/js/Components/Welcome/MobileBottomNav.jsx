@@ -28,14 +28,14 @@ const navItems = [
         namespace: "header",
         match: ["/employees", "/user"],
     },
-    {
-        key: "marketplace",
-        href: "/ads",
-        icon: CgShoppingBag,
-        labelKey: "products_services_short",
-        namespace: "header",
-        match: ["/ads", "/ad"],
-    },
+    // {
+    //     key: "marketplace",
+    //     href: "/ads",
+    //     icon: CgShoppingBag,
+    //     labelKey: "products_services_short",
+    //     namespace: "header",
+    //     match: ["/ads", "/ad"],
+    // },
 ];
 
 const matchesPath = (currentPath, prefixes) =>
@@ -52,7 +52,7 @@ export default function MobileBottomNav({ currentPath, t }) {
                 className="mx-auto w-full max-w-[414px] px-3"
                 style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)" }}
             >
-                <nav className="grid grid-cols-4 gap-1 rounded-t-[26px] border border-[#e5e8f0] bg-white/95 px-2 py-2 shadow-[0_-10px_28px_rgba(15,23,42,0.1)] backdrop-blur">
+                <nav className="grid grid-cols-3 gap-1 rounded-t-[26px] border border-[#e5e8f0] bg-white/95 px-2 py-2 shadow-[0_-10px_28px_rgba(15,23,42,0.1)] backdrop-blur">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = matchesPath(currentPath, item.match);
