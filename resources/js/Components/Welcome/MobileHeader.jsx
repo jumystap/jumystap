@@ -48,13 +48,13 @@ export default function MobileHeader({ auth, language, onLanguageToggle, t, stic
             icon: HiOutlineUserGroup,
             match: ["/employees", "/user"],
         },
-        {
-            key: "marketplace",
-            href: "/ads",
-            label: t("marketplace", { ns: "header" }),
-            icon: CgShoppingBag,
-            match: ["/ads", "/ad"],
-        },
+        // {
+        //     key: "marketplace",
+        //     href: "/ads",
+        //     label: t("marketplace", { ns: "header" }),
+        //     icon: CgShoppingBag,
+        //     match: ["/ads", "/ad"],
+        // },
         {
             key: "about",
             href: "/faq",
