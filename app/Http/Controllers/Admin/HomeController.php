@@ -108,6 +108,9 @@ class HomeController extends Controller
                 ->count(),
             'announcementsCount'    => Announcement::query()
                 ->tap($filterByDate)->count(),
+            'announcementsTodayCount' => Announcement::query()
+                ->whereDate('created_at', today())
+                ->count(),
             'activeAnnouncementsCount'    => Announcement::query()
                 ->recentActive()
                 ->tap($filterByDate)

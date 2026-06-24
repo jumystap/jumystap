@@ -75,14 +75,14 @@
                                     </a>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
+                                    <a href="{{ route('admin.announcements.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
                                         <div class="small-box">
                                             <div class="inner">
-                                                <small>Новые пользователи на сегодня</small>
-                                                <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                                <small>Количество новых вакансий за сегодня</small>
+                                                <h3>{{ TextHelper::numberFormat($data['announcementsTodayCount']) }}</h3>
                                             </div>
                                             <div class="icon">
-                                                <i class="ion ion-person-add"></i>
+                                                <i class="ion ion-android-add-circle"></i>
                                             </div>
                                         </div>
                                     </a>
@@ -111,6 +111,19 @@
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-star"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ route('admin.users.index', ['search' => ['start_date' => date('d.m.Y')]]) }}">
+                                        <div class="small-box">
+                                            <div class="inner">
+                                                <small>Новые пользователи на сегодня</small>
+                                                <h3>{{ TextHelper::numberFormat($data['registeredTodayCount']) }}</h3>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="ion ion-person-add"></i>
                                             </div>
                                         </div>
                                     </a>
