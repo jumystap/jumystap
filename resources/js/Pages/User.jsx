@@ -125,9 +125,11 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                 ))}
                                             </>
                                         )}
-                                        <div className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
-                                            {isRussian ? user.status : user.status_kz}
-                                        </div>
+                                        {(isRussian ? user.status : user.status_kz) && (
+                                            <div className="py-1 px-3 rounded-lg mt-2 text-sm bg-green-100 inline-block text-green-500">
+                                                {isRussian ? user.status : user.status_kz}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="md:ml-auto">
