@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
 class UserResumeController extends Controller
@@ -118,13 +119,41 @@ class UserResumeController extends Controller
             ->with(['organizations', 'languages', 'user'])
             ->first();
 
-        if ($resume && ! $this->canAuthenticatedUserViewResumeContact($resume)) {
+        $canViewContacts = $resume
+            && ($this->canAuthenticatedUserViewResumeContact($resume) || request()->hasValidSignature());
+
+        if ($resume && ! $canViewContacts) {
             $resume->makeHidden(['email', 'phone']);
             $resume->user?->makeHidden(['email', 'phone']);
         }
 
+        $downloadUrl = $resume
+            ? ($canViewContacts
+                ? URL::temporarySignedRoute('resumes.download', now()->addDays(30), ['id' => $resume->id])
+                : '/resumes/download/' . $resume->id)
+            : null;
+
         return Inertia::render('Resume', [
             'resume' => $resume,
+            'isOwner' => $resume ? $resume->user_id === Auth::id() : false,
+            'downloadUrl' => $downloadUrl,
+        ]);
+    }
+
+    public function shareLink(int $id)
+    {
+        $resume = UserResume::find($id);
+
+        if (! $resume) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        if ($resume->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        return response()->json([
+            'url' => URL::temporarySignedRoute('resumes.show', now()->addDays(30), ['id' => $resume->id]),
         ]);
     }
 
@@ -241,9 +270,9 @@ class UserResumeController extends Controller
         if(!$resume){
             return Inertia::render('NotFound');
         }
-        if($resume->user_id != Auth::id()){
-            return Inertia::render('NotFound');
-        }
+
+        $canViewContacts = $this->canAuthenticatedUserViewResumeContact($resume)
+            || request()->hasValidSignature();
 
         $experience = [];
         if ($resume->organizations) {
@@ -260,8 +289,8 @@ class UserResumeController extends Controller
         $data = [
             'name'                  => $resume->user->name,
             'info'                  => $resume->user->gender_name . ', ' . $resume->user->age . ', ' . $resume->user->born,
-            'email'                 => $resume->user->email,
-            'phone'                 => '+' . $resume->user->phone,
+            'email'                 => $canViewContacts ? $resume->user->email : '',
+            'phone'                 => $canViewContacts ? '+' . $resume->user->phone : '',
             'address'               => $resume->city . ($resume->city == 'Астана' ? ', район ' . $resume->district : ''),
             'position'              => $resume->position,
             'salary'                => $resume->formatted_salary . ' ₸',

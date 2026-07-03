@@ -342,12 +342,16 @@
                 <div class="contact-item">
                     <span>{{ $address }}</span>
                 </div>
+                @if($phone)
                 <div class="contact-item">
                     <span>{{ $phone }}</span>
                 </div>
+                @endif
+                @if($email)
                 <div class="contact-item">
                     <span>{{ $email }}</span>
                 </div>
+                @endif
             </div>
         </div>
     </header>

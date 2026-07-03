@@ -53,6 +53,18 @@ Route::post('/register', [UserController::class, 'store'])->name('store');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/user/{id}', [UserController::class, 'show'])->name('user');
 
+Route::prefix('resumes')->name('resumes.')->group(function () {
+    Route::post('send', [ResumeController::class, 'create'])->middleware('auth');
+    Route::get('create', [UserResumeController::class, 'create'])->middleware('auth');
+    Route::post('create', [UserResumeController::class, 'store'])->middleware('auth');
+    Route::get('update/{id}', [UserResumeController::class, 'edit'])->middleware('auth');
+    Route::put('{resume}', [UserResumeController::class, 'update'])->middleware('auth');
+    Route::get('{id}/share-link', [UserResumeController::class, 'shareLink'])->name('share-link')->middleware('auth');
+    Route::get('download/{id}', [UserResumeController::class, 'download'])->name('download');
+    Route::get('{id}', [UserResumeController::class, 'show'])->name('show');
+    Route::delete('{id}', [UserResumeController::class, 'destroy'])->name('delete')->middleware('auth');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/my-responses', [UserController::class, 'responses'])->name('responses');
@@ -62,16 +74,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/fav/{id}', [FavoriteController::class, 'delete'])->name('fav.delete');
     Route::get('/update', [UserController::class, 'edit'])->name('edit');
     Route::get('/profile/announcement/{id}', [UserController::class, 'myAnnouncement']);
-    Route::prefix('resumes')->name('resumes.')->group(function (){
-        Route::post('send', [ResumeController::class, 'create']);
-        Route::get('create', [UserResumeController::class, 'create']);
-        Route::post('create', [UserResumeController::class, 'store']);
-        Route::get('update/{id}', [UserResumeController::class, 'edit']);
-        Route::put('{resume}', [UserResumeController::class, 'update']);
-        Route::get('download/{id}', [UserResumeController::class, 'download']);
-        Route::get('{id}', [UserResumeController::class, 'show']);
-        Route::delete('{id}', [UserResumeController::class, 'destroy'])->name('delete');
-    });
     Route::prefix('announcements')->group(function (){
         Route::get('create', [AnnouncementController::class, 'create']);
         Route::post('store', [AnnouncementController::class, 'store']);

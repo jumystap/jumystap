@@ -1,10 +1,38 @@
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Calendar, MapPin, Briefcase, Code, GraduationCap, Languages, HousePlus} from 'lucide-react';
+import { MdIosShare } from "react-icons/md";
 import {useTranslation} from "react-i18next";
 
-export default function Resume({ user, resume }) {
+export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
     const { t, i18n } = useTranslation('resume');
     const isRussian = i18n.language === 'ru';
+
+    const shareUrl = (url) => {
+        if (navigator.share) {
+            navigator.share({ title: resume.user.name, url }).catch(() => {});
+        } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(url)
+                .then(() => alert(t('link_copied')))
+                .catch(() => alert(url));
+        } else {
+            alert(url);
+        }
+    };
+
+    const handleShare = async () => {
+        try {
+            const response = await fetch(`/resumes/${resume.id}/share-link`, {
+                headers: { Accept: 'application/json' },
+            });
+            if (!response.ok) {
+                return;
+            }
+            const { url } = await response.json();
+            shareUrl(url);
+        } catch (error) {
+            console.error('Failed to generate share link:', error);
+        }
+    };
     // Calculate total experience from organizations
     const calculateTotalExperience = () => {
         return resume.organizations.length > 0 ? "" : "Нет опыта работы";
@@ -70,13 +98,28 @@ export default function Resume({ user, resume }) {
                                         <a
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            href={`/resumes/download/${resume.id}`}
+                                            href={downloadUrl || `/resumes/download/${resume.id}`}
                                             className="inline-block text-center rounded-lg border-2 border-blue-500 py-1 px-3 text-sm
                                                text-blue-500 hover:bg-blue-500 hover:text-white transition-colors
                                                whitespace-nowrap"
                                         >
                                             <span className="font-bold">{t('download')}</span>
                                         </a>
+
+                                        {/* Кнопка «Поделиться» — только для владельца */}
+                                        {isOwner && (
+                                            <button
+                                                type="button"
+                                                onClick={handleShare}
+                                                aria-label={t('share')}
+                                                className="inline-flex items-center gap-1 text-center rounded-lg border-2 border-blue-500 py-1 px-3 text-sm
+                                                   text-blue-500 hover:bg-blue-500 hover:text-white transition-colors
+                                                   whitespace-nowrap"
+                                            >
+                                                <MdIosShare className="text-base" />
+                                                <span className="font-bold">{t('share')}</span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
