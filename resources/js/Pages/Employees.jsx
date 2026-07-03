@@ -11,12 +11,14 @@ import {IoSearch} from "react-icons/io5";
 import {CgArrowsExchangeAltV} from "react-icons/cg";
 import MobileFilterSheet from "@/Components/Mobile/MobileFilterSheet";
 
-export default function Employees({ auth, employees, professions, filters = {} }) {
+export default function Employees({ auth, employees, professions, cities = [], filters = {} }) {
     const { t, i18n } = useTranslation();
     const toBoolean = (value) => value === true || value === 'true';
+    const cityArray = Object.entries(cities || {}).map(([id, name]) => ({ id, name }));
     const initialFilters = {
         search: filters.search || '',
         profession: filters.profession || '',
+        city: filters.city || '',
         isLookingWork: toBoolean(filters.isLookingWork),
         withCertificate: toBoolean(filters.withCertificate),
         withResume: toBoolean(filters.withResume),
@@ -24,6 +26,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
     const [isOpen, setIsOpen] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [profession, setProfession] = useState(initialFilters.profession);
+    const [city, setCity] = useState(initialFilters.city);
     const [isLookingWork, setIsLookingWork] = useState(initialFilters.isLookingWork);
     const [withCertificate, setWithCertificate] = useState(initialFilters.withCertificate);
     const [withResume, setWithResume] = useState(initialFilters.withResume);
@@ -61,6 +64,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
         const emptyFilters = {
             search: '',
             profession: '',
+            city: '',
             isLookingWork: false,
             withCertificate: false,
             withResume: false,
@@ -68,6 +72,7 @@ export default function Employees({ auth, employees, professions, filters = {} }
 
         setData(emptyFilters);
         setProfession('');
+        setCity('');
         setIsLookingWork(false);
         setWithResume(false);
         setWithCertificate(false);
@@ -80,6 +85,11 @@ export default function Employees({ auth, employees, professions, filters = {} }
     const handleProfessionChange = (event) => {
         setProfession(event.target.value);
         setData('profession', event.target.value);
+    };
+
+    const handleCityChange = (event) => {
+        setCity(event.target.value);
+        setData('city', event.target.value);
     };
 
     const handleIsLookingWorkChange = (checked) => {
@@ -142,6 +152,19 @@ export default function Employees({ auth, employees, professions, filters = {} }
                         {professions.map(prof => (
                             <option key={prof.id} value={prof.id}>
                                 {prof.name_ru}
+                            </option>
+                        ))}
+                    </select>
+                    <div className='text-gray-500 mt-3'>{t('city', { ns: 'employees' })}</div>
+                    <select
+                        value={city}
+                        onChange={handleCityChange}
+                        className='block mt-1 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
+                    >
+                        <option value="">{t('select', { ns: 'employees' })}</option>
+                        {cityArray.map(c => (
+                            <option key={c.id} value={c.name}>
+                                {c.name}
                             </option>
                         ))}
                     </select>
@@ -316,6 +339,19 @@ export default function Employees({ auth, employees, professions, filters = {} }
                             {professions.map(prof => (
                                 <option key={prof.id} value={prof.id}>
                                     {prof.name_ru}
+                                </option>
+                            ))}
+                        </select>
+                        <div className='text-gray-500 mt-3'>{t('city', { ns: 'employees' })}</div>
+                        <select
+                            value={city}
+                            onChange={handleCityChange}
+                            className='block mt-1 w-full text-base border-gray-300 px-5 py-2 rounded-lg'
+                        >
+                            <option value="">{t('select', { ns: 'employees' })}</option>
+                            {cityArray.map(c => (
+                                <option key={c.id} value={c.name}>
+                                    {c.name}
                                 </option>
                             ))}
                         </select>

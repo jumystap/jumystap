@@ -58,6 +58,15 @@ class UserRepository
             });
         }
 
+        if (!empty($filters['city'])) {
+            $query->whereExists(function ($sub) use ($filters) {
+                $sub->selectRaw('1')
+                    ->from('user_resumes')
+                    ->whereColumn('user_resumes.user_id', 'users.id')
+                    ->where('user_resumes.city', $filters['city']);
+            });
+        }
+
         if (!empty($filters['isLookingWork']) && $filters['isLookingWork'] == 'true') {
             $query->where('users.status', 'В активном поиске');
         }

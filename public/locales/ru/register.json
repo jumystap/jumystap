@@ -53,6 +53,7 @@
     "enter_confirmation_code": "Введите код потверждения",
     "confirm": "Подтвердить",
     "send_code": "Отправить код",
+    "code_not_received": "Код не пришел?",
     "create_password": "Придумайте пароль",
     "enter_password": "Введите пароль",
     "repeat_password": "Повторите пароль",

@@ -53,6 +53,7 @@
     "enter_confirmation_code": "Растау кодын енгізіңіз",
     "confirm": "Растау",
     "send_code": "Код жіберу",
+    "code_not_received": "Код келмеді ме?",
     "create_password": "Құпиясөз ойлап табыңыз",
     "enter_password": "Құпиясөзді енгізіңіз",
     "repeat_password": "Құпиясөзді қайталаңыз",

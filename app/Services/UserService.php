@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Announcement;
+use App\Models\City;
 use App\Models\Profession\Profession;
 use App\Models\User;
 use App\Models\UserProfession;
@@ -260,6 +261,19 @@ class UserService
             ->select('id', 'name_ru', 'name_kz')
             ->orderBy('name_ru')
             ->get();
+    }
+
+    public function getEmployeeCities()
+    {
+        return City::query()
+            ->orderBy('order_id')
+            ->whereIn('title', DB::table('user_resumes')
+                ->whereNotNull('city')
+                ->where('city', '!=', '')
+                ->distinct()
+                ->pluck('city')
+                ->toArray())
+            ->pluck('title');
     }
 
     public function getUserWithProfessionsAndPortfolio($userId)

@@ -33,13 +33,14 @@ class UserController extends Controller
 
     public function index(Request $request): mixed
     {
-        $filters = $request->only(['search', 'profession', 'isLookingWork', 'withCertificate', 'withResume']);
+        $filters = $request->only(['search', 'profession', 'city', 'isLookingWork', 'withCertificate', 'withResume']);
 
         $employees = $this->userService->getEmployees($filters);
 
         return Inertia::render('Employees', [
             'employees' => $employees,
             'professions' => fn () => $this->userService->getAllProfessions(),
+            'cities' => fn () => $this->userService->getEmployeeCities(),
             'filters' => $filters
         ]);
     }
