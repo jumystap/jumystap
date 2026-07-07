@@ -11,4 +11,4 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/certificates/{id}', [CertificateController::class, 'show']);
 Route::post('send-verification-code', [VerificationController::class, 'sendCode'])->name('send-verification-code');
-Route::post('verify-code', [VerificationController::class, 'verifyCode'])->name('send-verification-code');
+Route::post('verify-code', [VerificationController::class, 'verifyCode'])->name('verify-code');

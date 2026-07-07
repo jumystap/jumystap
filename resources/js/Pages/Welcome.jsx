@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, Head, router, usePage, useForm} from "@inertiajs/react";
 import GuestLayout from "@/Layouts/GuestLayout";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { SiFireship } from "react-icons/si";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
@@ -314,6 +314,34 @@ export default function Welcome({
                         </div>
                     </div>
                 </div>
+                <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSdNzEEcIlvNpOGnpzEW6vVf_t5ALfsUS551rn3fGMyRbyCH-w/viewform"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="z-10 md:mx-5 mx-3 mt-2 block rounded-lg bg-white"
+                >
+                    <div className="flex items-center md:px-10 md:py-7 p-5">
+                        <div className="max-w-[480px]">
+                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-gray-900">
+                                <Trans
+                                    i18nKey="survey_banner_title"
+                                    ns="index"
+                                    components={{ o: <span className="text-orange-500" /> }}
+                                />
+                            </p>
+                            <p className="mt-3 text-base text-gray-700">
+                                {t("survey_banner_desc", { ns: "index" })}
+                            </p>
+                            <span className="mt-6 inline-block text-center md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all duration-150">
+                                {t("survey_banner_button", { ns: "index" })}
+                            </span>
+                        </div>
+
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/survey_banner.png" className="w-[300px]" alt="" />
+                        </div>
+                    </div>
+                </a>
                 <Link href="/announcements/create" className="z-10 md:mx-5 mx-3 mt-2 block rounded-lg bg-white">
                     <div className="flex items-center md:px-10 md:py-7 p-5">
                         <div className="max-w-[480px]">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trans } from "react-i18next";
 import { FaTelegramPlane } from "react-icons/fa";
 import { HiOutlineDocumentText, HiOutlineUserCircle } from "react-icons/hi2";
 import { MdOutlineCampaign, MdOutlineWorkOutline } from "react-icons/md";
@@ -41,6 +42,32 @@ export default function MobileWelcomeHome({
             },
             imageSrc: "/images/logo.png",
             imageAlt: "JUMYSTAP",
+        },
+        {
+            key: "survey",
+            title: (
+                <Trans
+                    i18nKey="survey_banner_title"
+                    ns="index"
+                    components={{ o: <span className="text-orange-500" /> }}
+                />
+            ),
+            description: t("survey_banner_desc", { ns: "index" }),
+            textContainerClassName: "max-w-[210px]",
+            titleClassName: "text-[20px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#1f2937]",
+            descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#475467]",
+            primaryAction: {
+                label: t("survey_banner_button", { ns: "index" }),
+                href: "https://docs.google.com/forms/d/e/1FAIpQLSdNzEEcIlvNpOGnpzEW6vVf_t5ALfsUS551rn3fGMyRbyCH-w/viewform",
+                target: "_blank",
+                rel: "noopener noreferrer",
+            },
+            primaryActionClassName:
+                "inline-flex min-h-[48px] items-center rounded-[18px] bg-orange-500 px-5 py-3 text-center text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(243,106,16,0.28)] transition-opacity hover:opacity-95",
+            imageSrc: "/images/survey_banner.png",
+            imageAlt: t("survey_banner_desc", { ns: "index" }),
+            imageWrapperClassName: "shrink-0",
+            imageClassName: "h-20 w-auto object-contain",
         },
         {
             key: "freelance",
