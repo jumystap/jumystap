@@ -30,9 +30,11 @@ echo "Database is up."
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     php artisan migrate --force
     php artisan storage:link || true
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
+    php artisan config:cache || true
+    # route:cache requires globally-unique route names; the app currently has
+    # duplicate names, so keep this non-fatal to avoid crash-looping the container.
+    php artisan route:cache || true
+    php artisan view:cache || true
 fi
 
 exec "$@"
