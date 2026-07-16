@@ -16,7 +16,6 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('seamstress'),
         t('fashion_designer_constructor'),
         t('kaspi_store_trading'),
-        t('barista'),
         t('shoe_repair_and_key_making'),
         t('electric_gas_welder'),
         t('sales_manager'),
