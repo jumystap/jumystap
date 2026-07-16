@@ -288,6 +288,27 @@ export default function Welcome({
                   {t("vacancy_for_you", { ns: "index" })}
               </div>
             </div>
+            <div className="z-10 md:mx-5 mx-3 mt-2 rounded-lg overflow-hidden bg-gradient-to-br from-[#1a2a63] to-[#0f1d4d] text-white">
+                <div className="flex items-center md:px-10 md:py-7 p-5">
+                    <div className="max-w-[560px]">
+                        <p className="font-extrabold text-2xl md:text-3xl">
+                            {t("maintenance_title", { ns: "index" })}
+                        </p>
+                        <p className="mt-3 text-sm md:text-base text-blue-100">
+                            {t("maintenance_text1", { ns: "index" })}
+                        </p>
+                        <p className="mt-3 text-sm md:text-base text-blue-100">
+                            {t("maintenance_text2", { ns: "index" })}{" "}
+                            <a href="tel:+77072213131" className="font-bold text-red-400 whitespace-nowrap">
+                                {t("maintenance_phone", { ns: "index" })}
+                            </a>
+                        </p>
+                    </div>
+                    <div className="hidden md:block ml-auto pl-6">
+                        <img src="/images/maintenance_gears.png" className="w-[150px]" alt="" />
+                    </div>
+                </div>
+            </div>
             <Carousel>
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex">

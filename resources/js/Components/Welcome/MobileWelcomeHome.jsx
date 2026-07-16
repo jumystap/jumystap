@@ -219,6 +219,30 @@ export default function MobileWelcomeHome({
                 />
 
                 <main className="space-y-4 px-3 pb-4">
+                    <div className="mt-3 overflow-hidden rounded-[24px] bg-gradient-to-br from-[#1a2a63] to-[#0f1d4d] px-4 py-4 text-white shadow-[0_14px_32px_rgba(15,23,42,0.18)]">
+                        <div className="flex items-start gap-3">
+                            <div className="flex-1">
+                                <p className="text-[18px] font-extrabold leading-6">
+                                    {t("maintenance_title", { ns: "index" })}
+                                </p>
+                                <p className="mt-2 text-[13px] leading-[17px] text-blue-100">
+                                    {t("maintenance_text1", { ns: "index" })}
+                                </p>
+                                <p className="mt-2 text-[13px] leading-[17px] text-blue-100">
+                                    {t("maintenance_text2", { ns: "index" })}{" "}
+                                    <a href="tel:+77072213131" className="font-bold text-red-400 whitespace-nowrap">
+                                        {t("maintenance_phone", { ns: "index" })}
+                                    </a>
+                                </p>
+                            </div>
+                            <img
+                                src="/images/maintenance_gears.png"
+                                className="h-14 w-14 shrink-0 object-contain"
+                                alt=""
+                            />
+                        </div>
+                    </div>
+
                     <PromoBanner
                         slide={promoSlides[activePromo]}
                         slides={promoSlides}
