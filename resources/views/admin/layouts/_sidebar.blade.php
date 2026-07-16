@@ -56,6 +56,12 @@
                             <p>Объявления</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.codes.index') }}" class="nav-link {{ request()->routeIs('admin.codes.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-key"></i>
+                            <p>Коды</p>
+                        </a>
+                    </li>
                 @endif
                 <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link" target="_blank">

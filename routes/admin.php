@@ -51,6 +51,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
         Route::get('', [ResponseController::class, 'index'])->name('index');
     });
 
+    Route::get('codes', [\App\Http\Controllers\Admin\CodeController::class, 'index'])->name('codes.index');
+
     Route::resource('ads', AdController::class);
     Route::post('ads/{ad}/approve', [AdController::class, 'approve'])->name('ads.approve');
     Route::post('ads/{ad}/reject', [AdController::class, 'reject'])->name('ads.reject');
