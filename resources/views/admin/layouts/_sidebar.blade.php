@@ -62,6 +62,12 @@
                             <p>Коды</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.settings.index') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>Настройки</p>
+                        </a>
+                    </li>
                 @endif
                 <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link" target="_blank">

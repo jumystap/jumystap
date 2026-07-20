@@ -33,7 +33,7 @@ export default function Welcome({
   const [isOpen, setIsOpen] = useState(false);
   const [isScamOpen, setIsScamOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const { searchKeyword: querySearchKeyword } = usePage().props;
+  const { searchKeyword: querySearchKeyword, maintenanceBanner } = usePage().props;
   const supportWhatsAppHref =
       "https://wa.me/77072213131?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%2C%20%D0%BF%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20JUMYSTAP";
 
@@ -271,6 +271,7 @@ export default function Welcome({
             auth={auth}
             featuredAnnouncements={mobileFeaturedAnnouncements.slice(0, 5)}
             i18n={i18n}
+            maintenanceBanner={maintenanceBanner}
             onLanguageToggle={() => changeLanguage(i18n.language === "ru" ? "kz" : "ru")}
             onOpenFeedback={() => setIsOpen(true)}
             onOpenScam={() => setIsScamOpen(true)}
@@ -288,6 +289,7 @@ export default function Welcome({
                   {t("vacancy_for_you", { ns: "index" })}
               </div>
             </div>
+            {maintenanceBanner && (
             <div className="z-10 md:mx-5 mx-3 mt-2 rounded-lg overflow-hidden bg-gradient-to-br from-[#1a2a63] to-[#0f1d4d] text-white">
                 <div className="flex items-center md:px-10 md:py-7 p-5">
                     <div className="max-w-[560px]">
@@ -309,6 +311,7 @@ export default function Welcome({
                     </div>
                 </div>
             </div>
+            )}
             <Carousel>
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex">

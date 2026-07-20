@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdController;
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\ResponseController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
@@ -36,6 +37,10 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::group(['prefix' => '/account', 'as' => 'account.'], function () {
         Route::get('/', [AccountController::class, 'index'])->name('index');
         Route::put('/update', [AccountController::class, 'update'])->name('update');
+    });
+    Route::group(['prefix' => '/settings', 'as' => 'settings.'], function () {
+        Route::get('/', [SettingController::class, 'index'])->name('index');
+        Route::put('/update', [SettingController::class, 'update'])->name('update');
     });
     Route::get('users/search', [UserController::class, 'search'])->name('users.search');
     Route::get('users/info/{user}', [UserController::class, 'info'])->name('users.info');

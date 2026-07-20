@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -40,6 +41,7 @@ class HandleInertiaRequests extends Middleware
                     'role' => Auth::user()->role ?? null, // убедись, что роль загружается
                 ] : null,
             ],
+            'maintenanceBanner' => fn () => Setting::getBool('maintenance_banner', (bool) config('app.maintenance_banner')),
         ];
     }
 }

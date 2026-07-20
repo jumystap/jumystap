@@ -17,6 +17,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Maintenance Banner
+    |--------------------------------------------------------------------------
+    |
+    | Toggles the "Технические работы" notice banner on the public site.
+    | Set MAINTENANCE_BANNER_ENABLED=true in .env to show it.
+    |
+    */
+
+    'maintenance_banner' => env('MAINTENANCE_BANNER_ENABLED', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
