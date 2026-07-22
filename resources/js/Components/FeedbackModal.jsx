@@ -20,7 +20,6 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('electric_gas_welder'),
         t('sales_manager'),
         t('cabinet_furniture_manufacturing_basics'),
-        t('baker'),
         t('electrician_2nd_degree'),
         t('sewing_machine_operator'),
     ];
