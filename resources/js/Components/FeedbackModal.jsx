@@ -20,6 +20,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('electric_gas_welder'),
         t('sales_manager'),
         t('cabinet_furniture_manufacturing_basics'),
+        t('baker'),
         t('electrician_2nd_degree'),
         t('sewing_machine_operator'),
     ];
@@ -70,7 +71,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                 'Профессия: ' + selectedProfessions.join(', ');
 
             await fetch(
-                `https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`
+                `https://api.telegram.org/bot8474272412:AAEDvjrPynIq7ELpxYvFli0E8OOmCqkhT94/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`
             );
 
             onSubmit(templateParams);
