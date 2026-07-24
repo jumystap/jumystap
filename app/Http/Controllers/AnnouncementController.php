@@ -19,6 +19,7 @@ use App\Models\Response;
 use App\Models\SpecializationCategory;
 use App\Models\TelegramAdmin;
 use App\Models\User;
+use App\Models\UserResume;
 use App\Services\AnnouncementService;
 use DefStudio\Telegraph\Facades\Telegraph;
 use DefStudio\Telegraph\Keyboard\Button;
@@ -29,6 +30,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -432,12 +434,35 @@ class AnnouncementController extends Controller
             'employee_id'     => $employee_id
         ]);
 
-        $announcement = Announcement::find($announcement_id);
+        $announcement = Announcement::findOrFail($announcement_id);
+        $employer     = User::find($announcement->user_id);
 
-        $employer    = User::find($announcement->user_id);
-        $phone       = $announcement->phone ?? $employer->phone;
-        $whatsappUrl = "https://wa.me/" . $phone . "?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
+        // wa.me принимает только цифры, без "+", пробелов и скобок.
+        $phone = preg_replace('/\D+/', '', (string) ($announcement->phone ?? $employer?->phone));
 
-        return redirect()->away($whatsappUrl);
+        // Последнее опубликованное резюме соискателя. Неопубликованное
+        // (на модерации/отклонённое) работодатель по ссылке не увидит,
+        // поэтому такое резюме не прикрепляем.
+        $resume = UserResume::query()
+            ->where('user_id', $employee_id)
+            ->active()
+            ->latest()
+            ->first();
+
+        $text = "Здравствуйте! Откликаюсь на позицию «{$announcement->title}».";
+
+        if ($resume) {
+            // Подписанная ссылка: не залогиненный работодатель откроет резюме
+            // и увидит контакты кандидата (обычная публичная ссылка их скрывает).
+            $text .= "\nМоё резюме: " . URL::temporarySignedRoute(
+                'resumes.show',
+                now()->addDays(30),
+                ['id' => $resume->id]
+            );
+        }
+
+        $text .= "\n\nПишу с Jumystap.";
+
+        return redirect()->away("https://wa.me/{$phone}?text=" . rawurlencode($text));
     }
 }
