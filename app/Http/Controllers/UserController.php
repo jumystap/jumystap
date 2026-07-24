@@ -208,6 +208,7 @@ class UserController extends Controller
         $employees = $this->userService->getUsersByProfessionIds($employeeProfessionIds);
 
         $resumes = UserResume::where('user_id', $id)
+            ->active()
             ->with(['organizations', 'languages'])
             ->get()
             ->map(function ($resume) use ($contactShow) {

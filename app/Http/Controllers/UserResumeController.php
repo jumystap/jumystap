@@ -7,9 +7,11 @@ use App\Enums\Roles;
 use App\Enums\DrivingLicenseCategory;
 use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
+use App\Enums\ResumeStatus;
 use App\Enums\WorkSchedule;
 use App\Models\Announcement;
 use App\Models\UserResume;
+use App\Services\ResumeService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +21,10 @@ use Inertia\Inertia;
 
 class UserResumeController extends Controller
 {
+    public function __construct(private ResumeService $resumeService)
+    {
+    }
+
     private function ensureResumeCreationIsAvailable()
     {
         $user = Auth::user();
@@ -93,6 +99,7 @@ class UserResumeController extends Controller
         ]);
 
         $data['user_id'] = Auth::id();
+        $data['status'] = ResumeStatus::MODERATION;
 
 //        if ($request->hasFile('photo_path')) {
 //            $data['photo_path'] = $request->file('photo_path')->store('resume', 'public');
@@ -110,7 +117,9 @@ class UserResumeController extends Controller
             $resume->languages()->create(['language' => $language]);
         }
 
-        return redirect('/profile');
+        $this->resumeService->submitForModeration($resume);
+
+        return redirect('/profile')->with('success', 'Резюме отправлено на модерацию.');
     }
 
     public function show($id)
@@ -118,6 +127,12 @@ class UserResumeController extends Controller
         $resume = UserResume::where('id', $id)
             ->with(['organizations', 'languages', 'user'])
             ->first();
+
+        $isOwner = $resume ? $resume->user_id === Auth::id() : false;
+
+        if ($resume && ! $resume->isPublished() && ! $isOwner && ! request()->hasValidSignature()) {
+            return Inertia::render('NotFound');
+        }
 
         $canViewContacts = $resume
             && ($this->canAuthenticatedUserViewResumeContact($resume) || request()->hasValidSignature());
@@ -192,7 +207,12 @@ class UserResumeController extends Controller
 
     public function edit($id)
     {
-        $resume          = UserResume::where('id', $id)->with('organizations')->first();
+        $resume = UserResume::where('id', $id)->with('organizations')->firstOrFail();
+
+        if ($resume->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $workSchedules   = WorkSchedule::options();
         $employmentTypes = EmploymentType::options();
         $drivingLicenses = DrivingLicenseCategory::options();
@@ -210,6 +230,10 @@ class UserResumeController extends Controller
 
     public function update(Request $request, UserResume $resume)
     {
+        if ($resume->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $data = $request->validate([
             'email'                            => 'nullable|email',
             'phone'                            => 'required|max:20',
@@ -253,12 +277,19 @@ class UserResumeController extends Controller
             $resume->languages()->create(['language' => $language]);
         }
 
-        return redirect('/profile');
+        $this->resumeService->returnToModeration($resume);
+
+        return redirect('/profile')->with('success', 'Резюме обновлено и отправлено на модерацию.');
     }
 
     public function destroy($id)
     {
-        $resume = UserResume::find($id);
+        $resume = UserResume::findOrFail($id);
+
+        if ($resume->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $resume->delete();
         return redirect('/profile');
     }
@@ -268,6 +299,12 @@ class UserResumeController extends Controller
         $resume = UserResume::find($id);
 
         if(!$resume){
+            return Inertia::render('NotFound');
+        }
+
+        $isOwner = $resume->user_id === Auth::id();
+
+        if (! $resume->isPublished() && ! $isOwner && ! request()->hasValidSignature()) {
             return Inertia::render('NotFound');
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdController;
+use App\Http\Controllers\Admin\ResumeController;
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\ResponseController;
@@ -63,6 +64,11 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::post('ads/{ad}/reject', [AdController::class, 'reject'])->name('ads.reject');
     Route::post('ads/bulk-action', [AdController::class, 'bulkAction'])->name('ads.bulk-action');
     Route::delete('ads/{ad}/photos/{photo}', [AdController::class, 'deletePhoto'])->name('ads.photos.delete');
+
+    Route::post('resumes/bulk-action', [ResumeController::class, 'bulkAction'])->name('resumes.bulk-action');
+    Route::post('resumes/{resume}/approve', [ResumeController::class, 'approve'])->name('resumes.approve');
+    Route::post('resumes/{resume}/reject', [ResumeController::class, 'reject'])->name('resumes.reject');
+    Route::resource('resumes', ResumeController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
 
 
 });

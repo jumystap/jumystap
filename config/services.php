@@ -45,6 +45,11 @@ return [
         'uri' => env('BITRIX_URI', 'https://crm.joltap.kz/rest/1/gsjlekv9xqpwgw3q/')
     ],
 
+    'telegram' => [
+        'feedback_chat_id' => env('TELEGRAM_FEEDBACK_CHAT_ID'),
+        'resume_moderation_chat_id' => env('TELEGRAM_RESUME_MODERATION_CHAT_ID'),
+    ],
+
     'gender'=> [
         'uri' => env('GENDER_API_URI', 'https://api.genderapi.io/'),
         'key1' => env('GENDER_API_KEY_1', '683ec13028573e4d869109fa'),

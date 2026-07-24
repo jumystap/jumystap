@@ -170,6 +170,20 @@ export default function Profile({ user, announcements, userProfessions, resumes 
                                         <div className="grid grid-cols-1 gap-4 mt-5">
                                             {resumes.map((resume, index) => (
                                                 <div className='w-full border border-gray-200 rounded-lg p-5 bg-white shadow-md' key={index}>
+                                                    <div className='mb-2'>
+                                                        <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${
+                                                            resume.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                            resume.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                            'bg-yellow-100 text-yellow-800'
+                                                        }`}>
+                                                            {t(`resume_status_${resume.status ?? 'moderation'}`, { ns: 'profile' })}
+                                                        </span>
+                                                    </div>
+                                                    {resume.status === 'rejected' && resume.reject_reason && (
+                                                        <div className='mb-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2'>
+                                                            <span className='font-semibold'>{t('resume_rejected_reason', { ns: 'profile' })}:</span> {resume.reject_reason}
+                                                        </div>
+                                                    )}
                                                     <div className='flex'>
                                                         <div className={`flex gap-x-1 ${resume.city == 'Астана' ? ('text-blue-400'):('text-gray-500')} items-center`}>
                                                             <FaLocationDot className='text-sm'/>

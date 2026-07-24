@@ -34,6 +34,7 @@ Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);
+Route::post('/send-telegram-feedback', [FeedbackController::class, 'sendTelegramFeedback'])->middleware('throttle:10,1');
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
 Route::post('/restore_password', [AuthController::class, 'restorePassword']);
 

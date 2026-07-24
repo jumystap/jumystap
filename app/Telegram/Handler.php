@@ -3,8 +3,10 @@
 namespace App\Telegram;
 
 use App\Enums\AnnouncementStatus;
+use App\Enums\ResumeStatus;
 use App\Models\Announcement;
 use App\Models\TelegramAdmin;
+use App\Models\UserResume;
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use DefStudio\Telegraph\Facades\Telegraph;
@@ -94,6 +96,53 @@ class Handler extends WebhookHandler
         } catch (\Exception $e) {
             Log::error('Failed to reject the announcement.', ['announcement_id' => $id, 'error' => $e->getMessage()]);
             return response()->json(['status' => 'error', 'message' => 'Failed to reject the announcement.'], 500);
+        }
+    }
+
+    public function acceptResume()
+    {
+        try {
+            $id = $this->data->get('id');
+            $chat_id = $this->data->get('chat_id');
+            $resume = UserResume::findOrFail($id);
+            $resume->reject_reason = null;
+            if (!$resume->published_at) {
+                $resume->published_at = now();
+            }
+            $resume->changeStatus(ResumeStatus::ACTIVE);
+
+            Log::info('Resume accepted and published.', ['resume_id' => $resume->id]);
+
+            Telegraph::chat($chat_id)
+                ->message("Резюме ID {$resume->id} принято и опубликовано.")
+                ->send();
+
+            return response()->json(['status' => 'success', 'message' => 'Resume accepted and published.']);
+        } catch (\Exception $e) {
+            Log::error('Failed to accept the resume.', ['resume_id' => $id ?? null, 'error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Failed to accept the resume.'], 500);
+        }
+    }
+
+    public function rejectResume()
+    {
+        try {
+            $id = $this->data->get('id');
+            $chat_id = $this->data->get('chat_id');
+            $resume = UserResume::findOrFail($id);
+            $resume->reject_reason = 'Отклонено модератором.';
+            $resume->changeStatus(ResumeStatus::REJECTED, 'Отклонено модератором.');
+
+            Log::info('Resume rejected.', ['resume_id' => $resume->id]);
+
+            Telegraph::chat($chat_id)
+                ->message("Резюме ID {$resume->id} отклонено.")
+                ->send();
+
+            return response()->json(['status' => 'success', 'message' => 'Resume rejected.']);
+        } catch (\Exception $e) {
+            Log::error('Failed to reject the resume.', ['resume_id' => $id ?? null, 'error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Failed to reject the resume.'], 500);
         }
     }
 }

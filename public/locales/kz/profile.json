@@ -14,5 +14,9 @@
     "until_now": "Қазіргі уақытқа дейін",
     "my_responses": "Менің жауаптарым",
     "error": "Қате",
-    "approved_announcement_required": "Үміткермен байланысу үшін модерациядан өткен кемінде бір вакансия қажет."
+    "approved_announcement_required": "Үміткермен байланысу үшін модерациядан өткен кемінде бір вакансия қажет.",
+    "resume_status_moderation": "Модерацияда",
+    "resume_status_active": "Жарияланды",
+    "resume_status_rejected": "Қабылданбады",
+    "resume_rejected_reason": "Қабылданбау себебі"
 }

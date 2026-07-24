@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-// import emails from 'emailjs-com';
+import axios from 'axios';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
 
 export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
@@ -64,15 +64,12 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         };
 
         try {
-            const combined =
-                '<b>Заявка:</b>\n' +
-                'ФИО: ' + name + '\n' +
-                'Телефон: ' + phone + '\n' +
-                'Профессия: ' + selectedProfessions.join(', ');
-
-            await fetch(
-                `https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`
-            );
+            await axios.post('/send-telegram-feedback', {
+                type: 'application',
+                name,
+                phone,
+                items: selectedProfessions,
+            });
 
             onSubmit(templateParams);
             setLoading(false);

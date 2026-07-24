@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-// import emails from 'emailjs-com';
+import axios from 'axios';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
 
 export default function ScamModal({ isOpen, onClose }) {
@@ -26,7 +26,7 @@ export default function ScamModal({ isOpen, onClose }) {
         setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
@@ -43,9 +43,13 @@ export default function ScamModal({ isOpen, onClose }) {
         }
 
         try {
-            const combined = '<b>Жалоба:</b>\nФИО: ' + name + '\nТелефон: ' + phone + '\nПричина: ' + selectedScams.join(', ') + '\nТекст: ' + reason;
-            const response = fetch(`https://api.telegram.org/bot8474272412:AAEVmEp9uFDgV9XitBgY7S5A9DqXSTnaOZ0/sendMessage?chat_id=-1002334471884&parse_mode=html&text=${encodeURIComponent(combined)}`);
-            console.log('SUCCESS!', response);
+            await axios.post('/send-telegram-feedback', {
+                type: 'complaint',
+                name,
+                phone,
+                items: selectedScams,
+                reason,
+            });
             setLoading(false);
             setName('');
             setPhone('');
