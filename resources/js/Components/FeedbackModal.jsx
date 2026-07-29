@@ -23,6 +23,8 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
         t('baker'),
         t('electrician_2nd_degree'),
         t('sewing_machine_operator'),
+        t('barista'),
+        t('retail_sales_specialist'),
     ];
 
     useEffect(() => {
