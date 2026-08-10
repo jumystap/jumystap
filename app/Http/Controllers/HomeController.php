@@ -190,7 +190,7 @@ class HomeController extends Controller
             ->get()
             ->map(fn (Faq $faq) => [
                 'question' => $faq->getTranslation('question', $locale),
-                'answers' => $faq->getTranslation('answer', $locale) ?? [],
+                'answer' => $faq->getTranslation('answer', $locale) ?? '',
             ])
             ->values();
 

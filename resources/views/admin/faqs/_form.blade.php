@@ -1,10 +1,3 @@
-@php
-    $answersRu = old('answer_ru', isset($faq) ? $faq->answer_ru : ['']);
-    $answersKz = old('answer_kz', isset($faq) ? $faq->answer_kz : ['']);
-    $answersRu = empty($answersRu) ? [''] : $answersRu;
-    $answersKz = empty($answersKz) ? [''] : $answersKz;
-@endphp
-
 <div class="card-body">
     <div class="row">
         <div class="col-md-6 form-group">
@@ -24,41 +17,17 @@
     </div>
 
     <div class="row mt-2">
-        <div class="col-md-6">
-            <label>{{ __('Ответы (рус)') }}</label>
-            <small class="form-text text-muted mb-2">{{ __('Каждый пункт — отдельный абзац. Допускается HTML (<b>, <u>, <br>).') }}</small>
-            <div class="answers-list" data-answers="ru">
-                @foreach($answersRu as $answer)
-                    <div class="input-group mb-2 answer-row">
-                        <textarea name="answer_ru[]" rows="2" class="form-control">{{ $answer }}</textarea>
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-danger remove-answer"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            <button type="button" class="btn btn-outline-secondary btn-sm add-answer" data-target="ru">
-                <i class="fas fa-plus"></i> {{ __('Добавить ответ') }}
-            </button>
-            @error('answer_ru')<div class="text-danger mt-1">{{ $message }}</div>@enderror
+        <div class="col-md-6 form-group">
+            <label for="answer_ru">{{ __('Ответ (рус)') }}</label>
+            <textarea name="answer_ru" id="answer_ru"
+                      class="editor tinymce-editor form-control @error('answer_ru') is-invalid @enderror">{{ old('answer_ru', $faq->answer_ru ?? '') }}</textarea>
+            @error('answer_ru')<span class="invalid-feedback">{{ $message }}</span>@enderror
         </div>
-        <div class="col-md-6">
-            <label>{{ __('Ответы (каз)') }}</label>
-            <small class="form-text text-muted mb-2">{{ __('Каждый пункт — отдельный абзац. Допускается HTML (<b>, <u>, <br>).') }}</small>
-            <div class="answers-list" data-answers="kz">
-                @foreach($answersKz as $answer)
-                    <div class="input-group mb-2 answer-row">
-                        <textarea name="answer_kz[]" rows="2" class="form-control">{{ $answer }}</textarea>
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-danger remove-answer"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            <button type="button" class="btn btn-outline-secondary btn-sm add-answer" data-target="kz">
-                <i class="fas fa-plus"></i> {{ __('Добавить ответ') }}
-            </button>
-            @error('answer_kz')<div class="text-danger mt-1">{{ $message }}</div>@enderror
+        <div class="col-md-6 form-group">
+            <label for="answer_kz">{{ __('Ответ (каз)') }}</label>
+            <textarea name="answer_kz" id="answer_kz"
+                      class="editor tinymce-editor form-control @error('answer_kz') is-invalid @enderror">{{ old('answer_kz', $faq->answer_kz ?? '') }}</textarea>
+            @error('answer_kz')<span class="invalid-feedback">{{ $message }}</span>@enderror
         </div>
     </div>
 
@@ -88,31 +57,4 @@
     </button>
 </div>
 
-@push('scripts')
-    <script>
-        document.addEventListener('click', function (e) {
-            var addBtn = e.target.closest('.add-answer');
-            if (addBtn) {
-                var lang = addBtn.dataset.target;
-                var list = document.querySelector('.answers-list[data-answers="' + lang + '"]');
-                var row = document.createElement('div');
-                row.className = 'input-group mb-2 answer-row';
-                row.innerHTML = '<textarea name="answer_' + lang + '[]" rows="2" class="form-control"></textarea>' +
-                    '<div class="input-group-append">' +
-                    '<button type="button" class="btn btn-outline-danger remove-answer"><i class="fas fa-times"></i></button>' +
-                    '</div>';
-                list.appendChild(row);
-                return;
-            }
-
-            var removeBtn = e.target.closest('.remove-answer');
-            if (removeBtn) {
-                var currentRow = removeBtn.closest('.answer-row');
-                var parent = currentRow.parentNode;
-                if (parent.querySelectorAll('.answer-row').length > 1) {
-                    currentRow.remove();
-                }
-            }
-        });
-    </script>
-@endpush
+@include('admin.partials.editor')

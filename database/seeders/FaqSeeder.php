@@ -152,10 +152,21 @@ class FaqSeeder extends Seeder
             ],
         ];
 
+        $toHtml = fn (array $answers) => collect($answers)
+            ->map(fn ($answer) => "<p>{$answer}</p>")
+            ->implode('');
+
         foreach ($faqs as $index => $faq) {
             Faq::updateOrCreate(
                 ['question_ru' => $faq['question_ru']],
-                array_merge($faq, ['sort_order' => $index + 1, 'is_active' => true]),
+                [
+                    'question_ru' => $faq['question_ru'],
+                    'question_kz' => $faq['question_kz'],
+                    'answer_ru' => $toHtml($faq['answer_ru']),
+                    'answer_kz' => $toHtml($faq['answer_kz']),
+                    'sort_order' => $index + 1,
+                    'is_active' => true,
+                ],
             );
         }
     }

@@ -12,8 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('question_ru');
             $table->string('question_kz');
-            $table->json('answer_ru');
-            $table->json('answer_kz');
+            $table->longText('answer_ru');
+            $table->longText('answer_kz');
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

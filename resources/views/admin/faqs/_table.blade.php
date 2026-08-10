@@ -5,7 +5,6 @@
         <th style="width: 90px;">Порядок</th>
         <th>Вопрос (рус)</th>
         <th>Вопрос (каз)</th>
-        <th style="width: 110px;">Ответов</th>
         <th style="width: 120px;">Статус</th>
         <th style="width: 15%;">Действия</th>
     </tr>
@@ -17,7 +16,6 @@
             <td>{{ $faq->sort_order }}</td>
             <td>{{ $faq->question_ru }}</td>
             <td>{{ $faq->question_kz }}</td>
-            <td>{{ count($faq->answer_ru ?? []) }}</td>
             <td>
                 @if($faq->is_active)
                     <span class="badge badge-success">Активен</span>
@@ -41,7 +39,7 @@
         </tr>
     @empty
         <tr>
-            <td colspan="7" class="text-center">Вопросы отсутствуют</td>
+            <td colspan="6" class="text-center">Вопросы отсутствуют</td>
         </tr>
     @endforelse
     </tbody>
