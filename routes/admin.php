@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ResumeController;
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
@@ -48,6 +49,7 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
 
     Route::get('/index', [HomeController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
+    Route::resource('faqs', FaqController::class)->except(['show']);
     Route::resource('announcements', AnnouncementController::class);
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
     Route::prefix('analytics')->name('analytics.')->group(function (){
