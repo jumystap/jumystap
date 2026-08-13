@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ResumeStatus;
 use App\Models\Announcement;
 use App\Models\City;
 use App\Models\Profession\Profession;
@@ -268,6 +269,7 @@ class UserService
         return City::query()
             ->orderBy('order_id')
             ->whereIn('title', DB::table('user_resumes')
+                ->where('status', ResumeStatus::ACTIVE->value)
                 ->whereNotNull('city')
                 ->where('city', '!=', '')
                 ->distinct()

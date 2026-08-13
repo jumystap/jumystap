@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\DrivingLicenseCategory;
 use App\Enums\EducationLevel;
 use App\Enums\EmploymentType;
+use App\Enums\ResumeStatus;
 use App\Enums\WorkSchedule;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,11 +34,16 @@ class UserResume extends Model
         'has_car',
         'driving_license',
         'skills',
-        'about'
+        'about',
+        'status',
+        'reject_reason',
+        'published_at',
     ];
 
     protected $casts = [
         'skills' => 'array',
+        'status' => ResumeStatus::class,
+        'published_at' => 'datetime',
     ];
 
     protected $appends = [
@@ -91,5 +97,45 @@ class UserResume extends Model
     public function specializations(): HasMany
     {
         return $this->hasMany(ResumeSpecialization::class, 'resume_id');
+    }
+
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(ResumeStatusHistory::class, 'user_resume_id')->orderBy('changed_at', 'desc');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', ResumeStatus::ACTIVE->value);
+    }
+
+    public function scopeByStatus($query, ResumeStatus $status)
+    {
+        return $query->where('status', $status->value);
+    }
+
+    public function changeStatus(ResumeStatus $newStatus, ?string $comment = null): bool
+    {
+        $oldStatus = $this->status;
+
+        $this->status = $newStatus;
+        $result = $this->save();
+
+        if ($result) {
+            $this->statusHistory()->create([
+                'status_from' => $oldStatus?->value,
+                'status_to'   => $newStatus->value,
+                'changed_by'  => auth()->id(),
+                'comment'     => $comment,
+                'changed_at'  => now(),
+            ]);
+        }
+
+        return $result;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status?->isPublished() ?? false;
     }
 }

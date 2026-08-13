@@ -57,9 +57,21 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('admin.resumes.index') }}" class="nav-link {{ request()->routeIs('admin.resumes.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-id-card"></i>
+                            <p>Резюме</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('admin.codes.index') }}" class="nav-link {{ request()->routeIs('admin.codes.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-key"></i>
                             <p>Коды</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-question-circle"></i>
+                            <p>О платформе</p>
                         </a>
                     </li>
                     <li class="nav-item">

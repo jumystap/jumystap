@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\Faq;
 use App\Models\Profession\Profession;
 use App\Models\Resume;
 use App\Models\SpecializationCategory;
@@ -181,7 +182,21 @@ class HomeController extends Controller
 
     public function faq(): mixed
     {
-        return Inertia::render("FAQ");
+        $locale = app()->getLocale() === 'kk' ? 'kz' : 'ru';
+
+        $faqs = Faq::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Faq $faq) => [
+                'question' => $faq->getTranslation('question', $locale),
+                'answer' => $faq->getTranslation('answer', $locale) ?? '',
+            ])
+            ->values();
+
+        return Inertia::render("FAQ", [
+            'faqs' => $faqs,
+        ]);
     }
 
     public function about(): mixed

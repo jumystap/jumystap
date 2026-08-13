@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\ResumeStatus;
 use App\Enums\Roles;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class UserRepository
                         $sub->selectRaw('1')
                             ->from('user_resumes')
                             ->whereColumn('user_resumes.user_id', 'users.id')
+                            ->where('user_resumes.status', ResumeStatus::ACTIVE->value)
                             ->where(function ($resumeQuery) use ($like) {
                                 $resumeQuery->where('user_resumes.position', 'like', $like)
                                     ->orWhere('user_resumes.about', 'like', $like);
@@ -63,6 +65,7 @@ class UserRepository
                 $sub->selectRaw('1')
                     ->from('user_resumes')
                     ->whereColumn('user_resumes.user_id', 'users.id')
+                    ->where('user_resumes.status', ResumeStatus::ACTIVE->value)
                     ->where('user_resumes.city', $filters['city']);
             });
         }
@@ -79,13 +82,15 @@ class UserRepository
             $query->whereExists(function ($sub) {
                 $sub->selectRaw('1')
                     ->from('user_resumes')
-                    ->whereColumn('user_resumes.user_id', 'users.id');
+                    ->whereColumn('user_resumes.user_id', 'users.id')
+                    ->where('user_resumes.status', ResumeStatus::ACTIVE->value);
             });
         }
 
         $latestResumeDate = DB::table('user_resumes')
             ->selectRaw('COALESCE(MAX(updated_at), MAX(created_at))')
-            ->whereColumn('user_resumes.user_id', 'users.id');
+            ->whereColumn('user_resumes.user_id', 'users.id')
+            ->where('user_resumes.status', ResumeStatus::ACTIVE->value);
 
         $query->selectSub($latestResumeDate, 'latest_resume_date')
             ->orderByDesc('latest_resume_date')
@@ -217,6 +222,7 @@ class UserRepository
         return DB::table('user_resumes')
             ->select('user_id', 'position')
             ->whereIn('user_id', $userIds)
+            ->where('status', ResumeStatus::ACTIVE->value)
             ->orderByDesc('updated_at')
             ->get()
             ->unique('user_id')

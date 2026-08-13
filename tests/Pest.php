@@ -46,3 +46,42 @@ function something()
 {
     // ..
 }
+
+function makeUser(int $roleId): \App\Models\User
+{
+    // The custom users table requires a role_id that references roles.id,
+    // so make sure the role exists before creating the user. The default
+    // UserFactory targets the stock Laravel schema (email_verified_at) which
+    // this project does not use, so build the user directly instead.
+    \Illuminate\Support\Facades\DB::table('roles')->updateOrInsert(
+        ['id' => $roleId],
+        ['name' => 'role_' . $roleId, 'name_kz' => 'role_' . $roleId, 'name_ru' => 'role_' . $roleId]
+    );
+
+    static $seq = 0;
+    $seq++;
+
+    return \App\Models\User::forceCreate([
+        'name'     => 'Test User ' . $seq,
+        'email'    => 'user' . $seq . '_' . uniqid() . '@example.com',
+        'phone'    => (string) (77000000000 + $seq),
+        'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        'role_id'  => $roleId,
+    ]);
+}
+
+function createUserResume(array $attributes = []): \App\Models\UserResume
+{
+    $user = $attributes['user'] ?? makeUser(\App\Enums\Roles::EMPLOYEE->value);
+    unset($attributes['user']);
+
+    return \App\Models\UserResume::create(array_merge([
+        'user_id'  => $user->id,
+        'position' => 'PHP Developer',
+        'phone'    => '77001234567',
+        'city'     => 'Астана',
+        'about'    => 'About me text',
+        'skills'   => [],
+        'status'   => \App\Enums\ResumeStatus::ACTIVE,
+    ], $attributes));
+}
