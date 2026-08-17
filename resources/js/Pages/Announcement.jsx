@@ -84,8 +84,9 @@ export default function Announcement({ auth, announcement, more_announcement, ur
         }
     };
 
+    const isPromoted = announcement?.is_permanent || announcement?.is_top || announcement?.is_urgent;
     const updatedAt = announcement?.updated_at || announcement?.published_at || announcement?.created_at;
-    const updatedAtLabel = updatedAt
+    const updatedAtLabel = updatedAt && !isPromoted
         ? `${t('updated_at_label')} ${formatDistanceToNow(new Date(updatedAt), {
             locale: i18n.language === 'ru' ? ru : kz,
             addSuffix: true,

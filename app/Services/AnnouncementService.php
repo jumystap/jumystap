@@ -50,6 +50,11 @@ class AnnouncementService
         return $this->announcementRepository->updateAnnouncement($id, $data);
     }
 
+    public function republishPromotedAnnouncements(int $limit = 5): int
+    {
+        return $this->announcementRepository->republishOldestPromoted($limit);
+    }
+
     public function deleteAnnouncement($id): bool
     {
         return $this->announcementRepository->deleteAnnouncement($id);

@@ -37,6 +37,8 @@ class AnnouncementRepository
                 'experience',
                 'work_time',
                 'is_permanent',
+                'is_top',
+                'is_urgent',
                 'updated_at',
                 'published_at',
             ]);
@@ -182,6 +184,35 @@ class AnnouncementRepository
             ->paginate(10);
     }
 
+    /**
+     * Поднять наверх ленты N самых "залежавшихся" промо-объявлений
+     * (ТОП / срочно / постоянные), обновив updated_at и published_at.
+     * Статус не меняется — объявление остаётся ACTIVE (без повторной модерации).
+     */
+    public function republishOldestPromoted(int $limit = 5): int
+    {
+        $ids = Announcement::query()
+            ->active()
+            ->where(function ($query) {
+                $query->where('is_top', true)
+                    ->orWhere('is_urgent', true)
+                    ->orWhere('is_permanent', true); // убрать эту строку, если поднимать только ТОП+срочно
+            })
+            ->orderBy('updated_at')
+            ->limit($limit)
+            ->pluck('id');
+
+        if ($ids->isEmpty()) {
+            return 0;
+        }
+
+        return Announcement::query()
+            ->whereIn('id', $ids)
+            ->update([
+                'published_at' => now(),
+                'updated_at' => now(),
+            ]);
+    }
 
     public function getAnnouncementById($id): ?Announcement
     {
