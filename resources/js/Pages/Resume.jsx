@@ -1,4 +1,5 @@
 import GuestLayout from "@/Layouts/GuestLayout";
+import { Link } from '@inertiajs/react';
 import { Calendar, MapPin, Briefcase, Code, GraduationCap, Languages, HousePlus} from 'lucide-react';
 import { MdIosShare } from "react-icons/md";
 import {useTranslation} from "react-i18next";
@@ -42,6 +43,16 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
         <GuestLayout>
             <div className="min-h-screen bg-gray-50">
                 <div className="max-w-5xl mx-auto py-8 px-4">
+                    <div className="mb-4">
+                        <Link
+                            href={isOwner ? '/profile' : `/user/${resume.user.id}`}
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800"
+                        >
+                            <span>←</span>
+                            {t('back_to_profile')}
+                        </Link>
+                    </div>
+
                     {/* Header Section */}
                     <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
                         <div className="flex flex-col md:flex-row gap-8 items-start">
