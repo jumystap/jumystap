@@ -37,6 +37,9 @@ export default function MobileWelcomeHome({
             key: "free-course",
             title: t("free_courses", { ns: "index" }),
             description: t("take_training_with_joltap", { ns: "index" }),
+            contentClassName: "relative flex h-full flex-col justify-between gap-3",
+            titleClassName: "text-[22px] font-extrabold leading-[1.1] tracking-[-0.01em] text-[#f36a10]",
+            descriptionClassName: "mt-2 text-[15px] leading-5 text-[#667085]",
             primaryAction: {
                 label: t("sign_up_now", { ns: "index" }),
                 onClick: onPromoCtaClick,
@@ -55,7 +58,7 @@ export default function MobileWelcomeHome({
             ),
             description: t("survey_banner_desc", { ns: "index" }),
             textContainerClassName: "max-w-[210px]",
-            titleClassName: "text-[20px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#1f2937]",
+            titleClassName: "text-[22px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#1f2937]",
             descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#475467]",
             primaryAction: {
                 label: t("survey_banner_button", { ns: "index" }),
@@ -68,14 +71,14 @@ export default function MobileWelcomeHome({
             imageSrc: "/images/survey_banner.png",
             imageAlt: t("survey_banner_desc", { ns: "index" }),
             imageWrapperClassName: "shrink-0",
-            imageClassName: "h-20 w-auto object-contain",
+            imageClassName: "h-16 w-auto object-contain",
         },
         {
             key: "freelance",
             title: t("freelance_banner_title", { ns: "index" }),
             description: t("freelance_banner_desc", { ns: "index" }),
             textContainerClassName: "max-w-[210px]",
-            titleClassName: "text-[20px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#3778e5]",
+            titleClassName: "text-[22px] font-extrabold leading-[1.05] tracking-[-0.02em] text-[#3778e5]",
             descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#475467]",
             primaryAction: {
                 label: t("freelance_banner_button", { ns: "index" }),
@@ -86,7 +89,7 @@ export default function MobileWelcomeHome({
             imageSrc: "/images/freelance_illustration.png",
             imageAlt: t("freelance_banner_title", { ns: "index" }),
             imageWrapperClassName: "shrink-0",
-            imageClassName: "h-20 w-auto object-contain",
+            imageClassName: "h-16 w-auto object-contain",
         },
         {
             key: "telegram-channel",
@@ -96,9 +99,9 @@ export default function MobileWelcomeHome({
                 <a
                     href="https://t.me/jumystapjobs"
                     aria-label={t("go_to_channel", { ns: "index" })}
-                    className="group block h-full px-5 py-4"
+                    className="group block h-full px-5 py-3"
                 >
-                        <div className="flex h-full min-h-[168px] flex-col justify-between gap-5">
+                        <div className="flex h-full min-h-[140px] flex-col justify-between gap-4">
                         <div className="max-w-[295px] text-[22px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#3778e5]">
                             {t("telegram_banner_title", { ns: "index" })}
                         </div>
@@ -126,12 +129,12 @@ export default function MobileWelcomeHome({
             title: t("beware_of_scammers", { ns: "index" }),
             description: t("scam_report", { ns: "index" }),
             containerClassName:
-                "relative overflow-hidden rounded-[24px] border border-[#14315f] bg-gradient-to-r from-[#102454] to-[#0a1d45] px-4 py-4 shadow-[0_14px_32px_rgba(10,29,69,0.28)]",
-            contentClassName: "relative flex min-h-[154px] flex-col justify-between gap-3",
+                "relative overflow-hidden rounded-[24px] border border-[#14315f] bg-gradient-to-r from-[#102454] to-[#0a1d45] px-4 py-3 shadow-[0_14px_32px_rgba(10,29,69,0.28)]",
+            contentClassName: "relative flex min-h-[124px] flex-col justify-between gap-3",
             accentClassName:
                 "pointer-events-none absolute -right-8 top-2 h-24 w-24 rounded-full bg-[rgba(255,255,255,0.14)] blur-2xl",
             textContainerClassName: "max-w-none pr-16",
-            titleClassName: "max-w-[240px] text-[18px] font-bold leading-5 text-white",
+            titleClassName: "max-w-[240px] text-[22px] font-bold leading-5 text-white",
             descriptionClassName: "mt-1 max-w-[250px] text-[12px] leading-[15px] text-[#d7e3ff]",
             actionsRowClassName: "flex items-end gap-2",
             actionsContainerClassName: "grid flex-1 grid-cols-2 gap-2",

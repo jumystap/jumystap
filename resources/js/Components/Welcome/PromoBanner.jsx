@@ -32,15 +32,15 @@ function resolveSlideConfig(slide) {
     return {
         containerClassName:
             slide.containerClassName ||
-            "relative overflow-hidden rounded-[24px] border border-[#e5e8f0] bg-white px-4 py-4 shadow-[0_14px_32px_rgba(15,23,42,0.07)]",
+            "relative overflow-hidden rounded-[24px] border border-[#e5e8f0] bg-white px-4 py-3 shadow-[0_14px_32px_rgba(15,23,42,0.07)]",
         customContent: slide.customContent || null,
-        contentClassName: slide.contentClassName || "relative space-y-4",
+        contentClassName: slide.contentClassName || "relative space-y-3",
         accentClassName:
             slide.accentClassName ||
             "pointer-events-none absolute -bottom-8 -right-6 h-24 w-24 rounded-full bg-[#eaf1ff] blur-2xl",
         textContainerClassName: slide.textContainerClassName || "max-w-[220px]",
         titleClassName:
-            slide.titleClassName || "text-[18px] font-bold leading-5 text-[#f36a10]",
+            slide.titleClassName || "text-[22px] font-bold leading-5 text-[#f36a10]",
         descriptionClassName:
             slide.descriptionClassName || "mt-2 text-[13px] leading-4 text-[#667085]",
         actionsRowClassName:
