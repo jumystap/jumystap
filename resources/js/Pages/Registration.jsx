@@ -38,6 +38,10 @@ export default function Registration({ errors, professions, redirect }) {
     });
     const phones = data.phone;
 
+    const codeNotReceivedWhatsappUrl = `https://api.whatsapp.com/send?phone=77072213131&text=${encodeURIComponent(
+        `Здравствуйте, пишу с сайта JUMYSTAP. Мне не приходит код.${data.phone ? ` Мой номер телефона: +${data.phone}` : ''}`
+    )}`;
+
     const handleRoleSubmit = (role) => {
         setData('role', role);
         setStep(1);
@@ -420,7 +424,7 @@ export default function Registration({ errors, professions, redirect }) {
                                     </>
                                 ) : ''}
                                 <a
-                                    href="https://api.whatsapp.com/send?phone=+77072213131&text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%20%D0%BF%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20JUMYSTAP"
+                                    href={codeNotReceivedWhatsappUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="block text-center text-sm text-blue-500 mt-5"
