@@ -145,6 +145,24 @@
                                     </div>
                                     <div class="col-md-3">
                                         <br/>
+                                        <label for="is_top">{{ __('Топ') }}</label>
+                                        @if (isset($search['is_top']) && $search['is_top'] == 'on')
+                                            <input type="checkbox" id="is_top" name="search[is_top]" checked>
+                                        @else
+                                            <input type="checkbox" id="is_top" name="search[is_top]">
+                                        @endif
+                                    </div>
+                                    <div class="col-md-3">
+                                        <br/>
+                                        <label for="is_urgent">{{ __('Срочно') }}</label>
+                                        @if (isset($search['is_urgent']) && $search['is_urgent'] == 'on')
+                                            <input type="checkbox" id="is_urgent" name="search[is_urgent]" checked>
+                                        @else
+                                            <input type="checkbox" id="is_urgent" name="search[is_urgent]">
+                                        @endif
+                                    </div>
+                                    <div class="col-md-3">
+                                        <br/>
                                         <label for="recent_active_announcements">{{ __('Активные вакансии за последние 6 мес') }}</label>
                                         <input type="checkbox" id="recent_active_announcements" name="search[recent_active_announcements]"
                                             @checked($isRecentActiveAnnouncements)>

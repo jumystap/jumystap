@@ -163,6 +163,14 @@ class Announcement extends Model
             $query->where('announcements.is_permanent', true);
         }
 
+        if (array_key_exists('is_top', $attributes) && $attributes['is_top'] == 'on') {
+            $query->where('announcements.is_top', true);
+        }
+
+        if (array_key_exists('is_urgent', $attributes) && $attributes['is_urgent'] == 'on') {
+            $query->where('announcements.is_urgent', true);
+        }
+
         if (array_key_exists('with_salary', $attributes) && $attributes['with_salary'] == 'on') {
             $query->where('salary_type', '!=', 'undefined');
         }

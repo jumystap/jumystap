@@ -35,6 +35,8 @@ class AnnouncementController extends Controller
             'no_experience'              => null,
             'with_salary'                => null,
             'is_permanent'               => null,
+            'is_top'                     => null,
+            'is_urgent'                  => null,
             'type'                       => null,
             'company_name'               => null,
             'title'                      => null,
