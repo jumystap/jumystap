@@ -203,23 +203,28 @@
 
         /* Skills Section */
         .skills-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            /* Plain block wrapper. The inline-block pills below flow and wrap
+               onto new rows on their own, and this container grows in height to
+               fit every row — so the next section always starts below the real
+               bottom of the skills block (DomPDF computes flex-wrap heights
+               unreliably, so we avoid flexbox here). */
+            line-height: 2.2;
         }
 
         .skill-item {
             background: linear-gradient(135deg, #f5f7ff 0%, #e8f2ff 100%);
-            padding: 5px 10px 0 10px;
+            padding: 6px 12px;
             border-radius: 50px;
             border: 2px solid #3B82F6;
             font-size: 11px;
+            line-height: 1.4;
             text-align: center;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 60px;
-            height: 30px;
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 8px 8px 0;
+            max-width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Projects Section */

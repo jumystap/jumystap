@@ -296,6 +296,16 @@ class UserResumeController extends Controller
 
     public function download(int $id)
     {
+        // The resume PDF is opened as a plain link (no X-Locale header), so a
+        // request without a `locale` cookie falls back to the app default `en`,
+        // which has no lang/en/messages.php. That would render the enum labels
+        // (education level, employment type, work schedule, driving licence) as
+        // raw keys like "messages.resume.education_level.higher". Pin to a
+        // supported content locale so the labels are always translated.
+        if (! in_array(app()->getLocale(), ['ru', 'kk'], true)) {
+            app()->setLocale('ru');
+        }
+
         $resume = UserResume::find($id);
 
         if(!$resume){
