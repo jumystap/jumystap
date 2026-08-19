@@ -209,7 +209,7 @@ export default function Profile({ user, announcements, userProfessions, resumes 
                                                     {resume.skills.length > 0 && (
                                                         <div className='flex-wrap mt-5 flex gap-2'>
                                                             {resume.skills.map((skill, index) => (
-                                                                <div className='rounded-full inline-block py-1 px-5 bg-gray-100 text-gray-500'>
+                                                                <div className='rounded-[11px] inline-block max-w-full break-words py-1 px-4 bg-gray-100 text-gray-500 text-xs'>
                                                                     {skill}
                                                                 </div>
                                                             ))}

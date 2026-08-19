@@ -613,10 +613,10 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
                                 <Input
                                     value={data.newSkill}
                                     onChange={(e) => setData('newSkill', e.target.value)}
-                                    className="text-sm rounded py-1 border border-gray-300"
+                                    className="flex-1 min-w-0 text-sm rounded py-1 border border-gray-300"
                                     placeholder={t('enter_skill_and_press_button')}
                                 />
-                                <Button onClick={addSkill}>{t('add_skill')}</Button>
+                                <Button onClick={addSkill} className="shrink-0 whitespace-nowrap">{t('add_skill')}</Button>
                             </div>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 {data.skills.map((skill) => (
@@ -624,7 +624,7 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
                                         key={skill}
                                         closable
                                         onClose={(e) => removeSkill(skill, e)}
-                                        className="rounded-full bg-gray-100 text-gray-500"
+                                        className="!rounded-[11px] bg-gray-100 text-gray-500 !max-w-full !whitespace-normal break-words text-xs"
                                     >
                                         {skill}
                                     </Tag>

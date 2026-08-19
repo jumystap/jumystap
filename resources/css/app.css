@@ -388,9 +388,39 @@ body::-webkit-resizer {
     align-items: center;
   }
 
+  /* Мобильные single-select: высота 48px, чтобы стрелка и выбранный текст были по
+     вертикальному центру. AntD задаёт .ant-select-single height:32px, из-за чего при
+     min-height:48px у селектора стрелка/текст уезжали вверх. */
+  .jt-mobile-page-shell .ant-select-single {
+    height: 48px !important;
+  }
+
+  .jt-mobile-page-shell .ant-select-single .ant-select-selector {
+    height: 48px !important;
+  }
+
+  .jt-mobile-page-shell .ant-select-single .ant-select-arrow {
+    top: 50%;
+    margin-top: 0;
+    transform: translateY(-50%);
+  }
+
   .jt-mobile-page-shell .ant-select-selection-placeholder,
   .jt-mobile-page-shell .ant-select-selection-item {
     line-height: 1.4 !important;
+  }
+
+  /* Ошибки валидации под полями: держим в потоке, даём отступ и поднимаем над
+     соседними блоками — раньше текст ошибки оказывался «под» следующим блоком/полем. */
+  .jt-mobile-page-shell .ant-form-item-explain,
+  .jt-mobile-page-shell .ant-form-item-explain-connected {
+    position: relative;
+    z-index: 1;
+    height: auto !important;
+    margin-top: 4px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 1.35;
   }
 
   .jt-mobile-page-shell .react-tel-input .form-control {

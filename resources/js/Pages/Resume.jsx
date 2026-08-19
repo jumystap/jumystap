@@ -227,7 +227,7 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
                                     {resume.skills.map((skill, index) => (
                                         <span
                                             key={index}
-                                            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors"
+                                            className="max-w-full whitespace-normal break-words px-4 py-2 bg-blue-50 text-blue-600 rounded-[16px] text-sm font-medium hover:bg-blue-100 transition-colors"
                                         >
                                             {skill}
                                         </span>

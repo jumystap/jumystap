@@ -213,7 +213,7 @@ export default function User({ auth, user, contactShow, employees, userProfessio
                                                         {resume.skills.map((skill, idx) => (
                                                             <span
                                                                 key={idx}
-                                                                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200"
+                                                                className="inline-flex items-center max-w-full whitespace-normal break-words px-3 py-1 rounded-[11px] text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200"
                                                             >
                                                                 {skill}
                                                             </span>
