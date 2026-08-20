@@ -325,6 +325,11 @@ export default function Dashboard({ user }) {
                             >
                                 <span className='font-light text-sm'>{t('create_announcement', { ns: 'dashboard' })}</span>
                             </Link>
+                            <Link href="/employer/responses"
+                                  className='text-black border border-gray-300 rounded-lg text-center items-center inline-block py-2 px-10 cursor-pointer'
+                            >
+                                <span className='text-light text-sm'>{t('my_responses_title', { ns: 'dashboard' })}</span>
+                            </Link>
                         </div>
                     </div>
                     <div className='p-3 font-semibold'>{t('your_announcements', { ns: 'dashboard' })}</div>

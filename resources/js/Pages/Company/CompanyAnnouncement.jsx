@@ -1,8 +1,8 @@
 import Guest from "@/Layouts/GuestLayout";
-import { Card, Col, Row, Statistic, List, Rate, Button, Modal, Radio, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { Card, Col, Row, Statistic, List, Button, Modal, Radio, message } from 'antd';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm, router, Link } from '@inertiajs/react';
+import { useForm, router } from '@inertiajs/react';
 
 export default function CompanyAnnouncement({
     announcement,
@@ -11,27 +11,14 @@ export default function CompanyAnnouncement({
     uniqueVisitors,
     repeatedVisitors,
     responseRate,
-    viewsOverTime,
-    peakViewingTimes,
     respondedUsers
 }) {
-    const { t, i18n } = useTranslation('companyAnnouncement');
-    const [isMobile, setIsMobile] = useState(false);
+    const { t } = useTranslation('companyAnnouncement');
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [isArchiveModalVisible, setIsArchiveModalVisible] = useState(false);
     const [employeeFound, setEmployeeFound] = useState(null); // null, 'yes', or 'no'
 
-    const { get, delete: destroy, processing } = useForm();
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    const { delete: destroy, processing } = useForm();
 
     const showDeleteModal = () => {
         setIsDeleteModalVisible(true);
@@ -80,72 +67,35 @@ export default function CompanyAnnouncement({
         );
     };
 
-    const handleRateUser = (userId, rating) => {
-        get(route('rate.user', { employee_id: userId, rating: rating }), {
-            onSuccess: () => {
-                message.success(t('user_rated'));
-            },
-            onError: () => {
-                message.error(t('user_rating_error'));
-            },
-        });
-    };
-
     return (
         <Guest>
             <div style={{ padding: '20px' }}>
                 <div className="text-xl mt-10 font-bold">{announcement.title}</div>
-                <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={12} md={8}>
+
+                <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
+                    <Col xs={12} md={8}>
                         <Card>
                             <Statistic title={t('total_views')} value={totalViews} />
                         </Card>
                     </Col>
-                    <Col xs={24} sm={12} md={8}>
+                    <Col xs={12} md={8}>
                         <Card>
                             <Statistic title={t('total_responses')} value={totalResponses} />
                         </Card>
                     </Col>
-                    <Col xs={24} sm={12} md={8}>
+                    <Col xs={12} md={8}>
                         <Card>
                             <Statistic title={t('unique_visitors')} value={uniqueVisitors} />
                         </Card>
                     </Col>
-                    <Col xs={24} sm={12} md={8}>
+                    <Col xs={12} md={8}>
                         <Card>
                             <Statistic title={t('returning_visitors')} value={repeatedVisitors} />
                         </Card>
                     </Col>
-                    <Col xs={24} sm={12} md={8}>
+                    <Col xs={12} md={8}>
                         <Card>
-                            <Statistic title={t('response_rate')} value={responseRate.toFixed(2)} suffix="%" />
-                        </Card>
-                    </Col>
-                </Row>
-
-                <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
-                    <Col xs={24} md={12}>
-                        <Card title={t('views_by_time')}>
-                            <List
-                                dataSource={Object.entries(viewsOverTime)}
-                                renderItem={([date, count]) => (
-                                    <List.Item>
-                                        {date}: {count} {t('views')}
-                                    </List.Item>
-                                )}
-                            />
-                        </Card>
-                    </Col>
-                    <Col xs={24} md={12}>
-                        <Card title={t('peak_viewing_time')}>
-                            <List
-                                dataSource={Object.entries(peakViewingTimes)}
-                                renderItem={([hour, count]) => (
-                                    <List.Item>
-                                        {hour}:00 - {count} {t('views')}
-                                    </List.Item>
-                                )}
-                            />
+                            <Statistic title={t('response_rate')} value={Number(responseRate).toFixed(2)} suffix="%" />
                         </Card>
                     </Col>
                 </Row>
@@ -155,22 +105,41 @@ export default function CompanyAnnouncement({
                         <Card title={t('users_who_responded')}>
                             <List
                                 dataSource={respondedUsers}
+                                locale={{ emptyText: t('no_responses_yet') }}
                                 renderItem={(respond) => (
                                     <List.Item
                                         actions={[
-                                            <Rate
-                                                onChange={(value) => handleRateUser(user.id, value)}
-                                                allowHalf
-                                                defaultValue={0}
-                                            />
+                                            respond.resume_id ? (
+                                                <a
+                                                    href={`/resumes/${respond.resume_id}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {t('view_resume')}
+                                                </a>
+                                            ) : (
+                                                <span style={{ color: '#999' }}>{t('no_resume')}</span>
+                                            )
                                         ]}
                                     >
-                                        <a
-                                            href={route('user', respond.user.id)}
-                                            target="_blank"
-                                        >
-                                        {respond.user.name}
-                                        </a>
+                                        <div>
+                                            {respond.user ? (
+                                                <a
+                                                    href={`/user/${respond.user.id}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {respond.user.name}
+                                                </a>
+                                            ) : (
+                                                <span style={{ color: '#999' }}>{t('deleted_user')}</span>
+                                            )}
+                                            {respond.responded_at && (
+                                                <div style={{ fontSize: 12, color: '#999' }}>
+                                                    {respond.responded_at}
+                                                </div>
+                                            )}
+                                        </div>
                                     </List.Item>
                                 )}
                             />

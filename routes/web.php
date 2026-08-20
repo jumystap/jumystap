@@ -69,6 +69,7 @@ Route::prefix('resumes')->name('resumes.')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/my-responses', [UserController::class, 'responses'])->name('responses');
+    Route::get('/employer/responses', [UserController::class, 'myResponses'])->name('employer.responses');
     Route::post('/update', [UserController::class, 'update'])->name('update');
     Route::get('/fav', [FavoriteController::class, 'index']);
     Route::post('/fav/{id}', [FavoriteController::class, 'store'])->name('fav.store');

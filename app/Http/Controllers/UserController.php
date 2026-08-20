@@ -6,12 +6,13 @@ use App\Enums\Roles;
 use App\Enums\AnnouncementStatus;
 use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Models\Announcement;
-use App\Models\Visit;
+use App\Models\AnnouncementVisit;
 use App\Models\UserResume;
 use App\Services\AnnouncementService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -262,10 +263,14 @@ class UserController extends Controller
         $user = Auth::user()->load(['role', 'portfolio', 'announcement']);
         $userProfessions = $this->userService->getUserProfessions($user->id);
 
+        $visitCounts = DB::table('announcement_visits')
+            ->whereIn('announcement_id', $user->announcement->pluck('id'))
+            ->selectRaw('announcement_id, COUNT(*) as aggregate')
+            ->groupBy('announcement_id')
+            ->pluck('aggregate', 'announcement_id');
+
         foreach ($user->announcement as $announcement) {
-            $announcement->visit_count = DB::table('visits')
-                ->where('url', "https://jumystap.kz/announcement/{$announcement->id}")
-                ->count();
+            $announcement->visit_count = (int) ($visitCounts[$announcement->id] ?? 0);
         }
 
         $announcements = $this->userService->getLatestAnnouncements(true);
@@ -318,13 +323,31 @@ class UserController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        if($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
+        if ($user && ($user->id === $announcement->user_id || $user->role->name === 'admin')) {
 
-            $visits = Visit::where('url', 'like', "%/announcement/$id%")->get();
-
-            $totalViews = $visits->count();
+            $totalViews = AnnouncementVisit::where('announcement_id', $id)->count();
 
             $totalResponses = Response::where('announcement_id', $id)->count();
+
+            // Уникальные/повторные посетители по announcement_visits (по индексу).
+            // Посетитель = user_id для залогиненных, иначе ip_address (гости).
+            $visitorKey = "COALESCE(CONCAT('u:', user_id), CONCAT('ip:', ip_address))";
+
+            $uniqueVisitors = (int) DB::table('announcement_visits')
+                ->where('announcement_id', $id)
+                ->distinct()
+                ->count(DB::raw($visitorKey));
+
+            $repeatedVisitors = (int) DB::query()->fromSub(
+                DB::table('announcement_visits')
+                    ->where('announcement_id', $id)
+                    ->selectRaw("$visitorKey as visitor_key")
+                    ->groupBy('visitor_key')
+                    ->havingRaw('COUNT(*) > 1'),
+                'repeated'
+            )->count();
+
+            $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
 
             $respondedUsers = Response::where('announcement_id', $id)
                 ->with('user')
@@ -332,21 +355,13 @@ class UserController extends Controller
                 ->unique('employee_id')
                 ->values();
 
-            $uniqueVisitors = $visits->unique('user_id')->count();
+            $resumeMap = $this->latestActiveResumeIds($respondedUsers->pluck('employee_id'));
 
-            $repeatedVisitors = $visits->countBy('user_id')->filter(function ($count) {
-                return $count > 1;
-            })->count();
-
-            $responseRate = $totalViews > 0 ? ($totalResponses / $totalViews) * 100 : 0;
-
-            $viewsOverTime = $visits->groupBy(function ($visit) {
-                return $visit->created_at->format('Y-m-d');
-            })->map->count();
-
-            $peakViewingTimes = $visits->groupBy(function ($visit) {
-                return $visit->created_at->format('H');
-            })->map->count();
+            $respondedUsers->transform(function ($respond) use ($resumeMap) {
+                $respond->resume_id = $resumeMap[$respond->employee_id] ?? null;
+                $respond->responded_at = $respond->created_at?->format('d.m.Y H:i');
+                return $respond;
+            });
 
             return Inertia::render('Company/CompanyAnnouncement', [
                 'announcement'     => $announcement,
@@ -355,13 +370,61 @@ class UserController extends Controller
                 'uniqueVisitors'   => $uniqueVisitors,
                 'repeatedVisitors' => $repeatedVisitors,
                 'responseRate'     => $responseRate,
-                'viewsOverTime'    => $viewsOverTime,
-                'peakViewingTimes' => $peakViewingTimes,
-                'respondedUsers'   => $respondedUsers
+                'respondedUsers'   => $respondedUsers,
             ]);
-        }else{
+        } else {
             return redirect('profile')->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_view')]);
         }
+    }
+
+    /**
+     * Отклики на все вакансии работодателя (таблицей). Одна строка = один отклик.
+     */
+    public function myResponses(): mixed
+    {
+        $user = Auth::user();
+
+        $ownAnnouncementIds = Announcement::where('user_id', $user->id)->pluck('id');
+
+        $responses = Response::whereIn('announcement_id', $ownAnnouncementIds)
+            ->with(['user:id,name', 'announcement:id,title'])
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        $resumeMap = $this->latestActiveResumeIds($responses->getCollection()->pluck('employee_id'));
+
+        $responses->through(fn ($response) => [
+            'id'           => $response->id,
+            'responded_at' => $response->created_at?->format('d.m.Y H:i'),
+            'announcement' => [
+                'id'    => $response->announcement_id,
+                'title' => $response->announcement?->title,
+            ],
+            'user' => [
+                'id'   => $response->employee_id,
+                'name' => $response->user?->name,
+            ],
+            'resume_id' => $resumeMap[$response->employee_id] ?? null,
+        ]);
+
+        return Inertia::render('Company/EmployerResponses', [
+            'responses' => $responses,
+        ]);
+    }
+
+    /**
+     * Карта employee_id => id последнего активного резюме (батч, без N+1).
+     */
+    private function latestActiveResumeIds(Collection $employeeIds): Collection
+    {
+        return UserResume::whereIn('user_id', $employeeIds)
+            ->active()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get(['id', 'user_id'])
+            ->groupBy('user_id')
+            ->map(fn ($group) => $group->first()->id);
     }
 
     public function rate($employee_id, $rating): mixed

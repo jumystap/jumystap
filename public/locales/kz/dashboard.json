@@ -22,5 +22,14 @@
     "announcement_republicated": "Хабарландыру қайта жариялауға сәтті жіберілді.",
     "announcement_republication_error": "Хабарландыруды қайта жариялау қатесі.",
     "posted": "Жарияланды",
-    "dont_have_any_announcements": "Сізде әлі ешқандай хабарландыру жоқ."
+    "dont_have_any_announcements": "Сізде әлі ешқандай хабарландыру жоқ.",
+    "my_responses_title": "Менің жауаптарым",
+    "col_vacancy": "Вакансия",
+    "col_response_time": "Жауап уақыты",
+    "col_responder": "Кім жауап берді",
+    "col_resume": "Түйіндеме",
+    "view_resume": "Түйіндемені қарау",
+    "no_resume": "Түйіндеме жоқ",
+    "deleted_user": "Пайдаланушы жойылған",
+    "no_responses_yet": "Сіздің вакансияларыңызға әзірге жауаптар жоқ"
 }

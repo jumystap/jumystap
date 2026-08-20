@@ -22,5 +22,14 @@
     "announcement_republicated": "Объявление успешно отправлено на перепубликацию.",
     "announcement_republication_error": "Ошибка при перепубликации объявления.",
     "posted": "Размещено",
-    "dont_have_any_announcements": "У вас пока нет объявлений"
+    "dont_have_any_announcements": "У вас пока нет объявлений",
+    "my_responses_title": "Мои отклики",
+    "col_vacancy": "Вакансия",
+    "col_response_time": "Время отклика",
+    "col_responder": "Кто откликнулся",
+    "col_resume": "Резюме",
+    "view_resume": "Посмотреть резюме",
+    "no_resume": "Нет резюме",
+    "deleted_user": "Пользователь удалён",
+    "no_responses_yet": "На ваши вакансии пока нет откликов"
 }
