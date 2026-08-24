@@ -49,6 +49,7 @@
     "confirm_astana_residence": "Астанада тұратынымды растаймын",
     "success": "Сәттілік",
     "your_application_has_been_successfully_submitted": "Сіздің өтініміңіз сәтті жіберілді!",
+    "application_error": "Өтінімді жіберу мүмкін болмады. Кейінірек қайталап көріңіз.",
     "please_select_at_least_one_skill": "Кемінде бір дағдыны таңдаңыз.",
     "your_complaint_has_been_successfully_submitted": "Сіздің шағымыңыз сәтті жіберілді!",
     "please_select_at_least_one_complaint": "Кем дегенде бір шағымды таңдаңыз.",

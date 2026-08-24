@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { notification, Button, Checkbox, ConfigProvider } from 'antd';
 
-export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
+export default function FeedbackModal({ isOpen, onClose }) {
     const { t } = useTranslation('header');
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
@@ -59,21 +59,13 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
             return;
         }
 
-        const templateParams = {
-            name,
-            phone,
-            message: selectedProfessions.join(', '),
-        };
-
         try {
-            await axios.post('/send-telegram-feedback', {
-                type: 'application',
+            await axios.post('/feedback-applications', {
                 name,
                 phone,
-                items: selectedProfessions,
+                skills: selectedProfessions.join(', '),
             });
 
-            onSubmit(templateParams);
             setLoading(false);
             setName('');
             setPhone('');
@@ -84,9 +76,12 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                 message: t('success'),
                 description: t('your_application_has_been_successfully_submitted'),
             });
-        } catch (error) {
-            console.log('FAILED...', error);
+        } catch {
             setLoading(false);
+
+            notification.error({
+                message: t('application_error'),
+            });
         }
     };
 
@@ -108,6 +103,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                             placeholder={t('your_name', { ns: 'header' })}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            maxLength={255}
                             required
                         />
 
@@ -117,6 +113,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmit }) {
                             placeholder={t('your_phone_number', { ns: 'header' })}
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
+                            maxLength={50}
                             required
                         />
 

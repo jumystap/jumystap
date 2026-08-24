@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticController;
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\FeedbackApplicationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfessionController;
@@ -35,6 +36,9 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/rate/{employee_id}/{rating}', [UserController::class, 'rate'])->name('rate.user');
 Route::post('/send-feedback', [FeedbackController::class, 'sendFeedback']);
 Route::post('/send-telegram-feedback', [FeedbackController::class, 'sendTelegramFeedback'])->middleware('throttle:10,1');
+Route::post('/feedback-applications', [FeedbackApplicationController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('feedback-applications.store');
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
 Route::post('/restore_password', [AuthController::class, 'restorePassword']);
 

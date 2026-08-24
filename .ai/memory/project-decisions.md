@@ -17,6 +17,9 @@
 - **Docker без Sail.** `Dockerfile` (multi-stage) + `docker-compose.yml` (app/nginx/queue/scheduler/
   mysql). Vendor Sail в репозитории отсутствует.
 - **Синк сертификатов из Bitrix** — основа статуса выпускника (`is_graduate`).
+- **Заявки из FeedbackModal сохраняются до Telegram.** Таблица `feedback_applications` — источник
+  истины для заявок с сайта; Telegram-уведомление отправляется после записи и не откатывает её при
+  сбое интеграции. Жалобы из `ScamModal` остаются на отдельном существующем Telegram-потоке.
 
 ## TODO
 - Зафиксировать решение по CI/CD, когда оно будет принято.

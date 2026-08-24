@@ -187,17 +187,6 @@ export default function Welcome({
     },
   };
 
-  const handleFeedbackSubmit = (feedback) => {
-    axios
-      .post("/send-feedback", { feedback })
-      .then((response) => {
-        console.log(t("feedback_sent", { ns: "header" }));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   const changeLanguage = (lng) => {
       i18n.changeLanguage(lng);
       localStorage.setItem("i18nextLng", lng);
@@ -245,7 +234,6 @@ export default function Welcome({
       <FeedbackModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onSubmit={handleFeedbackSubmit}
       />
      <ScamModal
         isOpen={isScamOpen}

@@ -25,6 +25,12 @@
                         <p>Пользователи</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.feedback-applications.index') }}" class="nav-link {{ request()->routeIs('admin.feedback-applications.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p>Заявки</p>
+                    </a>
+                </li>
                 @if(Auth::user()->hasRole(Roles::ADMIN))
                     <li class="nav-item">
                         <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">

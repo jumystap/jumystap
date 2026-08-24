@@ -49,6 +49,7 @@
     "confirm_astana_residence": "Я подтверждаю, что проживаю в городе Астана",
     "success": "Успех",
     "your_application_has_been_successfully_submitted": "Ваша заявка успешно отправлена!",
+    "application_error": "Не удалось отправить заявку. Пожалуйста, попробуйте позже.",
     "please_select_at_least_one_skill": "Пожалуйста, выберите хотя бы один навык.",
     "your_complaint_has_been_successfully_submitted": "Ваша жалоба успешно отправлена!",
     "please_select_at_least_one_complaint": "Пожалуйста, выберите хотя бы одну жалобу.",

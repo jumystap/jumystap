@@ -47,14 +47,6 @@ export default function Employees({ auth, employees, professions, cities = [], f
         });
     };
 
-    const handleFeedbackSubmit = (feedback) => {
-        axios.post('/send-feedback', { feedback }).then((response) => {
-            console.log(t('feedback_sent', { ns: 'header' }));
-        }).catch((error) => {
-            console.error(error);
-        });
-    };
-
     const handleSearch = () => {
         setIsFilterOpen(false)
         reloadEmployees();
@@ -117,7 +109,7 @@ export default function Employees({ auth, employees, professions, cities = [], f
             <Head title="Биржа фрилансеров в Астане | Поиск работы и услуг фрилансеров">
                 <meta name="description" content="Найдите специалиста или разместите свои услуги на бирже фрилансеров Жумыстап в Астане. Удобный поиск работы и специалистов в различных сферах" />
             </Head>
-            <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
+            <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
             {/* Mobile Filter Modal */}
             {isFilterOpen && (
                 <MobileFilterSheet

@@ -254,14 +254,6 @@ export default function Announcements({ auth, announcements, specializationCateg
         setData('searchKeyword', event.target.value);
     };
 
-    const handleFeedbackSubmit = (feedback) => {
-        axios.post('/send-feedback', { feedback }).then(() => {
-            console.log(t('feedback_sent', { ns: 'header' }));
-        }).catch((error) => {
-            console.error(error);
-        });
-    };
-
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const searchKeyword = params.get('searchKeyword');
@@ -450,7 +442,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                 <Head title="Работа в Казахстане | свежие вакансии и объявления ">
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
-                <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSubmit={handleFeedbackSubmit} />
+                <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
                 <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializationCategories} />
                 <div className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'>
                     <div className='w-[80%] bg-white rounded-lg h-[20%]'></div>
