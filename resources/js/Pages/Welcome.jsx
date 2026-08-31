@@ -305,14 +305,18 @@ export default function Welcome({
                     href="https://www.youtube.com/watch?v=FGWg_xSQBKk"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="z-10 md:mx-5 mx-3 mt-2 block overflow-hidden rounded-lg bg-gradient-to-r from-[#102454] to-[#0a1d45] text-white"
+                    className="z-10 md:mx-5 mx-3 mt-2 block overflow-hidden rounded-lg bg-white"
                 >
                     <div className="flex items-center md:px-10 md:py-7 p-5">
                         <div className="max-w-[480px]">
-                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-white">
-                                {t("film_banner_title", { ns: "index" })}
+                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-gray-900">
+                                <Trans
+                                    i18nKey="film_banner_title"
+                                    ns="index"
+                                    components={{ o: <span className="text-orange-500" /> }}
+                                />
                             </p>
-                            <p className="mt-3 text-base text-blue-100">
+                            <p className="mt-3 text-base text-gray-900">
                                 {t("film_banner_desc", { ns: "index" })}
                             </p>
                             <span className="mt-6 inline-block text-center md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all duration-150">
