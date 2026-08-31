@@ -301,6 +301,30 @@ export default function Welcome({
             </div>
             )}
             <Carousel>
+                <a
+                    href="https://www.youtube.com/watch?v=FGWg_xSQBKk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="z-10 md:mx-5 mx-3 mt-2 block overflow-hidden rounded-lg bg-gradient-to-r from-[#102454] to-[#0a1d45] text-white"
+                >
+                    <div className="flex items-center md:px-10 md:py-7 p-5">
+                        <div className="max-w-[480px]">
+                            <p className="font-extrabold text-3xl md:text-3xl leading-tight text-white">
+                                {t("film_banner_title", { ns: "index" })}
+                            </p>
+                            <p className="mt-3 text-base text-blue-100">
+                                {t("film_banner_desc", { ns: "index" })}
+                            </p>
+                            <span className="mt-6 inline-block text-center md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all duration-150">
+                                {t("film_banner_button", { ns: "index" })}
+                            </span>
+                        </div>
+
+                        <div className="hidden md:block ml-auto pl-6">
+                            <img src="/images/film_banner.png" className="w-[300px] rounded-lg" alt="" />
+                        </div>
+                    </div>
+                </a>
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex">
                         <div>
