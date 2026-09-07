@@ -34,6 +34,20 @@ export default function MobileWelcomeHome({
 
     const promoSlides = [
         {
+            key: "free-course",
+            title: t("free_courses", { ns: "index" }),
+            description: t("take_training_with_joltap", { ns: "index" }),
+            contentClassName: "relative flex h-full flex-col justify-between gap-3",
+            titleClassName: "text-[22px] font-extrabold leading-[1.1] tracking-[-0.01em] text-[#f36a10]",
+            descriptionClassName: "mt-2 text-[15px] leading-5 text-[#667085]",
+            primaryAction: {
+                label: t("sign_up_now", { ns: "index" }),
+                onClick: onPromoCtaClick,
+            },
+            imageSrc: "/images/logo.png",
+            imageAlt: "JUMYSTAP",
+        },
+        {
             key: "film-3-years",
             title: (
                 <Trans
@@ -58,20 +72,6 @@ export default function MobileWelcomeHome({
             imageAlt: t("film_banner_desc", { ns: "index" }),
             imageWrapperClassName: "shrink-0",
             imageClassName: "h-16 w-auto rounded-[12px] object-cover",
-        },
-        {
-            key: "free-course",
-            title: t("free_courses", { ns: "index" }),
-            description: t("take_training_with_joltap", { ns: "index" }),
-            contentClassName: "relative flex h-full flex-col justify-between gap-3",
-            titleClassName: "text-[22px] font-extrabold leading-[1.1] tracking-[-0.01em] text-[#f36a10]",
-            descriptionClassName: "mt-2 text-[15px] leading-5 text-[#667085]",
-            primaryAction: {
-                label: t("sign_up_now", { ns: "index" }),
-                onClick: onPromoCtaClick,
-            },
-            imageSrc: "/images/logo.png",
-            imageAlt: "JUMYSTAP",
         },
         {
             key: "survey",
