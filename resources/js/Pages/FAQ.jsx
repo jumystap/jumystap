@@ -16,7 +16,7 @@ export default function FAQ({ faqs = [] }) {
 
     return (
         <GuestLayout>
-            <div className='grid grid-cols-1 md:grid-cols-7'>
+            <div className='grid grid-cols-1 md:grid-cols-8'>
                 <div className="col-span-6 mx-auto w-full p-0 md:p-10">
                     <MobileSurface className="md:bg-transparent md:shadow-none md:border-0 md:p-0">
                         <h1 className="text-2xl md:text-xl font-bold text-center mb-4">{t('title', { ns: 'faq' })}</h1>
