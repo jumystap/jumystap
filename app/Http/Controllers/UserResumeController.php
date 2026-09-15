@@ -327,22 +327,28 @@ class UserResumeController extends Controller
                 $experience[] = [
                     'title'            => $organization->position,
                     'company'          => $organization->organization,
-                    'period'           => str_replace('until_now', 'по настоящее время', $organization->period),
+                    'period'           => trim(str_replace(['until_now', 'undefined'], __('messages.resume.pdf.until_now'), (string) $organization->period), " -"),
                     'responsibilities' => $organization->responsibilities
                 ];
             }
         }
 
+        $user = $resume->user;
+
         $data = [
-            'name'                  => $resume->user->name,
-            'info'                  => $resume->user->gender_name . ', ' . $resume->user->age . ', ' . $resume->user->born,
-            'email'                 => $canViewContacts ? $resume->user->email : '',
-            'phone'                 => $canViewContacts ? '+' . $resume->user->phone : '',
-            'address'               => $resume->city . ($resume->city == 'Астана' ? ', район ' . $resume->district : ''),
+            'name'                  => $user->name,
+            'photo'                 => $this->resolveAvatarDataUri($user->image_url),
+            'logo'                  => $this->embedImageFile(public_path('images/logo2.png')),
             'position'              => $resume->position,
-            'salary'                => $resume->formatted_salary . ' ₸',
             'employment_type'       => $resume->employment_type,
             'work_schedule'         => $resume->work_schedule,
+            'salary'                => $resume->formatted_salary ? $resume->formatted_salary . ' ₸' : '',
+            'address'               => $resume->city . ($resume->city == 'Астана' ? ', район ' . $resume->district : ''),
+            'age'                   => $user->age,
+            'born'                  => $user->born,
+            'email'                 => $canViewContacts ? ($user->email ?? '') : '',
+            'phone'                 => $canViewContacts && $user->phone ? '+' . $user->phone : '',
+            'is_graduate'           => (bool) $user->is_graduate,
             'experience'            => $experience,
             'education'             => [
                 'education_level' => $resume->education_level,
@@ -352,8 +358,8 @@ class UserResumeController extends Controller
             ],
             'languages'             => $resume->languages ? $resume->languages->pluck('language')->join(', ') : '',
             'skills'                => $resume->skills,
-            'ip_status'             => $resume->ip_status ? 'Присутствует' : 'Отсутствует',
-            'has_car'               => $resume->has_car ? 'Да' : 'Нет',
+            'ip_status'             => (bool) $resume->ip_status,
+            'has_car'               => (bool) $resume->has_car,
             'driving_license_title' => $resume->driving_license_title,
             'about'                 => $resume->about,
         ];
@@ -361,8 +367,100 @@ class UserResumeController extends Controller
         $html = view('pdf.resume', $data)->render();
 
         $pdf = Pdf::loadHTML($html);
+        $pdf->render();
+        $this->drawPdfFooter($pdf);
 
         return $pdf->download('resume.pdf');
+    }
+
+    /**
+     * Draw the "jumystap.kz  ·  N / M" footer on every page via the DomPDF
+     * canvas. Done here (not in Blade) because counter(pages) renders as 0 in
+     * this DomPDF build. Failures never break the download.
+     */
+    private function drawPdfFooter($pdf): void
+    {
+        try {
+            $dompdf      = $pdf->getDomPDF();
+            $canvas      = $dompdf->getCanvas();
+            $fontMetrics = $dompdf->getFontMetrics();
+            $font        = $fontMetrics->getFont('DejaVu Sans', 'normal');
+
+            if (! $font) {
+                return;
+            }
+
+            $size   = 9;
+            $color  = [0.61, 0.64, 0.69]; // #9CA3AF
+            $margin = 42;                 // ~56px content inset in points (matches .page padding)
+            $y      = $canvas->get_height() - 30;
+
+            $canvas->page_text($margin, $y, 'jumystap.kz', $font, $size, $color);
+
+            $label      = '{PAGE_NUM} / {PAGE_COUNT}';
+            $labelWidth = $fontMetrics->getTextWidth('00 / 00', $font, $size);
+            $canvas->page_text($canvas->get_width() - $margin - $labelWidth, $y, $label, $font, $size, $color);
+        } catch (\Throwable $e) {
+            // Footer is cosmetic — never fail the PDF download over it.
+        }
+    }
+
+    /**
+     * Resolve a user avatar (stored as an "image_url" like "/avatars/x.jpg", a
+     * public-disk path, or a remote URL) into a base64 data URI DomPDF can
+     * embed. Returns null when the image can't be read, so the PDF cleanly
+     * falls back to the photo-less layout.
+     */
+    private function resolveAvatarDataUri(?string $imageUrl): ?string
+    {
+        if (empty($imageUrl)) {
+            return null;
+        }
+
+        if (str_starts_with($imageUrl, 'http://') || str_starts_with($imageUrl, 'https://')) {
+            try {
+                $bytes = @file_get_contents($imageUrl);
+            } catch (\Throwable $e) {
+                $bytes = false;
+            }
+
+            return $bytes ? $this->bytesToDataUri($bytes) : null;
+        }
+
+        $relative = ltrim($imageUrl, '/');
+
+        foreach ([
+            public_path($relative),
+            storage_path('app/public/' . $relative),
+            public_path('storage/' . $relative),
+        ] as $candidate) {
+            if (is_file($candidate) && is_readable($candidate)) {
+                return $this->embedImageFile($candidate);
+            }
+        }
+
+        return null;
+    }
+
+    private function embedImageFile(string $absolutePath): ?string
+    {
+        if (! is_file($absolutePath) || ! is_readable($absolutePath)) {
+            return null;
+        }
+
+        return $this->bytesToDataUri(file_get_contents($absolutePath));
+    }
+
+    private function bytesToDataUri(string $bytes): ?string
+    {
+        if ($bytes === '') {
+            return null;
+        }
+
+        $info = @getimagesizefromstring($bytes);
+        $mime = $info['mime'] ?? 'image/png';
+
+        return 'data:' . $mime . ';base64,' . base64_encode($bytes);
     }
 
 }
