@@ -6,10 +6,13 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* DomPDF ignores @page margins entirely in this setup, so ALL page
-           insets are done with padding on .page below. @page keeps a bottom
-           reserve so flowing content never runs under the canvas footer. */
-        @page { margin: 0 0 56px 0; }
+        /* @page margins repeat on every page: the top reserve pushes flowing
+           content down so it isn't cramped under the fixed topbar (padding-top
+           on .page would only inset the first page), and the bottom reserve
+           keeps content off the canvas footer. The topbar is positioned
+           relative to the paper edge, so it stays flush at top: 0 and is not
+           affected by these margins. Left/right insets live on .page padding. */
+        @page { margin: 44px 0 56px 0; }
 
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -18,7 +21,7 @@
             background: #fff;
         }
 
-        .page { padding: 44px 56px 40px 56px; }
+        .page { padding: 0 56px 40px 56px; }
 
         /* Fixed chrome repeated on every page */
         .topbar {
