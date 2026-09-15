@@ -11,7 +11,7 @@
            (padding-top on .page would only apply to the first page), and a
            bottom reserve keeps flowing content off the canvas footer.
            Left/right insets stay on .page padding. */
-        @page { margin: 44px 0 56px 0; }
+        @page { margin: 72px 0 56px 0; }
 
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -27,7 +27,7 @@
            the bar up into the top reserve to sit flush at the paper edge. */
         .topbar {
             position: fixed;
-            top: -44px; left: 0;
+            top: -72px; left: 0;
             width: 100%; height: 6px;
             background: #2563EB;
         }
