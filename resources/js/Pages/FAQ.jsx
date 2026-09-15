@@ -30,7 +30,7 @@ export default function FAQ({ faqs = [] }) {
                                 </button>
                                 {openQuestion === index && (
                                     <div
-                                        className="mt-2 p-4 bg-white border rounded-md shadow-md"
+                                        className="faq-answer mt-2 p-4 bg-white border rounded-md shadow-md"
                                         dangerouslySetInnerHTML={{ __html: item.answer }}
                                     ></div>
                                 )}
