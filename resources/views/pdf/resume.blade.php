@@ -35,7 +35,7 @@
         .photo-box {
             width: 88px; height: 108px;
             overflow: hidden;
-            background: #F3F4F6;
+            background: #fff;
         }
         .photo-box img { width: 88px; }
         .head-logo { width: 150px; text-align: right; }
@@ -175,6 +175,14 @@
         {!! $sectionHead($n, __('messages.resume.pdf.section_joltap')) !!}
         <div class="item">
             <div class="item-title">{{ __('messages.resume.pdf.joltap_note') }}</div>
+            @if(!empty($graduate_courses))
+                <div class="item-sub">{{ __('messages.resume.pdf.joltap_courses') }}</div>
+                <ul class="skills">
+                    @foreach($graduate_courses as $course)
+                        <li>{{ $course }}</li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </div>
 @endif

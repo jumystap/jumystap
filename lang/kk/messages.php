@@ -61,6 +61,7 @@ return [
             'section_education'  => 'Білім',
             'section_additional' => 'Қосымша',
             'joltap_note'        => 'JOLTAP оқу курстарының түлегі',
+            'joltap_courses'     => 'Өткен курстар',
             'languages'          => 'Тілдер',
             'driving_license'    => 'Жүргізуші куәлігі',
             'ip_yes'             => 'ЖК бар',

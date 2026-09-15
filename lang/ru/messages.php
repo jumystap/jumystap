@@ -61,6 +61,7 @@ return [
             'section_education'  => 'Образование',
             'section_additional' => 'Дополнительно',
             'joltap_note'        => 'Выпускник образовательных курсов JOLTAP',
+            'joltap_courses'     => 'Пройденные курсы',
             'languages'          => 'Языки',
             'driving_license'    => 'Водительские права',
             'ip_yes'             => 'ИП присутствует',

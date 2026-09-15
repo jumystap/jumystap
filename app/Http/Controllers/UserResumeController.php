@@ -13,6 +13,7 @@ use App\Models\Announcement;
 use App\Models\UserResume;
 use App\Services\ResumeService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -335,6 +336,10 @@ class UserResumeController extends Controller
 
         $user = $resume->user;
 
+        $graduateCourses = $user->is_graduate
+            ? $user->professions->pluck('name')->filter()->unique()->values()->all()
+            : [];
+
         $data = [
             'name'                  => $user->name,
             'photo'                 => $this->resolveAvatarDataUri($user->image_url),
@@ -349,6 +354,7 @@ class UserResumeController extends Controller
             'email'                 => $canViewContacts ? ($user->email ?? '') : '',
             'phone'                 => $canViewContacts && $user->phone ? '+' . $user->phone : '',
             'is_graduate'           => (bool) $user->is_graduate,
+            'graduate_courses'      => $graduateCourses,
             'experience'            => $experience,
             'education'             => [
                 'education_level' => $resume->education_level,
@@ -459,6 +465,18 @@ class UserResumeController extends Controller
 
         $info = @getimagesizefromstring($bytes);
         $mime = $info['mime'] ?? 'image/png';
+
+        // DomPDF ignores EXIF orientation, so phone photos render rotated.
+        // Re-encode through Intervention Image to bake in the correct
+        // orientation (and strip EXIF). Fall back to raw bytes on failure.
+        try {
+            $oriented = (string) Image::read($bytes)->orient()->encodeByMediaType($mime);
+            if ($oriented !== '') {
+                $bytes = $oriented;
+            }
+        } catch (\Throwable $e) {
+            // Keep the original bytes if normalization isn't possible.
+        }
 
         return 'data:' . $mime . ';base64,' . base64_encode($bytes);
     }
