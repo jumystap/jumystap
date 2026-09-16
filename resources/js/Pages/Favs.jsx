@@ -10,7 +10,6 @@ import { MdAccessTime } from 'react-icons/md';
 export default function Favs({ auth, announcements, errors }) {
     const { t, i18n } = useTranslation('announcements');
     const [announcementType, setAnnouncementType] = useState('all');
-    const [searchCity, setSearchCity] = useState('');
     const [searchKeyword, setSearchKeyword] = useState('');
 
     const kz = {
@@ -105,30 +104,22 @@ export default function Favs({ auth, announcements, errors }) {
         setAnnouncementType(event.target.value);
     };
 
-    const handleCityChange = (event) => {
-        setSearchCity(event.target.value);
-    };
-
     const handleSearchKeywordChange = (event) => {
         setSearchKeyword(event.target.value);
     };
 
     const sortedAnnouncements = announcements.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
 
-    const uniqueCities = [...new Set(announcements.map(anonce => anonce.city))];
-
     const filteredAnnouncements = sortedAnnouncements.filter((anonce) => {
         const announcementTypeMatches = (announcementType === 'all') ||
                                         (announcementType === 'vacancy' && anonce.type_ru === 'Вакансия') ||
                                         (announcementType === 'project' && anonce.type_ru === 'Заказ');
 
-        const cityMatches = searchCity === '' || anonce.city === searchCity;
-
         const keywordMatches = searchKeyword === '' ||
                                anonce.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
                                anonce.description?.toLowerCase().includes(searchKeyword.toLowerCase());
 
-        return announcementTypeMatches && cityMatches && keywordMatches;
+        return announcementTypeMatches && keywordMatches;
     });
 
     return (
@@ -239,18 +230,6 @@ export default function Favs({ auth, announcements, errors }) {
                                 <option value="all">{announcementType === 'all' ? t('annonce_type', { ns: 'announcements' }) : t('annonce_type_default', { ns: 'announcements' })}</option>
                                 <option value="vacancy">{t('job')}</option>
                                 <option value="project">{t('project', { ns: 'announcements' })}</option>
-                            </select>
-
-                            <select
-                                value={searchCity}
-                                onChange={handleCityChange}
-                                name="searchCity"
-                                className='block border-b py-4 border-[0px] w-full md:w-auto border-gray-300 text-gray-500'
-                            >
-                                <option value="">{t('all_cities', { ns: 'announcements' })}</option>
-                                {uniqueCities.map((city, index) => (
-                                    <option key={index} value={city}>{city}</option>
-                                ))}
                             </select>
                         </div>
                     </div>
