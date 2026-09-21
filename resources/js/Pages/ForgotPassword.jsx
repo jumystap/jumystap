@@ -18,6 +18,10 @@ export default function ForgotPassword() {
     const [step, setStep] = useState(1);
     const phone = data.phone;
 
+    const codeNotReceivedWhatsappUrl = `https://api.whatsapp.com/send?phone=77072213131&text=${encodeURIComponent(
+        `Здравствуйте, пишу с сайта JUMYSTAP. Мне не приходит код.${data.phone ? ` Мой номер телефона: +${data.phone}` : ''}`
+    )}`;
+
     const normalizePhone = (value) => value.replace(/[^\d]/g, '');
 
     const handlePhoneChange = (e) => {
@@ -164,6 +168,14 @@ export default function ForgotPassword() {
                                             {t('verify_button', { ns: 'register' })}
                                         </button>
                                     </div>
+                                    <a
+                                        href={codeNotReceivedWhatsappUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block text-center text-sm text-blue-500 mt-5"
+                                    >
+                                        {t('code_not_received', { ns: 'register' })}
+                                    </a>
                                 </form>
                             </>
                         )}
