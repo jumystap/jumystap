@@ -105,7 +105,7 @@ class UserController extends Controller
         Log::info('Store user request received', $request->all());
 
         $validated = $request->validate([
-            'phone' => 'required|string',
+            'phone' => 'required|string|unique:users,phone',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
@@ -122,7 +122,7 @@ class UserController extends Controller
                 },
             ],
             'gender' => 'nullable',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:3000',
             'source' => 'nullable|string',
             'ipStatus1' => 'nullable|in:no,yes',
             'ipStatus2' => 'nullable|in:no,yes',
@@ -144,6 +144,15 @@ class UserController extends Controller
                 return redirect($redirectTo);
             }
             return redirect('/profile');
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            // Race: phone passed unique validation but a concurrent request
+            // inserted it first. Surface a clean field error, not a logged 500.
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'phone' => __('validation.custom.phone.unique'),
+                ])
+                ->withInput();
         } catch (\Exception $e) {
             Log::error('Error creating user', ['exception' => $e]);
             return redirect()

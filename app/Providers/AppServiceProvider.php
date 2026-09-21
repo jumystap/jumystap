@@ -28,9 +28,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::defaultView('vendor.pagination.bootstrap-4');
 
+        // When no language is specified (no X-Locale header / locale cookie, or
+        // an empty value), default the backend — including validation messages —
+        // to Russian rather than the app's `en` fallback.
         $locale = request()->header('X-Locale')
-            ?? request()->cookie('locale')
-            ?? app()->getLocale();
+            ?: request()->cookie('locale')
+            ?: 'ru';
         $locale = in_array($locale, ['kz', 'kk']) ? 'kk' : $locale;
         app()->setLocale($locale);
 

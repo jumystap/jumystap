@@ -132,6 +132,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'phone' => [
+            'unique' => 'Бұл телефон нөмірі бойынша пайдаланушы тіркелген.',
+        ],
     ],
 
     /*

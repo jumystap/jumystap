@@ -141,6 +141,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'phone' => [
+            'unique' => 'Пользователь с таким номером телефона уже зарегистрирован.',
+        ],
     ],
 
     'attributes' => [
