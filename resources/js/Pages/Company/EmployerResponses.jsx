@@ -66,6 +66,16 @@ export default function EmployerResponses({ responses }) {
     return (
         <GuestLayout>
             <div className="max-w-5xl mx-auto px-4 py-8">
+                <div className="mb-4">
+                    <Link
+                        href="/profile"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-800"
+                    >
+                        <span>←</span>
+                        {t('back_to_profile')}
+                    </Link>
+                </div>
+
                 <h1 className="text-2xl font-bold mb-6">{t('my_responses_title')}</h1>
 
                 <Table
