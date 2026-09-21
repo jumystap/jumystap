@@ -159,6 +159,7 @@ class UserController extends Controller
     {
         $user = Auth::user()->load('role');
         $roles = Roles::options();
+        unset($roles[Roles::COMPANY->value]);
 
         return Inertia::render('UpdateUser', [
             'user' => $user,
