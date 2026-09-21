@@ -76,6 +76,7 @@ class AnnouncementController extends Controller
         $search = array_merge([
             'company_name' => null,
             'title' => null,
+            'archive_reason' => null,
         ], $request->get('search', []));
 
         $search['status'] = (string) AnnouncementStatus::ARCHIVED->value;

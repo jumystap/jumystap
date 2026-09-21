@@ -42,6 +42,18 @@
                                         <input type="text" id="title" class="form-control" name="search[title]"
                                                value="{{ $search['title'] ?? '' }}">
                                     </div>
+                                    <div class="col-md-4">
+                                        <label for="archive_reason">{{ __('Причина архивации') }}</label>
+                                        <select name="search[archive_reason]" id="archive_reason" class="form-control">
+                                            <option value>{{ __('Все') }}</option>
+                                            @foreach ($reasons as $key => $value)
+                                                <option value="{{ $key }}"
+                                                        @if (isset($search['archive_reason']) && (string) $search['archive_reason'] === (string) $key) selected="selected" @endif>
+                                                    {{ $value }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="col-md-12 mt-4">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-search fa-fw"></i>
@@ -93,15 +105,7 @@
                                                 {{ \Carbon\Carbon::parse($announcement->updated_at)->format('d.m.Y H:i') }}
                                             @endif
                                         </td>
-                                        <td>
-                                            @if($announcement->archive_reason)
-                                                {{ $announcement->archive_reason->getLabel() }}
-                                            @elseif($announcement->is_employee_found)
-                                                {{ $reasons[\App\Enums\AnnouncementArchiveReason::FOUND_ON_SITE->value] }}
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
+                                        <td>{{ $announcement->archive_reason?->getLabel() ?? '—' }}</td>
                                         <td>
                                             <a href="../announcement/{{ $announcement->id }}" target="_blank" class='btn btn-outline-info'>
                                                 <i class="fas fa-eye"></i>

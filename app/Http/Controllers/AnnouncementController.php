@@ -335,12 +335,11 @@ class AnnouncementController extends Controller
             return redirect('/profile');
         }
 
-        $archiveReason = AnnouncementArchiveReason::from($reason);
+        $archiveReason = AnnouncementArchiveReason::from((int) $reason);
 
         $this->announcementService->updateAnnouncement($id, [
             'status' => AnnouncementStatus::ARCHIVED->value,
             'archive_reason' => $archiveReason->value,
-            'is_employee_found' => $archiveReason === AnnouncementArchiveReason::FOUND_ON_SITE,
             'archived_at' => now(),
         ]);
 

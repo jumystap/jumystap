@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import {Button, message, Modal, Radio} from 'antd';
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, archiveReasons = [] }) {
     // const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
     const { t, i18n } = useTranslation('dashboard');
     const [isArchiveModalVisible, setIsArchiveModalVisible] = useState(false);
@@ -382,9 +382,9 @@ export default function Dashboard({ user }) {
                     value={employeeFound}
                     style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
                 >
-                    <Radio value="found_on_site">{t('found_on_site')}</Radio>
-                    <Radio value="found_other_platform">{t('found_other_platform')}</Radio>
-                    <Radio value="no_longer_relevant">{t('no_longer_relevant')}</Radio>
+                    {archiveReasons.map(reason => (
+                        <Radio key={reason.value} value={reason.value}>{t(reason.key)}</Radio>
+                    ))}
                     <Radio value="republish">{t('republish_vacancy')}</Radio>
                 </Radio.Group>
             </Modal>

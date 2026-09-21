@@ -11,7 +11,8 @@ export default function CompanyAnnouncement({
     uniqueVisitors,
     repeatedVisitors,
     responseRate,
-    respondedUsers
+    respondedUsers,
+    archiveReasons = []
 }) {
     const { t } = useTranslation('companyAnnouncement');
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -192,9 +193,9 @@ export default function CompanyAnnouncement({
                         value={employeeFound}
                         style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
                     >
-                        <Radio value="found_on_site">{t('found_on_site')}</Radio>
-                        <Radio value="found_other_platform">{t('found_other_platform')}</Radio>
-                        <Radio value="no_longer_relevant">{t('no_longer_relevant')}</Radio>
+                        {archiveReasons.map(reason => (
+                            <Radio key={reason.value} value={reason.value}>{t(reason.key)}</Radio>
+                        ))}
                         <Radio value="republish">{t('republish_vacancy')}</Radio>
                     </Radio.Group>
                 </Modal>

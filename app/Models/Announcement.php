@@ -36,7 +36,6 @@ class Announcement extends Model
         'is_top',
         'is_urgent',
         'is_permanent',
-        'is_employee_found',
         'archive_reason',
         'archived_at',
         'status',
@@ -157,6 +156,10 @@ class Announcement extends Model
 
         if (array_key_exists('status', $attributes) && strlen($attributes['status'])) {
             $query->where('announcements.status', $attributes['status']);
+        }
+
+        if (array_key_exists('archive_reason', $attributes) && strlen((string) $attributes['archive_reason'])) {
+            $query->where('announcements.archive_reason', $attributes['archive_reason']);
         }
 
         if (array_key_exists('recent_active_announcements', $attributes) && $attributes['recent_active_announcements'] === 'on') {
