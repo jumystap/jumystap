@@ -51,8 +51,7 @@ export default function CompanyAnnouncement({
             `/announcements/archive`,
             {
                 id: announcement.id,
-                is_employee_found: employeeFound === 'yes',
-                republish: employeeFound === 'republish',
+                reason: employeeFound,
             },
             {
                 onSuccess: () => {
@@ -187,15 +186,16 @@ export default function CompanyAnnouncement({
                     okText={t('send')}
                     cancelText={t('cancel')}
                 >
-                    {t('have_you_found_an_employee')}
+                    {t('found_employee_via_site')}
                     <Radio.Group
                         onChange={(e) => setEmployeeFound(e.target.value)}
                         value={employeeFound}
                         style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
                     >
-                        <Radio value="yes">{t('yes')}</Radio>
-                        <Radio value="no">{t('no')}</Radio>
-                        <Radio value="republish">{t('republish')}</Radio>
+                        <Radio value="found_on_site">{t('found_on_site')}</Radio>
+                        <Radio value="found_other_platform">{t('found_other_platform')}</Radio>
+                        <Radio value="no_longer_relevant">{t('no_longer_relevant')}</Radio>
+                        <Radio value="republish">{t('republish_vacancy')}</Radio>
                     </Radio.Group>
                 </Modal>
             </div>

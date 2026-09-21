@@ -33,9 +33,15 @@
                 </li>
                 @if(Auth::user()->hasRole(Roles::ADMIN))
                     <li class="nav-item">
-                        <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') && !request()->routeIs('admin.announcements.archive') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-star"></i>
                             <p>Вакансии</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.announcements.archive') }}" class="nav-link {{ request()->routeIs('admin.announcements.archive') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-archive"></i>
+                            <p>Архив вакансий</p>
                         </a>
                     </li>
                     <li class="nav-item">

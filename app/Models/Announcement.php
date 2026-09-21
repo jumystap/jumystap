@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Domains\Common\Enums\Status;
+use App\Enums\AnnouncementArchiveReason;
 use App\Enums\AnnouncementStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,6 +37,8 @@ class Announcement extends Model
         'is_urgent',
         'is_permanent',
         'is_employee_found',
+        'archive_reason',
+        'archived_at',
         'status',
         'published_at',
         'payment_status',
@@ -53,11 +55,13 @@ class Announcement extends Model
         'employment_type',
         'work_hours',
         'start_time',
-        'phone'
+        'phone',
     ];
 
     protected $casts = [
         'status' => AnnouncementStatus::class,
+        'archive_reason' => AnnouncementArchiveReason::class,
+        'archived_at' => 'datetime',
         'is_permanent' => 'boolean',
     ];
 
@@ -125,7 +129,7 @@ class Announcement extends Model
         $query->join('users', 'users.id', '=', 'announcements.user_id');
 
         if (array_key_exists('company_name', $attributes) && strlen($attributes['company_name'])) {
-            $query->where('users.name', 'LIKE', '%' . $attributes['company_name'] . '%');
+            $query->where('users.name', 'LIKE', '%'.$attributes['company_name'].'%');
         }
 
         if (array_key_exists('user_id', $attributes) && strlen($attributes['user_id'])) {
@@ -133,7 +137,7 @@ class Announcement extends Model
         }
 
         if (array_key_exists('title', $attributes) && strlen($attributes['title'])) {
-            $query->where('title', 'LIKE', '%' . $attributes['title'] . '%');
+            $query->where('title', 'LIKE', '%'.$attributes['title'].'%');
         }
 
         if (array_key_exists('city', $attributes) && strlen($attributes['city'])) {
@@ -189,5 +193,4 @@ class Announcement extends Model
 
         return $query;
     }
-
 }
