@@ -21,14 +21,17 @@ class ArchiveOldAnnouncementsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Archive announcements not updated for more than 6 months';
+    protected $description = 'Archive announcements not updated for more than 3 months (except top, urgent and permanent)';
 
     public function handle(): int
     {
-        $date = Carbon::now()->subMonths(6);
+        $date = Carbon::now()->subMonths(3);
 
         $count = Announcement::query()
             ->where('updated_at', '<', $date)
+            ->where('is_top', false)
+            ->where('is_urgent', false)
+            ->where('is_permanent', false)
             ->update([
                 'status' => AnnouncementStatus::ARCHIVED->value,
                 'updated_at' => now(),
