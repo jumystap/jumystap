@@ -94,9 +94,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         employment_type: announcement.employment_type || '',
         start_time: announcement.start_time || '',
         location: announcement.address || [''],
-        condition: announcement.conditions || [''],
-        requirement: announcement.requirements || [''],
-        responsibility: announcement.responsibilities || [''],
+        condition: [{ condition: (announcement.conditions || []).map((c) => c.condition).join('\n') }],
+        requirement: [{ requirement: (announcement.requirements || []).map((r) => r.requirement).join('\n') }],
+        responsibility: [{ responsibility: (announcement.responsibilities || []).map((r) => r.responsibility).join('\n') }],
         city: announcement.city || '',
         status: announcement.status,
         specialization_id: announcement.specialization_id || null,
@@ -492,6 +492,16 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             setData('phone', '')
         }
 
+        if (!data.requirement?.[0]?.requirement?.trim()) {
+            errors.requirement = t('fill_requirement', { ns: 'createAnnouncement' });
+        }
+        if (!data.responsibility?.[0]?.responsibility?.trim()) {
+            errors.responsibility = t('fill_responsibility', { ns: 'createAnnouncement' });
+        }
+        if (!data.condition?.[0]?.condition?.trim()) {
+            errors.condition = t('fill_condition', { ns: 'createAnnouncement' });
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             return;
@@ -837,140 +847,63 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 </span>
                             </span>
                         </div>
-                        {data.requirement.map((req, index) => (
-                            <Form.Item
-                                name={`requirement[${index}].requirement`}
-                                className='mt-[-10px]'
-                                validateStatus={validationErrors[`requirement.${index}.requirement`] || errors[`requirement.${index}.requirement`] ? 'error' : ''}
-                                help={validationErrors[`requirement.${index}.requirement`] || errors[`requirement.${index}.requirement`] || null}
-                            >
-                                <TextArea
-                                    ref={index === data.requirement.length - 1 ? newRequirementRef : null}
-                                    key={index}
-                                    type="text"
-                                    className='text-sm w-full rounded py-1 border border-gray-300'
-                                    value={req.requirement}
-                                    onChange={(e) => handleRequirementChange(index, e)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            const textarea = e.target;
-                                            const cursorPosition = textarea.selectionStart;
-                                            const currentText = textarea.value;
-
-                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                            const textAfterCursor = currentText.substring(cursorPosition);
-
-                                            handleRequirementChange(index, {
-                                                target: { value: textBeforeCursor },
-                                            });
-
-                                            addRequirementAtIndex(index, textAfterCursor);
-                                        }
-                                    }}
-                                />
-                                <div className='text-right'>
-                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteRequirement(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
-                                </div>
-                            </Form.Item>
-                        ))}
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addRequirement}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
+                        <Form.Item
+                            className='mt-[-10px]'
+                            required
+                            validateStatus={(validationErrors['requirement.0.requirement'] || errors['requirement.0.requirement'] || validationErrors.requirement || errors.requirement) ? 'error' : ''}
+                            help={validationErrors['requirement.0.requirement'] || errors['requirement.0.requirement'] || validationErrors.requirement || errors.requirement || null}
+                        >
+                            <TextArea
+                                value={data.requirement[0]?.requirement ?? ''}
+                                onChange={(e) => setData('requirement', [{ requirement: e.target.value }])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                                className='text-sm w-full rounded py-1 border border-gray-300'
+                            />
+                        </Form.Item>
                         <div className='mb-4'>
                             {t('responsibility', { ns: 'createAnnouncement' })}
                             <span className="font-regular ml-2 text-gray-500">
                                 {t('responsibility_example', { ns: 'createAnnouncement' })}
                             </span>
                         </div>
-                        {data.responsibility.map((resp, index) => (
-                            <Form.Item
-                                name={`responsibility[${index}].responsibility`}
-                                className='mt-[-10px]'
-                                validateStatus={validationErrors[`responsibility.${index}.responsibility`] || errors[`responsibility.${index}.responsibility`] ? 'error' : ''}
-                                help={validationErrors[`responsibility.${index}.responsibility`] || errors[`responsibility.${index}.responsibility`] || null}
-                            >
-                                <TextArea
-                                    ref={index === data.responsibility.length - 1 ? newResponsibilityRef : null}
-                                    key={index}
-                                    type="text"
-                                    name={`responsibility-${index}`}
-                                    className='text-sm rounded py-1 border border-gray-300'
-                                    value={resp.responsibility}
-                                    onChange={(e) => handleResponsibilityChange(index, e)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            const textarea = e.target;
-                                            const cursorPosition = textarea.selectionStart;
-                                            const currentText = textarea.value;
-
-                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                            const textAfterCursor = currentText.substring(cursorPosition);
-
-                                            handleResponsibilityChange(index, {
-                                                target: { value: textBeforeCursor },
-                                            });
-
-                                            addResponsibilityAtIndex(index, textAfterCursor);
-                                        }
-                                    }}
-                                />
-                                <div className='text-right'>
-                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteResponsibility(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
-                                </div>
-                            </Form.Item>
-                        ))}
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addResponsibility}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
+                        <Form.Item
+                            className='mt-[-10px]'
+                            required
+                            validateStatus={(validationErrors['responsibility.0.responsibility'] || errors['responsibility.0.responsibility'] || validationErrors.responsibility || errors.responsibility) ? 'error' : ''}
+                            help={validationErrors['responsibility.0.responsibility'] || errors['responsibility.0.responsibility'] || validationErrors.responsibility || errors.responsibility || null}
+                        >
+                            <TextArea
+                                value={data.responsibility[0]?.responsibility ?? ''}
+                                onChange={(e) => setData('responsibility', [{ responsibility: e.target.value }])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                                className='text-sm rounded py-1 border border-gray-300'
+                            />
+                        </Form.Item>
                         <div className='mb-4'>
                             {t('condition', { ns: 'createAnnouncement' })}
                             <span className="ml-2 font-regular text-gray-500">
                                 {t('condition_example', { ns: 'createAnnouncement' })}
                             </span>
                         </div>
-                        {data.condition.map((cond, index) => (
-                            <Form.Item
-                                name={`condition[${index}].condition`}
-                                className='mt-[-10px]'
-                                validateStatus={validationErrors[`condition.${index}.condition`] || errors[`condition.${index}.condition`] ? 'error' : ''}
-                                help={validationErrors[`condition.${index}.condition`] || errors[`condition.${index}.condition`] || null}
-                            >
-                                <TextArea
-                                    ref={index === data.condition.length - 1 ? newConditionRef : null}
-                                    key={index}
-                                    type="text"
-                                    name={`condition-${index}`}
-                                    className='text-sm rounded py-1 border border-gray-300'
-                                    value={cond.condition}
-                                    onChange={(e) => handleConditionChange(index, e)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault();
-                                            const textarea = e.target;
-                                            const cursorPosition = textarea.selectionStart;
-                                            const currentText = textarea.value;
-
-                                            const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                            const textAfterCursor = currentText.substring(cursorPosition);
-
-                                            handleConditionChange(index, {
-                                                target: { value: textBeforeCursor },
-                                            });
-
-                                            addConditionAtIndex(index, textAfterCursor);
-                                        }
-                                    }}
-                                />
-                                <div className='text-right'>
-                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteCondition(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
-                                </div>
-                            </Form.Item>
-                        ))}
-                        <div className='text-blue-500 mt-[-15px] mb-2 cursor-pointer' onClick={addCondition}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
+                        <Form.Item
+                            className='mt-[-10px]'
+                            required
+                            validateStatus={(validationErrors['condition.0.condition'] || errors['condition.0.condition'] || validationErrors.condition || errors.condition) ? 'error' : ''}
+                            help={validationErrors['condition.0.condition'] || errors['condition.0.condition'] || validationErrors.condition || errors.condition || null}
+                        >
+                            <TextArea
+                                value={data.condition[0]?.condition ?? ''}
+                                onChange={(e) => setData('condition', [{ condition: e.target.value }])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                                className='text-sm rounded py-1 border border-gray-300'
+                            />
+                        </Form.Item>
                         <Form.Item
                             label={t('additional_info', { ns: 'createAnnouncement' })}
                         >

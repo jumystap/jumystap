@@ -351,6 +351,16 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
             }
         }
 
+        if (!data.requirement?.[0]?.trim()) {
+            errors.requirement = t('fill_requirement', { ns: 'createAnnouncement' });
+        }
+        if (!data.responsibility?.[0]?.trim()) {
+            errors.responsibility = t('fill_responsibility', { ns: 'createAnnouncement' });
+        }
+        if (!data.condition?.[0]?.trim()) {
+            errors.condition = t('fill_condition', { ns: 'createAnnouncement' });
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             return;
@@ -690,56 +700,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     </span>
                                 </span>
                             }
+                            required
+                            help={errors?.['requirement.0'] || errors?.requirement || validationErrors?.requirement}
+                            validateStatus={(errors?.['requirement.0'] || errors?.requirement || validationErrors?.requirement) ? 'error' : ''}
                         >
-                        {data.requirement.map((req, index) => (
-                            <Form.Item
-                                key={index}
-                                name={['requirement', index]}
-                                rules={[{ required: true, message: t('fill_requirement', { ns: 'createAnnouncement' })}]}
-                                help={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`]}
-                                validateStatus={errors?.[`requirement.${index}`] || validationErrors?.[`requirement.${index}`] ? 'error' : ''}
-                            >
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        ref={(el) => {
-                                            requirementInputRefs.current[index] = el;
-                                        }}
-                                        type="text"
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={req}
-                                        onChange={(e) => handleRequirementChange(index, e)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault();
-                                                const currentText = e.target.value ?? '';
-                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
-                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                                const textAfterCursor = currentText.substring(cursorPosition);
-                                                setData((prevData) => {
-                                                    const next = [...prevData.requirement];
-                                                    next[index] = textBeforeCursor;
-                                                    next.splice(index + 1, 0, textAfterCursor);
-                                                    return { ...prevData, requirement: next };
-                                                });
-                                                queueFocus('requirement', index + 1);
-                                            }
-                                        }}
-                                    />
-                                    <button
-                                        className="text-orange-500 mt-3"
-                                        type="button"
-                                        onClick={() => deleteRequirement(index)}
-                                        >
-                                            {t('delete', { ns: 'createAnnouncement' })}
-                                        </button>
-                                    </div>
-                                </Form.Item>
-                            ))}
+                            <TextArea
+                                value={data.requirement[0] ?? ''}
+                                onChange={(e) => setData('requirement', [e.target.value])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                            />
                         </Form.Item>
-
-                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addRequirement}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
 
                         {/* Обязанности */}
                         <Form.Item
@@ -751,56 +723,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     </span>
                                 </span>
                             }
+                            required
+                            help={errors?.['responsibility.0'] || errors?.responsibility || validationErrors?.responsibility}
+                            validateStatus={(errors?.['responsibility.0'] || errors?.responsibility || validationErrors?.responsibility) ? 'error' : ''}
                         >
-                        {data.responsibility.map((resp, index) => (
-                            <Form.Item
-                                key={index}
-                                name={['responsibility', index]}
-                                rules={[{ required: true, message: t('fill_responsibility', { ns: 'createAnnouncement' }) }]}
-                                help={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`]}
-                                validateStatus={errors?.[`responsibility.${index}`] || validationErrors?.[`responsibility.${index}`] ? 'error' : ''}
-                            >
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        ref={(el) => {
-                                            responsibilityInputRefs.current[index] = el;
-                                        }}
-                                        type="text"
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={resp}
-                                        onChange={(e) => handleResponsibilityChange(index, e)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault();
-                                                const currentText = e.target.value ?? '';
-                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
-                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                                const textAfterCursor = currentText.substring(cursorPosition);
-                                                setData((prevData) => {
-                                                    const next = [...prevData.responsibility];
-                                                    next[index] = textBeforeCursor;
-                                                    next.splice(index + 1, 0, textAfterCursor);
-                                                    return { ...prevData, responsibility: next };
-                                                });
-                                                queueFocus('responsibility', index + 1);
-                                            }
-                                        }}
-                                    />
-                                    <button
-                                        className="text-orange-500 mt-3"
-                                        type="button"
-                                        onClick={() => deleteResponsibility(index)}
-                                        >
-                                            {t('delete', { ns: 'createAnnouncement' })}
-                                        </button>
-                                    </div>
-                                </Form.Item>
-                            ))}
+                            <TextArea
+                                value={data.responsibility[0] ?? ''}
+                                onChange={(e) => setData('responsibility', [e.target.value])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                            />
                         </Form.Item>
-
-                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addResponsibility}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
 
                         {/* Условия труда */}
                         <Form.Item
@@ -812,56 +746,18 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     </span>
                                 </span>
                             }
+                            required
+                            help={errors?.['condition.0'] || errors?.condition || validationErrors?.condition}
+                            validateStatus={(errors?.['condition.0'] || errors?.condition || validationErrors?.condition) ? 'error' : ''}
                         >
-                        {data.condition.map((cond, index) => (
-                            <Form.Item
-                                key={index}
-                                name={['condition', index]}
-                                rules={[{ required: true, message: t('fill_condition', { ns: 'createAnnouncement' }) }]}
-                                help={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`]}
-                                validateStatus={errors?.[`condition.${index}`] || validationErrors?.[`condition.${index}`] ? 'error' : ''}
-                            >
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        ref={(el) => {
-                                            conditionInputRefs.current[index] = el;
-                                        }}
-                                        type="text"
-                                        className="text-sm rounded py-1 mt-3 border border-gray-300 flex-1"
-                                        value={cond}
-                                        onChange={(e) => handleConditionChange(index, e)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault();
-                                                const currentText = e.target.value ?? '';
-                                                const cursorPosition = e.target.selectionStart ?? currentText.length;
-                                                const textBeforeCursor = currentText.substring(0, cursorPosition);
-                                                const textAfterCursor = currentText.substring(cursorPosition);
-                                                setData((prevData) => {
-                                                    const next = [...prevData.condition];
-                                                    next[index] = textBeforeCursor;
-                                                    next.splice(index + 1, 0, textAfterCursor);
-                                                    return { ...prevData, condition: next };
-                                                });
-                                                queueFocus('condition', index + 1);
-                                            }
-                                        }}
-                                    />
-                                    <button
-                                        className="text-orange-500 mt-3"
-                                        type="button"
-                                        onClick={() => deleteCondition(index)}
-                                        >
-                                            {t('delete', { ns: 'createAnnouncement' })}
-                                        </button>
-                                    </div>
-                                </Form.Item>
-                            ))}
+                            <TextArea
+                                value={data.condition[0] ?? ''}
+                                onChange={(e) => setData('condition', [e.target.value])}
+                                autoSize={{ minRows: 3, maxRows: 12 }}
+                                maxLength={1000}
+                                showCount
+                            />
                         </Form.Item>
-
-                        <div className="text-blue-500 mt-[-15px] mb-2 cursor-pointer" onClick={addCondition}>
-                            {t('add', { ns: 'createAnnouncement' })}
-                        </div>
 
                         <Form.Item
                             label={

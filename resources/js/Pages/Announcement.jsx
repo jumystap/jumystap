@@ -350,7 +350,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='font-semibold mb-2 mt-2'>{t('responsibilities')}</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.responsibilities.map((responsibility, index) => (
-                                            <li key={index} className='mb-2'>{responsibility.responsibility}</li>
+                                            <li key={index} className='mb-2 whitespace-pre-line'>{responsibility.responsibility}</li>
                                         ))}
                                     </ul>
                                 </>
@@ -361,7 +361,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='font-semibold mb-2 mt-2'>{t('requirements')}</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.requirements.map((requirement, index) => (
-                                            <li key={index} className='mb-2'>{requirement.requirement}</li>
+                                            <li key={index} className='mb-2 whitespace-pre-line'>{requirement.requirement}</li>
                                         ))}
                                     </ul>
                                 </>
@@ -372,7 +372,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                     <div className='font-semibold mb-2 mt-5'>{t('conditions')}</div>
                                     <ul className='list-disc list-inside'>
                                         {announcement.conditions.map((condition, index) => (
-                                            <li key={index} className='mb-2'>{condition.condition}</li>
+                                            <li key={index} className='mb-2 whitespace-pre-line'>{condition.condition}</li>
                                         ))}
                                     </ul>
                                 </>
