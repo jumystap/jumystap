@@ -48,7 +48,10 @@ class AnnouncementRepository
 
             $query->where(function ($query) use ($keyword) {
                 $query->where('title', 'LIKE', "%{$keyword}%")
-                    ->orWhere('description', 'LIKE', "%{$keyword}%");
+                    ->orWhere('description', 'LIKE', "%{$keyword}%")
+                    ->orWhereHas('user', function ($query) use ($keyword) {
+                        $query->where('name', 'LIKE', "%{$keyword}%");
+                    });
             });
         }
 
@@ -146,6 +149,32 @@ class AnnouncementRepository
             ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
             ->orderByDesc('published_at')
             ->first();
+    }
+
+    public function suggestAnnouncements(string $keyword, int $limit = 8): array
+    {
+        $like = '%' . $keyword . '%';
+
+        $titles = Announcement::query()
+            ->recentActive()
+            ->where('title', 'LIKE', $like)
+            ->orderBy('title')
+            ->distinct()
+            ->limit($limit)
+            ->pluck('title')
+            ->map(fn ($title) => ['type' => 'vacancy', 'value' => $title]);
+
+        $employers = Announcement::query()
+            ->recentActive()
+            ->join('users', 'users.id', '=', 'announcements.user_id')
+            ->where('users.name', 'LIKE', $like)
+            ->orderBy('users.name')
+            ->distinct()
+            ->limit($limit)
+            ->pluck('users.name')
+            ->map(fn ($name) => ['type' => 'employer', 'value' => $name]);
+
+        return $titles->concat($employers)->take($limit)->values()->all();
     }
 
     public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)

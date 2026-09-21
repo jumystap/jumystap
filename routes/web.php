@@ -22,6 +22,7 @@ Route::get('/terms', [HomeController::class, 'terms']);
 Route::get('/employees', [UserController::class, 'index'])->name('employees');
 //Route::get('/reviews', [ReviewController::class, 'index']);
 //Route::post('/reviews', [ReviewController::class, 'create']);
+Route::get('/announcements/suggest', [AnnouncementController::class, 'suggest'])->name('announcements.suggest');
 Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements');
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show'])->name('announcement');
 

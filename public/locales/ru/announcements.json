@@ -7,6 +7,8 @@
     "project": "Заказ",
     "all_cities": "Все города",
     "search": "Поиск...",
+    "suggest_vacancy": "вакансия",
+    "suggest_employer": "работодатель",
     "filters": "Фильтры",
     "all_specializations": "Все специализации",
     "specialization_category": "Сфера",

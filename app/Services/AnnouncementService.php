@@ -20,6 +20,11 @@ class AnnouncementService
         return $this->announcementRepository->getAllActiveAnnouncements($filters);
     }
 
+    public function suggestAnnouncements(string $keyword, int $limit = 8): array
+    {
+        return $this->announcementRepository->suggestAnnouncements($keyword, $limit);
+    }
+
     public function getAllActiveAnnouncementsWithout(int $id, int $specializationId)
     {
         return $this->announcementRepository->getAllActiveAnnouncementsWithout($id, $specializationId);

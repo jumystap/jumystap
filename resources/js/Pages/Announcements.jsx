@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -6,7 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import Pagination from '@/Components/Pagination';
 import { rememberSearch } from '@/utils/lastSearch';
-import { Switch, Select } from 'antd'; // Import Select from Ant Design
+import { Switch, Select, AutoComplete } from 'antd'; // Import Select from Ant Design
 import InfoModal from '@/Components/InfoModal';
 import FeedbackModal from '@/Components/FeedbackModal.jsx';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
@@ -131,6 +131,8 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [suggestOptions, setSuggestOptions] = useState([]);
+    const suggestTimer = useRef(null);
 
     const { searchKeyword: querySearchKeyword } = usePage().props;
 
@@ -252,6 +254,64 @@ export default function Announcements({ auth, announcements, specializationCateg
 
     const handleSearchKeywordChange = (event) => {
         setData('searchKeyword', event.target.value);
+    };
+
+    const fetchSuggestions = (value) => {
+        if (suggestTimer.current) {
+            clearTimeout(suggestTimer.current);
+        }
+
+        const query = (value || '').trim();
+
+        if (query.length < 2) {
+            setSuggestOptions([]);
+            return;
+        }
+
+        suggestTimer.current = setTimeout(async () => {
+            try {
+                const response = await fetch(`/announcements/suggest?q=${encodeURIComponent(query)}`, {
+                    headers: { Accept: 'application/json' },
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const results = await response.json();
+                const seen = new Set();
+                const options = [];
+
+                results.forEach((item) => {
+                    if (!item?.value || seen.has(item.value)) {
+                        return;
+                    }
+                    seen.add(item.value);
+                    options.push({
+                        value: item.value,
+                        label: (
+                            <div className="flex items-center justify-between gap-2">
+                                <span className="truncate">{item.value}</span>
+                                <span className="ml-2 shrink-0 text-xs text-gray-400">
+                                    {item.type === 'employer'
+                                        ? t('suggest_employer', { ns: 'announcements' })
+                                        : t('suggest_vacancy', { ns: 'announcements' })}
+                                </span>
+                            </div>
+                        ),
+                    });
+                });
+
+                setSuggestOptions(options);
+            } catch (error) {
+                // Suggestions are non-critical; ignore fetch/parse failures.
+            }
+        }, 300);
+    };
+
+    const handleSuggestSelect = (value) => {
+        setSuggestOptions([]);
+        submitFilters({ ...data, searchKeyword: value });
     };
 
     useEffect(() => {
@@ -628,13 +688,22 @@ export default function Announcements({ auth, announcements, specializationCateg
                             </div>
                         </div>
                         <div className='mt-3 flex items-center px-0 md:mt-5 md:px-5 md:mb-5 gap-x-2'>
-                            <input
-                                type="text"
+                            <AutoComplete
                                 value={data.searchKeyword}
-                                onChange={handleSearchKeywordChange}
-                                placeholder={t('search', { ns: 'announcements' })}
-                                className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
-                            />
+                                options={suggestOptions}
+                                onSearch={fetchSuggestions}
+                                onChange={(value) => setData('searchKeyword', value)}
+                                onSelect={handleSuggestSelect}
+                                style={{ flex: 1, minWidth: 0 }}
+                                className="jt-announcements-search"
+                            >
+                                <input
+                                    type="text"
+                                    placeholder={t('search', { ns: 'announcements' })}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+                                    className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                                />
+                            </AutoComplete>
                             <button
                                 className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
                                 onClick={handleSearch}

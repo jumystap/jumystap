@@ -43,6 +43,17 @@ class AnnouncementController extends Controller
         $this->announcementService = $announcementService;
     }
 
+    public function suggest(Request $request): mixed
+    {
+        $keyword = trim((string) $request->input('q', ''));
+
+        if (mb_strlen($keyword) < 2) {
+            return response()->json([]);
+        }
+
+        return response()->json($this->announcementService->suggestAnnouncements($keyword));
+    }
+
     public function index(Request $request): mixed
     {
         $filters = [
