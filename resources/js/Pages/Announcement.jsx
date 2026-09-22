@@ -45,6 +45,19 @@ const DICTIONARY_KEYS = {
     'Сертификат Joltap': 'education_joltap',
 };
 
+// Renders a bulleted <li> per non-empty line, so multi-paragraph entries
+// (responsibilities/requirements/conditions) get a dot for each paragraph.
+const renderBulletPoints = (items, field) =>
+    items.flatMap((item, index) =>
+        String(item[field])
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .map((line, i) => (
+                <li key={`${index}-${i}`} className='mb-2'>{line}</li>
+            ))
+    );
+
 export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation('announcements');
 
@@ -349,9 +362,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <>
                                     <div className='font-semibold mb-2 mt-2'>{t('responsibilities')}</div>
                                     <ul className='list-disc list-inside'>
-                                        {announcement.responsibilities.map((responsibility, index) => (
-                                            <li key={index} className='mb-2'>{responsibility.responsibility}</li>
-                                        ))}
+                                        {renderBulletPoints(announcement.responsibilities, 'responsibility')}
                                     </ul>
                                 </>
                             )}
@@ -360,9 +371,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <>
                                     <div className='font-semibold mb-2 mt-2'>{t('requirements')}</div>
                                     <ul className='list-disc list-inside'>
-                                        {announcement.requirements.map((requirement, index) => (
-                                            <li key={index} className='mb-2'>{requirement.requirement}</li>
-                                        ))}
+                                        {renderBulletPoints(announcement.requirements, 'requirement')}
                                     </ul>
                                 </>
                             )}
@@ -371,9 +380,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <>
                                     <div className='font-semibold mb-2 mt-5'>{t('conditions')}</div>
                                     <ul className='list-disc list-inside'>
-                                        {announcement.conditions.map((condition, index) => (
-                                            <li key={index} className='mb-2'>{condition.condition}</li>
-                                        ))}
+                                        {renderBulletPoints(announcement.conditions, 'condition')}
                                     </ul>
                                 </>
                             )}
