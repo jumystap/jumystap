@@ -43,12 +43,12 @@ class AnnouncementCreateRequest extends FormRequest
             'salary_type' => 'required',
             'cost_min' => 'nullable|numeric',
             'cost_max' => 'nullable|numeric',
-            'responsibility' => 'nullable|array', // Validate as an array
-            'responsibility.*' => 'string|max:2000', // Validate each responsibility item
-            'requirement' => 'nullable|array', // Validate as an array
-            'requirement.*' => 'string|max:2000', // Validate each requirement item
-            'condition' => 'nullable|array', // Validate as an array
-            'condition.*' => 'string|max:2000', // Validate each requirement item
+            'responsibility' => 'required|array', // Single cohesive block, required
+            'responsibility.*' => 'required|string|max:1000',
+            'requirement' => 'required|array', // Single cohesive block, required
+            'requirement.*' => 'required|string|max:1000',
+            'condition' => 'required|array', // Single cohesive block, required
+            'condition.*' => 'required|string|max:1000',
             'phone' => 'nullable|digits:11',
         ];
 

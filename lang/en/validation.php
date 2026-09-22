@@ -152,6 +152,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'phone' => [
+            'unique' => 'A user with this phone number is already registered.',
+        ],
     ],
 
     /*

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AnnouncementArchiveReason;
 use App\Enums\AnnouncementStatus;
 use App\Enums\Roles;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Announcement\AnnouncementUpdateRequest;
 use App\Models\Announcement;
-use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Role;
 use App\Models\SpecializationCategory;
@@ -30,20 +31,20 @@ class AnnouncementController extends Controller
     public function index(Request $request)
     {
         $search = array_merge([
-            'city'                        => null,
+            'city' => null,
             'specialization_category_id' => null,
-            'no_experience'              => null,
-            'with_salary'                => null,
-            'is_permanent'               => null,
-            'is_top'                     => null,
-            'is_urgent'                  => null,
-            'type'                       => null,
-            'company_name'               => null,
-            'title'                      => null,
-            'user_id'                    => null,
-            'status'                     => null,
-            'start_date'                 => null,
-            'end_date'                   => null,
+            'no_experience' => null,
+            'with_salary' => null,
+            'is_permanent' => null,
+            'is_top' => null,
+            'is_urgent' => null,
+            'type' => null,
+            'company_name' => null,
+            'title' => null,
+            'user_id' => null,
+            'status' => null,
+            'start_date' => null,
+            'end_date' => null,
             'recent_active_announcements' => null,
         ], $request->get('search', []));
 
@@ -67,6 +68,32 @@ class AnnouncementController extends Controller
             ->with('search', $search);
     }
 
+    /**
+     * Display archived vacancies with the employer's archiving answer.
+     */
+    public function archive(Request $request)
+    {
+        $search = array_merge([
+            'company_name' => null,
+            'title' => null,
+            'archive_reason' => null,
+        ], $request->get('search', []));
+
+        $search['status'] = (string) AnnouncementStatus::ARCHIVED->value;
+
+        $announcements = Announcement::search($search)
+            ->select('announcements.*')
+            ->withCount('responses')
+            ->orderByRaw('COALESCE(announcements.archived_at, announcements.updated_at) DESC')
+            ->paginate(100)
+            ->appends(request()->query());
+
+        return view('admin.announcements.archive')
+            ->with('announcements', $announcements)
+            ->with('reasons', AnnouncementArchiveReason::list())
+            ->with('search', $search);
+    }
+
     public function edit(Announcement $announcement)
     {
         return view('admin.announcements.edit', compact('announcement'))
@@ -80,7 +107,7 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validated();
 
-        if((int)$validated['status'] === AnnouncementStatus::ACTIVE->value && (isset($validated['publish']) ||  $announcement->status->value != AnnouncementStatus::ACTIVE->value)) {
+        if ((int) $validated['status'] === AnnouncementStatus::ACTIVE->value && (isset($validated['publish']) || $announcement->status->value != AnnouncementStatus::ACTIVE->value)) {
             $validated['published_at'] = now();
         }
         $validated['is_top'] = $validated['is_top'] ?? 0;
@@ -103,8 +130,8 @@ class AnnouncementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Announcement $announcement
      * @return RedirectResponse
+     *
      * @throws Throwable
      */
     public function destroy(Announcement $announcement)

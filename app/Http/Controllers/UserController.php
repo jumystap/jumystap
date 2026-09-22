@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Roles;
+use App\Enums\AnnouncementArchiveReason;
 use App\Enums\AnnouncementStatus;
+use App\Enums\Roles;
 use App\Http\Requests\User\ProfileUpdateRequest;
 use App\Models\Announcement;
 use App\Models\AnnouncementVisit;
+use App\Models\Response;
+use App\Models\User;
 use App\Models\UserResume;
 use App\Services\AnnouncementService;
 use App\Services\UserService;
@@ -14,16 +17,15 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
-use Illuminate\Support\Facades\DB;
-use App\Models\Response;
-use App\Models\User;
 
 class UserController extends Controller
 {
     protected $userService;
+
     protected $announcementService;
 
     public function __construct(UserService $userService, AnnouncementService $announcementService)
@@ -42,7 +44,7 @@ class UserController extends Controller
             'employees' => $employees,
             'professions' => fn () => $this->userService->getAllProfessions(),
             'cities' => fn () => $this->userService->getEmployeeCities(),
-            'filters' => $filters
+            'filters' => $filters,
         ]);
     }
 
@@ -51,6 +53,7 @@ class UserController extends Controller
         if (Auth::check()) {
             return redirect('/');
         }
+
         return Inertia::render('Login', [
             'redirect' => request()->input('redirect'),
         ]);
@@ -60,31 +63,33 @@ class UserController extends Controller
     {
         $credentials = $request->validate([
             'phone' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if($user->is_blocked){
+            if ($user->is_blocked) {
                 Auth::logout();
+
                 return redirect()
                     ->back()
                     ->withErrors([
-                        'error' => __('messages.errors.account_is_blocked')
+                        'error' => __('messages.errors.account_is_blocked'),
                     ])
                     ->withInput();
-            }else{
+            } else {
                 $redirectTo = $request->input('redirect');
                 if ($redirectTo && str_starts_with($redirectTo, '/')) {
                     return redirect($redirectTo);
                 }
+
                 return redirect()->back();
             }
         } else {
             return redirect()
                 ->back()
                 ->withErrors([
-                    'error' => __('messages.errors.incorrect_login_or_password')
+                    'error' => __('messages.errors.incorrect_login_or_password'),
                 ])
                 ->withInput();
         }
@@ -96,7 +101,7 @@ class UserController extends Controller
 
         return Inertia::render('Registration', [
             'professions' => $professions,
-            'redirect'    => request()->input('redirect'),
+            'redirect' => request()->input('redirect'),
         ]);
     }
 
@@ -105,7 +110,7 @@ class UserController extends Controller
         Log::info('Store user request received', $request->all());
 
         $validated = $request->validate([
-            'phone' => 'required|string',
+            'phone' => 'required|string|unique:users,phone',
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
@@ -122,7 +127,7 @@ class UserController extends Controller
                 },
             ],
             'gender' => 'nullable',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:3000',
             'source' => 'nullable|string',
             'ipStatus1' => 'nullable|in:no,yes',
             'ipStatus2' => 'nullable|in:no,yes',
@@ -143,13 +148,24 @@ class UserController extends Controller
             if ($redirectTo && str_starts_with($redirectTo, '/')) {
                 return redirect($redirectTo);
             }
+
             return redirect('/profile');
-        } catch (\Exception $e) {
-            Log::error('Error creating user', ['exception' => $e]);
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            // Race: phone passed unique validation but a concurrent request
+            // inserted it first. Surface a clean field error, not a logged 500.
             return redirect()
                 ->back()
                 ->withErrors([
-                    'error' => 'An error occurred while creating the user'
+                    'phone' => __('validation.custom.phone.unique'),
+                ])
+                ->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error creating user', ['exception' => $e]);
+
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'error' => 'An error occurred while creating the user',
                 ])
                 ->withInput();
         }
@@ -182,6 +198,7 @@ class UserController extends Controller
             return redirect('/profile')->with('success', 'Профиль успешно обновлен');
         } catch (\Exception $e) {
             Log::error('Error updating user', ['exception' => $e]);
+
             return redirect()
                 ->back()
                 ->withErrors(['error' => 'Произошла ошибка при обновлении профиля'])
@@ -193,7 +210,7 @@ class UserController extends Controller
     {
         $user = $this->userService->getUserWithProfessionsAndPortfolio($id);
 
-        if($user->role_id != Roles::EMPLOYEE->value){
+        if ($user->role_id != Roles::EMPLOYEE->value) {
             return Inertia::render('NotFound');
         }
 
@@ -218,6 +235,7 @@ class UserController extends Controller
 
                 $resume->organizations = $resume->organizations->map(function ($organization) {
                     $organization->position_name = $this->getSpecializationName($organization->position_id);
+
                     return $organization;
                 });
 
@@ -285,6 +303,7 @@ class UserController extends Controller
 
                 $resume->organizations = $resume->organizations->map(function ($organization) {
                     $organization->position_name = $this->getSpecializationName($organization->position_id);
+
                     return $organization;
                 });
 
@@ -298,6 +317,7 @@ class UserController extends Controller
             'professions' => $professions,
             'userProfessions' => $userProfessions,
             'resumes' => $resumes,
+            'archiveReasons' => AnnouncementArchiveReason::options(),
         ]);
     }
 
@@ -306,6 +326,7 @@ class UserController extends Controller
         $user = Auth::user()->load(['portfolio']);
         $userProfessions = $this->userService->getUserProfessions($user->id);
         $announcements = $this->announcementService->getAllActiveAnnouncementsByIds($user->response->pluck('announcement_id')->toArray());
+
         return Inertia::render('UserResponses', [
             'user' => $user,
             'announcements' => $announcements,
@@ -361,17 +382,19 @@ class UserController extends Controller
             $respondedUsers->transform(function ($respond) use ($resumeMap) {
                 $respond->resume_id = $resumeMap[$respond->employee_id] ?? null;
                 $respond->responded_at = $respond->created_at?->format('d.m.Y H:i');
+
                 return $respond;
             });
 
             return Inertia::render('Company/CompanyAnnouncement', [
-                'announcement'     => $announcement,
-                'totalViews'       => $totalViews,
-                'totalResponses'   => $totalResponses,
-                'uniqueVisitors'   => $uniqueVisitors,
+                'announcement' => $announcement,
+                'totalViews' => $totalViews,
+                'totalResponses' => $totalResponses,
+                'uniqueVisitors' => $uniqueVisitors,
                 'repeatedVisitors' => $repeatedVisitors,
-                'responseRate'     => $responseRate,
-                'respondedUsers'   => $respondedUsers,
+                'responseRate' => $responseRate,
+                'respondedUsers' => $respondedUsers,
+                'archiveReasons' => AnnouncementArchiveReason::options(),
             ]);
         } else {
             return redirect('profile')->withErrors(['error' => __('messages.announcements.errors.does_not_access_to_view')]);
@@ -396,14 +419,14 @@ class UserController extends Controller
         $resumeMap = $this->latestActiveResumeIds($responses->getCollection()->pluck('employee_id'));
 
         $responses->through(fn ($response) => [
-            'id'           => $response->id,
+            'id' => $response->id,
             'responded_at' => $response->created_at?->format('d.m.Y H:i'),
             'announcement' => [
-                'id'    => $response->announcement_id,
+                'id' => $response->announcement_id,
                 'title' => $response->announcement?->title,
             ],
             'user' => [
-                'id'   => $response->employee_id,
+                'id' => $response->employee_id,
                 'name' => $response->user?->name,
             ],
             'resume_id' => $resumeMap[$response->employee_id] ?? null,
@@ -436,9 +459,11 @@ class UserController extends Controller
 
         try {
             $this->userService->rateUser($employee_id, $rating);
+
             return redirect('/profile');
         } catch (\Exception $e) {
             Log::error('Error rating user', ['exception' => $e]);
+
             return response()->json(['error' => 'An error occurred while rating the user'], 500);
         }
     }
@@ -446,6 +471,7 @@ class UserController extends Controller
     public function logout(): mixed
     {
         Auth::logout();
+
         return redirect('/');
     }
 }

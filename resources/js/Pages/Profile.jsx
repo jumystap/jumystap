@@ -15,7 +15,7 @@ const formatCreatedAt = (createdAt) => {
     return formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: ru });
 };
 
-export default function Profile({ user, announcements, userProfessions, resumes }) {
+export default function Profile({ user, announcements, userProfessions, resumes, archiveReasons }) {
     const { t, i18n } = useTranslation('profile');
     const [isCreatePortfolioModalOpen, setIsCreatePortfolioModalOpen] = useState(false);
     const [isAddCertificateModalOpen, setIsAddCertificateModalOpen] = useState(false);
@@ -243,7 +243,7 @@ export default function Profile({ user, announcements, userProfessions, resumes 
                         </div>
                     </>
                 ) : (
-                    <Dashboard user={user} announcements={announcements} />
+                    <Dashboard user={user} announcements={announcements} archiveReasons={archiveReasons} />
                 )}
             </GuestLayout>
 

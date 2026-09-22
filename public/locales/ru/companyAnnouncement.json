@@ -30,5 +30,10 @@
     "yes": "Да",
     "no": "Нет",
     "republish": "Опубликовать снова",
+    "found_employee_via_site": "Вы нашли сотрудника через наш сайт?",
+    "found_on_site": "Да",
+    "found_other_platform": "Нет, нашёл через другую площадку",
+    "no_longer_relevant": "Вакансия больше не актуальна",
+    "republish_vacancy": "Переопубликовать вакансию",
     "select_one_variant": "Выберите 1 из вариантов!"
 }

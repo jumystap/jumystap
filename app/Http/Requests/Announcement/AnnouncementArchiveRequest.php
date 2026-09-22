@@ -2,17 +2,18 @@
 
 namespace App\Http\Requests\Announcement;
 
+use App\Enums\AnnouncementArchiveReason;
 use App\Repositories\AnnouncementRepository;
 use App\Rules\CheckAnnouncementAuthor;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AnnouncementArchiveRequest extends FormRequest
 {
     public function __construct(
         private readonly AnnouncementRepository $announcementRepository
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -33,8 +34,10 @@ class AnnouncementArchiveRequest extends FormRequest
     {
         return [
             'id' => ['required', 'exists:announcements,id', new CheckAnnouncementAuthor($this->announcementRepository)],
-            'is_employee_found' => "required|boolean",
-            'republish' => "required|boolean",
+            'reason' => ['required', Rule::in([
+                ...array_map(fn ($case) => $case->value, AnnouncementArchiveReason::cases()),
+                'republish',
+            ])],
         ];
     }
 }

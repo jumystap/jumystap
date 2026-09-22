@@ -11,7 +11,8 @@ export default function CompanyAnnouncement({
     uniqueVisitors,
     repeatedVisitors,
     responseRate,
-    respondedUsers
+    respondedUsers,
+    archiveReasons = []
 }) {
     const { t } = useTranslation('companyAnnouncement');
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -51,8 +52,7 @@ export default function CompanyAnnouncement({
             `/announcements/archive`,
             {
                 id: announcement.id,
-                is_employee_found: employeeFound === 'yes',
-                republish: employeeFound === 'republish',
+                reason: employeeFound,
             },
             {
                 onSuccess: () => {
@@ -187,15 +187,16 @@ export default function CompanyAnnouncement({
                     okText={t('send')}
                     cancelText={t('cancel')}
                 >
-                    {t('have_you_found_an_employee')}
+                    {t('found_employee_via_site')}
                     <Radio.Group
                         onChange={(e) => setEmployeeFound(e.target.value)}
                         value={employeeFound}
                         style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}
                     >
-                        <Radio value="yes">{t('yes')}</Radio>
-                        <Radio value="no">{t('no')}</Radio>
-                        <Radio value="republish">{t('republish')}</Radio>
+                        {archiveReasons.map(reason => (
+                            <Radio key={reason.value} value={reason.value}>{t(reason.key)}</Radio>
+                        ))}
+                        <Radio value="republish">{t('republish_vacancy')}</Radio>
                     </Radio.Group>
                 </Modal>
             </div>

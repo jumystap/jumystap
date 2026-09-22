@@ -146,6 +146,19 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        // Free the phone/email on normal deletion so the person can register
+        // again, but keep them reserved for blocked accounts (e.g. banned
+        // employers) so they cannot. The `deleted_<id>_` prefix keeps the
+        // mangled value unique — the phone/email unique index also covers
+        // soft-deleted rows, so a bare `deleted_<phone>` would collide the
+        // second time the same number is deleted.
+        if (! $user->is_blocked) {
+            $user->update([
+                'phone' => 'deleted_' . $user->id . '_' . $user->phone,
+                'email' => $user->email ? 'deleted_' . $user->id . '_' . $user->email : $user->email,
+            ]);
+        }
+
         $deleted = $user->delete();
         throw_unless($deleted, new BadRequestException(__('Ошибка при удалении Пользователя')));
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import {Form, Checkbox, Input, InputNumber, Select, Tag, Button, Space, message, Cascader} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -50,6 +50,33 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
     });
 
     const [validationErrors, setValidationErrors] = useState({});
+
+    // Whenever validation errors appear (client-side or from the server), take the
+    // user straight to the first field that needs fixing. Work-experience cards
+    // that are collapsed are expanded first, otherwise their error is invisible.
+    useEffect(() => {
+        const allErrors = { ...errors, ...validationErrors };
+        if (Object.keys(allErrors).length === 0) return;
+
+        const erroredOrgIndexes = new Set();
+        Object.keys(allErrors).forEach((key) => {
+            const match = key.match(/^organizations\.(\d+)\./);
+            if (match) erroredOrgIndexes.add(Number(match[1]));
+        });
+        if (erroredOrgIndexes.size > 0) {
+            setEditMode((prev) => prev.map((open, i) => (erroredOrgIndexes.has(i) ? true : open)));
+        }
+
+        const timer = setTimeout(() => {
+            const firstError = document.querySelector('.ant-form-item-has-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.querySelector('input, textarea, select, [tabindex]')?.focus?.({ preventScroll: true });
+            }
+        }, 80);
+
+        return () => clearTimeout(timer);
+    }, [errors, validationErrors]);
 
     const handleCityChange = (value) => {
         setData('city', value);
@@ -127,16 +154,18 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
     function isValidPhone(phone) {
         if (!phone) return false;
         const digits = phone.replace(/\D/g, '');
-        if (digits.length !== 11) return false;
-        const code = digits.substring(1, 4);
-        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '776', '777', '778'];
-        return validCodes.includes(code);
+        // Any Kazakhstan mobile: 11 digits starting with "77" (country code 7 +
+        // mobile indicator 7). The old operator-code whitelist was incomplete
+        // and wrongly rejected many valid numbers.
+        return digits.length === 11 && digits.startsWith('77');
     }
 
     const handleSubmit = () => {
         const errors = {};
 
-        if (data.phone && !isValidPhone(data.phone)) {
+        if (!data.phone) {
+            errors.phone = t('enter_phone');
+        } else if (!isValidPhone(data.phone)) {
             errors.phone = t('invalid_phone_number');
         }
 
@@ -154,6 +183,18 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                 console.error('Failed to save resume:', err);
             }
         });
+    };
+
+    // Ant blocked the submit because a required field is empty (its own `rules`).
+    // `onFinish` never fires in that case, so scroll to the first flagged field here.
+    const handleFinishFailed = () => {
+        setTimeout(() => {
+            const firstError = document.querySelector('.ant-form-item-has-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.querySelector('input, textarea, select, [tabindex]')?.focus?.({ preventScroll: true });
+            }
+        }, 80);
     };
 
     const handleInputChange = (field, value) => {
@@ -195,7 +236,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
         <GuestLayout>
             <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="col-span-5 p-5">
-                    <Form layout="vertical" onFinish={handleSubmit} initialValues={data}>
+                    <Form layout="vertical" scrollToFirstError={{ behavior: 'smooth', block: 'center' }} onFinish={handleSubmit} onFinishFailed={handleFinishFailed} initialValues={data}>
                         <div className="font-semibold text-2xl mb-4">{t('edit_resume')}</div>
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_1')}</div>
                         <Form.Item
@@ -384,8 +425,10 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                             <>
                                                 <Form.Item
                                                     label={t('organization_name')}
-                                                    name='organization.name'
+                                                    name={`organization_${index}_name`}
                                                     rules={[{ required: true, message: t('please_specify_organization_name') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.organization`] || errors[`organizations.${index}.organization`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.organization`] || errors[`organizations.${index}.organization`]}
                                                 >
                                                     <Input
                                                         defaultValue={organization.organization}
@@ -396,8 +439,10 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                                 </Form.Item>
                                                 <Form.Item
                                                     label={t('position')}
-                                                    name='organization.position'
+                                                    name={`organization_${index}_position`}
                                                     rules={[{ required: true, message: t('please_specify_position') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.position`] || errors[`organizations.${index}.position`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.position`] || errors[`organizations.${index}.position`]}
                                                 >
                                                     <Input
                                                         defaultValue={organization.position}
@@ -408,7 +453,9 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                                 </Form.Item>
                                                 <Form.Item
                                                     label={t('responsibilities')}
-                                                    name={`organization.responsibilities`}
+                                                    name={`organization_${index}_responsibilities`}
+                                                    validateStatus={(validationErrors[`organizations.${index}.responsibilities`] || errors[`organizations.${index}.responsibilities`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.responsibilities`] || errors[`organizations.${index}.responsibilities`]}
                                                 >
                                                     <TextArea
                                                         defaultValue={organization.responsibilities}
@@ -422,6 +469,8 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                                     label={t('work_period')}
                                                     className='mt-[-17px]'
                                                     rules={[{ required: true, message: t('please_specify_start_date') }]}
+                                                    validateStatus={(validationErrors[`organizations.${index}.period`] || errors[`organizations.${index}.period`]) ? 'error' : ''}
+                                                    help={validationErrors[`organizations.${index}.period`] || errors[`organizations.${index}.period`]}
                                                 >
                                                     <div className='flex gap-x-5'>
                                                         <div>
@@ -649,7 +698,7 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
                                 rows={4}
                             />
                         </Form.Item>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" onClick={handleSubmit}>
                             {t('save')}
                         </Button>
                     </Form>

@@ -12,6 +12,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
@@ -54,14 +55,27 @@ class UserService
 
     public function getCertificates(User $user): void
     {
-        $response = Http::get(config('services.bitrix.uri') . 'crm.duplicate.findbycomm?type=PHONE&entity_type=CONTACT&values[]=' . $user->phone);
-        if ($response->successful()) {
-            $data = $response->json();
-            if (!empty($data['result']['CONTACT'])) {
-                $contactId = $data['result']['CONTACT'][0];
-                $this->assignCertificate('work', $contactId, $user);
-                $this->assignCertificate('digital', $contactId, $user);
+        // Certificate enrichment via the Bitrix CRM is optional. A slow or
+        // unreachable CRM (cURL timeouts / DNS failures) must never break — or
+        // roll back — user registration, so every failure is swallowed here.
+        try {
+            $response = Http::connectTimeout(3)
+                ->timeout(6)
+                ->get(config('services.bitrix.uri') . 'crm.duplicate.findbycomm?type=PHONE&entity_type=CONTACT&values[]=' . $user->phone);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (!empty($data['result']['CONTACT'])) {
+                    $contactId = $data['result']['CONTACT'][0];
+                    $this->assignCertificate('work', $contactId, $user);
+                    $this->assignCertificate('digital', $contactId, $user);
+                }
             }
+        } catch (\Throwable $e) {
+            Log::warning('CRM certificate lookup failed during registration', [
+                'user_id' => $user->id,
+                'error'   => $e->getMessage(),
+            ]);
         }
     }
 

@@ -51,6 +51,7 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::get('/index', [HomeController::class, 'index'])->name('index');
     Route::resource('users', UserController::class);
     Route::resource('faqs', FaqController::class)->except(['show']);
+    Route::get('announcements/archive', [AnnouncementController::class, 'archive'])->name('announcements.archive');
     Route::resource('announcements', AnnouncementController::class);
     Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class);
     Route::prefix('analytics')->name('analytics.')->group(function (){

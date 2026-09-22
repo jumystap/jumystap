@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import {Form, Checkbox, Input, Select, DatePicker, Tag, Button, Space, message} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -57,6 +57,33 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
     });
 
     const [validationErrors, setValidationErrors] = useState({});
+
+    // Whenever validation errors appear (client-side or from the server), take the
+    // user straight to the first field that needs fixing. Work-experience cards
+    // that are collapsed are expanded first, otherwise their error is invisible.
+    useEffect(() => {
+        const allErrors = { ...errors, ...validationErrors };
+        if (Object.keys(allErrors).length === 0) return;
+
+        const erroredOrgIndexes = new Set();
+        Object.keys(allErrors).forEach((key) => {
+            const match = key.match(/^organizations\.(\d+)\./);
+            if (match) erroredOrgIndexes.add(Number(match[1]));
+        });
+        if (erroredOrgIndexes.size > 0) {
+            setEditMode((prev) => prev.map((open, i) => (erroredOrgIndexes.has(i) ? true : open)));
+        }
+
+        const timer = setTimeout(() => {
+            const firstError = document.querySelector('.ant-form-item-has-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.querySelector('input, textarea, select, [tabindex]')?.focus?.({ preventScroll: true });
+            }
+        }, 80);
+
+        return () => clearTimeout(timer);
+    }, [errors, validationErrors]);
 
     const handleCityChange = (value) => {
         setData('city', value);
@@ -143,18 +170,18 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
         if (!phone) return false;
 
         const digits = phone.replace(/\D/g, '');
-        if (digits.length !== 11) return false;
-
-        const code = digits.substring(1, 4); // 2nd to 4th digits (index 1 to 3)
-        const validCodes = ['700', '701', '702', '705', '706', '707', '708', '747', '771', '775', '776', '777', '778'];
-
-        return validCodes.includes(code);
+        // Any Kazakhstan mobile: 11 digits starting with "77" (country code 7 +
+        // mobile indicator 7). The old operator-code whitelist was incomplete
+        // and wrongly rejected many valid numbers.
+        return digits.length === 11 && digits.startsWith('77');
     }
 
     const handleSubmit = () => {
         const errors = {};
 
-        if (data.phone && !isValidPhone(data.phone)) {
+        if (!data.phone) {
+            errors.phone = t('enter_phone');
+        } else if (!isValidPhone(data.phone)) {
             errors.phone = t('invalid_phone_number');
         }
 
@@ -173,6 +200,18 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
                 console.error('Failed to save announcement:', err);
             }
         });
+    };
+
+    // Ant blocked the submit because a required field is empty (its own `rules`).
+    // `onFinish` never fires in that case, so scroll to the first flagged field here.
+    const handleFinishFailed = () => {
+        setTimeout(() => {
+            const firstError = document.querySelector('.ant-form-item-has-error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstError.querySelector('input, textarea, select, [tabindex]')?.focus?.({ preventScroll: true });
+            }
+        }, 80);
     };
 
     const handleInputChange = (field, value) => {
@@ -217,7 +256,7 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
         <GuestLayout>
             <div className="grid grid-cols-1 md:grid-cols-7">
                 <div className="col-span-5 p-5">
-                    <Form layout="vertical" onFinish={handleSubmit}>
+                    <Form layout="vertical" scrollToFirstError={{ behavior: 'smooth', block: 'center' }} onFinish={handleSubmit} onFinishFailed={handleFinishFailed}>
                         <div className="font-semibold text-2xl mb-4">{t('create_resume')}</div>
                         <div className="font-semibold text-xl mb-4 mt-2">{t('block_1')}</div>
                         <Form.Item
@@ -265,11 +304,8 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
                             />
                         </Form.Item>
                         <Form.Item
-                            name="phone"
                             label={t('phone')}
-                            rules={[
-                                { required: true, message: t('enter_phone') },
-                            ]}
+                            required
                             validateStatus={(validationErrors.phone || errors.phone) ? 'error' : ''}
                             help={validationErrors.phone || errors.phone}
                         >
@@ -587,13 +623,13 @@ const CreateUpdateResume = ({ user, drivingLicenses, employmentTypes, workSchedu
                         <Form.Item
                             label={t('languages')}
                             name="languages"
+                            validateStatus={(validationErrors.languages || errors.languages) ? 'error' : ''}
+                            help={validationErrors.languages || errors.languages}
                         >
                             <Select
                                 mode="multiple"
                                 value={data.languages}
                                 onChange={(value) => handleInputChange('languages', value)}
-                                validateStatus={(validationErrors.languages || errors.languages) ? 'error' : ''}
-                                help={validationErrors.languages || errors.languages}
                             >
                                 <Option value="Казахский">{t('kazakh')}</Option>
                                 <Option value="Русский">{t('russian')}</Option>
