@@ -5,6 +5,7 @@ use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\FeedbackApplicationController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\PlacementSurveyController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\UserController;
@@ -40,6 +41,9 @@ Route::post('/send-telegram-feedback', [FeedbackController::class, 'sendTelegram
 Route::post('/feedback-applications', [FeedbackApplicationController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('feedback-applications.store');
+Route::post('/placement-surveys', [PlacementSurveyController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('placement-surveys.store');
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
 Route::post('/restore_password', [AuthController::class, 'restorePassword']);
 

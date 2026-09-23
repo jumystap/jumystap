@@ -31,6 +31,12 @@
                         <p>Заявки</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.placement-surveys.index') }}" class="nav-link {{ request()->routeIs('admin.placement-surveys.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-poll"></i>
+                        <p>Нашли работу?</p>
+                    </a>
+                </li>
                 @if(Auth::user()->hasRole(Roles::ADMIN))
                     <li class="nav-item">
                         <a href="{{ route('admin.announcements.index') }}" class="nav-link {{ request()->routeIs('admin.announcements.*') && !request()->routeIs('admin.announcements.archive') ? 'active' : '' }}">

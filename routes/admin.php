@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FeedbackApplicationController;
+use App\Http\Controllers\Admin\PlacementSurveyController;
 use App\Http\Controllers\Admin\ResumeController;
 use App\Http\Controllers\Admin\AnalyticController;
 use App\Http\Controllers\Admin\AnnouncementController;
@@ -64,6 +65,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::get('codes', [\App\Http\Controllers\Admin\CodeController::class, 'index'])->name('codes.index');
     Route::get('feedback-applications', [FeedbackApplicationController::class, 'index'])
         ->name('feedback-applications.index');
+    Route::get('placement-surveys', [PlacementSurveyController::class, 'index'])
+        ->name('placement-surveys.index');
 
     Route::resource('ads', AdController::class);
     Route::post('ads/{ad}/approve', [AdController::class, 'approve'])->name('ads.approve');

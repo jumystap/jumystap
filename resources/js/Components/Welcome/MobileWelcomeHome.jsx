@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Trans } from "react-i18next";
-import { FaTelegramPlane } from "react-icons/fa";
+import { FaTelegramPlane, FaCheckCircle } from "react-icons/fa";
 import { HiOutlineDocumentText, HiOutlineUserCircle } from "react-icons/hi2";
 import { MdOutlineCampaign, MdOutlineWorkOutline } from "react-icons/md";
 import { RiCustomerService2Line } from "react-icons/ri";
@@ -22,6 +22,7 @@ export default function MobileWelcomeHome({
     onOpenFeedback,
     onOpenScam,
     onPromoCtaClick,
+    onOpenSurvey,
     onSearchAnnouncements,
     onSearchKeywordChange,
     searchKeyword,
@@ -33,6 +34,30 @@ export default function MobileWelcomeHome({
     const canCreateResume = !auth?.user || auth.user.role?.name === "employee";
 
     const promoSlides = [
+        {
+            key: "found-job",
+            title: (
+                <Trans
+                    i18nKey="found_job_title"
+                    ns="index"
+                    components={{ o: <span className="text-green-600" /> }}
+                />
+            ),
+            description: t("found_job_desc", { ns: "index" }),
+            textContainerClassName: "max-w-[210px]",
+            titleClassName: "text-[22px] font-extrabold leading-[1.05] tracking-[-0.01em] text-[#111827]",
+            descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#475467]",
+            primaryAction: {
+                label: t("found_job_button", { ns: "index" }),
+                onClick: onOpenSurvey,
+            },
+            primaryActionClassName:
+                "inline-flex min-h-[48px] items-center rounded-[18px] bg-green-600 px-5 py-3 text-center text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(22,163,74,0.28)] transition-opacity hover:opacity-95",
+            imageSrc: "/images/banner/response.png",
+            imageAlt: t("found_job_desc", { ns: "index" }),
+            imageWrapperClassName: "shrink-0",
+            imageClassName: "h-16 w-auto object-contain",
+        },
         {
             key: "free-course",
             title: t("free_courses", { ns: "index" }),
@@ -304,6 +329,15 @@ export default function MobileWelcomeHome({
                     {/*/>*/}
 
                     <QuickActionGrid items={quickActions} />
+
+                    <div className="flex justify-center">
+                        <button
+                            onClick={onOpenSurvey}
+                            className="inline-flex items-center justify-center gap-x-2 rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white transition-all duration-150 hover:bg-blue-700"
+                        >
+                            <FaCheckCircle className="text-base" /> {t("found_job_cta", { ns: "index" })}
+                        </button>
+                    </div>
 
                     <VacancyList
                         announcements={featuredAnnouncements}

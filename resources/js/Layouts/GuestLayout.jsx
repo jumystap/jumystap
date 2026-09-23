@@ -16,9 +16,10 @@ import {IoSchoolOutline} from "react-icons/io5";
 import {Button, Dropdown, Space} from "antd";
 import {HiOutlineDotsCircleHorizontal} from "react-icons/hi";
 
-import {FaInstagram, FaYoutube, FaTelegram, FaWhatsapp} from "react-icons/fa";
+import {FaInstagram, FaYoutube, FaTelegram, FaWhatsapp, FaCheckCircle} from "react-icons/fa";
 import MobileHeader from "@/Components/Welcome/MobileHeader";
 import MobileBottomNav from "@/Components/Welcome/MobileBottomNav";
+import SurveyModal from "@/Components/SurveyModal";
 
 export default function Guest({
     children,
@@ -30,8 +31,45 @@ export default function Guest({
     const {auth, url} = usePage().props;
     const [showDropdown, setShowDropdown] = useState(false);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+    const [isSurveyOpen, setIsSurveyOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [source, setSource] = useState("");
+
+    // Auto-open the placement survey for everyone except employers: one minute
+    // into the visit, at most once per 7 days, and never on the very first visit.
+    useEffect(() => {
+        const EMPLOYER_ROLE_IDS = [1, 3]; // Roles: EMPLOYER = 1, COMPANY = 3
+        const roleId = auth?.user?.role_id;
+        if (roleId != null && EMPLOYER_ROLE_IDS.includes(Number(roleId))) return;
+
+        const COOLDOWN = 3 * 24 * 60 * 60 * 1000; // раз в 3 дня
+        const now = Date.now();
+
+        const firstSeen = localStorage.getItem("jt_first_seen");
+        if (!firstSeen) {
+            localStorage.setItem("jt_first_seen", String(now)); // первый визит — не показываем
+            return;
+        }
+
+        const lastShown = Number(localStorage.getItem("jt_survey_shown_at") || 0);
+        if (now - lastShown < COOLDOWN) return; // ещё не прошло 3 дня
+
+        // «Через минуту пользования сайтом»: отсчёт от начала сессии, чтобы
+        // переходы между страницами не сбрасывали таймер.
+        let sessionStart = Number(sessionStorage.getItem("jt_session_start") || 0);
+        if (!sessionStart) {
+            sessionStart = now;
+            sessionStorage.setItem("jt_session_start", String(sessionStart));
+        }
+        const delay = Math.max(0, 60000 - (now - sessionStart));
+
+        const timer = setTimeout(() => {
+            setIsSurveyOpen(true);
+            localStorage.setItem("jt_survey_shown_at", String(Date.now()));
+        }, delay);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const items = [
         {
@@ -287,6 +325,12 @@ export default function Guest({
                                 </button>
                             </>)}
                         </div>
+                        <button
+                            onClick={() => setIsSurveyOpen(true)}
+                            className="w-full flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full py-3 mb-3 transition-all duration-150"
+                        >
+                            <FaCheckCircle className="text-lg"/> {t("found_job_cta", {ns: "index"})}
+                        </button>
                         <div className="jt-desktop-sidebar__footer space-y-2 text-sm text-gray-500">
                             <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer"
                                className="flex justify-start">
@@ -314,5 +358,6 @@ export default function Guest({
                     <main className="jt-desktop-main col-span-7">{children}</main>
                 </div>
             </div>
+            <SurveyModal isOpen={isSurveyOpen} onClose={() => setIsSurveyOpen(false)}/>
         </>);
 }

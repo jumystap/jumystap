@@ -10,6 +10,7 @@ import { ru } from "date-fns/locale";
 import {MdAccessTime, MdIosShare} from "react-icons/md";
 import Pagination from "@/Components/Pagination";
 import FeedbackModal from "@/Components/FeedbackModal";
+import SurveyModal from "@/Components/SurveyModal";
 import ScamModal from "@/Components/ScamModal";
 import Carousel from "@/Components/Carousel";
 import InfoModal from "@/Components/InfoModal";
@@ -31,6 +32,7 @@ export default function Welcome({
 }) {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSurveyOpen, setIsSurveyOpen] = useState(false);
   const [isScamOpen, setIsScamOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const { searchKeyword: querySearchKeyword, maintenanceBanner } = usePage().props;
@@ -235,6 +237,10 @@ export default function Welcome({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />
+      <SurveyModal
+        isOpen={isSurveyOpen}
+        onClose={() => setIsSurveyOpen(false)}
+      />
      <ScamModal
         isOpen={isScamOpen}
         onClose={() => setIsScamOpen(false)}
@@ -264,6 +270,7 @@ export default function Welcome({
             onOpenFeedback={() => setIsOpen(true)}
             onOpenScam={() => setIsScamOpen(true)}
             onPromoCtaClick={() => setIsOpen(true)}
+            onOpenSurvey={() => setIsSurveyOpen(true)}
             onSearchAnnouncements={handleSearchAnnouncements}
             onSearchKeywordChange={handleSearchKeywordChange}
             searchKeyword={data.searchKeyword}
@@ -301,6 +308,32 @@ export default function Welcome({
             </div>
             )}
             <Carousel>
+                {/* «Удалось найти работу?» — опрос-баннер */}
+                <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
+                    <div className="flex items-center">
+                        <div className="max-w-[480px]">
+                            <p className="font-extrabold text-3xl leading-tight text-gray-900">
+                                <Trans
+                                    i18nKey="found_job_title"
+                                    ns="index"
+                                    components={{ o: <span className="text-green-600" /> }}
+                                />
+                            </p>
+                            <p className="mt-3 text-base text-gray-700">
+                                {t("found_job_desc", { ns: "index" })}
+                            </p>
+                            <div
+                                onClick={() => setIsSurveyOpen(true)}
+                                className="mt-6 inline-block text-center cursor-pointer md:px-10 px-5 py-2 font-bold text-sm md:text-base rounded-lg bg-green-600 text-white hover:bg-green-700 transition-all duration-150"
+                            >
+                                {t("found_job_button", { ns: "index" })}
+                            </div>
+                        </div>
+                        <div className="hidden md:block ml-auto">
+                            <img src="/images/banner/response.png" className="w-[300px]" alt="" />
+                        </div>
+                    </div>
+                </div>
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex">
                         <div>
