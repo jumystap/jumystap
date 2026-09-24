@@ -89,8 +89,18 @@ export default function SurveyModal({ isOpen, onClose }) {
         <div className="fixed inset-0 z-[100] font-regular bg-black/50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto max-h-[90vh] flex flex-col overflow-hidden">
                 <div className="overflow-y-auto overscroll-contain p-6">
-                    <div className="font-semibold text-lg mb-4">
-                        {t('survey_modal_title')}
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="font-semibold text-lg">
+                            {t('survey_modal_title')}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleClose}
+                            aria-label={t('survey_cancel')}
+                            className="ml-4 -mr-1 -mt-1 text-2xl leading-none text-gray-400 hover:text-gray-600"
+                        >
+                            ×
+                        </button>
                     </div>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
