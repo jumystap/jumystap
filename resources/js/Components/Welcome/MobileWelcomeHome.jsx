@@ -73,32 +73,6 @@ export default function MobileWelcomeHome({
             imageClassName: "h-16 w-auto object-contain",
         },
         {
-            key: "film-3-years",
-            title: (
-                <Trans
-                    i18nKey="film_banner_title"
-                    ns="index"
-                    components={{ o: <span className="text-orange-500" /> }}
-                />
-            ),
-            description: t("film_banner_desc", { ns: "index" }),
-            textContainerClassName: "max-w-[210px]",
-            titleClassName: "text-[22px] font-extrabold leading-[1.05] tracking-[-0.01em] text-[#111827]",
-            descriptionClassName: "mt-2 text-[13px] leading-[16px] text-[#111827]",
-            primaryAction: {
-                label: t("film_banner_button", { ns: "index" }),
-                href: "https://www.youtube.com/watch?v=FGWg_xSQBKk",
-                target: "_blank",
-                rel: "noopener noreferrer",
-            },
-            primaryActionClassName:
-                "inline-flex min-h-[48px] items-center rounded-[18px] bg-orange-500 px-5 py-3 text-center text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(243,106,16,0.28)] transition-opacity hover:opacity-95",
-            imageSrc: "/images/film_banner.png",
-            imageAlt: t("film_banner_desc", { ns: "index" }),
-            imageWrapperClassName: "shrink-0",
-            imageClassName: "h-16 w-auto rounded-[12px] object-cover",
-        },
-        {
             key: "survey",
             title: (
                 <Trans
