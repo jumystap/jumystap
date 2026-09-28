@@ -333,7 +333,7 @@ export default function Welcome({
                         </div>
                     </div>
                 </div>
-                {/* «Вы нашли работу через сайт JUMYSTAP?» — опрос-баннер (второй по очереди) */}
+                {/* «Удалось найти работу?» — опрос-баннер (второй по очереди) */}
                 <div className="z-10 md:mx-5 mx-3 p-5 mt-2 rounded-lg md:px-10 md:py-7">
                     <div className="flex items-center">
                         <div className="max-w-[480px]">
