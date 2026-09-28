@@ -17,34 +17,34 @@ class VerificationController extends Controller
 {
     use ApiResponse;
 
-    public function __construct(private readonly NotificationService $notificationService)
-    {
-    }
+    public function __construct(private readonly NotificationService $notificationService) {}
 
     /**
      * Send receiver verification code
-     *
-     * @param SendCodeRequest $request
-     * @return JsonResponse
      */
     public function sendCode(SendCodeRequest $request): JsonResponse
     {
-        $channel  = $request->channel;
+        $channel = $request->channel;
         $receiver = $request->receiver;
-        $type     = $request->type;
+        $type = $request->type;
 
         if ($channel == NotificationChannel::SMS->value) {
             $receiver = preg_replace('/\D+/', '', $receiver);
 
-            if($type == 'forgot'){
+            if ($type == 'forgot') {
                 $phoneExist = User::query()->where('phone', $receiver)->exists();
-                if(!$phoneExist){
+                if (! $phoneExist) {
                     return $this->sendResponseError(trans('verification.user_not_registered'));
                 }
             }
-            if($type == 'register'){
-                $phoneExist = User::query()->where('phone', $receiver)->exists();
-                if($phoneExist){
+            if ($type == 'register') {
+                // Ищем и среди удалённых: при удалении через админку телефон
+                // освобождается префиксом deleted_ только у незаблокированных.
+                // У заблокированных он остаётся занятым, и регистрация всё равно
+                // упрётся в unique-правило — без withTrashed мы бы впустую
+                // отправили им SMS и показали ошибку только на последнем шаге.
+                $phoneExist = User::query()->withTrashed()->where('phone', $receiver)->exists();
+                if ($phoneExist) {
                     return $this->sendResponseError(trans('verification.user_already_registered'));
                 }
             }
@@ -61,8 +61,8 @@ class VerificationController extends Controller
 
         $codeExist = Code::query()->firstWhere(['receiver' => $receiver, 'type' => $type]);
         if ($codeExist) {
-            $createdAt        = Carbon::parse($codeExist->created_at);
-            $now              = Carbon::now();
+            $createdAt = Carbon::parse($codeExist->created_at);
+            $now = Carbon::now();
             $estimatedSeconds = 60 - $createdAt->diffInSeconds($now);
             if ($estimatedSeconds > 0) {
                 return $this->sendResponseError(__('verification.after', ['estimated_seconds' => ceil($estimatedSeconds)]));
@@ -73,27 +73,28 @@ class VerificationController extends Controller
 
         $rand = mt_rand(100000, 999999);
 
-        $response = $this->notificationService->sendSms($receiver, 'JOLTAP Ваш код: ' . $rand);
-        if (!$response) {
+        $response = $this->notificationService->sendSms($receiver, 'JOLTAP Ваш код: '.$rand);
+        if (! $response) {
             return $this->sendResponseError(__('verification.error'));
         } else {
             $data = [
-                'channel'  => $channel,
+                'channel' => $channel,
                 'receiver' => $receiver,
-                'code'     => $rand,
-                'type'     => $type,
+                'code' => $rand,
+                'type' => $type,
             ];
             Code::query()->create($data);
         }
+
         return $this->sendResponseSuccess(trans('verification.sent'));
     }
 
     public function verifyCode(VerifyCodeRequest $request): JsonResponse
     {
-        $channel  = $request->channel;
+        $channel = $request->channel;
         $receiver = $request->receiver;
-        $type     = $request->type;
-        $code     = $request->code;
+        $type = $request->type;
+        $code = $request->code;
 
         if ($channel === NotificationChannel::SMS->value) {
             $receiver = preg_replace('/\D+/', '', $receiver);
@@ -102,6 +103,7 @@ class VerificationController extends Controller
         $codeExist = Code::firstWhere(['receiver' => $receiver, 'type' => $type, 'code' => $code]);
         if ($codeExist) {
             $codeExist->delete();
+
             return $this->sendResponseSuccess(trans('verification.success'));
         }
 
