@@ -13,6 +13,7 @@
             <th>Имя</th>
             <th>Телефон</th>
             <th>Позиция</th>
+            <th>Работа через JUMYSTAP</th>
             <th>Курсы JOLTAP</th>
             <th>Согласие</th>
             <th>Дата создания</th>
@@ -27,13 +28,14 @@
                 <td style="min-width: 220px; white-space: normal; word-break: break-word;">
                     {{ $survey->position }}
                 </td>
+                <td>{{ $survey->found_via_site ? 'Да' : 'Нет' }}</td>
                 <td>{{ $survey->is_graduate ? 'Да' : 'Нет' }}</td>
                 <td>{{ $survey->consent ? 'Да' : 'Нет' }}</td>
                 <td>{{ $survey->created_at->format('d.m.Y H:i:s') }}</td>
             </tr>
         @empty
             <tr>
-                <td colspan="7" class="text-center">Записей пока нет</td>
+                <td colspan="8" class="text-center">Записей пока нет</td>
             </tr>
         @endforelse
         </tbody>

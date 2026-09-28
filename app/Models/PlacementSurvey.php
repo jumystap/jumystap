@@ -13,11 +13,13 @@ class PlacementSurvey extends Model
         'name',
         'phone',
         'position',
+        'found_via_site',
         'is_graduate',
         'consent',
     ];
 
     protected $casts = [
+        'found_via_site' => 'boolean',
         'is_graduate' => 'boolean',
         'consent' => 'boolean',
     ];

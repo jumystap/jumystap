@@ -26,6 +26,7 @@ class StorePlacementSurveyRequest extends FormRequest
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'max:100'],
             'position' => ['required', 'string', 'max:100'],
+            'found_via_site' => ['required', 'boolean'],
             'is_graduate' => ['required', 'boolean'],
             'consent' => ['required', 'accepted'],
         ];

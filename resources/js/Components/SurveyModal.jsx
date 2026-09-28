@@ -8,6 +8,7 @@ export default function SurveyModal({ isOpen, onClose }) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [position, setPosition] = useState('');
+    const [foundViaSite, setFoundViaSite] = useState(null);
     const [joltapGraduate, setJoltapGraduate] = useState(null);
     const [consent, setConsent] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ export default function SurveyModal({ isOpen, onClose }) {
         setName('');
         setPhone('');
         setPosition('');
+        setFoundViaSite(null);
         setJoltapGraduate(null);
         setConsent(false);
         setError('');
@@ -51,6 +53,10 @@ export default function SurveyModal({ isOpen, onClose }) {
             setError(t('survey_fill_all_fields'));
             return;
         }
+        if (foundViaSite === null) {
+            setError(t('survey_select_found_via_site'));
+            return;
+        }
         if (joltapGraduate === null) {
             setError(t('survey_select_joltap'));
             return;
@@ -67,6 +73,7 @@ export default function SurveyModal({ isOpen, onClose }) {
                 name: name.trim(),
                 phone: phone.trim(),
                 position: position.trim(),
+                found_via_site: foundViaSite,
                 is_graduate: joltapGraduate,
                 consent,
             });
@@ -131,6 +138,18 @@ export default function SurveyModal({ isOpen, onClose }) {
                             maxLength={100}
                             required
                         />
+
+                        <div>
+                            <div className="mb-2 text-gray-500">{t('survey_found_via_site_question')}</div>
+                            <Radio.Group
+                                value={foundViaSite}
+                                onChange={(e) => setFoundViaSite(e.target.value)}
+                                className="flex flex-col gap-1"
+                            >
+                                <Radio value={true}>{t('survey_yes')}</Radio>
+                                <Radio value={false}>{t('survey_no')}</Radio>
+                            </Radio.Group>
+                        </div>
 
                         <div>
                             <div className="mb-2 text-gray-500">{t('survey_joltap_question')}</div>
