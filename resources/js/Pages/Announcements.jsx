@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import GuestLayout from '@/Layouts/GuestLayout.jsx';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -9,6 +9,8 @@ import { rememberSearch } from '@/utils/lastSearch';
 import { Switch, Select, AutoComplete } from 'antd'; // Import Select from Ant Design
 import InfoModal from '@/Components/InfoModal';
 import FeedbackModal from '@/Components/FeedbackModal.jsx';
+import SurveyModal from '@/Components/SurveyModal.jsx';
+import Carousel from '@/Components/Carousel';
 import { CgArrowsExchangeAltV } from "react-icons/cg";
 import { CiLocationOn } from "react-icons/ci";
 import { IoSearch } from "react-icons/io5";
@@ -131,6 +133,7 @@ export default function Announcements({ auth, announcements, specializationCateg
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isSurveyOpen, setIsSurveyOpen] = useState(false);
     const [suggestOptions, setSuggestOptions] = useState([]);
     const suggestTimer = useRef(null);
 
@@ -503,6 +506,7 @@ export default function Announcements({ auth, announcements, specializationCateg
                     <meta name="description" content="Ознакомьтесь с актуальными объявлениями о работе на Жумыстап. Свежие вакансии от ведущих компаний Казахстана. Найдите работу или разместите объявление уже сегодня" />
                 </Head>
                 <FeedbackModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+                <SurveyModal isOpen={isSurveyOpen} onClose={() => setIsSurveyOpen(false)} />
                 <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} specializations={specializationCategories} />
                 <div className='fixed bg-black hidden bg-opacity-50 top-0 left-0 w-full h-screen z-50'>
                     <div className='w-[80%] bg-white rounded-lg h-[20%]'></div>
@@ -662,30 +666,61 @@ export default function Announcements({ auth, announcements, specializationCateg
                 )}
                 <div className='grid md:grid-cols-7 grid-cols-1'>
                     <div className='col-span-5'>
-                        <div className='hidden bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg md:flex md:px-10 md:py-7 text-white'>
-                            <div>
-                                <div className='font-bold text-lg md:text-xl'>
-                                    {t('get_free_training', { ns: 'employees' })}
-                                </div>
-                                <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'employees' })}</div>
-                                <div className='flex gap-x-5 mt-3 items-center'>
-                                    <div
-                                        onClick={() => setIsOpen(true)}
-                                        className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
-                                    >
-                                        {t('submit_an_application', { ns: 'employees' })}
+                        <div className='hidden md:block'>
+                            <Carousel>
+                                {/* «Пройди бесплатное обучение» — первый слайд */}
+                                <div className='bg-gradient-to-r md:mx-5 mx-3 p-5 from-orange-500 via-orange-700 to-orange-800 mt-2 rounded-lg flex md:px-10 md:py-7 text-white'>
+                                    <div>
+                                        <div className='font-bold text-lg md:text-xl'>
+                                            {t('get_free_training', { ns: 'employees' })}
+                                        </div>
+                                        <div className='font-light md:mt-3'>{t('for_blue_collar_jobs', { ns: 'employees' })}</div>
+                                        <div className='flex gap-x-5 mt-3 items-center'>
+                                            <div
+                                                onClick={() => setIsOpen(true)}
+                                                className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-white text-orange-500 hover:bg-white transition-all duration-150 hover:text-black'
+                                            >
+                                                {t('submit_an_application', { ns: 'employees' })}
+                                            </div>
+                                            <a
+                                                href='https://www.instagram.com/joltap.kz'
+                                                className='block text-white text-sm font-light md:text-sm'
+                                            >
+                                                {t('detail', { ns: 'employees' })}
+                                            </a>
+                                        </div>
                                     </div>
-                                    <a
-                                        href='https://www.instagram.com/joltap.kz'
-                                        className='block text-white text-sm font-light md:text-sm'
-                                    >
-                                        {t('detail', { ns: 'employees' })}
-                                    </a>
+                                    <div className='ml-auto pt-2'>
+                                        <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='ml-auto pt-2'>
-                                <img src='/images/joltap.png' className='md:w-[200px] w-[120px]' />
-                            </div>
+                                {/* «Удалось найти работу?» — опрос-баннер, второй слайд */}
+                                <div className='md:mx-5 mx-3 p-5 mt-2 rounded-lg flex items-center border border-gray-200 bg-white md:px-10 md:py-7'>
+                                    <div className='max-w-[480px]'>
+                                        <div className='font-bold text-lg md:text-xl text-gray-900'>
+                                            <Trans
+                                                i18nKey='found_job_title'
+                                                ns='index'
+                                                components={{ o: <span className='text-green-600' /> }}
+                                            />
+                                        </div>
+                                        <div className='font-light md:mt-3 text-gray-700'>
+                                            {t('found_job_desc', { ns: 'index' })}
+                                        </div>
+                                        <div className='flex gap-x-5 mt-3 items-center'>
+                                            <div
+                                                onClick={() => setIsSurveyOpen(true)}
+                                                className='px-3 cursor-pointer md:text-sm block md:px-10 py-2 font-bold md:text-md text-sm rounded-lg bg-green-600 text-white hover:bg-green-700 transition-all duration-150'
+                                            >
+                                                {t('found_job_button', { ns: 'index' })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='ml-auto pt-2'>
+                                        <img src='/images/banner/response.png' className='md:w-[200px] w-[120px]' alt='' />
+                                    </div>
+                                </div>
+                            </Carousel>
                         </div>
                         <div className='mt-3 flex items-center px-0 md:mt-5 md:px-5 md:mb-5 gap-x-2'>
                             <AutoComplete
@@ -701,11 +736,11 @@ export default function Announcements({ auth, announcements, specializationCateg
                                     type="text"
                                     placeholder={t('search', { ns: 'announcements' })}
                                     onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
-                                    className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2'
+                                    className='block border rounded-lg w-full text-base border-gray-300 px-5 p-2 md:h-11'
                                 />
                             </AutoComplete>
                             <button
-                                className='md:block hidden text-white rounded-lg bg-blue-500 py-2 px-5'
+                                className='hidden md:inline-flex md:h-11 md:shrink-0 md:items-center md:justify-center text-white rounded-lg bg-blue-500 px-5'
                                 onClick={handleSearch}
                             >
                                 {t('search', { ns: 'announcements' })}
