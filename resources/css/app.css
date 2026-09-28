@@ -719,3 +719,30 @@ body::-webkit-resizer {
     max-width: 100%;
   }
 }
+
+/* Поиск вакансий на /announcements — это AntD AutoComplete с кастомным <input>:
+   полем оформляется сам input, а .ant-select / .ant-select-selector должны быть
+   лишь прозрачной обёрткой. Без этого AntD держит селектор высотой 32px (инпут
+   44px вылезает вниз и не совпадает по линии с кнопкой «Поиск»), а мобильные
+   правила .jt-mobile-page-shell дополнительно рисуют вокруг инпута вторую рамку
+   с padding по бокам. Правило вне @media — нужно на всех брейкпоинтах. */
+.jt-announcements-search.ant-select,
+.jt-announcements-search.ant-select.ant-select-single {
+    height: auto !important;
+}
+
+.jt-announcements-search.ant-select .ant-select-selector {
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.jt-announcements-search.ant-select .ant-select-selection-search {
+    width: 100%;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+}
