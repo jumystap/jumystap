@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AnalyticController;
 use App\Http\Controllers\AdController;
 use App\Http\Controllers\AnnouncementController;
@@ -44,6 +45,17 @@ Route::post('/feedback-applications', [FeedbackApplicationController::class, 'st
 Route::post('/placement-surveys', [PlacementSurveyController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('placement-surveys.store');
+// Геокодирование для формы вакансии идёт через бэкенд: ключ может быть
+// подключён к «API Геокодера», но не к «JavaScript API». Только для
+// авторизованных — иначе это открытый прокси к платному API Яндекса.
+Route::middleware('auth')->group(function () {
+    Route::get('/address/suggest', [AddressController::class, 'suggest'])
+        ->middleware('throttle:120,1')
+        ->name('address.suggest');
+    Route::get('/address/geocode', [AddressController::class, 'geocode'])
+        ->middleware('throttle:60,1')
+        ->name('address.geocode');
+});
 Route::get('/forgot_password', [AuthController::class, 'forgetPassword']);
 Route::post('/restore_password', [AuthController::class, 'restorePassword']);
 

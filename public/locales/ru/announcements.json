@@ -77,5 +77,6 @@
     "business_type": "Вид деятельности",
     "is_graduate": "Выпускник JOLTAP",
     "is_remote": "Удаленно",
-    "yes": "Да"
+    "yes": "Да",
+    "workplace": "Место работы"
 }

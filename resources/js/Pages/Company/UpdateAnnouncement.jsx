@@ -5,6 +5,16 @@ import { Input, Button, Select, Form, Typography, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
 import PhoneInput from 'react-phone-input-2';
+import YandexAddressPicker from '@/Components/Map/YandexAddressPicker';
+
+/** Адрес вакансии: текст + точка на карте (координаты могут остаться пустыми). */
+const emptyLocation = (announcementId = null) => ({
+    id: null,
+    announcement_id: announcementId,
+    adress: '',
+    latitude: null,
+    longitude: null,
+});
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -80,7 +90,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const newResponsibilityRef = useRef(null);
     const newConditionRef = useRef(null);
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, put, processing, errors, transform } = useForm({
         type_kz: 'Тапсырыс',
         type_ru: 'Заказ',
         title: announcement.title || '',
@@ -93,7 +103,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         experience: announcement.experience || '',
         employment_type: announcement.employment_type || '',
         start_time: announcement.start_time || '',
-        location: announcement.address || [''],
+        location: announcement.address?.length ? announcement.address : [emptyLocation(announcement.id)],
         condition: [{ condition: (announcement.conditions || []).map((c) => c.condition).join('\n') }],
         requirement: [{ requirement: (announcement.requirements || []).map((r) => r.requirement).join('\n') }],
         responsibility: [{ responsibility: (announcement.responsibilities || []).map((r) => r.responsibility).join('\n') }],
@@ -108,6 +118,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         phone: announcement.phone || '',
     });
     const isRemoteWork = data.work_time === WORK_TIME_VALUES.REMOTE;
+    // Дистанционный город — рабочего места нет, адрес не спрашиваем.
+    const isRemoteCityChosen = data.city === CITY_VALUES.REMOTE;
+    const hideLocation = isRemoteWork || isRemoteCityChosen;
 
     const handleSalaryTypeChange = (e) => {
         const isChecked = e.target.checked;
@@ -404,7 +417,17 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     };
 
     const handleCityChange = (value) => {
-        setData('city', value);
+        setData((prevData) => ({
+            ...prevData,
+            city: value,
+            // «Дистанционное» — рабочего места нет, поле адреса скрыто.
+            // Чистим, чтобы не отправить то, чего пользователь уже не видит.
+            location: value === CITY_VALUES.REMOTE ? [] : (
+                prevData.location.length
+                    ? prevData.location
+                    : [emptyLocation(prevData.announcement_id || announcement.id)]
+            ),
+        }));
         setShowOtherCityInput(value === CITY_VALUES.OTHER);
     };
 
@@ -416,7 +439,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                 nextData.location = [];
             } else if (prevData.location.length === 0) {
                 nextData.location = [
-                    { id: null, announcement_id: prevData.announcement_id || announcement.id, adress: "" }
+                    emptyLocation(prevData.announcement_id || announcement.id)
                 ];
             }
             return nextData;
@@ -431,15 +454,14 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             ...prevData,
             location: [
                 ...prevData.location,
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, adress: "" }
+                emptyLocation(prevData.announcement_id || announcement.id)
             ]
         }));
     };
 
-    const handleLocationChange = (index, e) => {
+    const handleLocationChange = (index, location) => {
         const updatedLocations = [...data.location];
-        updatedLocations[index].adress = e.target.value;
-        updatedLocations[index].id = index;
+        updatedLocations[index] = location;
         setData('location', updatedLocations);
     };
 
@@ -502,10 +524,27 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             errors.condition = t('fill_condition', { ns: 'createAnnouncement' });
         }
 
+        // Адрес больше не завязан на правила AntD (поле живёт внутри карты),
+        // поэтому проверяем его здесь.
+        if (!hideLocation) {
+            data.location.forEach((location, index) => {
+                if (!location?.adress?.trim()) {
+                    errors[`location.${index}.adress`] = t('enter_location', { ns: 'createAnnouncement' });
+                }
+            });
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             return;
         }
+
+        // Inertia шлёт состояние формы, а второй аргумент put — это опции.
+        // Повлиять на payload можно только через transform.
+        transform((payload) => ({
+            ...payload,
+            location: hideLocation ? [] : payload.location,
+        }));
 
         const url = `/announcements/${announcement.id}`;
         put(url, {
@@ -621,30 +660,35 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        {!isRemoteWork && (
+                        {!hideLocation && (
                             <>
                                 <div className='mb-4'>
                                     {t('location', { ns: 'createAnnouncement' })}
                                 </div>
-                                {data.location.map((loc, index) => (
-                                    <Form.Item
-                                        name={`location[${index}].adress`}
-                                        className='mt-[-15px]'
-                                        validateStatus={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] ? 'error' : ''}
-                                        help={validationErrors[`location.${index}.adress`] || errors[`location.${index}.adress`] || null}
-                                    >
-                                        <input
-                                            key={index}
-                                            type="text"
-                                            className='text-sm w-full rounded py-1 mt-1 border border-gray-300'
-                                            value={loc.adress}
-                                            onChange={(e) => handleLocationChange(index, e)}
-                                        />
-                                        <div className='text-right'>
-                                            <button type="button" className='text-orange-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                {data.location.map((loc, index) => {
+                                    const locationError =
+                                        validationErrors[`location.${index}.adress`] ||
+                                        errors[`location.${index}.adress`];
+
+                                    return (
+                                        <div key={index} className='mb-4'>
+                                            <YandexAddressPicker
+                                                value={loc}
+                                                city={data.city}
+                                                hasError={Boolean(locationError)}
+                                                onChange={(next) => handleLocationChange(index, next)}
+                                            />
+                                            {locationError && (
+                                                <div className='mt-1 text-sm text-red-500'>{locationError}</div>
+                                            )}
+                                            {data.location.length > 1 && (
+                                                <div className='text-right'>
+                                                    <button type="button" className='text-orange-500 mt-1' onClick={() => deleteLocation(index)}>{t('delete', { ns: 'createAnnouncement' })}</button>
+                                                </div>
+                                            )}
                                         </div>
-                                    </Form.Item>
-                                ))}
+                                    );
+                                })}
                                 <div
                                     className='text-blue-500 mt-[-15px] mb-2'
                                     onClick={addLocation}

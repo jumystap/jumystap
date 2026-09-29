@@ -177,9 +177,15 @@ class AnnouncementController extends Controller
 
             if (! empty($validated['location'])) {
                 foreach ($validated['location'] as $location) {
+                    if (blank($location['adress'] ?? null)) {
+                        continue;
+                    }
+
                     AnnouncementAdress::create([
                         'announcement_id' => $announcement->id,
-                        'adress' => $location,
+                        'adress' => $location['adress'],
+                        'latitude' => $location['latitude'] ?? null,
+                        'longitude' => $location['longitude'] ?? null,
                     ]);
                 }
             }
@@ -268,9 +274,15 @@ class AnnouncementController extends Controller
                 if (! empty($validated['location'])) {
                     Log::info('Saving new locations', ['locations' => $validated['location']]);
                     foreach ($validated['location'] as $location) {
+                        if (blank($location['adress'] ?? null)) {
+                            continue;
+                        }
+
                         AnnouncementAdress::create([
                             'announcement_id' => $id,
-                            'adress' => $location['adress'], // Access 'adress' as a string
+                            'adress' => $location['adress'],
+                            'latitude' => $location['latitude'] ?? null,
+                            'longitude' => $location['longitude'] ?? null,
                         ]);
                     }
                 }

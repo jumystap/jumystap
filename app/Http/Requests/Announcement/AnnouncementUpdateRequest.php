@@ -7,13 +7,30 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AnnouncementUpdateRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Страница редактирования шлёт адреса объектами, но часть клиентов ещё
+     * может прислать массив строк — приводим к единому виду.
+     */
+    protected function prepareForValidation(): void
+    {
+        $locations = $this->input('location');
+
+        if (is_array($locations)) {
+            $this->merge([
+                'location' => array_map(
+                    fn ($location) => is_array($location) ? $location : ['adress' => $location],
+                    $locations
+                ),
+            ]);
+        }
     }
 
     /**
@@ -36,8 +53,10 @@ class AnnouncementUpdateRequest extends FormRequest
             'employment_type' => 'nullable',
             'experience' => 'nullable',
             'location' => 'required|array',
-            'location.*.id' => 'nullable|integer', // Ensure each location has an id
-            'location.*.adress' => 'required|string|max:255', // Ensure each location has an address
+            'location.*.id' => 'nullable|integer',
+            'location.*.adress' => 'required|string|max:255',
+            'location.*.latitude' => 'nullable|numeric|between:-90,90',
+            'location.*.longitude' => 'nullable|numeric|between:-180,180',
             'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable|integer', // Assuming this is an integer
             'salary_type' => 'required|string|max:255',
@@ -49,15 +68,17 @@ class AnnouncementUpdateRequest extends FormRequest
             'requirement.*.requirement' => 'required|string|max:1000',
             'condition' => 'required|array', // Single cohesive block, required
             'condition.*.condition' => 'required|string|max:1000',
-            'is_top' => "nullable|boolean",
-            'is_urgent' => "nullable|boolean",
-            'phone' => "nullable|digits:11",
+            'is_top' => 'nullable|boolean',
+            'is_urgent' => 'nullable|boolean',
+            'phone' => 'nullable|digits:11',
         ];
 
-        if(request('work_time') === 'Удаленная работа'){
+        // Адрес не нужен ни при удалённом графике, ни когда город выбран
+        // «Дистанционное» — в обоих случаях форма его не показывает.
+        if (request('work_time') === 'Удаленная работа' || request('city') === 'Дистанционное') {
             return array_merge($rules, [
                 'location' => 'nullable|array',
-                'location.*' => 'nullable|string|max:255',
+                'location.*.adress' => 'nullable|string|max:255',
             ]);
         }
 

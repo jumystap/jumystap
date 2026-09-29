@@ -250,7 +250,7 @@ class AnnouncementRepository
             ->with([
                 'user:id,name,description',
                 'specialization:id,name_ru,name_kz',
-                'address:id,announcement_id,adress',
+                'address:id,announcement_id,adress,latitude,longitude',
                 'conditions:id,announcement_id,condition',
                 'requirements:id,announcement_id,requirement',
                 'responsibilities:id,announcement_id,responsibility',

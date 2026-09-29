@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
+import YandexAddressPicker from '@/Components/Map/YandexAddressPicker';
 import { Input, Button, Select, Form, Typography, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
@@ -34,6 +35,9 @@ const CITY_VALUES = {
     REMOTE: 'Дистанционное',
     OTHER: 'Другое',
 };
+
+/** Адрес вакансии: текст + точка на карте (координаты могут остаться пустыми). */
+const emptyLocation = () => ({ adress: '', latitude: null, longitude: null });
 
 const EMPLOYMENT_VALUES = {
     FULL: 'Полная занятость',
@@ -124,7 +128,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         form.setFieldValue('specialization_id', undefined);
     };
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, put, processing, errors, transform } = useForm({
         type_kz: 'Тапсырыс',
         type_ru: 'Заказ',
         title: '',
@@ -137,7 +141,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         experience: '',
         employment_type: '',
         start_time: '',
-        location: [''],
+        location: [emptyLocation()],
         condition: [''],
         requirement: [''],
         responsibility: [''],
@@ -150,6 +154,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         phone: '',
     });
     const isRemoteWork = data.work_time === 'Удаленная работа';
+    // Дистанционный город — рабочего места нет, адрес не спрашиваем.
+    const isRemoteCityChosen = data.city === CITY_VALUES.REMOTE;
+    const hideLocation = isRemoteWork || isRemoteCityChosen;
 
     const deleteRequirement = (index) => {
         const newRequirements = [...data.requirement];
@@ -269,7 +276,15 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     };
 
     const handleCityChange = (value) => {
-        setData('city', value);
+        setData((prevData) => ({
+            ...prevData,
+            city: value,
+            // «Дистанционное» — рабочего места нет, поле адреса скрыто.
+            // Чистим, чтобы не отправить то, чего пользователь уже не видит.
+            location: value === CITY_VALUES.REMOTE ? [] : (
+                prevData.location.length ? prevData.location : [emptyLocation()]
+            ),
+        }));
         setShowOtherCityInput(value === CITY_VALUES.OTHER);
     };
 
@@ -280,7 +295,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                 nextData.city = '';
                 nextData.location = [];
             } else if (prevData.location.length === 0) {
-                nextData.location = [''];
+                nextData.location = [emptyLocation()];
             }
             return nextData;
         });
@@ -290,12 +305,12 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     };
 
     const addLocation = () => {
-        setData('location', [...data.location, '']);
+        setData('location', [...data.location, emptyLocation()]);
     };
 
-    const handleLocationChange = (index, e) => {
+    const handleLocationChange = (index, location) => {
         const updatedLocations = [...data.location];
-        updatedLocations[index] = e.target.value;
+        updatedLocations[index] = location;
         setData('location', updatedLocations);
     };
 
@@ -361,10 +376,27 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
             errors.condition = t('fill_condition', { ns: 'createAnnouncement' });
         }
 
+        // Адрес больше не завязан на правила AntD (поле живёт внутри карты),
+        // поэтому проверяем его здесь.
+        if (!hideLocation) {
+            data.location.forEach((location, index) => {
+                if (!location?.adress?.trim()) {
+                    errors[`location.${index}.adress`] = t('enter_location', { ns: 'createAnnouncement' });
+                }
+            });
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             return;
         }
+
+        // Inertia шлёт состояние формы, а второй аргумент put/post — это
+        // опции. Повлиять на payload можно только через transform.
+        transform((payload) => ({
+            ...payload,
+            location: hideLocation ? [] : payload.location,
+        }));
 
         const submitAction = isEdit ? put : post;
         const url = isEdit ? `/announcements/${announcement.id}` : '/announcements/store';
@@ -482,34 +514,39 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 />
                             </Form.Item>
                         )}
-                        {!isRemoteWork && (
+                        {!hideLocation && (
                             <>
                                 <Form.Item label={t('location', { ns: 'createAnnouncement' })}>
-                                    {data.location.map((loc, index) => (
-                                        <Form.Item
-                                            key={index}
-                                            name={['location', index]}
-                                            rules={[{ required: true, message: t('enter_location', { ns: 'createAnnouncement' }) }]}
-                                            help={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`]}
-                                            validateStatus={errors?.[`location.${index}`] || validationErrors?.[`location.${index}`] ? 'error' : ''}
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <Input
-                                                    type="text"
-                                                    className="text-sm rounded py-1 mt-2 border border-gray-300 flex-1"
+                                    {data.location.map((loc, index) => {
+                                        const locationError =
+                                            errors?.[`location.${index}.adress`] ||
+                                            validationErrors?.[`location.${index}.adress`];
+
+                                        return (
+                                            <div key={index} className="mb-4">
+                                                <YandexAddressPicker
                                                     value={loc}
-                                                    onChange={(e) => handleLocationChange(index, e)}
+                                                    city={data.city}
+                                                    hasError={Boolean(locationError)}
+                                                    onChange={(next) => handleLocationChange(index, next)}
                                                 />
-                                                <button
-                                                    className="text-orange-500 mt-3"
-                                                    type="button"
-                                                    onClick={() => deleteLocation(index)}
-                                                >
-                                                    {t('delete', { ns: 'createAnnouncement' })}
-                                                </button>
+                                                {locationError && (
+                                                    <div className="mt-1 text-sm text-red-500">{locationError}</div>
+                                                )}
+                                                {data.location.length > 1 && (
+                                                    <div className="text-right">
+                                                        <button
+                                                            className="text-orange-500"
+                                                            type="button"
+                                                            onClick={() => deleteLocation(index)}
+                                                        >
+                                                            {t('delete', { ns: 'createAnnouncement' })}
+                                                        </button>
+                                                    </div>
+                                                )}
                                             </div>
-                                        </Form.Item>
-                                    ))}
+                                        );
+                                    })}
                                 </Form.Item>
 
                                 <div

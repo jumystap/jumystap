@@ -12,6 +12,8 @@ import { MdAccessTime } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import ShareButtons from "@/Components/ShareButtons";
+import YandexMapView from "@/Components/Map/YandexMapView";
+import { isMappable, isRemoteCity } from "@/utils/yandexMaps";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -65,6 +67,14 @@ export default function Announcement({ auth, announcement, more_announcement, ur
         const key = DICTIONARY_KEYS[value];
         return key ? t(key, { ns: 'createAnnouncement' }) : value;
     };
+
+    // Нужны и координаты, и осмысленный адрес: «более 30 филиалов» на карте
+    // показывать нечем, даже если у записи почему-то оказалась точка.
+    // Дистанционная вакансия тоже без карты — страховка для записей,
+    // сохранённых до того, как форма стала чистить координаты.
+    const mappableAddresses = isRemoteCity(announcement.city)
+        ? []
+        : (announcement.address ?? []).filter(isMappable);
 
     const kz = {
         ...ru,
@@ -388,6 +398,14 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 <>
                                     <div className='font-semibold mt-5'>{t('description')}:</div>
                                     <div className=' mt-2' style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: announcement.description }} />
+                                </>
+                            )}
+                            {/* Карта только у вакансий с координатами — у старых
+                                остаётся текстовый адрес в шапке, без пустого блока. */}
+                            {mappableAddresses.length > 0 && (
+                                <>
+                                    <div className='font-semibold mt-5 mb-2'>{t('workplace')}:</div>
+                                    <YandexMapView locations={mappableAddresses} />
                                 </>
                             )}
                             </div>

@@ -50,6 +50,15 @@ return [
         'resume_moderation_chat_id' => env('TELEGRAM_RESUME_MODERATION_CHAT_ID'),
     ],
 
+    /*
+     * Яндекс.Карты. Ключ один и тот же для браузера (отрисовка карты) и для
+     * серверного геокодирования, поэтому читаем VITE_-переменную как запасной
+     * вариант — чтобы в .env хватало одной строки.
+     */
+    'yandex_maps' => [
+        'key' => env('YANDEX_MAPS_API_KEY', env('VITE_YANDEX_MAPS_API_KEY')),
+    ],
+
     'gender'=> [
         'uri' => env('GENDER_API_URI', 'https://api.genderapi.io/'),
         'key1' => env('GENDER_API_KEY_1', '683ec13028573e4d869109fa'),

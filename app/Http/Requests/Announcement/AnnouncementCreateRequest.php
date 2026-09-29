@@ -7,13 +7,31 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AnnouncementCreateRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Адрес раньше приходил массивом строк, теперь — массивом объектов
+     * с координатами. Приводим строки к общему виду, чтобы старые клиенты
+     * продолжали работать.
+     */
+    protected function prepareForValidation(): void
+    {
+        $locations = $this->input('location');
+
+        if (is_array($locations)) {
+            $this->merge([
+                'location' => array_map(
+                    fn ($location) => is_array($location) ? $location : ['adress' => $location],
+                    $locations
+                ),
+            ]);
+        }
     }
 
     /**
@@ -36,8 +54,10 @@ class AnnouncementCreateRequest extends FormRequest
             'employment_type' => 'nullable',
             'experience' => 'nullable',
             'education' => 'nullable',
-            'location' => 'required|array', // Validate as an array
-            'location.*' => 'required|string|max:255', // Validate each location item
+            'location' => 'required|array',
+            'location.*.adress' => 'required|string|max:255',
+            'location.*.latitude' => 'nullable|numeric|between:-90,90',
+            'location.*.longitude' => 'nullable|numeric|between:-180,180',
             'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable',
             'salary_type' => 'required',
@@ -52,10 +72,12 @@ class AnnouncementCreateRequest extends FormRequest
             'phone' => 'nullable|digits:11',
         ];
 
-        if(request('work_time') === 'Удаленная работа'){
+        // Адрес не нужен ни при удалённом графике, ни когда город выбран
+        // «Дистанционное» — в обоих случаях форма его не показывает.
+        if (request('work_time') === 'Удаленная работа' || request('city') === 'Дистанционное') {
             return array_merge($rules, [
                 'location' => 'nullable|array',
-                'location.*' => 'nullable|string|max:255',
+                'location.*.adress' => 'nullable|string|max:255',
             ]);
         }
 
