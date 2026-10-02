@@ -537,6 +537,11 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                         const locationError =
                                             errors?.[`location.${index}.adress`] ||
                                             validationErrors?.[`location.${index}.adress`];
+                                        // The picker already shows this hint inline, so don't
+                                        // repeat it as a page-level error (avoid duplicate text).
+                                        const showLocationError =
+                                            locationError &&
+                                            locationError !== t('press_find_for_coordinates', { ns: 'createAnnouncement' });
 
                                         return (
                                             <div key={index} className="mb-4">
@@ -546,7 +551,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                                     hasError={Boolean(locationError)}
                                                     onChange={(next) => handleLocationChange(index, next)}
                                                 />
-                                                {locationError && (
+                                                {showLocationError && (
                                                     <div className="mt-1 text-sm text-red-500">{locationError}</div>
                                                 )}
                                                 {data.location.length > 1 && (
