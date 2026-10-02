@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import YandexAddressPicker from '@/Components/Map/YandexAddressPicker';
+import { hasCoordinates, isVagueAddress } from '@/utils/yandexMaps';
 import { Input, Button, Select, Form, Typography, notification } from 'antd';
 import GuestLayout from '@/Layouts/GuestLayout';
 import CurrencyInput from 'react-currency-input-field';
@@ -382,6 +383,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
             data.location.forEach((location, index) => {
                 if (!location?.adress?.trim()) {
                     errors[`location.${index}.adress`] = t('enter_location', { ns: 'createAnnouncement' });
+                    return;
+                }
+
+                // Координаты обязательны: без них вакансия сохранится без точки
+                // на карте. Исключение — охватные адреса («более 30 филиалов»),
+                // для которых точки не существует и карта скрыта.
+                if (!isVagueAddress(location.adress) && !hasCoordinates(location)) {
+                    errors[`location.${index}.adress`] = t('press_find_for_coordinates', { ns: 'createAnnouncement' });
                 }
             });
         }
@@ -395,7 +404,14 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         // опции. Повлиять на payload можно только через transform.
         transform((payload) => ({
             ...payload,
-            location: hideLocation ? [] : payload.location,
+            location: hideLocation
+                ? []
+                : payload.location.map((location) => ({
+                      ...location,
+                      // Бэкенд требует координаты, но у охватных адресов их
+                      // не бывает — помечаем такие строки явно.
+                      without_point: isVagueAddress(location?.adress),
+                  })),
         }));
 
         const submitAction = isEdit ? put : post;

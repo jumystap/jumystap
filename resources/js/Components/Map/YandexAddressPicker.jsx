@@ -149,11 +149,10 @@ export default function YandexAddressPicker({ value, city, onChange, hasError = 
                 .get("/address/geocode", {
                     params: {
                         geocode: city ? `${city}, ${text}` : text,
-                        // Ищем в границах выбранного города, иначе «Абая 1»
-                        // легко уезжает в соседнюю область. Для города без
-                        // известных координат рамки нет — иначе геокодер
-                        // отсёк бы вообще всё (bbox уходит вместе с rspn=1).
-                        bbox: bboxForCity(city) ?? undefined,
+                        // Ищем в границах города, а если его координаты
+                        // неизвестны — в границах Казахстана. Иначе «Абая 1»
+                        // уезжает в соседний регион или вовсе за границу.
+                        bbox: bboxForCity(city),
                     },
                 })
                 .then(({ data }) => {
@@ -325,7 +324,7 @@ export default function YandexAddressPicker({ value, city, onChange, hasError = 
                 .get("/address/suggest", {
                     params: {
                         text: city ? `${city}, ${text}` : text,
-                        bbox: bboxForCity(city) ?? undefined,
+                        bbox: bboxForCity(city),
                     },
                 })
                 .then(({ data }) => {
@@ -432,7 +431,15 @@ export default function YandexAddressPicker({ value, city, onChange, hasError = 
                         autoComplete="off"
                         onChange={(event) => {
                             skipSuggestFor.current = null;
-                            emit({ adress: event.target.value });
+                            // Текст правили руками — прежняя точка к нему уже
+                            // не относится. Сбрасываем, чтобы нельзя было
+                            // сохранить адрес с координатами от другого места;
+                            // метку снимет эффект синхронизации.
+                            emit({
+                                adress: event.target.value,
+                                latitude: null,
+                                longitude: null,
+                            });
                         }}
                         onFocus={() => {
                             if (suggestions.length > 0) setSuggestOpen(true);
@@ -457,7 +464,7 @@ export default function YandexAddressPicker({ value, city, onChange, hasError = 
                                             index === activeIndex ? "bg-blue-50" : "bg-white"
                                         }`}
                                     >
-                                        {item.address}
+                                        {item.full || item.address}
                                     </button>
                                 </li>
                             ))}
@@ -522,8 +529,10 @@ export default function YandexAddressPicker({ value, city, onChange, hasError = 
                         </span>
                     )}
                     {!serviceError && !notFound && !pointChosen && (
-                        <span className="text-gray-500">
-                            {t("point_not_selected", { ns: "createAnnouncement" })}
+                        <span className={address.trim() ? "text-orange-600" : "text-gray-500"}>
+                            {address.trim()
+                                ? t("press_find_for_coordinates", { ns: "createAnnouncement" })
+                                : t("point_not_selected", { ns: "createAnnouncement" })}
                         </span>
                     )}
                 </div>

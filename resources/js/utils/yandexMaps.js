@@ -182,21 +182,43 @@ export const REMOTE_CITY = "Дистанционное";
 export const isRemoteCity = (city) => (city ?? "").trim() === REMOTE_CITY;
 
 /**
+ * Границы Казахстана — запасная рамка, когда координаты города неизвестны
+ * («Другое», город не из списка, пустое поле). Без неё геокодер искал бы по
+ * всему миру и «Абая 1» могло уехать в соседнюю страну.
+ */
+export const KAZAKHSTAN_BBOX = '46.490000,40.570000~87.320000,55.450000';
+
+/**
  * Та же рамка в формате HTTP-геокодера Яндекса: «lon1,lat1~lon2,lat2».
- *
- * Для города без известных координат возвращаем null: бэкенд шлёт рамку
- * вместе с rspn=1, то есть жёстко отсекает всё за её пределами. С запасной
- * астанинской рамкой поиск в Рудном или в произвольном городе «Другое»
- * не находил бы вообще ничего.
+ * Бэкенд шлёт её вместе с rspn=1, то есть жёстко отсекает всё за пределами.
  */
 export const bboxForCity = (city) => {
     if (!hasCityCenter(city)) {
-        return null;
+        return KAZAKHSTAN_BBOX;
     }
 
     const [[lat1, lng1], [lat2, lng2]] = boundsForCity(city);
 
     return `${lng1.toFixed(6)},${lat1.toFixed(6)}~${lng2.toFixed(6)},${lat2.toFixed(6)}`;
+};
+
+/**
+ * Убирает из адреса ведущие «Казахстан» и название города: на странице
+ * вакансии город выводится отдельным полем, иначе выходит «Алматы,
+ * Казахстан, Алматы, улица…».
+ *
+ * Режем только префикс — улица с названием города («улица Алматы»)
+ * останется на месте.
+ */
+export const stripCityPrefix = (address, city) => {
+    const parts = (address ?? '').split(',').map((part) => part.trim()).filter(Boolean);
+    const drop = new Set(['казахстан', (city ?? '').trim().toLowerCase()].filter(Boolean));
+
+    while (parts.length > 1 && drop.has(parts[0].toLowerCase())) {
+        parts.shift();
+    }
+
+    return parts.join(', ');
 };
 
 /** Адрес годится для карты: есть координаты и это не «охватная» формулировка. */

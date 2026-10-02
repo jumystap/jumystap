@@ -86,6 +86,10 @@ class YandexGeocoderService
         }
 
         return collect($response->json('response.GeoObjectCollection.featureMember') ?? [])
+            // Рамка Казахстана — прямоугольник, он захватывает приграничные
+            // куски России, Узбекистана, Киргизии и Китая. Отсекаем их по
+            // стране, иначе в подсказках всплывают зарубежные адреса.
+            ->reject(fn (array $item) => $this->isForeign($item['GeoObject'] ?? []))
             ->map(function (array $item) {
                 $object = $item['GeoObject'] ?? [];
 
@@ -100,8 +104,16 @@ class YandexGeocoderService
                     return null;
                 }
 
+                $full = data_get($object, 'metaDataProperty.GeocoderMetaData.text', '');
+
                 return [
-                    'address' => data_get($object, 'metaDataProperty.GeocoderMetaData.text', ''),
+                    // Короткий вид идёт в поле адреса вакансии: город выводится
+                    // рядом отдельно, и «Алматы, Казахстан, Алматы, улица…»
+                    // в шапке дублировалось.
+                    'address' => $this->shortAddress($object) ?: $full,
+                    // Полный — для выпадающего списка, где город помогает
+                    // отличить одноимённые улицы.
+                    'full' => $full,
                     'latitude' => (float) $latitude,
                     'longitude' => (float) $longitude,
                     'kind' => data_get($object, 'metaDataProperty.GeocoderMetaData.kind', ''),
@@ -110,5 +122,38 @@ class YandexGeocoderService
             ->filter()
             ->values()
             ->all();
+    }
+
+    /**
+     * Адрес за пределами Казахстана. Если страну геокодер не вернул,
+     * считаем адрес своим — лучше показать лишнее, чем потерять нужное.
+     */
+    private function isForeign(array $object): bool
+    {
+        $country = collect(data_get($object, 'metaDataProperty.GeocoderMetaData.Address.Components', []))
+            ->firstWhere('kind', 'country')['name'] ?? null;
+
+        if ($country === null) {
+            return false;
+        }
+
+        return ! in_array(mb_strtolower($country), ['казахстан', 'kazakhstan', 'qazaqstan'], true);
+    }
+
+    /**
+     * Собирает адрес без страны, области и города — их на странице вакансии
+     * показывают отдельным полем. Пустая строка, если после отсева ничего
+     * не осталось (например, найден сам город) — тогда вызывающий код берёт
+     * полный адрес.
+     */
+    private function shortAddress(array $object): string
+    {
+        $skip = ['country', 'region', 'province', 'area', 'locality'];
+
+        return collect(data_get($object, 'metaDataProperty.GeocoderMetaData.Address.Components', []))
+            ->reject(fn (array $component) => in_array($component['kind'] ?? '', $skip, true))
+            ->pluck('name')
+            ->filter()
+            ->implode(', ');
     }
 }

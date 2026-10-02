@@ -25,10 +25,17 @@ class AnnouncementUpdateRequest extends FormRequest
 
         if (is_array($locations)) {
             $this->merge([
-                'location' => array_map(
-                    fn ($location) => is_array($location) ? $location : ['adress' => $location],
-                    $locations
-                ),
+                'location' => array_map(function ($location) {
+                    $location = is_array($location) ? $location : ['adress' => $location];
+                    // required_if сравнивает со значением поля, поэтому флаг
+                    // должен быть настоящим boolean, а не отсутствовать.
+                    $location['without_point'] = filter_var(
+                        $location['without_point'] ?? false,
+                        FILTER_VALIDATE_BOOLEAN
+                    );
+
+                    return $location;
+                }, $locations),
             ]);
         }
     }
@@ -55,8 +62,12 @@ class AnnouncementUpdateRequest extends FormRequest
             'location' => 'required|array',
             'location.*.id' => 'nullable|integer',
             'location.*.adress' => 'required|string|max:255',
-            'location.*.latitude' => 'nullable|numeric|between:-90,90',
-            'location.*.longitude' => 'nullable|numeric|between:-180,180',
+            // Координаты обязательны: адрес без точки не попадёт на карту.
+            // Исключение — строки, помеченные фронтом как «точки не бывает»
+            // (охватные формулировки вроде «более 30 филиалов»).
+            'location.*.without_point' => 'nullable|boolean',
+            'location.*.latitude' => 'required_if:location.*.without_point,false|nullable|numeric|between:-90,90',
+            'location.*.longitude' => 'required_if:location.*.without_point,false|nullable|numeric|between:-180,180',
             'city' => 'nullable|string|max:255',
             'specialization_id' => 'nullable|integer', // Assuming this is an integer
             'salary_type' => 'required|string|max:255',

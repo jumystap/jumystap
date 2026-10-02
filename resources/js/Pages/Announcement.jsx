@@ -13,7 +13,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
 import ShareButtons from "@/Components/ShareButtons";
 import YandexMapView from "@/Components/Map/YandexMapView";
-import { isMappable, isRemoteCity } from "@/utils/yandexMaps";
+import { isMappable, isRemoteCity, stripCityPrefix } from "@/utils/yandexMaps";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -211,9 +211,14 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                      {announcement.location}
                                     {announcement.address && announcement.address.length > 0 && (
                                         <span>
-                                            {announcement.address.map((address, index) => (
-                                                <span key={index}>, {address.adress}{index < announcement.address.length - 1 ? '' : ''}</span> // Add comma only between addresses
-                                            ))}
+                                            {announcement.address.map((address, index) => {
+                                                // Город уже выведен слева. У адресов, сохранённых
+                                                // до перехода на короткий формат, он сидит внутри
+                                                // строки — срезаем, иначе «Алматы, Казахстан, Алматы…».
+                                                const short = stripCityPrefix(address.adress, announcement.city);
+
+                                                return short ? <span key={index}>, {short}</span> : null;
+                                            })}
                                         </span>
                                     )}
                                 </div>
