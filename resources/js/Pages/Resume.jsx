@@ -57,7 +57,8 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
                         <div className="flex flex-col md:flex-row gap-8 items-start">
                             <div className="relative">
                                 <img
-                                    src={`/storage/${resume.user.image_url}`}
+                                    src={resume.user.image_url ? `/storage/${resume.user.image_url}` : '/images/default-avatar.png'}
+                                    onError={(e) => { e.target.onerror = null; e.target.src = '/images/default-avatar.png'; }}
                                     className="w-32 h-32 rounded-full object-cover ring-4 ring-gray-50"
                                     alt={resume.user.name}
                                 />
