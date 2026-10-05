@@ -65,6 +65,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminMiddleware::class)->grou
     Route::get('codes', [\App\Http\Controllers\Admin\CodeController::class, 'index'])->name('codes.index');
     Route::get('feedback-applications', [FeedbackApplicationController::class, 'index'])
         ->name('feedback-applications.index');
+    Route::get('placement-surveys/export', [PlacementSurveyController::class, 'export'])
+        ->name('placement-surveys.export');
     Route::get('placement-surveys', [PlacementSurveyController::class, 'index'])
         ->name('placement-surveys.index');
 

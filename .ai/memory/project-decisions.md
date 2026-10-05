@@ -39,6 +39,10 @@
   Админ-раздел «Архив вакансий»
   (`admin.announcements.archive` → `resources/views/admin/announcements/archive.blade.php`) фильтрует
   `status = ARCHIVED` и выводит Работодатель · Вакансия · Кол-во откликов · Дата архивации · Ответ.
+- **Выгрузка опроса трудоустройства — XLSX.** Админский маршрут
+  `admin.placement-surveys.export` использует PhpSpreadsheet через `PlacementSurveyService` и
+  существующий `AdminMiddleware`. Свободный текст пишется ячейками типа `TYPE_STRING`, чтобы Excel
+  не исполнял пользовательские значения как формулы.
 
 ## TODO
 - Зафиксировать решение по CI/CD, когда оно будет принято.

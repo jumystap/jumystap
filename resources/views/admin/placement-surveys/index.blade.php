@@ -28,6 +28,12 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
+                        <div class="card-header">
+                            <a href="{{ route('admin.placement-surveys.export') }}" class="btn btn-success float-right">
+                                <i class="fas fa-file-excel"></i> Выгрузить в Excel
+                            </a>
+                        </div>
+
                         <div class="card-body">
                             @include('admin.partials.errors')
                             @include('admin.placement-surveys._table')
