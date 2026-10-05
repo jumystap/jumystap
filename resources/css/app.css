@@ -391,7 +391,11 @@ body::-webkit-resizer {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .jt-mobile-page-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  /* Селекты с showSearch (Отрасль, Специализация) рендерят внутри
+     .ant-select-selector настоящий <input>. Без исключения ниже он получал
+     рамку, фон и радиус как самостоятельное поле — и внутри селекта
+     появлялась вторая скруглённая коробка. */
+  .jt-mobile-page-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not(.ant-select-selection-search-input),
   .jt-mobile-page-shell select,
   .jt-mobile-page-shell textarea,
   .jt-mobile-page-shell .ant-input,
@@ -408,7 +412,7 @@ body::-webkit-resizer {
     color: #1f2937 !important;
   }
 
-  .jt-mobile-page-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  .jt-mobile-page-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not(.ant-select-selection-search-input),
   .jt-mobile-page-shell select,
   .jt-mobile-page-shell textarea,
   .jt-mobile-page-shell .ant-input,
