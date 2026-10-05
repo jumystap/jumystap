@@ -147,7 +147,7 @@ export default function CompanyAnnouncement({
                     </Col>
                 </Row>
 
-                <div style={{ marginTop: '20px', textAlign: 'right' }}>
+                <div className="mt-5 flex flex-wrap justify-end gap-2">
                     <Button type="primary" danger onClick={showDeleteModal} loading={processing}>
                         {t('delete_announcement')}
                     </Button>
@@ -155,7 +155,6 @@ export default function CompanyAnnouncement({
                     {(announcement.status === 0 || announcement.status === 1) && (
                         <Button
                             type="primary"
-                            className="ml-1"
                             danger
                             onClick={showArchiveModal}
                             loading={processing}

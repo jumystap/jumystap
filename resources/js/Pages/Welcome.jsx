@@ -487,7 +487,7 @@ export default function Welcome({
                 {/*    </div>*/}
                 {/*</div>*/}
             </Carousel>
-            <div className="flex mt-5 md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
+            <div className="flex md:mx-5 ml-3 md:max-w-[800px] max-w-[95%] pb-2 gap-x-5 overflow-x-auto">
                 <a
                     href={`https://t.me/jumystapjobs`}
                     target={`_blank`}
