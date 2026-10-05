@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 import { Calendar, MapPin, Briefcase, Code, GraduationCap, Languages, HousePlus} from 'lucide-react';
 import { MdIosShare } from "react-icons/md";
 import {useTranslation} from "react-i18next";
+import { getTotalExperience } from "@/utils/workExperience";
 
 export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
     const { t, i18n } = useTranslation('resume');
@@ -34,10 +35,8 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
             console.error('Failed to generate share link:', error);
         }
     };
-    // Calculate total experience from organizations
-    const calculateTotalExperience = () => {
-        return resume.organizations.length > 0 ? "" : "Нет опыта работы";
-    };
+
+    const totalExperience = getTotalExperience(resume.organizations, isRussian);
 
     return (
         <GuestLayout>
@@ -163,7 +162,9 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
                                 <div className="flex items-center gap-3 mb-6">
                                     <Briefcase className="w-6 h-6 text-blue-600" />
                                     <h2 className="text-xl font-semibold text-gray-900">{t('experience')}</h2>
-                                    <span className="text-sm text-gray-500">({calculateTotalExperience()})</span>
+                                    {totalExperience && (
+                                        <span className="text-sm text-gray-500">({totalExperience})</span>
+                                    )}
                                 </div>
                                 {resume.organizations.length > 0 ? (
                                     <div className="space-y-6">
