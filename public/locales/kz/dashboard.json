@@ -37,5 +37,7 @@
     "no_resume": "Түйіндеме жоқ",
     "deleted_user": "Пайдаланушы жойылған",
     "no_responses_yet": "Сіздің вакансияларыңызға әзірге жауаптар жоқ",
-    "back_to_profile": "Профильге оралу"
+    "back_to_profile": "Профильге оралу",
+    "select_one_variant": "Опциялардың 1-ін таңдаңыз!",
+    "announcement_archivation_error": "Хабарландыруды мұрағаттау қатесі."
 }
