@@ -167,6 +167,11 @@ export default function Dashboard({ user, archiveReasons = [] }) {
             return;
         }
 
+        // «Переопубликовать» — единственная причина, которая не архивирует:
+        // AnnouncementController::archive ставит вакансию на модерацию,
+        // поэтому сообщать об архивации неверно.
+        const isRepublish = employeeFound === 'republish';
+
         router.post(
             `/announcements/archive`,
             {
@@ -175,7 +180,11 @@ export default function Dashboard({ user, archiveReasons = [] }) {
             },
             {
                 onSuccess: () => {
-                    message.success(t('announcement_archived'));
+                    message.success(
+                        isRepublish
+                            ? t('on_moderation', { ns: 'dashboard' })
+                            : t('announcement_archived')
+                    );
                     setIsArchiveModalVisible(false);
                     setEmployeeFound(null);
                     setAnnouncementId(null); // Reset the ID
