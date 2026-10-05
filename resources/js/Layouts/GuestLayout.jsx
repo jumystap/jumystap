@@ -7,7 +7,7 @@ import {
 } from "react-icons/cg";
 import {Head, Link, usePage} from "@inertiajs/react";
 import {useTranslation} from "react-i18next";
-import {HiOutlineHome, HiOutlineUserGroup} from "react-icons/hi2";
+import {HiOutlineDocumentText, HiOutlineHome, HiOutlineUserGroup} from "react-icons/hi2";
 import {RiHome2Line} from "react-icons/ri";
 import {
     MdLanguage, MdOutlineBookmarks, MdOutlineCloud, MdOutlineGroupAdd, MdOutlineLogout, MdOutlineWorkOutline,
@@ -29,6 +29,8 @@ export default function Guest({
 }) {
     const {t, i18n} = useTranslation();
     const {auth, url} = usePage().props;
+    // Roles: EMPLOYER = 1, COMPANY = 3
+    const isEmployer = [1, 3].includes(Number(auth?.user?.role_id));
     const [showDropdown, setShowDropdown] = useState(false);
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
     const [isSurveyOpen, setIsSurveyOpen] = useState(false);
@@ -325,11 +327,19 @@ export default function Guest({
                                 </button>
                             </>)}
                         </div>
+                        {!isEmployer && (
+                            <Link
+                                href={auth?.user ? "/resumes/create" : "/login"}
+                                className="w-full flex items-center justify-center gap-x-2 border border-blue-500 text-blue-500 hover:bg-blue-50 font-semibold rounded-lg py-2 px-5 mb-2 transition-all duration-150"
+                            >
+                                <HiOutlineDocumentText className="text-base"/> {t("mobile_create_resume", {ns: "index"})}
+                            </Link>
+                        )}
                         <button
                             onClick={() => setIsSurveyOpen(true)}
-                            className="w-full flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full py-3 mb-3 transition-all duration-150"
+                            className="w-full flex items-center justify-center gap-x-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg py-2 px-5 mb-3 shadow-lg shadow-blue-500/50 transition-all duration-150"
                         >
-                            <FaCheckCircle className="text-lg"/> {t("found_job_cta", {ns: "index"})}
+                            <FaCheckCircle className="text-base"/> {t("found_job_cta", {ns: "index"})}
                         </button>
                         <div className="jt-desktop-sidebar__footer space-y-2 text-sm text-gray-500">
                             <a href="https://t.me/jumystapjobs/" target="_blank" rel="noopener noreferrer"
