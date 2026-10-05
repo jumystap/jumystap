@@ -101,7 +101,11 @@ export default function Resume({ user, resume, isOwner = false, downloadUrl }) {
                                     {/*</div>*/}
                                     <div className="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:gap-3">
                                         {/* Статус */}
-                                        <span className="py-1 px-3 rounded-lg text-sm bg-green-100 inline-block text-green-500">
+                                        <span className={`py-1 px-3 rounded-lg text-sm inline-block ${
+                                            resume.user.status === 'Не в активном поиске'
+                                                ? 'bg-yellow-100 text-yellow-600'
+                                                : 'bg-green-100 text-green-500'
+                                        }`}>
                                             {isRussian ? resume.user.status : resume.user.status_kz}
                                         </span>
 
