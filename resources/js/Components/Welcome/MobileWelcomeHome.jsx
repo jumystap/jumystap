@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trans } from "react-i18next";
 import { FaTelegramPlane, FaCheckCircle } from "react-icons/fa";
 import { HiOutlineDocumentText, HiOutlineUserCircle } from "react-icons/hi2";
@@ -12,6 +12,9 @@ import QuickActionGrid from "@/Components/Welcome/QuickActionGrid";
 import SocialPromoGrid from "@/Components/Welcome/SocialPromoGrid";
 import VacancyList from "@/Components/Welcome/VacancyList";
 import VacancySearch from "@/Components/Welcome/VacancySearch";
+
+/** Пауза между баннерами. Текста много, 3 с как на десктопе мало. */
+const PROMO_AUTOPLAY_MS = 6000;
 
 export default function MobileWelcomeHome({
     auth,
@@ -30,6 +33,7 @@ export default function MobileWelcomeHome({
     t,
 }) {
     const [activePromo, setActivePromo] = useState(0);
+
     const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
     const canCreateResume = !auth?.user || auth.user.role?.name === "employee";
 
@@ -132,15 +136,15 @@ export default function MobileWelcomeHome({
                         </div>
 
                         <div className="flex items-end justify-between gap-3">
-                            <div className="inline-flex min-h-[64px] items-center rounded-[20px] bg-[#3778e5] px-5 py-3 text-center text-[14px] font-semibold leading-[16px] text-white shadow-[0_10px_24px_rgba(55,120,229,0.24)] transition-transform duration-150 group-active:scale-[0.98]">
+                            <div className="inline-flex min-h-[48px] items-center rounded-[18px] bg-[#3778e5] px-5 py-3 text-center text-[13px] font-semibold leading-4 text-white shadow-[0_10px_24px_rgba(55,120,229,0.24)] transition-transform duration-150 group-active:scale-[0.98]">
                                 {t("go_to_channel", { ns: "index" })}
                             </div>
 
-                            <div className="flex shrink-0 items-center gap-2 rounded-[18px] border border-[#edf4ff] bg-[#f8fbff] px-3 py-3">
-                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#edf7ff] text-[22px] text-[#1d9bf0]">
+                            <div className="flex min-h-[48px] shrink-0 items-center gap-2 rounded-[18px] border border-[#edf4ff] bg-[#f8fbff] px-3 py-2">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#edf7ff] text-[18px] text-[#1d9bf0]">
                                     <FaTelegramPlane />
                                 </span>
-                                <span className="text-[18px] font-semibold tracking-[-0.02em] text-[#111827]">
+                                <span className="text-[15px] font-semibold tracking-[-0.02em] text-[#111827]">
                                     Telegram
                                 </span>
                             </div>
@@ -170,13 +174,13 @@ export default function MobileWelcomeHome({
                 rel: "noopener noreferrer",
             },
             primaryActionClassName:
-                "inline-flex min-h-[42px] w-full items-center justify-center rounded-[16px] bg-[#ef4444] px-3 py-2 text-center text-[12px] font-semibold leading-[14px] text-white shadow-[0_10px_24px_rgba(239,68,68,0.28)] transition-opacity hover:opacity-95",
+                "inline-flex min-h-[48px] w-full items-center justify-center rounded-[16px] bg-[#ef4444] px-3 py-2 text-center text-[12px] font-semibold leading-[14px] text-white shadow-[0_10px_24px_rgba(239,68,68,0.28)] transition-opacity hover:opacity-95",
             secondaryAction: {
                 label: t("write_site", { ns: "index" }),
                 onClick: onOpenScam,
             },
             secondaryActionClassName:
-                "inline-flex min-h-[42px] w-full items-center justify-center rounded-[16px] bg-white px-3 py-2 text-center text-[12px] font-semibold leading-[14px] text-[#ef4444] shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-opacity hover:opacity-95",
+                "inline-flex min-h-[48px] w-full items-center justify-center rounded-[16px] bg-white px-3 py-2 text-center text-[12px] font-semibold leading-[14px] text-[#ef4444] shadow-[0_10px_24px_rgba(15,23,42,0.12)] transition-opacity hover:opacity-95",
             imageSrc: "/images/scam.png",
             imageAlt: "Scam alert",
             imageWrapperClassName:
@@ -184,6 +188,22 @@ export default function MobileWelcomeHome({
             imageClassName: "h-9 w-auto object-contain",
         },
     ];
+
+    // Баннеры листаются сами: индикаторов нет, и без автопрокрутки
+    // пользователь не узнает, что слайдов больше одного.
+    // setTimeout, а не setInterval — свайп меняет activePromo и тем самым
+    // перезапускает отсчёт, иначе слайд мог бы смениться сразу после него.
+    useEffect(() => {
+        if (promoSlides.length <= 1) {
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setActivePromo((current) => (current + 1) % promoSlides.length);
+        }, PROMO_AUTOPLAY_MS);
+
+        return () => clearTimeout(timer);
+    }, [activePromo, promoSlides.length]);
 
     const quickActions = [
         {

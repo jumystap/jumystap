@@ -1,4 +1,3 @@
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 function PromoAction({ action, fallbackClassName }) {
@@ -236,24 +235,6 @@ export default function PromoBanner({ slide, slides = [slide], onPrev, onNext })
                 ))}
             </div>
 
-            <div className="mt-3 flex items-center justify-center gap-3">
-                <button
-                    type="button"
-                    onClick={onPrev}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9deea] bg-white text-[12px] text-[#667085] shadow-[0_8px_20px_rgba(15,23,42,0.05)] transition-colors hover:border-[#5a7cf3] hover:text-[#3052c8]"
-                    aria-label="Previous banner"
-                >
-                    <LeftOutlined />
-                </button>
-                <button
-                    type="button"
-                    onClick={onNext}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9deea] bg-white text-[12px] text-[#667085] shadow-[0_8px_20px_rgba(15,23,42,0.05)] transition-colors hover:border-[#5a7cf3] hover:text-[#3052c8]"
-                    aria-label="Next banner"
-                >
-                    <RightOutlined />
-                </button>
-            </div>
         </section>
     );
 }
