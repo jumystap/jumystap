@@ -354,6 +354,29 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const [validationErrors, setValidationErrors] = useState({});
     const [showOtherCityInput, setShowOtherCityInput] = useState(false);
 
+    // Ошибки приходят из трёх мест: правил AntD, наших проверок в handleSubmit
+    // и ответа сервера. Во всех случаях поле может оказаться далеко внизу
+    // длинной формы, поэтому подводим экран к первому проблемному полю.
+    // Таймер — чтобы DOM успел отрисовать подсветку ошибки.
+    const scrollToFirstError = () => {
+        setTimeout(() => {
+            const firstError = document.querySelector('.ant-form-item-has-error, [data-error-anchor]');
+            if (!firstError) return;
+
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstError.querySelector('input, textarea, select, [tabindex]')?.focus?.({ preventScroll: true });
+        }, 80);
+    };
+
+    useEffect(() => {
+        if (Object.keys(errors || {}).length === 0 && Object.keys(validationErrors || {}).length === 0) {
+            return;
+        }
+
+        scrollToFirstError();
+    }, [errors, validationErrors]);
+
+
     const addRequirement = () => {
         setData((prevData) => ({
             ...prevData,
@@ -594,7 +617,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                     <Title level={3} className="">
                         {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
                     </Title>
-                    <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={data}>
+                    <Form form={form} onFinish={handleSubmit} onFinishFailed={scrollToFirstError} scrollToFirstError={{ behavior: 'smooth', block: 'center' }} layout="vertical" initialValues={data}>
                         <Form.Item
                             label={
                                 <span>
@@ -700,7 +723,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                                 onChange={(next) => handleLocationChange(index, next)}
                                             />
                                             {showLocationError && (
-                                                <div className='mt-1 text-sm text-red-500'>{locationError}</div>
+                                                <div data-error-anchor className='mt-1 text-sm text-red-500'>{locationError}</div>
                                             )}
                                             {data.location.length > 1 && (
                                                 <div className='text-right'>
