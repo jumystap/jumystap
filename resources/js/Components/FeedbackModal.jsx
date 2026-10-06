@@ -25,6 +25,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
         t('sewing_machine_operator'),
         t('barista'),
         t('retail_sales_specialist'),
+        t('commercial_mobilography'),
     ];
 
     useEffect(() => {
