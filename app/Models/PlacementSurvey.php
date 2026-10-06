@@ -13,6 +13,7 @@ class PlacementSurvey extends Model
         'name',
         'phone',
         'position',
+        'company',
         'found_via_site',
         'is_graduate',
         'consent',

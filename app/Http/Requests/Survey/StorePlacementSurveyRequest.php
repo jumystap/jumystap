@@ -17,6 +17,7 @@ class StorePlacementSurveyRequest extends FormRequest
             'name' => is_string($this->name) ? trim($this->name) : $this->name,
             'phone' => is_string($this->phone) ? trim($this->phone) : $this->phone,
             'position' => is_string($this->position) ? trim($this->position) : $this->position,
+            'company' => is_string($this->company) ? trim($this->company) : $this->company,
         ]);
     }
 
@@ -26,6 +27,7 @@ class StorePlacementSurveyRequest extends FormRequest
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'max:100'],
             'position' => ['required', 'string', 'max:100'],
+            'company' => ['nullable', 'string', 'max:255'],
             'found_via_site' => ['required', 'boolean'],
             'is_graduate' => ['required', 'boolean'],
             'consent' => ['required', 'accepted'],

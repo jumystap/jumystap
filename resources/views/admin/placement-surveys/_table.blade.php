@@ -13,6 +13,7 @@
             <th>Имя</th>
             <th>Телефон</th>
             <th>Позиция</th>
+            <th>Компания, в которую трудоустроился</th>
             <th>Работа через JUMYSTAP</th>
             <th>Курсы JOLTAP</th>
             <th>Согласие</th>
@@ -28,6 +29,9 @@
                 <td style="min-width: 220px; white-space: normal; word-break: break-word;">
                     {{ $survey->position }}
                 </td>
+                <td style="min-width: 220px; white-space: normal; word-break: break-word;">
+                    {{ $survey->company ?: '—' }}
+                </td>
                 <td>{{ $survey->found_via_site ? 'Да' : 'Нет' }}</td>
                 <td>{{ $survey->is_graduate ? 'Да' : 'Нет' }}</td>
                 <td>{{ $survey->consent ? 'Да' : 'Нет' }}</td>
@@ -35,7 +39,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="8" class="text-center">Записей пока нет</td>
+                <td colspan="9" class="text-center">Записей пока нет</td>
             </tr>
         @endforelse
         </tbody>

@@ -63,10 +63,11 @@ class PlacementSurveyService
             'B' => 'Имя',
             'C' => 'Телефон',
             'D' => 'Позиция',
-            'E' => 'Работа через JUMYSTAP',
-            'F' => 'Курсы JOLTAP',
-            'G' => 'Согласие',
-            'H' => 'Дата создания',
+            'E' => 'Компания, в которую трудоустроился',
+            'F' => 'Работа через JUMYSTAP',
+            'G' => 'Курсы JOLTAP',
+            'H' => 'Согласие',
+            'I' => 'Дата создания',
         ];
 
         foreach ($headers as $column => $header) {
@@ -80,28 +81,30 @@ class PlacementSurveyService
         $sheet->setCellValueExplicit("B{$row}", $survey->name, DataType::TYPE_STRING);
         $sheet->setCellValueExplicit("C{$row}", $survey->phone, DataType::TYPE_STRING);
         $sheet->setCellValueExplicit("D{$row}", $survey->position, DataType::TYPE_STRING);
-        $sheet->setCellValueExplicit("E{$row}", $survey->found_via_site ? 'Да' : 'Нет', DataType::TYPE_STRING);
-        $sheet->setCellValueExplicit("F{$row}", $survey->is_graduate ? 'Да' : 'Нет', DataType::TYPE_STRING);
-        $sheet->setCellValueExplicit("G{$row}", $survey->consent ? 'Да' : 'Нет', DataType::TYPE_STRING);
-        $sheet->setCellValue("H{$row}", Date::PHPToExcel($survey->created_at));
+        $sheet->setCellValueExplicit("E{$row}", (string) $survey->company, DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit("F{$row}", $survey->found_via_site ? 'Да' : 'Нет', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit("G{$row}", $survey->is_graduate ? 'Да' : 'Нет', DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit("H{$row}", $survey->consent ? 'Да' : 'Нет', DataType::TYPE_STRING);
+        $sheet->setCellValue("I{$row}", Date::PHPToExcel($survey->created_at));
     }
 
     private function formatExportSheet(Worksheet $sheet, int $lastRow): void
     {
         $sheet->freezePane('A2');
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true)->getColor()->setARGB('FFFFFFFF');
-        $sheet->getStyle('A1:H1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF1F4E78');
-        $sheet->getStyle("A1:H{$lastRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER)->setWrapText(true);
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true)->getColor()->setARGB('FFFFFFFF');
+        $sheet->getStyle('A1:I1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FF1F4E78');
+        $sheet->getStyle("A1:I{$lastRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER)->setWrapText(true);
 
         foreach ([
             'A' => 10,
             'B' => 28,
             'C' => 22,
             'D' => 36,
-            'E' => 30,
-            'F' => 20,
-            'G' => 18,
-            'H' => 22,
+            'E' => 36,
+            'F' => 30,
+            'G' => 20,
+            'H' => 18,
+            'I' => 22,
         ] as $column => $width) {
             $sheet->getColumnDimension($column)->setWidth($width);
         }
@@ -110,7 +113,7 @@ class PlacementSurveyService
             return;
         }
 
-        $sheet->setAutoFilter("A1:H{$lastRow}");
-        $sheet->getStyle("H2:H{$lastRow}")->getNumberFormat()->setFormatCode('dd.mm.yyyy hh:mm:ss');
+        $sheet->setAutoFilter("A1:I{$lastRow}");
+        $sheet->getStyle("I2:I{$lastRow}")->getNumberFormat()->setFormatCode('dd.mm.yyyy hh:mm:ss');
     }
 }

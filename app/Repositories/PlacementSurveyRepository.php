@@ -28,6 +28,7 @@ class PlacementSurveyRepository
                 'name',
                 'phone',
                 'position',
+                'company',
                 'found_via_site',
                 'is_graduate',
                 'consent',

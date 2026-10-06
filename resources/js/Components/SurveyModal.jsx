@@ -8,6 +8,7 @@ export default function SurveyModal({ isOpen, onClose }) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [position, setPosition] = useState('');
+    const [company, setCompany] = useState('');
     const [foundViaSite, setFoundViaSite] = useState(null);
     const [joltapGraduate, setJoltapGraduate] = useState(null);
     const [consent, setConsent] = useState(false);
@@ -34,6 +35,7 @@ export default function SurveyModal({ isOpen, onClose }) {
         setName('');
         setPhone('');
         setPosition('');
+        setCompany('');
         setFoundViaSite(null);
         setJoltapGraduate(null);
         setConsent(false);
@@ -73,6 +75,7 @@ export default function SurveyModal({ isOpen, onClose }) {
                 name: name.trim(),
                 phone: phone.trim(),
                 position: position.trim(),
+                company: company.trim(),
                 found_via_site: foundViaSite,
                 is_graduate: joltapGraduate,
                 consent,
@@ -137,6 +140,15 @@ export default function SurveyModal({ isOpen, onClose }) {
                             onChange={(e) => setPosition(e.target.value)}
                             maxLength={100}
                             required
+                        />
+
+                        <input
+                            type="text"
+                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            placeholder={t('survey_company')}
+                            value={company}
+                            onChange={(e) => setCompany(e.target.value)}
+                            maxLength={255}
                         />
 
                         <div>
