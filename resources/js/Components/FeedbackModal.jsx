@@ -22,7 +22,6 @@ export default function FeedbackModal({ isOpen, onClose }) {
         t('cabinet_furniture_manufacturing_basics'),
         t('baker'),
         t('electrician_2nd_degree'),
-        t('sewing_machine_operator'),
         t('barista'),
         t('retail_sales_specialist'),
         t('commercial_mobilography'),
