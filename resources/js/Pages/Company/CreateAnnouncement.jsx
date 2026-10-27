@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import YandexAddressPicker from '@/Components/Map/YandexAddressPicker';
@@ -72,15 +72,10 @@ const EDUCATION_VALUES = {
     JOLTAP: 'Сертификат Joltap',
 };
 
-const CreateAnnouncement = ({ announcement = null, specializations }) => {
+const CreateAnnouncement = ({ specializations }) => {
     const { t, i18n } = useTranslation();
-    const isEdit = announcement !== null;
     const [isExactSalary, setIsExactSalary] = useState(false);
     const [withPhone, setWithPhone] = useState(false);
-    const requirementInputRefs = useRef([]);
-    const responsibilityInputRefs = useRef([]);
-    const conditionInputRefs = useRef([]);
-    const pendingFocusRef = useRef(null);
 
     const handleSalaryTypeChange = (e) => {
         setData(prevData => ({
@@ -104,13 +99,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
 
     const [form] = Form.useForm();
 
-    const findCategoryId = (specId) => {
-        if (!specId) return null;
-        const category = specializations.find(cat => cat.specialization.some(spec => spec.id === specId));
-        return category ? category.id : null;
-    };
-
-    const [categoryId, setCategoryId] = useState(() => findCategoryId(announcement?.specialization_id));
+    const [categoryId, setCategoryId] = useState(null);
 
     const categoryOptions = specializations.map(category => ({
         value: category.id,
@@ -129,9 +118,10 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
         form.setFieldValue('specialization_id', undefined);
     };
 
-    const { data, setData, post, put, processing, errors, transform } = useForm({
-        type_kz: 'Тапсырыс',
-        type_ru: 'Заказ',
+    const { data, setData, post, processing, errors, transform } = useForm({
+        // Every announcement on the site is a vacancy.
+        type_kz: 'Вакансия',
+        type_ru: 'Вакансия',
         title: '',
         description: '',
         payment_type: '',
@@ -158,24 +148,6 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
     // Дистанционный город — рабочего места нет, адрес не спрашиваем.
     const isRemoteCityChosen = data.city === CITY_VALUES.REMOTE;
     const hideLocation = isRemoteWork || isRemoteCityChosen;
-
-    const deleteRequirement = (index) => {
-        const newRequirements = [...data.requirement];
-        newRequirements.splice(index, 1);
-        setData({ ...data, requirement: newRequirements });
-    };
-
-    const deleteResponsibility = (index) => {
-        const newResponsibilities = [...data.responsibility];
-        newResponsibilities.splice(index, 1);
-        setData({ ...data, responsibility: newResponsibilities });
-    };
-
-    const deleteCondition = (index) => {
-        const newConditions = [...data.condition];
-        newConditions.splice(index, 1);
-        setData({ ...data, condition: newConditions });
-    };
 
     const deleteLocation = (index) => {
         const newLocation = [...data.location];
@@ -234,58 +206,6 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
 
         scrollToFirstError();
     }, [errors, validationErrors]);
-
-
-    useEffect(() => {
-        if (!pendingFocusRef.current) return;
-        const { type, index } = pendingFocusRef.current;
-        const refsByType = {
-            requirement: requirementInputRefs,
-            responsibility: responsibilityInputRefs,
-            condition: conditionInputRefs,
-        };
-        const inputEl = refsByType[type]?.current?.[index];
-        if (inputEl) {
-            inputEl.focus();
-            const length = inputEl.value?.length ?? 0;
-            if (typeof inputEl.setSelectionRange === 'function') {
-                inputEl.setSelectionRange(length, length);
-            }
-        }
-        pendingFocusRef.current = null;
-    }, [data.requirement.length, data.responsibility.length, data.condition.length]);
-
-    const queueFocus = (type, index) => {
-        pendingFocusRef.current = { type, index };
-    };
-
-    const addRequirement = () => {
-        setData('requirement', [...data.requirement, '']);
-    };
-    const addResponsibility = () => {
-        setData('responsibility', [...data.responsibility, '']);
-    };
-    const addCondition = () => {
-        setData('condition', [...data.condition, '']);
-    };
-
-    const handleRequirementChange = (index, e) => {
-        const updatedRequirements = [...data.requirement];
-        updatedRequirements[index] = e.target.value;
-        setData('requirement', updatedRequirements);
-    };
-
-    const handleResponsibilityChange = (index, e) => {
-        const updatedResponsibilities = [...data.responsibility];
-        updatedResponsibilities[index] = e.target.value;
-        setData('responsibility', updatedResponsibilities);
-    };
-
-    const handleConditionChange = (index, e) => {
-        const updatedConditions = [...data.condition];
-        updatedConditions[index] = e.target.value;
-        setData('condition', updatedConditions);
-    };
 
     useEffect(() => {
         if (data.type_ru === 'Заказ') {
@@ -437,9 +357,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                   })),
         }));
 
-        const submitAction = isEdit ? put : post;
-        const url = isEdit ? `/announcements/${announcement.id}` : '/announcements/store';
-        submitAction(url, {
+        post('/announcements/store', {
             ...data,
             onSuccess: () => notification.success({
                 message: t('successfully_saved', { ns : 'createAnnouncement'})
@@ -466,7 +384,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
             <div className="grid grid-cols-1 md:grid-cols-7 mx-auto p-4">
                 <div className='col-span-5'>
                     <Title level={3} className="">
-                        {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
+                        {t('create_title', { ns: 'createAnnouncement' })}
                     </Title>
                     <Form form={form} onFinish={handleSubmit} onFinishFailed={scrollToFirstError} scrollToFirstError={{ behavior: 'smooth', block: 'center' }} layout="vertical">
                         <Form.Item
@@ -541,7 +459,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                         {!isRemoteWork && showOtherCityInput && (
                             <Form.Item
                                 label={t('enter_another_city', { ns: 'createAnnouncement' })}
-                                name="city"
+                                // Own field (not "city"): sharing it with the select pre-filled
+                                // the input with «Другое» and let that be saved as the city.
+                                name="other_city"
                                 rules={[{ required: true, message: t('please_enter_city', { ns: 'createAnnouncement' })}]}
                             >
                                 <Input
@@ -566,8 +486,10 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                             locationError &&
                                             locationError !== t('press_find_for_coordinates', { ns: 'createAnnouncement' });
 
+                                        // Anchor on the wrapper so scrollToFirstError still finds the
+                                        // picker when the error text itself is suppressed above.
                                         return (
-                                            <div key={index} className="mb-4">
+                                            <div key={index} className="mb-4" data-error-anchor={locationError ? true : undefined}>
                                                 <YandexAddressPicker
                                                     value={loc}
                                                     city={data.city}
@@ -575,7 +497,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                                     onChange={(next) => handleLocationChange(index, next)}
                                                 />
                                                 {showLocationError && (
-                                                    <div data-error-anchor className="mt-1 text-sm text-red-500">{locationError}</div>
+                                                    <div className="mt-1 text-sm text-red-500">{locationError}</div>
                                                 )}
                                                 {data.location.length > 1 && (
                                                     <div className="text-right">
@@ -692,7 +614,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             <div className='grid grid-cols-2 gap-x-3'>
                                 <Form.Item
                                     label={t('cost_min', { ns: 'createAnnouncement' })}
-                                    rules={[{ required: !data.cost_max, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}>
+                                    rules={[{ required: !data.cost_max, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}
+                                    help={errors.cost_min || validationErrors.cost_min}
+                                    validateStatus={errors.cost_min || validationErrors.cost_min ? 'error' : ''}>
                                     <CurrencyInput
                                         name="cost_min"
                                         className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
@@ -701,7 +625,9 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                     />
                                 </Form.Item>
                                 <Form.Item label={t('cost_max', { ns: 'createAnnouncement' })}
-                                           rules={[{ required: !data.cost_min, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}>
+                                           rules={[{ required: !data.cost_min, message: t('please_enter_min_or_max_salary', { ns: 'createAnnouncement' }) }]}
+                                           help={errors.cost_max || validationErrors.cost_max}
+                                           validateStatus={errors.cost_max || validationErrors.cost_max ? 'error' : ''}>
                                     <CurrencyInput
                                         name="cost_max"
                                         className='text-sm w-full rounded py-1 mt-[0px] border border-gray-300'
@@ -849,6 +775,8 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 </span>
                             }
                             name="description"
+                            help={errors.description || validationErrors.description}
+                            validateStatus={errors.description || validationErrors.description ? 'error' : ''}
                         >
                             <TextArea
                                 name="description"
@@ -874,7 +802,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                             <Form.Item
                                 label={
                                     <span>
-                                    {t('additional_info', { ns: 'createAnnouncement' })}
+                                    {t('enter_whatsapp_number', { ns: 'createAnnouncement' })}
                                         <span className="ml-2 text-gray-500">
                                     </span>
                                 </span>
@@ -904,7 +832,7 @@ const CreateAnnouncement = ({ announcement = null, specializations }) => {
                                 loading={processing}
                                 className="w-full md:w-auto"
                             >
-                                {isEdit ? t('save', { ns: 'createAnnouncement' }) : t('create', { ns: 'createAnnouncement' })}
+                                {t('create', { ns: 'createAnnouncement' })}
                             </Button>
                             <Button
                                 type="default"

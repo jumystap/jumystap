@@ -77,20 +77,6 @@
                                                value="@if(isset($search['title'])){{ $search['title'] }}@endif">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="type">{{ __('Тип') }}</label>
-                                        <select name="search[type]" id="type" class="form-control">
-                                            <option value>{{ __('Выберите') }}</option>
-                                            @if($types)
-                                                @foreach ($types as $type)
-                                                    <option value="{{ $type }}"
-                                                            @if (isset($search['type']) && $search['type'] == $type && $search['type'] != null) selected="selected" @endif>
-                                                        {{ $type }}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
                                         <label for="status">{{ __('Статус') }}</label>
                                         <select name="search[status]" id="status" class="form-control"
                                                 @disabled($isRecentActiveAnnouncements)>

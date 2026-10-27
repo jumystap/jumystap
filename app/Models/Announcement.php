@@ -143,10 +143,6 @@ class Announcement extends Model
             $query->where('city', $attributes['city']);
         }
 
-        if (array_key_exists('type', $attributes) && strlen($attributes['type'])) {
-            $query->where('type_ru', $attributes['type']);
-        }
-
         if (array_key_exists('specialization_category_id', $attributes) && strlen($attributes['specialization_category_id'])) {
             if ($attributes['specialization_category_id'] != 'null') {
                 $specializationIds = Specialization::where('category_id', $attributes['specialization_category_id'])->get()->pluck('id')->toArray();

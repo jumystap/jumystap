@@ -38,7 +38,6 @@ class AnnouncementController extends Controller
             'is_permanent' => null,
             'is_top' => null,
             'is_urgent' => null,
-            'type' => null,
             'company_name' => null,
             'title' => null,
             'user_id' => null,
@@ -63,7 +62,6 @@ class AnnouncementController extends Controller
             ->with('roles', Role::query()->whereIn('id', [Roles::COMPANY->value, Roles::EMPLOYER->value])->get())
             ->with('specializationCategories', SpecializationCategory::all())
             ->with('cities', City::orderBy('order_id')->get())
-            ->with('types', ['Вакансия', 'Заказ'])
             ->with('statuses', AnnouncementStatus::list())
             ->with('search', $search);
     }

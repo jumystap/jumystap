@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@inertiajs/react';
 import { Input, Button, Select, Form, Typography, notification } from 'antd';
@@ -80,20 +80,17 @@ const EDUCATION_VALUES = {
 
 const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
     const { t, i18n } = useTranslation();
-    const isEdit = true;
     const [salaryType, setSalaryType] = useState(announcement.salary_type || 'min');
     const [isTop, setIsTop] = useState(announcement.is_top);
     const [isUrgent, setIsUrgent] = useState(announcement.is_urgent);
     const [isExactSalary, setIsExactSalary] = useState(announcement.salary_type === 'exact');
     const [isUndefinedSalary, setIsUndefinedSalary] = useState(announcement.salary_type === 'undefined');
     const [useMyPhone, setMyPhone] = useState(!announcement.phone);
-    const newRequirementRef = useRef(null);
-    const newResponsibilityRef = useRef(null);
-    const newConditionRef = useRef(null);
 
-    const { data, setData, post, put, processing, errors, transform } = useForm({
-        type_kz: 'Тапсырыс',
-        type_ru: 'Заказ',
+    const { data, setData, put, processing, errors, transform } = useForm({
+        // Keep the existing type; fall back to «Вакансия» (the site default).
+        type_kz: announcement.type_kz || 'Вакансия',
+        type_ru: announcement.type_ru || 'Вакансия',
         title: announcement.title || '',
         description: announcement.description || '',
         payment_type: announcement.payment_type || '',
@@ -258,96 +255,12 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         form.setFieldValue('specialization_id', undefined);
     };
 
-    useEffect(() => {
-        if (newRequirementRef.current) {
-            newRequirementRef.current.focus();
-            newRequirementRef.current.selectionStart = 0;
-            newRequirementRef.current.selectionEnd = 0;
-        }
-    }, [data.requirement.length]);
-
-    useEffect(() => {
-        if (newResponsibilityRef.current) {
-            newResponsibilityRef.current.focus();
-            newResponsibilityRef.current.selectionStart = 0;
-            newResponsibilityRef.current.selectionEnd = 0;
-        }
-    }, [data.responsibility.length]);
-
-    useEffect(() => {
-        if (newConditionRef.current) {
-            newConditionRef.current.focus();
-            newConditionRef.current.selectionStart = 0;
-            newConditionRef.current.selectionEnd = 0;
-        }
-    }, [data.condition.length]);
-
-    const addRequirementAtIndex = (index, newText) => {
-        setData((prevData) => ({
-            ...prevData,
-            requirement: [
-                ...prevData.requirement.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, requirement: newText },
-                ...prevData.requirement.slice(index + 1)
-            ]
-        }));
-    };
-
-    const addResponsibilityAtIndex = (index, newText) => {
-        setData((prevData) => ({
-            ...prevData,
-            responsibility: [
-                ...prevData.responsibility.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, responsibility: newText },
-                ...prevData.responsibility.slice(index + 1)
-            ]
-        }));
-    };
-
-    const addConditionAtIndex = (index, newText) => {
-        setData((prevData) => ({
-            ...prevData,
-            condition: [
-                ...prevData.condition.slice(0, index + 1),
-                { id: index, announcement_id: prevData.announcement_id || announcement.id, condition: newText },
-                ...prevData.condition.slice(index + 1)
-            ]
-        }));
-    };
-
     const deleteLocation = (index) => {
         const newLocation = [...data.location];
         newLocation.splice(index, 1);
         setData((prevData) => ({
             ...prevData,
             location: newLocation.length > 0 ? newLocation : []
-        }));
-    };
-
-    const deleteRequirement = (index) => {
-        const newRequirements = [...data.requirement];
-        newRequirements.splice(index, 1);
-        setData((prevData) => ({
-            ...prevData,
-            requirement: newRequirements.length > 0 ? newRequirements : []
-        }));
-    };
-
-    const deleteResponsibility = (index) => {
-        const newResponsibilities = [...data.responsibility];
-        newResponsibilities.splice(index, 1);
-        setData((prevData) => ({
-            ...prevData,
-            responsibility: newResponsibilities.length > 0 ? newResponsibilities : []
-        }));
-    };
-
-    const deleteCondition = (index) => {
-        const newConditions = [...data.condition];
-        newConditions.splice(index, 1);
-        setData((prevData) => ({
-            ...prevData,
-            condition: newConditions.length > 0 ? newConditions : []
         }));
     };
 
@@ -376,57 +289,6 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
         scrollToFirstError();
     }, [errors, validationErrors]);
 
-
-    const addRequirement = () => {
-        setData((prevData) => ({
-            ...prevData,
-            requirement: [
-                ...prevData.requirement,
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, requirement: "" }
-            ]
-        }));
-    };
-
-    const addResponsibility = () => {
-        setData((prevData) => ({
-            ...prevData,
-            responsibility: [
-                ...prevData.responsibility,
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, responsibility: "" }
-            ]
-        }));
-    };
-
-    const addCondition = () => {
-        setData((prevData) => ({
-            ...prevData,
-            condition: [
-                ...prevData.condition,
-                { id: null, announcement_id: prevData.announcement_id || announcement.id, condition: "" }
-            ]
-        }));
-    };
-
-    const handleRequirementChange = (index, e) => {
-        const updatedRequirements = [...data.requirement];
-        updatedRequirements[index].requirement = e.target.value;
-        updatedRequirements[index].id = index;
-        setData('requirement', updatedRequirements);
-    };
-
-    const handleResponsibilityChange = (index, e) => {
-        const updatedResponsibilities = [...data.responsibility];
-        updatedResponsibilities[index].responsibility = e.target.value;
-        updatedResponsibilities[index].id = index;
-        setData('responsibility', updatedResponsibilities);
-    };
-
-    const handleConditionChange = (index, e) => {
-        const updatedConditions = [...data.condition];
-        updatedConditions[index].condition = e.target.value;
-        updatedConditions[index].id = index;
-        setData('condition', updatedConditions);
-    };
 
     useEffect(() => {
         if (data.type_ru === 'Заказ') {
@@ -534,7 +396,9 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             }else{
                 errors.phone = t('invalid_phone_number', { ns: 'createAnnouncement' });
             }
-        }else{
+        } else if (useMyPhone) {
+            // Only clear when the owner's own number is used; a valid custom
+            // number must survive a failed (server-rejected) submit.
             setData('phone', '')
         }
 
@@ -615,7 +479,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
             <div className="grid grid-cols-1 md:grid-cols-7 mx-auto p-4">
                 <div className='col-span-5'>
                     <Title level={3} className="">
-                        {isEdit ? t('title_edit', { ns: 'createAnnouncement' }) : t('create_title', { ns: 'createAnnouncement' })}
+                        {t('title_edit', { ns: 'createAnnouncement' })}
                     </Title>
                     <Form form={form} onFinish={handleSubmit} onFinishFailed={scrollToFirstError} scrollToFirstError={{ behavior: 'smooth', block: 'center' }} layout="vertical" initialValues={data}>
                         <Form.Item
@@ -714,8 +578,10 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                         locationError &&
                                         locationError !== t('press_find_for_coordinates', { ns: 'createAnnouncement' });
 
+                                    // Anchor on the wrapper so scrollToFirstError still finds the
+                                    // picker when the error text itself is suppressed above.
                                     return (
-                                        <div key={index} className='mb-4'>
+                                        <div key={index} className='mb-4' data-error-anchor={locationError ? true : undefined}>
                                             <YandexAddressPicker
                                                 value={loc}
                                                 city={data.city}
@@ -723,7 +589,7 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                                 onChange={(next) => handleLocationChange(index, next)}
                                             />
                                             {showLocationError && (
-                                                <div data-error-anchor className='mt-1 text-sm text-red-500'>{locationError}</div>
+                                                <div className='mt-1 text-sm text-red-500'>{locationError}</div>
                                             )}
                                             {data.location.length > 1 && (
                                                 <div className='text-right'>
@@ -797,6 +663,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                         <Form.Item
                             label={t('paymentType', { ns: 'createAnnouncement' })}
                             name="payment_type"
+                            validateStatus={validationErrors.payment_type || errors.payment_type ? 'error' : ''}
+                            help={validationErrors.payment_type || errors.payment_type}
                         >
                             <Select
                                 value={data.payment_type}
@@ -815,14 +683,14 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                     <Form.Item
                                         label={t('cost', { ns: 'createAnnouncement' })}
                                         rules={[{ required: true, message: 'Please enter the exact salary' }]}
+                                        validateStatus={validationErrors.cost || errors.cost ? 'error' : ''}
+                                        help={validationErrors.cost || errors.cost}
                                     >
                                         <CurrencyInput
                                             className='w-full text-sm rounded py-1 mt-[0px] border border-gray-300'
                                             name="cost"
                                             value={data.cost}
                                             onValueChange={(value) => handleSalaryChange(value, 'cost')}
-                                            validateStatus={validationErrors.cost || errors.cost ? 'error' : ''}
-                                            help={validationErrors.cost || errors.cost}
                                         />
                                     </Form.Item>
                                 ) : (
@@ -830,27 +698,27 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                                         <Form.Item
                                             label={t('cost_min', { ns: 'createAnnouncement' })}
                                             rules={[{ required: !data.cost_max && !isExactSalary && !isUndefinedSalary, message: 'Please enter either min or max salary' }]}
+                                            validateStatus={validationErrors.cost_min || errors.cost_min ? 'error' : ''}
+                                            help={validationErrors.cost_min || errors.cost_min}
                                         >
                                             <CurrencyInput
                                                 name="cost_min"
                                                 value={data.cost_min}
                                                 onValueChange={(value) => handleSalaryChange(value, 'cost_min')}
                                                 className='text-sm rounded py-1 mt-[0px] border border-gray-300 w-full'
-                                                validateStatus={validationErrors.cost_min || errors.cost_min ? 'error' : ''}
-                                                help={validationErrors.cost_min || errors.cost_min}
                                             />
                                         </Form.Item>
                                         <Form.Item
                                             label={t('cost_max', { ns: 'createAnnouncement' })}
                                             rules={[{ required: !data.cost_min && !isExactSalary && !isUndefinedSalary, message: 'Please enter either min or max salary' }]}
+                                            validateStatus={validationErrors.cost_max || errors.cost_max ? 'error' : ''}
+                                            help={validationErrors.cost_max || errors.cost_max}
                                         >
                                             <CurrencyInput
                                                 className='text-sm rounded w-full py-1 mt-[0px] border border-gray-300'
                                                 name="cost_max"
                                                 value={data.cost_max}
                                                 onValueChange={(value) => handleSalaryChange(value, 'cost_max')}
-                                                validateStatus={validationErrors.cost_max || errors.cost_max ? 'error' : ''}
-                                                help={validationErrors.cost_max || errors.cost_max}
                                             />
                                         </Form.Item>
                                     </div>
@@ -994,6 +862,8 @@ const UpdateAnnouncement = ({isAdmin, announcement, specializations }) => {
                         </Form.Item>
                         <Form.Item
                             label={t('additional_info', { ns: 'createAnnouncement' })}
+                            help={validationErrors.description || errors.description}
+                            validateStatus={validationErrors.description || errors.description ? 'error' : ''}
                         >
                             <TextArea
                                 name="description"
