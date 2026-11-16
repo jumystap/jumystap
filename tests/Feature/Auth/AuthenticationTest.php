@@ -58,3 +58,24 @@ test('users can logout', function () {
 
     $this->assertGuest();
 });
+
+test('after login an off-site redirect target is ignored', function (string $target) {
+    $user = User::factory()->create();
+
+    $this->from('/login')
+        ->post('/login', [
+            'phone' => $user->phone,
+            'password' => 'password',
+            'redirect' => $target,
+        ])
+        ->assertRedirect('/login');
+
+    $this->assertAuthenticatedAs($user);
+})->with([
+    'protocol-relative' => '//evil.com',
+    'backslash' => '/\\evil.com',
+    'tab stripped by browser' => "/\t/evil.com",
+    'newline stripped by browser' => "/\n/evil.com",
+    'absolute url' => 'https://evil.com',
+    'javascript' => 'javascript:alert(1)',
+]);

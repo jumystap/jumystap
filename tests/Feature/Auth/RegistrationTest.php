@@ -50,3 +50,32 @@ test('a phone can be registered only once', function () {
 
     $this->assertGuest();
 });
+
+test('after registration an off-site redirect target is ignored', function (string $target) {
+    $this->post('/register', [
+        'name' => 'Test User',
+        'phone' => '77071234567',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'role' => 'employee',
+        'redirect' => $target,
+    ])->assertRedirect('/profile');
+
+    $this->assertAuthenticated();
+})->with([
+    'protocol-relative' => '//evil.com',
+    'backslash' => '/\\evil.com',
+    'tab stripped by browser' => "/\t/evil.com",
+    'absolute url' => 'https://evil.com',
+]);
+
+test('after registration the user is sent to the local redirect target', function () {
+    $this->post('/register', [
+        'name' => 'Test User',
+        'phone' => '77071234567',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'role' => 'employee',
+        'redirect' => '/ad/7?connect=true',
+    ])->assertRedirect('/ad/7?connect=true');
+});

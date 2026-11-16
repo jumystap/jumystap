@@ -78,8 +78,8 @@ class UserController extends Controller
                     ])
                     ->withInput();
             } else {
-                $redirectTo = $request->input('redirect');
-                if ($redirectTo && str_starts_with($redirectTo, '/')) {
+                $redirectTo = $this->localRedirectPath($request->input('redirect'));
+                if ($redirectTo) {
                     return redirect($redirectTo);
                 }
 
@@ -144,8 +144,8 @@ class UserController extends Controller
             $user = $this->userService->storeUser($validated);
             Auth::login($user);
 
-            $redirectTo = $request->input('redirect');
-            if ($redirectTo && str_starts_with($redirectTo, '/')) {
+            $redirectTo = $this->localRedirectPath($request->input('redirect'));
+            if ($redirectTo) {
                 return redirect($redirectTo);
             }
 
@@ -257,6 +257,25 @@ class UserController extends Controller
                 'company' => Roles::COMPANY->value,
             ],
         ]);
+    }
+
+    /**
+     * Цель редиректа после входа/регистрации — только путь на этом сайте, иначе это открытый
+     * редирект на фишинговую страницу сразу после логина. Одного «начинается с /» мало:
+     * `//host` и `/\host` браузер считает внешним адресом, а табуляции и переводы строк
+     * вырезает (`/<TAB>/host` превращается в `//host`).
+     */
+    private function localRedirectPath(mixed $target): ?string
+    {
+        if (! is_string($target) || ! str_starts_with($target, '/')) {
+            return null;
+        }
+
+        if (preg_match('#^/[/\\\\]#', $target) || preg_match('/[\\\\\x00-\x1F\x7F]/', $target)) {
+            return null;
+        }
+
+        return $target;
     }
 
     private function canAuthenticatedUserContactEmployee(): bool
