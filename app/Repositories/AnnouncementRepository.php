@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use App\Models\Specialization;
 use App\Models\Favorite;
 use App\Models\Response;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class AnnouncementRepository
         'ежемесячная оплата' => 'Ежемесячная оплата',
     ];
 
-    public function getAllActiveAnnouncements(array $filters = null)
+    public function getAllActiveAnnouncements(?array $filters = null)
     {
         $query = Announcement::query()
             ->recentActive()
@@ -208,7 +209,7 @@ class AnnouncementRepository
             ->active()
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
-            ->with('user')
+            ->with('user:id,name')
             ->whereIn('id', $ids)
             ->paginate(10);
     }
@@ -271,6 +272,51 @@ class AnnouncementRepository
         return Announcement::query()->create($data);
     }
 
+    public function getActiveAnnouncementForResponse(int $announcementId): Announcement
+    {
+        return Announcement::query()
+            ->active()
+            ->with('user:id,phone')
+            ->findOrFail($announcementId);
+    }
+
+    public function countResponsesSince(int $employeeId, CarbonInterface $since): int
+    {
+        return Response::query()
+            ->where('employee_id', $employeeId)
+            ->whereNotNull('announcement_id')
+            ->where('created_at', '>', $since)
+            ->count();
+    }
+
+    public function hasResponseSince(int $employeeId, int $announcementId, CarbonInterface $since): bool
+    {
+        return Response::query()
+            ->where('employee_id', $employeeId)
+            ->where('announcement_id', $announcementId)
+            ->where('created_at', '>', $since)
+            ->exists();
+    }
+
+    public function oldestResponseSince(int $employeeId, CarbonInterface $since): ?CarbonInterface
+    {
+        $createdAt = Response::query()
+            ->where('employee_id', $employeeId)
+            ->whereNotNull('announcement_id')
+            ->where('created_at', '>', $since)
+            ->min('created_at');
+
+        return $createdAt ? now()->parse($createdAt) : null;
+    }
+
+    public function createResponse(int $employeeId, int $announcementId): Response
+    {
+        return Response::query()->create([
+            'employee_id' => $employeeId,
+            'announcement_id' => $announcementId,
+        ]);
+    }
+
     public function updateAnnouncement($id, array $data): bool
     {
         $announcement = Announcement::findOrFail($id);
@@ -280,7 +326,8 @@ class AnnouncementRepository
     public function deleteAnnouncement($id): bool
     {
         $announcement = Announcement::findOrFail($id);
-        Response::where('announcement_id', $id)->delete();
+
+        // Отклики сохраняются: удаление вакансии не должно освобождать суточный лимит.
         return $announcement->delete();
     }
 

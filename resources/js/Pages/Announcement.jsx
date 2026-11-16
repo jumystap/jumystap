@@ -14,6 +14,7 @@ import { MdIosShare } from "react-icons/md";
 import ShareButtons from "@/Components/ShareButtons";
 import YandexMapView from "@/Components/Map/YandexMapView";
 import { isMappable, isRemoteCity, stripCityPrefix } from "@/utils/yandexMaps";
+import { consumePendingConnect, rememberPendingConnect, respondToAnnouncement } from "@/utils/announcementConnect";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -60,7 +61,7 @@ const renderBulletPoints = (items, field) =>
             ))
     );
 
-export default function Announcement({ auth, announcement, more_announcement, urgent_announcement, top_announcement}) {
+export default function Announcement({ auth, announcement, canRespond, more_announcement, urgent_announcement, top_announcement}) {
     const { t, i18n } = useTranslation('announcements');
 
     const dictionaryLabel = (value) => {
@@ -119,10 +120,15 @@ export default function Announcement({ auth, announcement, more_announcement, ur
     const { post, delete: destroy } = useForm();
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('connect') === 'true' && auth.user) {
-            window.location.href = `/connect/${auth.user.id}/${announcement.id}`;
-        }
+        // setTimeout: в Chrome на iOS Inertia сама пишет history через setTimeout
+        // и без задержки вернула бы в адрес connect=true.
+        const timer = setTimeout(() => {
+            if (consumePendingConnect(announcement.id) && auth.user && canRespond) {
+                respondToAnnouncement(announcement.id);
+            }
+        });
+
+        return () => clearTimeout(timer);
     }, []);
     const [isFavorite, setIsFavorite] = useState(announcement.is_favorite);
     const [showFullText, setShowFullText] = useState(false);
@@ -266,10 +272,12 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
                                     <>
-                                        <a href={`/connect/${auth.user.id}/${announcement.id}`}
-                                           className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
-                                            <span className='font-bold'>{t('contact')}</span>
-                                        </a>
+                                        {canRespond && (
+                                            <button type="button" onClick={() => respondToAnnouncement(announcement.id)}
+                                               className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
+                                                <span className='font-bold'>{t('contact')}</span>
+                                            </button>
+                                        )}
                                         {auth.user.email === 'admin@example.com' && (
                                             <a href={`/announcements/update/${announcement.id}`}
                                                 className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
@@ -280,6 +288,7 @@ export default function Announcement({ auth, announcement, more_announcement, ur
                                 ) : (
                                     <Link
                                         href={`/login?redirect=${encodeURIComponent(`/announcement/${announcement.id}?connect=true`)}`}
+                                        onClick={() => rememberPendingConnect(announcement.id)}
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
                                     </Link>

@@ -57,6 +57,17 @@ class Announcement extends Model
         'phone',
     ];
 
+    /**
+     * Номер работодателя не сериализуется в Inertia-props/JSON: иначе его собирают
+     * с ленты и страниц вакансий в обход суточного лимита /connect. Форма
+     * редактирования открывает его явно через makeVisible('phone').
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'phone',
+    ];
+
     protected $casts = [
         'status' => AnnouncementStatus::class,
         'archive_reason' => AnnouncementArchiveReason::class,

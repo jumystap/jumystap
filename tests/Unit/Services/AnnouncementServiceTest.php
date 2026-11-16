@@ -4,6 +4,8 @@ namespace Tests\Unit\Services;
 
 use App\Models\Announcement;
 use App\Repositories\AnnouncementRepository;
+use App\Repositories\ResumeRepository;
+use App\Repositories\UserRepository;
 use App\Services\AnnouncementService;
 use Mockery;
 use Tests\TestCase;
@@ -16,7 +18,7 @@ class AnnouncementServiceTest extends TestCase
         $repository = Mockery::mock(AnnouncementRepository::class);
         $repository->shouldReceive('getAllActiveAnnouncements')->once()->andReturn(collect(['announcement1', 'announcement2']));
 
-        $service = new AnnouncementService($repository);
+        $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $announcements = $service->getAllActiveAnnouncements();
 
         $this->assertCount(2, $announcements);
@@ -28,7 +30,7 @@ class AnnouncementServiceTest extends TestCase
         $repository = Mockery::mock(AnnouncementRepository::class);
         $repository->shouldReceive('getAnnouncementById')->with(1)->once()->andReturn(new Announcement(['id' => 1]));
 
-        $service = new AnnouncementService($repository);
+        $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $announcement = $service->getAnnouncement(1);
 
         $this->assertInstanceOf(Announcement::class, $announcement);
@@ -52,7 +54,7 @@ class AnnouncementServiceTest extends TestCase
         $repository = Mockery::mock(AnnouncementRepository::class);
         $repository->shouldReceive('createAnnouncement')->with($data)->once()->andReturn(new Announcement($data));
 
-        $service = new AnnouncementService($repository);
+        $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $announcement = $service->createAnnouncement($data);
 
         $this->assertInstanceOf(Announcement::class, $announcement);
@@ -71,7 +73,7 @@ class AnnouncementServiceTest extends TestCase
         $repository = Mockery::mock(AnnouncementRepository::class);
         $repository->shouldReceive('updateAnnouncement')->with(1, $data)->once()->andReturn(true);
 
-        $service = new AnnouncementService($repository);
+        $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $result = $service->updateAnnouncement(1, $data);
 
         $this->assertTrue($result);
@@ -83,7 +85,7 @@ class AnnouncementServiceTest extends TestCase
         $repository = Mockery::mock(AnnouncementRepository::class);
         $repository->shouldReceive('deleteAnnouncement')->with(1)->once()->andReturn(true);
 
-        $service = new AnnouncementService($repository);
+        $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $result = $service->deleteAnnouncement(1);
 
         $this->assertTrue($result);

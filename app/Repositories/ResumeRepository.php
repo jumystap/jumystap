@@ -37,4 +37,16 @@ class ResumeRepository
             ->paginate($perPage)
             ->withQueryString();
     }
+
+    // Тот же порядок, что у работодателя в UserController::latestActiveResumeIds:
+    // иначе при одинаковом created_at ссылка в WhatsApp и страница откликов разойдутся.
+    public function findLatestActiveForUser(int $userId): ?UserResume
+    {
+        return UserResume::query()
+            ->where('user_id', $userId)
+            ->active()
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->first();
+    }
 }

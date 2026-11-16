@@ -16,11 +16,9 @@ use App\Models\AnnouncementRequirement;
 use App\Models\AnnouncementResponsibility;
 use App\Models\City;
 use App\Models\Industry;
-use App\Models\Response;
 use App\Models\SpecializationCategory;
 use App\Models\TelegramAdmin;
 use App\Models\User;
-use App\Models\UserResume;
 use App\Services\AnnouncementService;
 use DefStudio\Telegraph\Facades\Telegraph;
 use DefStudio\Telegraph\Keyboard\Button;
@@ -32,8 +30,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class AnnouncementController extends Controller
 {
@@ -139,6 +138,8 @@ class AnnouncementController extends Controller
 
             return Inertia::render('Announcement', [
                 'announcement' => $announcement,
+                // Неактивную вакансию видит только админ; /connect для неё отдаёт 404.
+                'canRespond' => $announcement->status === AnnouncementStatus::ACTIVE,
                 'top_announcement' => $top_announcement,
                 'urgent_announcement' => $urgent_announcement,
                 'more_announcement' => $more_announcement,
@@ -239,6 +240,9 @@ class AnnouncementController extends Controller
         $user = Auth::user();
 
         if ($user && ($user->id == $announcement->user_id || $user->email == 'admin@example.com')) {
+            // Владельцу номер нужен для префилла формы; по умолчанию он скрыт в модели.
+            $announcement->makeVisible('phone');
+
             return Inertia::render('Company/UpdateAnnouncement', [
                 'isAdmin' => $user->role_id === Roles::ADMIN->value,
                 'announcement' => $announcement,
@@ -467,42 +471,22 @@ class AnnouncementController extends Controller
         }
     }
 
-    public function response($employee_id, $announcement_id): mixed
+    public function response(Request $request, int $announcement_id): SymfonyResponse
     {
-        Response::create([
-            'announcement_id' => $announcement_id,
-            'employee_id' => $employee_id,
-        ]);
+        try {
+            $url = $this->announcementService->respondToAnnouncement((int) $request->user()->id, $announcement_id);
+        } catch (TooManyRequestsHttpException $e) {
+            // Из интерфейса (Inertia) — обычная ошибка формы, её показывает уведомление;
+            // иначе страница 429 открылась бы во всплывающем окне Inertia.
+            if ($request->inertia()) {
+                return back()->withErrors(['connect' => $e->getMessage()]);
+            }
 
-        $announcement = Announcement::findOrFail($announcement_id);
-        $employer = User::find($announcement->user_id);
-
-        // wa.me принимает только цифры, без "+", пробелов и скобок.
-        $phone = preg_replace('/\D+/', '', (string) ($announcement->phone ?? $employer?->phone));
-
-        // Последнее опубликованное резюме соискателя. Неопубликованное
-        // (на модерации/отклонённое) работодатель по ссылке не увидит,
-        // поэтому такое резюме не прикрепляем.
-        $resume = UserResume::query()
-            ->where('user_id', $employee_id)
-            ->active()
-            ->latest()
-            ->first();
-
-        $text = "Здравствуйте! Откликаюсь на позицию «{$announcement->title}».";
-
-        if ($resume) {
-            // Подписанная ссылка: не залогиненный работодатель откроет резюме
-            // и увидит контакты кандидата (обычная публичная ссылка их скрывает).
-            $text .= "\nМоё резюме: ".URL::temporarySignedRoute(
-                'resumes.show',
-                now()->addDays(30),
-                ['id' => $resume->id]
-            );
+            throw $e;
         }
 
-        $text .= "\n\nПишу с Jumystap.";
-
-        return redirect()->away("https://wa.me/{$phone}?text=".rawurlencode($text));
+        // Inertia::location: для Inertia-запроса — 409 с X-Inertia-Location (клиент сам уйдёт
+        // на внешний wa.me), для обычного запроса — редирект.
+        return Inertia::location($url);
     }
 }

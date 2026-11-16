@@ -7,6 +7,7 @@ import { ru } from 'date-fns/locale';
 import {CiLocationOn} from "react-icons/ci";
 import {MdIosShare} from "react-icons/md";
 import Pagination from "@/Components/Pagination.jsx";
+import { respondToAnnouncement } from "@/utils/announcementConnect";
 import React from "react"; // Import Russian locale
 
 export default function Profile({ auth, user, userProfessions, announcements}) {
@@ -184,12 +185,17 @@ export default function Profile({ auth, user, userProfessions, announcements}) {
                                             </div>
                                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                                 <>
-                                                    <a
-                                                        href={`/connect/${auth.user.id}/${anonce.id}`}
-                                                        onClick={(e) => e.stopPropagation()} // Prevents click propagation to Link
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            // Карточка обёрнута в Link: не даём клику открыть вакансию.
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            respondToAnnouncement(anonce.id);
+                                                        }}
                                                         className='text-blue-500 text-center rounded-lg text-sm text-center items-center md:w-[400px] w-full block border-2 border-blue-500 py-2 px-5 md:px-10'>
                                                         <span className='font-bold'>{t('contact', { ns: 'announcements' })}</span>
-                                                    </a>
+                                                    </button>
                                                     {auth.user.email === 'admin@example.com' && (
                                                         <a
                                                             href={`/announcements/update/${anonce.id}`}

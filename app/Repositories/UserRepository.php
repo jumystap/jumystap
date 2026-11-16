@@ -193,6 +193,11 @@ class UserRepository
         return User::with(['profession', 'portfolio'])->findOrFail($id);
     }
 
+    public function lockUserForUpdate(int $id): void
+    {
+        User::query()->whereKey($id)->lockForUpdate()->firstOrFail();
+    }
+
     public function findUsersByProfessionIds($professionIds, $limit = 6)
     {
         return User::whereIn('id', function ($query) use ($professionIds) {
