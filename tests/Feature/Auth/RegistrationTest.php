@@ -1,19 +1,52 @@
 <?php
 
-test('registration screen can be rendered', function () {
-    $response = $this->get('/register');
+use App\Enums\Roles;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
-    $response->assertStatus(200);
+// Регистрация в проекте — по телефону с ролью (UserController::store); после создания
+// пользователя UserService ищет его сертификаты в Bitrix — в тестах внешний вызов подменён.
+
+beforeEach(function () {
+    Http::fake();
+    // Роль ищется по имени (UserService::storeUser).
+    DB::table('roles')->updateOrInsert(
+        ['id' => Roles::EMPLOYEE->value],
+        ['name' => 'employee', 'name_kz' => 'employee', 'name_ru' => 'employee']
+    );
 });
 
-test('new users can register', function () {
-    $response = $this->post('/register', [
+test('registration screen can be rendered', function () {
+    $this->get('/register')->assertOk();
+});
+
+test('new users can register with a phone and a role', function () {
+    $this->post('/register', [
         'name' => 'Test User',
+        'phone' => '77071234567',
         'email' => 'test@example.com',
         'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+        'role' => 'employee',
+    ])->assertRedirect('/profile');
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $this->assertDatabaseHas('users', [
+        'phone' => '77071234567',
+        'role_id' => Roles::EMPLOYEE->value,
+    ]);
+});
+
+test('a phone can be registered only once', function () {
+    $existing = User::factory()->create();
+
+    $this->post('/register', [
+        'name' => 'Test User',
+        'phone' => $existing->phone,
+        'email' => 'other@example.com',
+        'password' => 'password',
+        'role' => 'employee',
+    ])->assertSessionHasErrors('phone');
+
+    $this->assertGuest();
 });

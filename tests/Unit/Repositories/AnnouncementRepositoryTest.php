@@ -2,7 +2,10 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\Enums\AnnouncementStatus;
+use App\Enums\Roles;
 use App\Models\Announcement;
+use App\Models\User;
 use App\Models\Response;
 use App\Models\Favorite;
 use App\Repositories\AnnouncementRepository;
@@ -17,8 +20,8 @@ class AnnouncementRepositoryTest extends TestCase
     /** @test */
     public function it_can_get_all_active_announcements()
     {
-        Announcement::factory()->create(['active' => 1]);
-        Announcement::factory()->create(['active' => 0]);
+        Announcement::factory()->create();
+        Announcement::factory()->status(AnnouncementStatus::ON_MODERATION)->create();
 
         $repository = new AnnouncementRepository();
 
@@ -30,7 +33,7 @@ class AnnouncementRepositoryTest extends TestCase
     /** @test */
     public function it_can_get_announcement_by_id()
     {
-        $announcement = Announcement::factory()->create(['active' => 1]);
+        $announcement = Announcement::factory()->create();
         $repository = new AnnouncementRepository();
 
         $retrievedAnnouncement = $repository->getAnnouncementById($announcement->id);
@@ -49,8 +52,9 @@ class AnnouncementRepositoryTest extends TestCase
             'description' => 'This is a test description',
             'payment_type' => 'Fixed',
             'cost' => 100,
-            'user_id' => 1,
-            'active' => 1,
+            'user_id' => User::factory()->role(Roles::EMPLOYER)->create()->id,
+            'specialization_id' => 1,
+            'status' => AnnouncementStatus::ACTIVE->value,
         ];
 
         $repository = new AnnouncementRepository();
@@ -82,12 +86,16 @@ class AnnouncementRepositoryTest extends TestCase
     public function it_can_delete_announcement()
     {
         $announcement = Announcement::factory()->create();
+        $employee = User::factory()->create();
+        Response::query()->create(['employee_id' => $employee->id, 'announcement_id' => $announcement->id]);
         $repository = new AnnouncementRepository();
 
         $result = $repository->deleteAnnouncement($announcement->id);
 
         $this->assertTrue($result);
-        $this->assertDatabaseMissing('announcements', ['id' => $announcement->id]);
+        // Вакансия удаляется мягко, а отклики остаются: иначе удаление освобождало бы суточный лимит.
+        $this->assertSoftDeleted('announcements', ['id' => $announcement->id]);
+        $this->assertDatabaseHas('responses', ['announcement_id' => $announcement->id]);
     }
 }
 

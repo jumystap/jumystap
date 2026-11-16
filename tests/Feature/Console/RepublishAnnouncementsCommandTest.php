@@ -3,7 +3,9 @@
 namespace Tests\Feature\Console;
 
 use App\Enums\AnnouncementStatus;
+use App\Enums\Roles;
 use App\Models\Announcement;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -18,22 +20,7 @@ class RepublishAnnouncementsCommandTest extends TestCase
     {
         parent::setUp();
 
-        // roles-таблица без timestamps
-        $roleId = DB::table('roles')->insertGetId([
-            'name_kz' => 'Жұмыс беруші',
-            'name_ru' => 'Работодатель',
-        ]);
-
-        // UserFactory в проекте сломан — создаём пользователя напрямую с обязательными полями
-        $this->userId = DB::table('users')->insertGetId([
-            'name' => 'Test Employer',
-            'role_id' => $roleId,
-            'phone' => '+77000000001',
-            'email' => 'employer@test.kz',
-            'password' => bcrypt('password'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->userId = User::factory()->role(Roles::EMPLOYER)->create()->id;
     }
 
     /** @test */
@@ -98,6 +85,7 @@ class RepublishAnnouncementsCommandTest extends TestCase
             'is_urgent' => false,
             'is_permanent' => false,
             'status' => AnnouncementStatus::ACTIVE->value,
+            'specialization_id' => 1,
         ], $attributes));
 
         DB::table('announcements')->where('id', $announcement->id)->update([

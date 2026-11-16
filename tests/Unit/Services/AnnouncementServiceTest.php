@@ -28,7 +28,7 @@ class AnnouncementServiceTest extends TestCase
     public function it_can_get_announcement_by_id()
     {
         $repository = Mockery::mock(AnnouncementRepository::class);
-        $repository->shouldReceive('getAnnouncementById')->with(1)->once()->andReturn(new Announcement(['id' => 1]));
+        $repository->shouldReceive('getAnnouncementById')->with(1)->once()->andReturn((new Announcement)->forceFill(['id' => 1]));
 
         $service = new AnnouncementService($repository, Mockery::mock(UserRepository::class), Mockery::mock(ResumeRepository::class));
         $announcement = $service->getAnnouncement(1);

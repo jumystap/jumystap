@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Repositories;
 
+use App\Enums\Roles;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,19 +13,29 @@ class UserRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    // Профессия ссылается на группу (FK), а репозиторий джойнит professions — нужна настоящая запись.
+    private function makeProfession(): int
+    {
+        $groupId = DB::table('group_professions')->insertGetId(['name' => 'Группа']);
+
+        return DB::table('professions')->insertGetId([
+            'group_id' => $groupId, 'name_ru' => 'Бариста', 'name_kz' => 'Бариста',
+            'release_count' => 0, 'icon_url' => '', 'video_url' => '', 'type' => 'work',
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
+
     /** @test */
     public function it_can_get_users_by_role_name()
     {
-        // Create users with different roles
-        $user1 = User::factory()->create();
-        $user1->role()->create(['name' => 'employee']);
-        $user2 = User::factory()->create();
-        $user2->role()->create(['name' => 'employer']);
+        $employee = User::factory()->role(Roles::EMPLOYEE)->create();
+        User::factory()->role(Roles::EMPLOYER)->create();
 
         $repository = new UserRepository();
         $users = $repository->getUsersByRoleName('employee', 10);
 
         $this->assertCount(1, $users);
+        $this->assertEquals($employee->id, $users->first()->id);
         $this->assertEquals('employee', $users->first()->role->name);
     }
 
@@ -34,7 +45,7 @@ class UserRepositoryTest extends TestCase
         $user = User::factory()->create();
         DB::table('user_professions')->insert([
             'user_id' => $user->id,
-            'profession_id' => 1,
+            'profession_id' => $this->makeProfession(),
             'certificate_number' => '12345'
         ]);
 
@@ -52,7 +63,8 @@ class UserRepositoryTest extends TestCase
             'name' => 'John Doe',
             'email' => 'johndoe@example.com',
             'password' => 'password',
-            'phone' => '123456789'
+            'phone' => '123456789',
+            'role_id' => User::factory()->role(Roles::EMPLOYEE)->make()->role_id,
         ];
 
         $repository = new UserRepository();
@@ -80,8 +92,9 @@ class UserRepositoryTest extends TestCase
         $user = User::factory()->create();
         $repository = new UserRepository();
 
-        $repository->addUserProfession($user->id, 1, '12345');
-        $this->assertDatabaseHas('user_professions', ['user_id' => $user->id, 'profession_id' => 1]);
+        $professionId = $this->makeProfession();
+        $repository->addUserProfession($user->id, $professionId, '12345');
+        $this->assertDatabaseHas('user_professions', ['user_id' => $user->id, 'profession_id' => $professionId]);
     }
 
     /** @test */
@@ -90,7 +103,8 @@ class UserRepositoryTest extends TestCase
         $user = User::factory()->create();
         DB::table('user_professions')->insert([
             'user_id' => $user->id,
-            'profession_id' => 1
+            'profession_id' => $this->makeProfession(),
+            'certificate_number' => '12345',
         ]);
 
         $repository = new UserRepository();
@@ -103,13 +117,15 @@ class UserRepositoryTest extends TestCase
     public function it_can_find_users_by_profession_ids()
     {
         $user = User::factory()->create();
+        $professionId = $this->makeProfession();
         DB::table('user_professions')->insert([
             'user_id' => $user->id,
-            'profession_id' => 1
+            'profession_id' => $professionId,
+            'certificate_number' => '12345',
         ]);
 
         $repository = new UserRepository();
-        $users = $repository->findUsersByProfessionIds([1]);
+        $users = $repository->findUsersByProfessionIds([$professionId]);
 
         $this->assertCount(1, $users);
         $this->assertEquals($user->id, $users->first()->id);

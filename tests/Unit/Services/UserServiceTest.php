@@ -2,22 +2,30 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enums\Roles;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\UserService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
 use Tests\TestCase;
 
 class UserServiceTest extends TestCase
 {
+    // storeUser ищет роль по имени прямо в БД.
+    use RefreshDatabase;
+
     /** @test */
     public function it_can_get_all_employees()
     {
         $userRepository = Mockery::mock(UserRepository::class);
         $userRepository->shouldReceive('getUsersByRoleName')
-            ->with('employee', 20)
+            ->with('employee', 10, [])
             ->once()
             ->andReturn(['employee1', 'employee2']);
 
@@ -38,8 +46,19 @@ class UserServiceTest extends TestCase
             'role' => 'employee',
         ];
 
+        DB::table('roles')->updateOrInsert(
+            ['id' => Roles::EMPLOYEE->value],
+            ['name' => 'employee', 'name_kz' => 'employee', 'name_ru' => 'employee']
+        );
+        // После создания сервис ищет сертификаты в Bitrix — внешний вызов подменён.
+        Http::fake();
+
         $userRepository = Mockery::mock(UserRepository::class);
-        $userRepository->shouldReceive('createUser')->once()->andReturn(new User(['id' => 1]));
+        $userRepository->shouldReceive('createUser')
+            ->once()
+            ->with(Mockery::on(fn (array $attributes) => $attributes['role_id'] === Roles::EMPLOYEE->value
+                && Hash::check('password', $attributes['password'])))
+            ->andReturn((new User)->forceFill(['id' => 1, 'phone' => '77001234567']));
 
         $service = new UserService($userRepository);
         $user = $service->storeUser($data);
@@ -50,17 +69,17 @@ class UserServiceTest extends TestCase
     /** @test */
     public function it_can_update_a_user()
     {
-        $user = new User(['id' => 1, 'name' => 'John Doe']);
+        $user = (new User)->forceFill(['id' => 1, 'name' => 'John Doe']);
 
+        // Сохраняет репозиторий; пустой пароль не должен затирать текущий.
         $userRepository = Mockery::mock(UserRepository::class);
-        $userRepository->shouldReceive('updateUser')->once()->andReturn(true);
+        $userRepository->shouldReceive('updateUser')->once()->with($user, ['name' => 'Updated Name'])->andReturn(true);
 
         $service = new UserService($userRepository);
 
-        $updatedData = ['name' => 'Updated Name'];
-        $updatedUser = $service->updateUser($user, $updatedData);
+        $updatedUser = $service->updateUser($user, ['name' => 'Updated Name', 'password' => '']);
 
-        $this->assertEquals('Updated Name', $updatedUser->name);
+        $this->assertSame($user, $updatedUser);
     }
 
     /** @test */
@@ -83,19 +102,26 @@ class UserServiceTest extends TestCase
     /** @test */
     public function it_can_store_an_avatar_and_optimize_image()
     {
-        $file = Mockery::mock(\Illuminate\Http\UploadedFile::class);
-        $file->shouldReceive('store')->once()->andReturn('avatars/avatar.png');
-        $file->shouldReceive('getClientOriginalExtension')->andReturn('png');
+        // storeAvatar защищённый — проверяем через публичный updateUser.
+        Storage::fake('public');
+        Storage::disk('public')->put('avatars/old.png', 'old');
+        $user = (new User)->forceFill(['id' => 1, 'image_url' => 'avatars/old.png']);
 
-        Storage::shouldReceive('disk')->with('public')->andReturnSelf();
-        Storage::shouldReceive('path')->once()->andReturn('/path/to/avatar.png');
-        Storage::shouldReceive('put')->once();
-        Storage::shouldReceive('delete')->once();
+        $userRepository = Mockery::mock(UserRepository::class);
+        $userRepository->shouldReceive('updateUser')
+            ->once()
+            ->with($user, Mockery::on(fn (array $attributes) => str_starts_with($attributes['image_url'], 'avatars/')))
+            ->andReturnUsing(function ($user, array $attributes) {
+                Storage::disk('public')->assertExists($attributes['image_url']);
 
-        $service = new UserService(Mockery::mock(UserRepository::class));
-        $path = $service->storeAvatar($file);
+                return true;
+            });
 
-        $this->assertEquals('avatars/avatar.png', $path);
+        $service = new UserService($userRepository);
+        $service->updateUser($user, ['avatar' => UploadedFile::fake()->image('avatar.png')]);
+
+        // Старый аватар удаляется.
+        Storage::disk('public')->assertMissing('avatars/old.png');
     }
 
     /** @test */

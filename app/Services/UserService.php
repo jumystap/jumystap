@@ -35,7 +35,8 @@ class UserService
 
     public function storeUser(array $validatedData)
     {
-        if(!is_null($validatedData['date_of_birth'])){
+        // Поле необязательное: без него в запросе ключа нет вовсе, а не null.
+        if (! is_null($validatedData['date_of_birth'] ?? null)) {
             $dateOfBirth = Carbon::parse($validatedData['date_of_birth']);
             $validatedData['date_of_birth'] = $dateOfBirth->format('Y-m-d');
             $validatedData['age'] = $dateOfBirth->age;

@@ -50,9 +50,8 @@ function something()
 function makeUser(int $roleId): \App\Models\User
 {
     // The custom users table requires a role_id that references roles.id,
-    // so make sure the role exists before creating the user. The default
-    // UserFactory targets the stock Laravel schema (email_verified_at) which
-    // this project does not use, so build the user directly instead.
+    // so make sure the role exists before creating the user. Equivalent to
+    // User::factory()->role(...)->create(), kept for the existing tests.
     \Illuminate\Support\Facades\DB::table('roles')->updateOrInsert(
         ['id' => $roleId],
         ['name' => 'role_' . $roleId, 'name_kz' => 'role_' . $roleId, 'name_ru' => 'role_' . $roleId]

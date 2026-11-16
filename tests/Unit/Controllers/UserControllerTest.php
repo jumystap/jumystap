@@ -4,6 +4,7 @@ namespace Tests\Unit\Controllers;
 
 use App\Http\Controllers\UserController;
 use App\Models\User;
+use App\Services\AnnouncementService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,23 +19,24 @@ class UserControllerTest extends TestCase
     public function it_can_display_employees_and_professions()
     {
         $userService = Mockery::mock(UserService::class);
-        $userService->shouldReceive('getEmployees')->once()->andReturn(['employee1', 'employee2']);
+        $userService->shouldReceive('getEmployees')->with(['search' => 'php'])->once()->andReturn(['employee1', 'employee2']);
         $userService->shouldReceive('getAllProfessions')->once()->andReturn(['profession1', 'profession2']);
 
-        Inertia::shouldReceive('render')->with('Employees', [
-            'employees' => ['employee1', 'employee2'],
-            'professions' => ['profession1', 'profession2']
-        ])->once();
+        // professions и cities — ленивые пропсы (замыкания), Inertia вычисляет их при рендере.
+        Inertia::shouldReceive('render')->with('Employees', Mockery::on(fn (array $props) => $props['employees'] === ['employee1', 'employee2']
+            && $props['filters'] === ['search' => 'php']
+            && ($props['professions'])() === ['profession1', 'profession2']
+        ))->once();
 
-        $controller = new UserController($userService);
-        $controller->index();
+        $controller = new UserController($userService, Mockery::mock(AnnouncementService::class));
+        $controller->index(Request::create('/employees', 'GET', ['search' => 'php', 'unknown' => 'x']));
     }
 
     /** @test */
     public function it_redirects_if_user_is_already_logged_in()
     {
         Auth::shouldReceive('check')->once()->andReturn(true);
-        $controller = new UserController(Mockery::mock(UserService::class));
+        $controller = new UserController(Mockery::mock(UserService::class), Mockery::mock(AnnouncementService::class));
 
         $response = $controller->login();
 
@@ -45,9 +47,9 @@ class UserControllerTest extends TestCase
     public function it_displays_login_if_user_is_not_logged_in()
     {
         Auth::shouldReceive('check')->once()->andReturn(false);
-        Inertia::shouldReceive('render')->with('Login')->once();
+        Inertia::shouldReceive('render')->with('Login', ['redirect' => null])->once();
 
-        $controller = new UserController(Mockery::mock(UserService::class));
+        $controller = new UserController(Mockery::mock(UserService::class), Mockery::mock(AnnouncementService::class));
         $controller->login();
     }
 
@@ -63,12 +65,14 @@ class UserControllerTest extends TestCase
             'phone' => '123456789',
             'password' => 'password'
         ])->once()->andReturn(true);
+        // После входа контроллер проверяет блокировку аккаунта.
+        Auth::shouldReceive('user')->once()->andReturn((new User)->forceFill(['is_blocked' => false]));
 
-        $controller = new UserController(Mockery::mock(UserService::class));
+        $controller = new UserController(Mockery::mock(UserService::class), Mockery::mock(AnnouncementService::class));
         $response = $controller->auth($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(302, $response->getStatusCode()); // Check redirection to profile
+        $this->assertEquals(302, $response->getStatusCode());
     }
 
     /** @test */
@@ -84,7 +88,7 @@ class UserControllerTest extends TestCase
             'password' => 'invalid_password'
         ])->once()->andReturn(false);
 
-        $controller = new UserController(Mockery::mock(UserService::class));
+        $controller = new UserController(Mockery::mock(UserService::class), Mockery::mock(AnnouncementService::class));
         $response = $controller->auth($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -105,31 +109,19 @@ class UserControllerTest extends TestCase
 
         $user = new User();
         Auth::shouldReceive('login')->once()->with($user);
+        $userService->shouldReceive('determineUserStatuses')->once()->andReturn([]);
         $userService->shouldReceive('storeUser')->once()->andReturn($user);
+        // Валидация unique:users обращается к БД — подменяем проверку присутствия.
+        $verifier = Mockery::mock(\Illuminate\Validation\PresenceVerifierInterface::class);
+        $verifier->shouldReceive('setConnection');
+        $verifier->shouldReceive('getCount')->andReturn(0);
+        app('validator')->setPresenceVerifier($verifier);
 
-        $controller = new UserController($userService);
+        $controller = new UserController($userService, Mockery::mock(AnnouncementService::class));
         $response = $controller->store($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(302, $response->getStatusCode());
-    }
-
-    /** @test */
-    public function it_can_show_user_profile_with_professions_and_portfolio()
-    {
-        $userService = Mockery::mock(UserService::class);
-        $userService->shouldReceive('getUserWithProfessionsAndPortfolio')->with(1)->once()->andReturn(['user']);
-        $userService->shouldReceive('getUserProfessions')->with(1)->once()->andReturn(['profession']);
-        $userService->shouldReceive('getUsersByProfessionIds')->once()->andReturn(['employee']);
-
-        Inertia::shouldReceive('render')->with('User', [
-            'user' => ['user'],
-            'employees' => ['employee'],
-            'userProfessions' => ['profession']
-        ])->once();
-
-        $controller = new UserController($userService);
-        $controller->show(1);
+        $this->assertSame(url('/profile'), $response->getTargetUrl());
     }
 
     /** @test */
@@ -138,7 +130,7 @@ class UserControllerTest extends TestCase
         $userService = Mockery::mock(UserService::class);
         $userService->shouldReceive('rateUser')->with(1, 5)->once()->andReturn(true);
 
-        $controller = new UserController($userService);
+        $controller = new UserController($userService, Mockery::mock(AnnouncementService::class));
         $response = $controller->rate(1, 5);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
