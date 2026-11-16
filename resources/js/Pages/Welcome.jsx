@@ -195,7 +195,7 @@ export default function Welcome({
       const locale = lng === "kz" ? "kk" : lng;
 
       document.querySelector('meta[name="locale"]')?.setAttribute("content", locale);
-      document.cookie = `locale=${locale}; path=/; SameSite=Lax`;
+      document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
       window.axios.defaults.headers.common["X-Locale"] = locale;
 
       router.get(window.location.pathname, {}, {
