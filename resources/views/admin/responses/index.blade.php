@@ -82,15 +82,18 @@
                                 @foreach($responses as $response)
                                     <tr>
                                         <td>{{ $response->id }}</td>
-                                        <td>{{ $response->user->name }}</td>
+                                        <td>{{ $response->user?->name ?? '—' }}</td>
                                         <td>
-                                            {{ $response->announcement->title }}
-                                            <span class="badge badge-{{ $response->announcement->status->getClass() }}">
-                                            {{ $response->announcement->status->getLabel() }}
-                                            </span>
+                                            @if($response->announcement)
+                                                {{ $response->announcement->title }}
+                                                <span class="badge badge-{{ $response->announcement->status?->getClass() }}">
+                                                    {{ $response->announcement->status?->getLabel() ?? '—' }}
+                                                </span>
+                                            @else
+                                                —
+                                            @endif
                                         </td>
-                                        </td>
-                                        <td>{{ $response->announcement->user->name }}</td>
+                                        <td>{{ $response->announcement?->user?->name ?? '—' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($response->created_at)->format('d.m.Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
