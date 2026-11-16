@@ -27,7 +27,8 @@ Route::prefix('admin')->middleware(AdminMiddleware::class)->group(function () {
     Route::get('/employers', [AdminController::class, 'employers'])->name('admin.employers');
     Route::get('/companies', [AdminController::class, 'componies'])->name('admin.companies');
     Route::get('/certificates', [AdminController::class, 'certificates'])->name('admin.certificates');
-    Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    // GET-выход старого React-админа (AdminLayout.jsx ссылается по URL); имя admin.logout занято POST-маршрутом ниже.
+    Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout.legacy');
 });
 
 // Authentication Routes...

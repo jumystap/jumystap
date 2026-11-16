@@ -31,8 +31,9 @@ if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     php artisan migrate --force
     php artisan storage:link || true
     php artisan config:cache || true
-    # route:cache requires globally-unique route names; the app currently has
-    # duplicate names, so keep this non-fatal to avoid crash-looping the container.
+    # route:cache requires globally-unique route names. Kept non-fatal so a future
+    # duplicate degrades to uncached routes instead of crash-looping the container
+    # after migrations; duplicates are caught by tests/Feature/RouteNamesTest.php.
     php artisan route:cache || true
     php artisan view:cache || true
 fi

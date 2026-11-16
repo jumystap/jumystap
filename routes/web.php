@@ -76,11 +76,11 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::get('/user/{id}', [UserController::class, 'show'])->name('user');
 
 Route::prefix('resumes')->name('resumes.')->group(function () {
-    Route::post('send', [ResumeController::class, 'create'])->middleware('auth');
-    Route::get('create', [UserResumeController::class, 'create'])->middleware('auth');
-    Route::post('create', [UserResumeController::class, 'store'])->middleware('auth');
-    Route::get('update/{id}', [UserResumeController::class, 'edit'])->middleware('auth');
-    Route::put('{resume}', [UserResumeController::class, 'update'])->middleware('auth');
+    Route::post('send', [ResumeController::class, 'create'])->name('send')->middleware('auth');
+    Route::get('create', [UserResumeController::class, 'create'])->name('create')->middleware('auth');
+    Route::post('create', [UserResumeController::class, 'store'])->name('store')->middleware('auth');
+    Route::get('update/{id}', [UserResumeController::class, 'edit'])->name('edit')->middleware('auth');
+    Route::put('{resume}', [UserResumeController::class, 'update'])->name('update')->middleware('auth');
     Route::get('{id}/share-link', [UserResumeController::class, 'shareLink'])->name('share-link')->middleware('auth');
     Route::get('download/{id}', [UserResumeController::class, 'download'])->name('download');
     Route::get('{id}', [UserResumeController::class, 'show'])->name('show');
@@ -101,14 +101,14 @@ Route::middleware('auth')->group(function () {
         Route::get('create', [AnnouncementController::class, 'create']);
         Route::post('store', [AnnouncementController::class, 'store']);
         Route::get('update/{id}', [AnnouncementController::class, 'edit']);
-        Route::put('{id}', [AnnouncementController::class, 'update'])->name('update');
+        Route::put('{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
         Route::post('archive', [AnnouncementController::class, 'archive'])->name('archive');
         Route::post('republish', [AnnouncementController::class, 'republish'])->name('republish');
         Route::delete('{id}', [AnnouncementController::class, 'delete'])->name('delete');
     });
     Route::get('/chat', [HomeController::class, 'chat']);
     Route::get('/ad/connect/{ad_id}', [AdController::class, 'connect'])->name('ad.connect');
-    Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement');
+    Route::get('/connect/{employee_id}/{announcement_id}', [AnnouncementController::class, 'response'])->name('announcement.connect');
 });
 
 
