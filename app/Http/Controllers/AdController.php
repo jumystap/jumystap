@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class AdController extends Controller
 {
@@ -89,6 +91,8 @@ class AdController extends Controller
 
             return Inertia::render($component, [
                 'ad' => $ad,
+                // Неактивное объявление видит только админ; /ad/connect для него отдаёт 404.
+                'canContact' => $ad->status === AdStatus::ACTIVE,
                 'category' => $ad->category->name,
             ]);
         }
@@ -96,26 +100,24 @@ class AdController extends Controller
         return redirect('ads');
     }
 
-    public function connect(int $id): mixed
+    public function connect(Request $request, int $ad_id): SymfonyResponse
     {
-        $ad = $this->adService->getAd($id);
+        try {
+            $url = $this->adService->contactAd((int) $request->user()->id, $ad_id, [
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+        } catch (TooManyRequestsHttpException $e) {
+            // Из интерфейса (Inertia) — ошибка формы для уведомления, а не страница 429 во всплывающем окне.
+            if ($request->inertia()) {
+                return back()->withErrors(['connect' => $e->getMessage()]);
+            }
 
-        if($ad->use_profile_phone){
-            $phone = $ad->user->phone;
-        }else{
-            $phone = $ad->phone;
+            throw $e;
         }
 
-        $this->adService->createContact($ad, [
-            'user_id' => Auth()->id(),
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'contacted_at' => now(),
-        ]);
-
-        $whatsappUrl = "https://wa.me/" . $phone . "?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A";
-
-        return redirect()->away($whatsappUrl);
+        // Для Inertia — 409 с X-Inertia-Location (клиент сам уйдёт на wa.me), иначе редирект.
+        return Inertia::location($url);
     }
 
 }

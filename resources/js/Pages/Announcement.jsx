@@ -14,7 +14,7 @@ import { MdIosShare } from "react-icons/md";
 import ShareButtons from "@/Components/ShareButtons";
 import YandexMapView from "@/Components/Map/YandexMapView";
 import { isMappable, isRemoteCity, stripCityPrefix } from "@/utils/yandexMaps";
-import { consumePendingConnect, rememberPendingConnect, respondToAnnouncement } from "@/utils/announcementConnect";
+import { consumePendingConnect, postConnect, rememberPendingConnect } from "@/utils/connect";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
@@ -123,8 +123,8 @@ export default function Announcement({ auth, announcement, canRespond, more_anno
         // setTimeout: в Chrome на iOS Inertia сама пишет history через setTimeout
         // и без задержки вернула бы в адрес connect=true.
         const timer = setTimeout(() => {
-            if (consumePendingConnect(announcement.id) && auth.user && canRespond) {
-                respondToAnnouncement(announcement.id);
+            if (consumePendingConnect(`announcement:${announcement.id}`) && auth.user && canRespond) {
+                postConnect(`/connect/${announcement.id}`);
             }
         });
 
@@ -273,7 +273,7 @@ export default function Announcement({ auth, announcement, canRespond, more_anno
                                 {auth.user ? (
                                     <>
                                         {canRespond && (
-                                            <button type="button" onClick={() => respondToAnnouncement(announcement.id)}
+                                            <button type="button" onClick={() => postConnect(`/connect/${announcement.id}`)}
                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                                 <span className='font-bold'>{t('contact')}</span>
                                             </button>
@@ -288,7 +288,7 @@ export default function Announcement({ auth, announcement, canRespond, more_anno
                                 ) : (
                                     <Link
                                         href={`/login?redirect=${encodeURIComponent(`/announcement/${announcement.id}?connect=true`)}`}
-                                        onClick={() => rememberPendingConnect(announcement.id)}
+                                        onClick={() => rememberPendingConnect(`announcement:${announcement.id}`)}
                                         className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
                                     </Link>

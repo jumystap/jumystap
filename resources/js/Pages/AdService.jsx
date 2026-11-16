@@ -2,13 +2,14 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import {useTranslation} from 'react-i18next';
 import React, {useState, useEffect} from "react";
 import {Link, Head} from "@inertiajs/react";
+import {consumePendingConnect, postConnect, rememberPendingConnect} from "@/utils/connect";
 import {FaInstagram, FaWhatsapp, FaGlobe, FaMapMarkerAlt} from "react-icons/fa";
 import {FaTiktok} from "react-icons/fa6";
 import ShareButtons from "@/Components/ShareButtons";
 import BackToSearch from "@/Components/BackToSearch";
 import DOMPurify from 'dompurify';
 
-export default function Ad({auth, ad, category}) {
+export default function Ad({auth, ad, category, canContact}) {
     const {t, i18n} = useTranslation(['ads', 'announcements']);
     const [showFullText, setShowFullText] = useState(false);
     const maxLength = 90;
@@ -32,10 +33,15 @@ export default function Ad({auth, ad, category}) {
         : [cityTitle, ad?.address].filter(Boolean).join(', ');
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('connect') === 'true' && auth.user) {
-            window.location.href = `/ad/connect/${ad.id}`;
-        }
+        // Автообращение после логина — только если гость сам нажал «Связаться» в этой вкладке
+        // (см. utils/connect.js). setTimeout: в Chrome на iOS Inertia пишет history с задержкой.
+        const timer = setTimeout(() => {
+            if (consumePendingConnect(`ad:${ad.id}`) && auth.user && canContact) {
+                postConnect(`/ad/connect/${ad.id}`);
+            }
+        });
+
+        return () => clearTimeout(timer);
     }, []);
 
     // Открытие лайтбокса
@@ -111,12 +117,23 @@ export default function Ad({auth, ad, category}) {
                                 </div>
                             </div>
 
-                            <a
-                                href={auth.user ? `/ad/connect/${ad.id}` : `/login?redirect=${encodeURIComponent(`/ad/${ad.id}?connect=true`)}`}
-                                className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
-                            >
-                                {t('contact_whatsapp', {ns: 'ads'})}
-                            </a>
+                            {auth.user ? (canContact && (
+                                <button
+                                    type="button"
+                                    onClick={() => postConnect(`/ad/connect/${ad.id}`)}
+                                    className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
+                                >
+                                    {t('contact_whatsapp', {ns: 'ads'})}
+                                </button>
+                            )) : (
+                                <Link
+                                    href={`/login?redirect=${encodeURIComponent(`/ad/${ad.id}?connect=true`)}`}
+                                    onClick={() => rememberPendingConnect(`ad:${ad.id}`)}
+                                    className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-blue-500 px-6 py-3 text-white font-semibold shadow-md shadow-blue-500/30"
+                                >
+                                    {t('contact_whatsapp', {ns: 'ads'})}
+                                </Link>
+                            )}
                         </div>
 
                             <div className="border-b border-gray-200 px-4 md:px-6 py-4">

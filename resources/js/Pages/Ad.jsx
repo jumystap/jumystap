@@ -2,6 +2,7 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import {useTranslation} from 'react-i18next';
 import React, {useState} from "react";  // useEffect больше не нужен
 import {Link, Head} from "@inertiajs/react";
+import {postConnect} from "@/utils/connect";
 import {FaRegHeart, FaHeart} from "react-icons/fa";
 import {useForm} from '@inertiajs/react';
 import {FaSquareCheck} from "react-icons/fa6";
@@ -122,10 +123,10 @@ export default function Ad({auth, ad, category}) {
                             <div className='flex items-center mt-5 gap-x-3 gap-y-2'>
                                 {auth.user ? (
                                     <>
-                                        <a href={`/ad/connect/${ad.id}`}
+                                        <button type="button" onClick={() => postConnect(`/ad/connect/${ad.id}`)}
                                            className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                             <span className='font-bold'>{t('contact')}</span>
-                                        </a>
+                                        </button>
                                         {auth.user.email === 'admin@example.com' && (
                                             <a href={`/admin/ads/${ad.id}/edit`}
                                                className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
@@ -314,10 +315,10 @@ export default function Ad({auth, ad, category}) {
                             ) : ('')}
                             {auth.user ? (
                                 <>
-                                    <a href={`/ad/connect/${ad.id}`}
+                                    <button type="button" onClick={() => postConnect(`/ad/connect/${ad.id}`)}
                                        className='text-white text-center shadow-lg shadow-blue-500/50 rounded-lg items-center w-full block bg-blue-500 py-2 px-5 md:px-10'>
                                         <span className='font-bold'>{t('contact')}</span>
-                                    </a>
+                                    </button>
                                 </>
                             ) : (
                                 <Link href='/login'

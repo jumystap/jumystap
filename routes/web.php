@@ -107,7 +107,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('{id}', [AnnouncementController::class, 'delete'])->name('delete');
     });
     Route::get('/chat', [HomeController::class, 'chat']);
-    Route::get('/ad/connect/{ad_id}', [AdController::class, 'connect'])->name('ad.connect');
+    // POST + CSRF, как у откликов: обращение расходует суточный лимит.
+    Route::post('/ad/connect/{ad_id}', [AdController::class, 'connect'])->whereNumber('ad_id')->name('ad.connect');
+    // Старый GET-адрес (открытые вкладки, ссылки) ведёт на объявление, обращения не создаёт.
+    Route::get('/ad/connect/{ad_id}', fn (string $ad_id) => redirect("/ad/{$ad_id}"))->whereNumber('ad_id');
     // POST + CSRF: отклик расходует суточный лимит, GET-ссылкой это мог бы сделать чужой сайт.
     Route::post('/connect/{announcement_id}', [AnnouncementController::class, 'response'])->whereNumber('announcement_id')->name('announcement.connect');
     // Старый GET-адрес с id соискателя (открытые вкладки, сохранённые ссылки) ведёт на страницу

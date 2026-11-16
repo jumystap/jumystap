@@ -8,6 +8,7 @@ use App\Enums\PriceType;
 use App\Models\Ad;
 use App\Models\AdContact;
 use App\Models\AdView;
+use Carbon\CarbonInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdRepository
@@ -81,6 +82,43 @@ class AdRepository
     {
         $ad->incrementContactsShown();
         return $ad->contacts()->create($params);
+    }
+
+    // Только активное объявление: иначе перебором id через /ad/connect собирались бы номера
+    // черновиков и объявлений на модерации, которых нет в публичной выдаче.
+    public function findActiveAdForContact(int $id): Ad
+    {
+        return Ad::query()
+            ->where('status', AdStatus::ACTIVE)
+            ->with('user:id,phone')
+            ->findOrFail($id);
+    }
+
+    public function countContactsSince(int $userId, CarbonInterface $since): int
+    {
+        return AdContact::query()
+            ->where('user_id', $userId)
+            ->where('contacted_at', '>', $since)
+            ->count();
+    }
+
+    public function hasContactSince(int $userId, int $adId, CarbonInterface $since): bool
+    {
+        return AdContact::query()
+            ->where('user_id', $userId)
+            ->where('ad_id', $adId)
+            ->where('contacted_at', '>', $since)
+            ->exists();
+    }
+
+    public function oldestContactSince(int $userId, CarbonInterface $since): ?CarbonInterface
+    {
+        $contactedAt = AdContact::query()
+            ->where('user_id', $userId)
+            ->where('contacted_at', '>', $since)
+            ->min('contacted_at');
+
+        return $contactedAt ? now()->parse($contactedAt) : null;
     }
 
 }

@@ -87,7 +87,13 @@
   Объявления (`Ad`): `phone` объявления — публичный контакт продавца (иконка WhatsApp), не скрывается;
   скрыт автор: список грузит `user:id,name,image_url,is_graduate`, `AdController::show` делает
   `setVisible` (полную модель `getAdById` грузит ради `connect`, которому нужен номер профиля).
-  У `/ad/connect` (GET) лимита нет.
+  Обращение к продавцу — `POST /ad/connect/{ad_id}` (CSRF, `whereNumber`), тот же лимит 30 за
+  скользящие 24 часа (`AdService::contactAd`, считаются `ad_contacts.contacted_at`), повтор по тому
+  же объявлению в окне не пишет обращение и не увеличивает `contacts_shown_count`. Только активные
+  объявления (иначе перебором id собирались бы номера черновиков); `show` передаёт `canContact`.
+  У 112 из 125 активных объявлений номер берётся из профиля автора и виден только через connect.
+  Старый `GET /ad/connect/{id}` ведёт на объявление. Автообращение `?connect=true` — по той же
+  метке `sessionStorage` (`resources/js/utils/connect.js`, ключи `announcement:{id}` / `ad:{id}`).
 - **Язык обычных переходов (не axios) — cookie `locale`.** `AppServiceProvider::boot` читает её до
   `EncryptCookies`, поэтому открытое значение из JS работает (проверено на dev: `locale=kk`/`kz` →
   казахская валидация). Проблема была в сроке: cookie без `max-age` пропадала при закрытии браузера,
