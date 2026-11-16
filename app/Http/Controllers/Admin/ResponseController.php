@@ -22,8 +22,20 @@ class ResponseController extends Controller
             ];
         }
 
+        $responses = Response::search($search)
+            // Связи грузятся сразу (иначе по 3 запроса на строку × 100 строк) и вместе с
+            // мягко удалёнными записями: админке нужно видеть, на что откликались, а не «—».
+            ->with([
+                'user' => fn ($query) => $query->withTrashed(),
+                'announcement' => fn ($query) => $query->withTrashed(),
+                'announcement.user' => fn ($query) => $query->withTrashed(),
+            ])
+            ->latest()
+            ->paginate(100)
+            ->appends(request()->query());
+
         return view('admin.responses.index')
-            ->with('responses', Response::search($search)->latest()->paginate(100)->appends(request()->query()))
+            ->with('responses', $responses)
             ->with('search', $search);
     }
 

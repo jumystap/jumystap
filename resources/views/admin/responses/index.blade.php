@@ -82,18 +82,31 @@
                                 @foreach($responses as $response)
                                     <tr>
                                         <td>{{ $response->id }}</td>
-                                        <td>{{ $response->user?->name ?? '—' }}</td>
+                                        <td>
+                                            {{ $response->user?->name ?? '—' }}
+                                            @if($response->user?->trashed())
+                                                <span class="badge badge-secondary">удалён</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($response->announcement)
                                                 {{ $response->announcement->title }}
                                                 <span class="badge badge-{{ $response->announcement->status?->getClass() }}">
                                                     {{ $response->announcement->status?->getLabel() ?? '—' }}
                                                 </span>
+                                                @if($response->announcement->trashed())
+                                                    <span class="badge badge-secondary">удалена</span>
+                                                @endif
                                             @else
                                                 —
                                             @endif
                                         </td>
-                                        <td>{{ $response->announcement?->user?->name ?? '—' }}</td>
+                                        <td>
+                                            {{ $response->announcement?->user?->name ?? '—' }}
+                                            @if($response->announcement?->user?->trashed())
+                                                <span class="badge badge-secondary">удалён</span>
+                                            @endif
+                                        </td>
                                         <td>{{ \Carbon\Carbon::parse($response->created_at)->format('d.m.Y H:i:s') }}</td>
                                     </tr>
                                 @endforeach
