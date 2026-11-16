@@ -233,7 +233,12 @@ test('an inertia response request gets an external location to whatsapp', functi
         ->post("/connect/{$announcement->id}")
         ->assertStatus(409);
 
-    expect($response->headers->get('X-Inertia-Location'))->toStartWith('https://wa.me/77770001122?text=');
+    $location = $response->headers->get('X-Inertia-Location');
+
+    // Заголовок читается браузером как Latin-1: в нём не должно быть сырой кириллицы.
+    expect($location)->toStartWith('https://wa.me/77770001122?text=')
+        ->and($location)->toMatch('/^[\x21-\x7E]+$/')
+        ->and(urldecode($location))->toContain('Откликаюсь на позицию');
     $this->assertDatabaseCount('responses', 1);
 });
 

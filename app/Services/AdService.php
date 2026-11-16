@@ -45,7 +45,10 @@ class AdService
 
             $phone = $ad->use_profile_phone ? $ad->user?->phone : $ad->phone;
 
-            return 'https://wa.me/'.$phone.'?text=Здравствуйте!%0A%0AПишу%20с%20Jumystap.%0A%0A';
+            // Текст обязательно percent-encoded: для Inertia ссылка уходит в заголовке
+            // X-Inertia-Location, а браузер читает заголовки как Latin-1 — сырая кириллица
+            // превращалась в «Ð—Ð´Ñ€Ð°Ð²...».
+            return 'https://wa.me/'.$phone.'?text='.rawurlencode("Здравствуйте!\n\nПишу с Jumystap.\n\n");
         });
     }
 

@@ -141,7 +141,12 @@ test('an inertia seller contact gets an external location to whatsapp', function
         ->post("/ad/connect/{$ad->id}")
         ->assertStatus(409);
 
-    expect($response->headers->get('X-Inertia-Location'))->toStartWith('https://wa.me/77011112233');
+    $location = $response->headers->get('X-Inertia-Location');
+
+    // Заголовок читается браузером как Latin-1: в нём не должно быть сырой кириллицы.
+    expect($location)->toMatch('/^[\x21-\x7E]+$/')
+        ->and($location)->toBe('https://wa.me/77011112233?text='.rawurlencode("Здравствуйте!\n\nПишу с Jumystap.\n\n"))
+        ->and(urldecode($location))->toContain("Здравствуйте!\n\nПишу с Jumystap.");
 });
 
 test('the legacy get contact url redirects to the ad without recording a contact', function () {
