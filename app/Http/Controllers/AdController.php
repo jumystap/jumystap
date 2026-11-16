@@ -83,6 +83,10 @@ class AdController extends Controller
             if ($ad->type == AdType::SERVICE){
                 $component = 'AdService';
             }
+            // Публичная страница отдаёт об авторе только то, что показывает; полную модель
+            // (с phone, email, ip) getAdById грузит ради connect, которому нужен номер профиля.
+            $ad->user?->setVisible(['id', 'name', 'description', 'image_url', 'is_graduate', 'ads']);
+
             return Inertia::render($component, [
                 'ad' => $ad,
                 'category' => $ad->category->name,

@@ -16,7 +16,8 @@ class AdRepository
     {
         $paginate = $filters['type'] === AdType::PRODUCT->value ? 9 : 10;
         $query = Ad::query()->orderBy('created_at', 'desc')
-            ->with('user', 'category', 'city', 'photos')
+            // Автор — только поля карточки: полная модель User отдала бы гостям phone, email и ip.
+            ->with('user:id,name,image_url,is_graduate', 'category', 'city', 'photos')
             ->where("status", AdStatus::ACTIVE);
 
         if (!empty($filters['keyword'])) {
