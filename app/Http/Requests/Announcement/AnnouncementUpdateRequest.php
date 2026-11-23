@@ -59,6 +59,7 @@ class AnnouncementUpdateRequest extends FormRequest
             'work_hours' => 'nullable|max:255',
             'employment_type' => 'nullable',
             'experience' => 'nullable',
+            'education' => 'nullable|string|max:255',
             'location' => 'required|array',
             'location.*.id' => 'nullable|integer',
             'location.*.adress' => 'required|string|max:255',
