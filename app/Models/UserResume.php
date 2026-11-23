@@ -42,6 +42,8 @@ class UserResume extends Model
 
     protected $casts = [
         'skills' => 'array',
+        'ip_status' => 'boolean',
+        'has_car' => 'boolean',
         'status' => ResumeStatus::class,
         'published_at' => 'datetime',
     ];

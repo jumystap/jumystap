@@ -19,6 +19,8 @@ const kazakhstanCities = [
     "Усть-Каменогорск", "Щучинск", "Экибастуз"
 ];
 
+const toSelectValue = (value) => (value === null || value === undefined ? '' : (value ? '1' : '0'));
+
 const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentTypes, workSchedules, educationLevels }) => {
     const { t } = useTranslation('resume');
     const [showOtherCityInput, setShowOtherCityInput] = useState(resume.city === 'Другое' || resume.city === 'Дистанционное');
@@ -43,9 +45,9 @@ const UpdateResume = ({ user, resume, languages, drivingLicenses, employmentType
         languages: languages || [],
         skills: resume.skills || [],
         newSkill: '',
-        ip_status: resume.ip_status || '',
+        ip_status: toSelectValue(resume.ip_status),
         driving_license: resume.driving_license || '',
-        has_car: resume.has_car ? resume.has_car.toString() : '',
+        has_car: toSelectValue(resume.has_car),
         about: resume.about || '',
     });
 
